@@ -1,0 +1,20 @@
+= SolarDoc 🌌✨
+
+SolarDoc is a dynamic online-editor which allows you to create beautiful presentations using AsciiDoc in your browser. Collaborate with your colleagues and friends in the online editor and freely share your work with anyone! 
+
+== Problem & Background
+
+=== Given Situation
+
+There is no collaborative environment for creating presentations using AsciiDoc. As such, it is difficult to efficiently create presentations. Currently, there are tools & plugins available to real-time render AsciiDoc and AsciiDoc presentation using revael.js, but either they lack functionality or require monthly license payments. As such they are unsuitable for students and teachers given the college environment. 
+
+=== Potential for improvement
+
+== Goals
+
+== Potential & Risks
+
+== Roadmap & Planning
+
+
+
