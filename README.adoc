@@ -14,12 +14,11 @@ There is no collaborative environment for creating presentations using AsciiDoc.
 - Better UI for viewing presentation slides and nested slides
 - Ability to easily work collaboratively on presentations
 - More accessibility for students and teachers
-- Ability to share files and with anyone using share links
+- Ability to share files with anyone using share links
 
 == Goals
 
-
-
+To allow students and teachers to more efficiently create, edit and share presentations. They should be able to easily work together and have a co-working space, where they are able to manage an entire presentation without the need for external tools. The editor should be performant and responsive, without having to worry too much about rendering time.
 
 == Potential & Risks
 
