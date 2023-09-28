@@ -10,9 +10,14 @@ There is no collaborative environment for creating presentations using AsciiDoc.
 
 === Potential for improvement
 
-
+- Better code editor for writing AsciiDoc
+- Better UI for viewing presentation slides and nested slides
+- Ability to easily work collaboratively on presentations
+- More accessibility for students and teachers
+- Ability to share files and with anyone using share links
 
 == Goals
+
 
 
 
