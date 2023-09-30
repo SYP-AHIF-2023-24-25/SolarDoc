@@ -20,12 +20,22 @@ There is no collaborative environment for creating presentations using AsciiDoc.
 
 == Goals 📈
 
-To allow students and teachers to more efficiently create, edit and share presentations. They should be able to easily work together and have a co-working space, where they are able to manage an entire presentation without the need for external tools. The editor should be performant and responsive, without having to worry too much about rendering time.
+To allow students and teachers to more efficiently create, edit and share presentations. They should be able to easily work together and have a co-working space, where they can manage an entire presentation without the need for external tools. The editor should be performant and responsive, without having to worry too much about rendering time.
 
 == Potential & Risks ⚠️
 
-
+- Conversion pipeline is too performance-heavy slowing down the browser of the user/client. (AsciiDoc -> Presentation)
+- The complexity of creating a presentation might get out of hand with big and detailed presentations.
 
 == Roadmap & Planning 🛣️
 
+The user stories and goals for the project are listed here in the https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions?discussions_q=is%3Aopen+label%3A%22user+story%22[discussions page].
 
+=== Planned Roadmap
+
+- Editor and Preview (https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/3 & https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/4) 
+- ...
+- ...
+- ...
+- ...
+- ...
