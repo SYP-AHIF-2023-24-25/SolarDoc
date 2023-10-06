@@ -1,5 +1,5 @@
 {
-  "name": "solardoc-api",
+  "name": "@solardoc/api",
   "version": "0.0.1",
   "description": "SolarDoc backend API",
   "keywords": [
@@ -11,7 +11,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": "16 || 18 || 20"
+    "node": "16 || 18 || 20",
+    "pnpm": ">=8"
   },
   "scripts": {
     "build": "lb-tsc",
@@ -42,7 +43,7 @@
     "type": "git",
     "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc"
   },
-  "author": "Kaede25 <emma.walchshofer@gmail.com>",
+  "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
   "license": "GPL-3.0",
   "files": [
     "README.md",
