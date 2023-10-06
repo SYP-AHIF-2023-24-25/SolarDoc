@@ -1,8 +1,10 @@
 {
-  "name": "rest-api",
+  "name": "solardoc-api",
   "version": "0.0.1",
-  "description": "rest-api for solardoc",
+  "description": "SolarDoc backend API",
   "keywords": [
+    "solardoc",
+    "solardoc-api",
     "loopback-application",
     "loopback"
   ],
@@ -38,10 +40,10 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc"
   },
   "author": "Kaede25 <emma.walchshofer@gmail.com>",
-  "license": "",
+  "license": "GPL-3.0",
   "files": [
     "README.md",
     "dist",
