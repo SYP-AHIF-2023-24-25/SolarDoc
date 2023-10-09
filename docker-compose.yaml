@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build: ./solardoc/frontend
+    volumes:
+      - ./solardoc/frontend:/home/node/app
+    ports:
+      - "80:80"
+    depends_on:
+      - rest-api
+  rest-api:
+    build: ./solardoc/rest-api
+    volumes:
+      - ./solardoc/rest-api:/home/node/app
+    ports:
+      - "3000:3000"

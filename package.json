@@ -4,7 +4,7 @@
   "description": "The SolarDoc project containing all the project code and documentation",
   "engines": {
     "node": "16 || 18 || 20",
-    "pnpm": ">=8"
+    "pnpm": "7"
   },
   "repository": {
     "type": "git",
@@ -14,5 +14,9 @@
   "license": "GPL-3.0",
   "scripts": {
     "build": "pnpm run -r build"
+  },
+  "devDependencies": {
+    "@solardoc/frontend": "workspace:~",
+    "@solardoc/rest-api": "workspace:~"
   }
 }
