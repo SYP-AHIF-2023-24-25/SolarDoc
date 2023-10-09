@@ -11,7 +11,7 @@ on:
 
 jobs:
   eslint-frontend:
-    name: Run eslint scanning for REST API
+    name: REST API ESLint Scan
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -11,7 +11,7 @@ on:
 
 jobs:
   eslint-frontend:
-    name: Run eslint scanning for Vue frontend
+    name: Frontend ESLint Scan
     runs-on: ubuntu-latest
     permissions:
       contents: read
