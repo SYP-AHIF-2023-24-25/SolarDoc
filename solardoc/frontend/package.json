@@ -1,7 +1,24 @@
 {
-  "name": "solardoc-frontend",
+  "name": "@solardoc/frontend",
   "version": "0.0.0",
+  "description": "SolarDoc frontend using Vue 3 and Vite",
   "private": true,
+  "keywords": [
+    "solardoc",
+    "solardoc-api",
+    "loopback-application",
+    "loopback"
+  ],
+  "engines": {
+    "node": "16 || 18 || 20",
+    "pnpm": "7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc"
+  },
+  "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
+  "license": "GPL-3.0",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
