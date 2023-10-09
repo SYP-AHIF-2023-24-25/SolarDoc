@@ -10,6 +10,7 @@ specifiers:
   '@loopback/rest-explorer': ^6.1.3
   '@loopback/service-proxy': ^6.1.3
   '@loopback/testlab': ^6.1.3
+  '@microsoft/eslint-formatter-sarif': 3.0.0
   '@types/mocha': 10.0.2
   '@types/node': ^16.18.50
   eslint: ^8.48.0
@@ -30,6 +31,7 @@ devDependencies:
   '@loopback/build': 10.1.3
   '@loopback/eslint-config': 14.0.4_srhnpoqmhm6ulnern6fnsuapfi
   '@loopback/testlab': 6.1.3
+  '@microsoft/eslint-formatter-sarif': 3.0.0
   '@types/mocha': 10.0.2
   '@types/node': 16.18.58
   eslint: 8.51.0
@@ -679,6 +681,18 @@ packages:
       sinon: 15.2.0
       supertest: 6.3.3
       tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@microsoft/eslint-formatter-sarif/3.0.0:
+    resolution: {integrity: sha512-KIKkT44hEqCzqxODYwFMUvYEK0CrdHx/Ll9xiOWgFbBSRuzbxmVy4d/tzfgoucGz72HJZNOMjuyzFTBKntRK5Q==}
+    engines: {node: '>= 14'}
+    dependencies:
+      eslint: 8.51.0
+      jschardet: 3.0.0
+      lodash: 4.17.21
+      utf8: 3.0.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -2517,6 +2531,11 @@ packages:
       xmlcreate: 2.0.4
     dev: false
 
+  /jschardet/3.0.0:
+    resolution: {integrity: sha512-lJH6tJ77V8Nzd5QWRkFYCLc13a3vADkh3r/Fi8HupZGWk2OVVDfnZP8V/VgQgZ+lzW0kG2UGb5hFgt3V3ndotQ==}
+    engines: {node: '>=0.1.90'}
+    dev: true
+
   /jsesc/2.5.2:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}
     engines: {node: '>=4'}
@@ -3892,6 +3911,10 @@ packages:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
       punycode: 2.3.0
+
+  /utf8/3.0.0:
+    resolution: {integrity: sha512-E8VjFIQ/TyQgp+TZfS6l8yp/xWppSAHzidGiRrqe4bK4XP9pTRyKFgGJpO3SN7zdX4DeomTrwaseCHovfpFcqQ==}
+    dev: true
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
