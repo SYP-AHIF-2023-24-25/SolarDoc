@@ -10,7 +10,7 @@ Comments are marked by arrows, like in lines 1 and 5. They will not be visible i
 <!-- If you are unsure if your code is a breaking change, read this: https://nordicapis.com/what-are-breaking-changes-and-how-do-you-avoid-them -->
 
 - [ ] Maintenance (Non-breaking change that updates dependencies)
-- [ ] Development changes (These changes do not add new features or fix bugs, but update the code in other ways)
+- [ ] Development changes (Changes that do not add new features or fix bugs, but update the project in other ways)
 - [ ] Bug fix (Non-breaking change which fixes an issue)
 - [ ] Feature (Non-breaking change which adds functionality)
 - [ ] Breaking change (Major bug fix or feature that would cause existing functionality not to work as expected.)
