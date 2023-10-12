@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .item {
   margin-top: 2rem;
   display: flex;
