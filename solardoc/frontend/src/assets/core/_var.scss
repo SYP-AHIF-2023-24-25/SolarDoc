@@ -1,0 +1,34 @@
+// Color-scheme presets
+$scheme-cs-1: #0E21A0;
+$scheme-blue: $scheme-cs-1;
+$scheme-cs-2: #4D2DB7;
+$scheme-purple: $scheme-cs-2;
+$scheme-cs-3: #9D44C0;
+$scheme-lavender: $scheme-cs-3;
+$scheme-cs-4: #EC53B0;
+$scheme-pink: $scheme-cs-4;
+$scheme-space-gray: #717378;
+$scheme-gray: $scheme-space-gray;
+$scheme-space-black: #2C2C2C;
+$scheme-black: $scheme-space-black;
+$scheme-neutral-gray: #F6F8FA;
+$scheme-editor-black: #0F111A;
+$scheme-editor-blue: #10355B;
+
+:root {
+  --scheme-cs-1: $scheme-cs-1;
+  --scheme-blue: $scheme-blue;
+  --scheme-cs-2: $scheme-cs-2;
+  --scheme-purple: $scheme-purple;
+  --scheme-cs-3: $scheme-cs-3;
+  --scheme-lavender: $scheme-lavender;
+  --scheme-cs-4: $scheme-cs-4;
+  --scheme-pink: $scheme-pink;
+  --scheme-space-gray: $scheme-space-gray;
+  --scheme-gray: $scheme-gray;
+  --scheme-space-black: $scheme-space-black;
+  --scheme-black: $scheme-black;
+  --scheme-neutral-gray: $scheme-neutral-gray;
+  --scheme-editor-black: $scheme-editor-black;
+  --scheme-editor-blue: $scheme-editor-blue;
+}

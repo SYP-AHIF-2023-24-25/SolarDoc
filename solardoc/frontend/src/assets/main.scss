@@ -3,7 +3,8 @@
 @use './core/boilerplate/normalise';
 
 // Core opinionated styles which are used throughout the app
-@use './core/text';
+@use './core/var' as *;
+@use './core/text' as *;
 
 :root {
   --vt-c-white: #ffffff;
