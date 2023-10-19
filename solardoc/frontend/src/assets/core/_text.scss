@@ -1,4 +1,5 @@
 @use "./mixins/header-presets" as header-presets;
+@use "./var" as *;
 
 // Import required fonts
 @import url('https://fonts.googleapis.com/css?family=League+Spartan');
@@ -8,6 +9,10 @@
 html {
   font-family: 'League Spartan', 'Inter', sans-serif;
   font-weight: normal;
+
+  * {
+    color: $text-color;
+  }
 }
 
 h1,

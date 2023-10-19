@@ -17,6 +17,15 @@
   transition: background-color 0.24s ease;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+
 html {
   color: #222;
   font-size: 1em;
