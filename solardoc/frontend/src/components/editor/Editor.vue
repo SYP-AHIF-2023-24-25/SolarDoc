@@ -10,11 +10,13 @@
 
   const editorRef = ref(null);
   let editorInstance = null;
+  let localStorageIdentifier = 'reloadText';
 
-  window.onbeforeunload = function(event) {
-    localStorage.setItem('reloadText',editorInstance.getValue() );
-  };
+  /*window.onbeforeunload = function(event) {
+    localStorage.setItem(localStorageIdentifier,editorInstance.getValue() );
+  };*/
 
+  let cancel;
   onMounted(() => {
     // Register a new language
     monaco.languages.register({ id: "asciiDoc" });
@@ -25,7 +27,7 @@
     // Define a new theme that contains only rules that match this language
     monaco.editor.defineTheme("asciiDocTheme", editorTheme);
 
-    let reloadText= localStorage.getItem('reloadText');
+    let reloadText= localStorage.getItem(localStorageIdentifier)||'= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°';
     // Creating the editor with desired theme and language
     editorInstance= monaco.editor.create(editorRef.value, {
       theme: "asciiDocTheme",
@@ -34,16 +36,18 @@
           `${reloadText}`
       ].join('\n')
     });
+
+
+    editorInstance.onKeyUp(()=>{
+      if (cancel) clearTimeout(cancel);
+      cancel = setTimeout(() => {
+        console.log("saving new text to local storage");
+        localStorage.setItem(localStorageIdentifier, editorInstance.getValue());
+
+      }, 1000);
+    });
   });
 
-  /*onBeforeUnmount(()=>{
-    localStorage.removeItem('reloadText');
-    if (editorInstance) {
-      let text = editorInstance.getValue();
-      console.log(text);
-      localStorage.setItem('reloadText', text);
-    }
-  });*/
 </script>
 
 <style scoped>
