@@ -1,4 +1,5 @@
-import './assets/main.css'
+// Import the global style which is used for the whole app
+import './assets/main.scss'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

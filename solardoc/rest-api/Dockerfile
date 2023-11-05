@@ -1,5 +1,10 @@
-# Check out https://hub.docker.com/_/node to select a new base image
-FROM docker.io/library/node:18-slim
+FROM docker.io/library/node:16-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+# Set PNPM version 7 to ensure compatibility with source code lockfiles
+RUN pnpm i -g pnpm@8.9.2
 
 # Set to a non-root built-in user `node`
 USER node
@@ -9,17 +14,29 @@ RUN mkdir -p /home/node/app
 
 WORKDIR /home/node/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY --chown=node package*.json ./
+FROM base AS prod-deps
+WORKDIR /home/node/app
 
-RUN npm install
+COPY --chown=node package.json ./
+COPY --chown=node pnpm-lock.yaml ./
+
+RUN pnpm install --prod --frozen-lockfile
+
+FROM base AS build-stage
+WORKDIR /home/node/app
 
 # Bundle app source code
 COPY --chown=node . .
 
-RUN npm run build
+RUN pnpm install --frozen-lockfile
+
+RUN pnpm run build
+
+FROM base as production-stage
+COPY --from=prod-deps /home/node/app/node_modules /home/node/app/node_modules
+COPY --from=prod-deps /home/node/app/package.json /home/node/app/package.json
+COPY --from=build-stage /home/node/app/public /home/node/app/public
+COPY --from=build-stage /home/node/app/dist /home/node/app/dist
 
 # Bind to all network interfaces so that it can be mapped to the host OS
 ENV HOST=0.0.0.0 PORT=3000

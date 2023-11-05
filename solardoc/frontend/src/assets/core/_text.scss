@@ -1,0 +1,60 @@
+@use './mixins/header-presets' as header-presets;
+@use './var' as *;
+
+// Import required fonts
+@import url('https://fonts.googleapis.com/css?family=League+Spartan');
+@import url('https://fonts.googleapis.com/css?family=JetBrains+Mono');
+@import url('https://fonts.googleapis.com/css?family=Inter');
+
+html {
+  font-family: 'League Spartan', 'Inter', sans-serif;
+  font-weight: normal;
+
+  * {
+    color: $text-color;
+  }
+}
+
+h1,
+.h1 {
+  @include header-presets.h1;
+}
+
+h2,
+.h2 {
+  @include header-presets.h2;
+}
+
+h3,
+.h3 {
+  @include header-presets.h3;
+}
+
+h4,
+.h4 {
+  @include header-presets.h4;
+}
+
+h5,
+.h5 {
+  @include header-presets.h5;
+}
+
+h6,
+.h6 {
+  @include header-presets.h6;
+}
+
+p {
+  margin: 0;
+}
+
+/* Code Block Formatting */
+code {
+  margin-left: 0.2rem;
+  margin-right: 0.2rem;
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+  font-family: 'JetBrains Mono', Consolas, 'Operator Mono', 'Fira code.console-bash', Monaco,
+    'Andale Mono', 'Ubuntu Mono', monospace;
+}

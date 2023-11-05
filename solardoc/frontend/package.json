@@ -1,7 +1,24 @@
 {
-  "name": "solardoc-frontend",
-  "version": "0.0.0",
+  "name": "@solardoc/frontend",
+  "version": "0.0.1",
+  "description": "SolarDoc frontend using Vue 3 and Vite",
   "private": true,
+  "keywords": [
+    "solardoc",
+    "solardoc-api",
+    "loopback-application",
+    "loopback"
+  ],
+  "engines": {
+    "node": "16 || 18 || 20",
+    "pnpm": "8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc"
+  },
+  "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
+  "license": "GPL-3.0",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
@@ -11,13 +28,16 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "eslint": "pnpm run lint",
+    "format": "prettier --write src/",
+    "prettier": "pnpm run format"
   },
   "dependencies": {
-    "pinia": "^2.1.6",
-    "vue": "^3.3.4",
-    "monaco-editor": "^0.44.0",
-    "vue-router": "^4.2.4"
+    "pinia": "2.1.7",
+    "vue": "3.3.7",
+    "vue-router": "4.2.5",
+    "@vueuse/core": "10.5.0",
+    "monaco-editor": "0.44.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.38.0",
@@ -30,12 +50,14 @@
     "@vue/eslint-config-typescript": "^12.0.0",
     "@vue/test-utils": "^2.4.1",
     "@vue/tsconfig": "^0.4.0",
+    "@microsoft/eslint-formatter-sarif": "3.0.0",
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",
     "jsdom": "^22.1.0",
     "npm-run-all2": "^6.0.6",
     "prettier": "^3.0.3",
     "sass": "^1.68.0",
+    "sass-loader": "13.3.2",
     "typescript": "~5.2.0",
     "vite": "^4.4.9",
     "vitest": "^0.34.4",
