@@ -11,7 +11,7 @@
   ],
   "engines": {
     "node": "16 || 18 || 20",
-    "pnpm": "7"
+    "pnpm": "8"
   },
   "repository": {
     "type": "git",
@@ -29,12 +29,14 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "eslint": "pnpm run lint",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "prettier": "pnpm run format"
   },
   "dependencies": {
-    "pinia": "^2.1.6",
-    "vue": "^3.3.4",
-    "vue-router": "^4.2.4"
+    "pinia": "2.1.7",
+    "vue": "3.3.7",
+    "vue-router": "4.2.5",
+    "@vueuse/core": "10.5.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.38.0",
