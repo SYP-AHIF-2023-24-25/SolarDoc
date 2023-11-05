@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <nav id="navbar">
@@ -25,7 +23,7 @@
 </template>
 
 <style scoped lang="scss">
-@import "@/assets/core/var";
+@import '@/assets/core/var';
 
 #navbar {
   display: flex;
