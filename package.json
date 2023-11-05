@@ -4,7 +4,7 @@
   "description": "The SolarDoc project containing all the project code and documentation",
   "engines": {
     "node": "16 || 18 || 20",
-    "pnpm": "7"
+    "pnpm": "8"
   },
   "repository": {
     "type": "git",

@@ -4,7 +4,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 # Set PNPM version 7 to ensure compatibility with source code lockfiles
-RUN pnpm i -g pnpm@7.33.6
+RUN pnpm i -g pnpm@8.9.2
 
 # Set to a non-root built-in user `node`
 USER node

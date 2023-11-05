@@ -1,9 +1,13 @@
-lockfileVersion: 5.4
+lockfileVersion: '6.0'
 
-specifiers:
-  '@solardoc/frontend': workspace:~
-  '@solardoc/rest-api': workspace:~
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
 devDependencies:
-  '@solardoc/frontend': link:solardoc/frontend
-  '@solardoc/rest-api': link:solardoc/rest-api
+  '@solardoc/frontend':
+    specifier: workspace:~
+    version: link:solardoc/frontend
+  '@solardoc/rest-api':
+    specifier: workspace:~
+    version: link:solardoc/rest-api
