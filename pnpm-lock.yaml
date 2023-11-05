@@ -1,0 +1,9 @@
+lockfileVersion: 5.4
+
+specifiers:
+  '@solardoc/frontend': workspace:~
+  '@solardoc/rest-api': workspace:~
+
+devDependencies:
+  '@solardoc/frontend': link:solardoc/frontend
+  '@solardoc/rest-api': link:solardoc/rest-api

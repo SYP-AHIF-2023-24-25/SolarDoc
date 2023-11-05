@@ -1,0 +1,61 @@
+:root {
+  // Color-scheme presets
+  --scheme-cs-1: #0E21A0;
+  --scheme-blue: var(--scheme-cs-1);
+  --scheme-cs-2: #4D2DB7;
+  --scheme-purple: var(--scheme-cs-2);
+  --scheme-cs-3: #9D44C0;
+  --scheme-lavender: var(--scheme-cs-3);
+  --scheme-cs-4: #EC53B0;
+  --scheme-pink: var(--scheme-cs-4);
+  --scheme-space-gray: #717378;
+  --scheme-gray: var(--scheme-space-gray);
+  --scheme-space-black: #2C2C2C;
+  --scheme-black: var(--scheme-space-black);
+  --scheme-neutral-gray: #F6F8FA;
+  --scheme-background-black: #0F111A;
+  --scheme-editor-black: var(--scheme-background-black);
+  --scheme-editor-blue: #10355B;
+
+  // Font-size presets
+  --home-button-font-size: 20px;
+}
+
+// Color-scheme presets
+$scheme-cs-1: var(--scheme-cs-1);
+$scheme-blue: var(--scheme-cs-1);
+$scheme-cs-2: var(--scheme-cs-2);
+$scheme-purple: var(--scheme-cs-2);
+$scheme-cs-3: var(--scheme-cs-3);
+$scheme-lavender: var(--scheme-cs-3);
+$scheme-cs-4: var(--scheme-cs-4);
+$scheme-pink: var(--scheme-cs-4);
+$scheme-space-gray: var(--scheme-space-gray);
+$scheme-gray: var(--scheme-space-gray);
+$scheme-space-black: var(--scheme-space-black);
+$scheme-black: var(--scheme-space-black);
+$scheme-neutral-gray: var(--scheme-neutral-gray);
+$scheme-background-black: var(--scheme-background-black);
+$scheme-editor-black: var(--scheme-background-black);
+$scheme-editor-blue: var(--scheme-editor-blue);
+
+// Font-size presets
+$home-button-font-size: var(--home-button-font-size);
+
+// Light & Dark Theme
+html,
+html[data-theme="light"] {
+  --text-color: black;
+  --home-button-transparent-background-color: var(--scheme-cs-2);
+  --home-button-transparent-hover-text-color: white;
+}
+
+html[data-theme="dark"] {
+  --text-color: white;
+  --home-button-transparent-background-color: white;
+  --home-button-transparent-hover-text-color: black;
+}
+
+$text-color: var(--text-color);
+$home-button-transparent-text-color: var(--home-button-transparent-background-color);
+$home-button-transparent-hover-text-color: var(--home-button-transparent-hover-text-color);

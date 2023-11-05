@@ -1,0 +1,22 @@
+// Boilerplate styles which serve as a starting point for the rest of the styles
+@use './core/boilerplate/main';
+@use './core/boilerplate/normalise';
+
+// Core opinionated styles which are used throughout the app
+@use './core/var' as *;
+@use './core/text' as *;
+@use './core/button' as *;
+
+// Set background color based on the selected theme (dark/light)
+html,
+html[data-theme="light"] {
+  body {
+    background-color: transparent;
+  }
+}
+
+html[data-theme="dark"] {
+  body {
+    background-color: $scheme-background-black;
+  }
+}

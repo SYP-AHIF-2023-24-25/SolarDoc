@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import Navbar from "@/components/Navbar.vue";
+import { RouterView } from 'vue-router';
+import Navbar from "./components/Navbar.vue";
 </script>
 
 <template>
@@ -11,4 +11,5 @@ import Navbar from "@/components/Navbar.vue";
   <RouterView />
 </template>
 
-
+<style scoped lang="scss">
+</style>
