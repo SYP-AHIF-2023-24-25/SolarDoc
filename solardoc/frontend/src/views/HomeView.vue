@@ -1,62 +1,64 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+</script>
 
 <template>
   <main>
-    <div class="text-and-btns">
-      <p>
-        Create <br />
-        presentations <br />
-        your way.
-      </p>
-      <div class="btns">
-        <button id="try-now-btn" @click="$router.push('editor')">Try now</button>
-        <button @click="$router.push('docs')">Docs</button>
+    <div id="text-and-buttons">
+      <div id="welcome-text">
+        <p>Create <br/>presentations</p>
+        <p>your way.</p>
+      </div>
+      <div class="buttons-wrapper">
+        <button class="home-button" @click="$router.push('editor')">Try now</button>
+        <button class="home-button transparent" @click="$router.push('docs')">Docs</button>
       </div>
     </div>
-    <img class="adjust-img" alt="stream" src="@/assets/stream.svg" />
+    <img class="stream-svg" alt="stream" src="@/assets/stream.svg"/>
   </main>
 </template>
 
 <style scoped lang="scss">
-p {
-  font-size: 4rem;
-  margin: 0 0 1rem 0;
-}
-
-.btns {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-}
+@import "@/assets/core/var";
 
 main {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-}
+  align-self: flex-end;
+  width: 100vw;
 
-.text-and-btns {
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-}
+  #text-and-buttons {
+    z-index: 1;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
 
-button {
-  height: 2rem;
-  width: 10rem;
-  background-color: #4d2db7;
-  border-radius: 25%;
-  cursor: pointer;
-  color: white;
-  border: #0e21a0;
-}
+    #welcome-text {
+      p {
+        margin: 0;
+        padding: 0;
+        font-size: 6rem;
 
-.center {
-  display: flex;
-}
+        @media screen and (max-width: $window-large) {
+          & {
+            font-size: 4rem;
+          }
+        }
 
-.adjust-img {
-  width: 50%;
-  height: 50%;
+        @media screen and (max-width: $window-medium) {
+          & {
+            font-size: 2rem;
+          }
+        }
+      }
+    }
+  }
+
+  .stream-svg {
+    z-index: 0;
+    height: 80vh;
+    margin: 0;
+    align-self: flex-end;
+  }
 }
 </style>

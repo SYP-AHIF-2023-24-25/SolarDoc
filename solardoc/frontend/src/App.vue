@@ -4,11 +4,18 @@ import Navbar from './components/Navbar.vue'
 </script>
 
 <template>
-  <header>
-    <Navbar />
-  </header>
+  <main>
+    <header>
+      <Navbar />
+    </header>
 
-  <RouterView />
+    <RouterView />
+  </main>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

@@ -19,6 +19,11 @@
 
   // Font-size presets
   --home-button-font-size: 20px;
+
+  // Window size presets
+  --window-large: 1200px;
+  --window-medium: 900px;
+  --window-small: 600px;
 }
 
 // Color-scheme presets
@@ -41,6 +46,11 @@ $scheme-editor-blue: var(--scheme-editor-blue);
 
 // Font-size presets
 $home-button-font-size: var(--home-button-font-size);
+
+// Window size presets
+$window-large: 1200px;
+$window-medium: 900px;
+$window-small: 600px;
 
 // Light & Dark Theme
 html,

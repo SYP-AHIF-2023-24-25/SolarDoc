@@ -7,6 +7,14 @@
 @use './core/text' as *;
 @use './core/button' as *;
 
+// Make app take up whole screen
+body #app {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
 // Set background color based on the selected theme (dark/light)
 html,
 html[data-theme='light'] {
