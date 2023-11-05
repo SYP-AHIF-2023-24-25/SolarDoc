@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="menu">
@@ -23,17 +21,15 @@
       </div>
     </div>
   </div>
-
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
 .editor-preview {
   display: flex;
   flex-flow: row nowrap;
 }
 
-.editor{
+.editor {
   display: flex;
   flex-flow: column nowrap;
   width: 100vh;
@@ -41,22 +37,21 @@
   border: 1px black solid;
 }
 
-.preview-menu{
+.preview-menu {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
 }
 
-.btn-menu{
+.btn-menu {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
 }
 
-.menu{
+.menu {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
 }
-
 </style>

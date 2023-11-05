@@ -1,62 +1,62 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <main>
-      <div class="text-and-btns">
-        <p>Create <br> presentations <br> your way.</p>
-        <div class="btns">
-          <button id="try-now-btn" @click="$router.push('editor')" >Try now</button>
-          <button @click="$router.push('docs')" >Docs</button>
-        </div>
+    <div class="text-and-btns">
+      <p>
+        Create <br />
+        presentations <br />
+        your way.
+      </p>
+      <div class="btns">
+        <button id="try-now-btn" @click="$router.push('editor')">Try now</button>
+        <button @click="$router.push('docs')">Docs</button>
       </div>
-      <img class="adjust-img" alt="stream" src="@/assets/stream.svg"/>
+    </div>
+    <img class="adjust-img" alt="stream" src="@/assets/stream.svg" />
   </main>
 </template>
 
-<style scoped>
-
-p{
+<style scoped lang="scss">
+p {
   font-size: 4rem;
   margin: 0 0 1rem 0;
 }
 
-.btns{
+.btns {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
 }
 
-main{
+main {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
 }
 
-.text-and-btns{
+.text-and-btns {
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
 }
 
-button{
+button {
   height: 2rem;
   width: 10rem;
-  background-color: #4D2DB7;
+  background-color: #4d2db7;
   border-radius: 25%;
   cursor: pointer;
-  color:white;
-  border: #0E21A0;
+  color: white;
+  border: #0e21a0;
 }
 
-.center{
+.center {
   display: flex;
 }
 
-.adjust-img{
+.adjust-img {
   width: 50%;
   height: 50%;
 }
-
 </style>

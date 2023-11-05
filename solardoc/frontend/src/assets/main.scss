@@ -9,13 +9,13 @@
 
 // Set background color based on the selected theme (dark/light)
 html,
-html[data-theme="light"] {
+html[data-theme='light'] {
   body {
     background-color: transparent;
   }
 }
 
-html[data-theme="dark"] {
+html[data-theme='dark'] {
   body {
     background-color: $scheme-background-black;
   }
