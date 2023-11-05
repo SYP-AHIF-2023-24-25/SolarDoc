@@ -1,5 +1,5 @@
 <!--
-Please read through the given
+Please read through the given points and fill them out as appropriate for your changes.
 
 Comments are marked by arrows, like in lines 1 and 5. They will not be visible in the final pull request!
 -->
