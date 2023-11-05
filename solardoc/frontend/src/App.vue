@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import Navbar from './components/Navbar.vue'
+import Navbar from '@/components/Navbar.vue'
 </script>
 
 <template>
@@ -14,8 +14,8 @@ import Navbar from './components/Navbar.vue'
 </template>
 
 <style scoped lang="scss">
-  main {
-    display: flex;
-    flex-direction: column;
-  }
+main {
+  display: flex;
+  flex-direction: column;
+}
 </style>

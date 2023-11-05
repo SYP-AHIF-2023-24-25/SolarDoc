@@ -1,11 +1,10 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <main>
     <div id="text-and-buttons">
       <div id="welcome-text">
-        <p>Create <br/>presentations</p>
+        <p>Create <br />presentations</p>
         <p>your way.</p>
       </div>
       <div class="buttons-wrapper">
@@ -13,12 +12,12 @@
         <button class="home-button transparent" @click="$router.push('docs')">Docs</button>
       </div>
     </div>
-    <img class="stream-svg" alt="stream" src="@/assets/stream.svg"/>
+    <img class="stream-svg" alt="stream" src="@/assets/stream.svg" />
   </main>
 </template>
 
 <style scoped lang="scss">
-@import "@/assets/core/var";
+@import '@/assets/core/var';
 
 main {
   display: flex;

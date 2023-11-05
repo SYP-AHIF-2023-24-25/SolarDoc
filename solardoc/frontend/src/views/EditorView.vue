@@ -1,57 +1,63 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Editor from "@/components/editor/Editor.vue";
+</script>
 
 <template>
-  <div class="menu">
-    <div class="btn-menu">
-      <p>Copy</p>
-      <p>Share</p>
-      <p>Download</p>
+  <main>
+    <div id="menu">
+      <div id="button-menu">
+        <p>Copy</p>
+        <p>Share</p>
+        <p>Download</p>
+      </div>
+      <p>sample-presentation.adoc</p>
+      <p>Last edited: 20:08 14-10-2023 CET</p>
     </div>
-    <p>sample-presentation.adoc</p>
-    <p>Last edited: 20:08 14-10-2023 CET</p>
-  </div>
-  <div class="editor-preview">
-    <div class="editor">
-      <p>Editor</p>
-    </div>
-    <div class="preview">
-      <div class="preview-menu">
-        <p>3 slides</p>
-        <p>1.2 MB Raw Size</p>
+    <div id="editor-and-preview-wrapper">
+      <div id="editor-wrapper">
+        <Editor></Editor>
+      </div>
+      <div id="preview">
+        <div id="preview-menu">
+          <p>3 slides</p>
+          <p>1.2 MB Raw Size</p>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <style scoped lang="scss">
-.editor-preview {
-  display: flex;
-  flex-flow: row nowrap;
-}
+main {
+  #menu {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
 
-.editor {
-  display: flex;
-  flex-flow: column nowrap;
-  width: 100vh;
-  height: 100vh;
-  border: 1px black solid;
-}
+    #button-menu {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+    }
+  }
 
-.preview-menu {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-}
+  #editor-and-preview-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
 
-.btn-menu {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-}
+    #editor {
+      display: flex;
+      flex-flow: column nowrap;
+      width: 100vh;
+      height: 100vh;
+      border: 1px black solid;
+    }
 
-.menu {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
+    #preview-menu {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+    }
+  }
 }
 </style>
