@@ -34,9 +34,11 @@ The user stories and goals for the project are listed here in the https://github
 === Roadmap
 
 * Sprint 1 (Finished 09.11.2023):
-** Website Layout
+** Project Setup & Docker Deployment
+** Website Structure & Layout
 ** Editor (https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/2) 
 * Sprint 2 (Planned for 14.11.2023):
 ** Presentation Rendering & Preview (https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/3)
+** Integration into editor view
 * Sprint 3 (To be determined):
 ** ...
