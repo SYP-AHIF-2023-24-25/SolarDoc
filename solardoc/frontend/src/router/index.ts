@@ -31,6 +31,12 @@ const router = createRouter({
       path: '/test-editor',
       name: 'test-editor',
       component: () => import('@/views/TestEditorView.vue')
+    },
+    // 404-page (reroutes in the view to the static 404.html)
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue')
     }
   ]
 })

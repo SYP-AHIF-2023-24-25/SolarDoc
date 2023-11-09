@@ -28,6 +28,10 @@ RUN pnpm run build
 FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /home/node/app/dist /usr/share/nginx/html
 
+# Remove default nginx configs and replace with ours
+RUN rm /etc/nginx/conf.d/default.conf
+COPY --from=build-stage /home/node/app/nginx.conf /etc/nginx/conf.d/nginx.conf
+
 # Bind to all network interfaces so that it can be mapped to the host OS
 ENV HOST=0.0.0.0 PORT=80
 
