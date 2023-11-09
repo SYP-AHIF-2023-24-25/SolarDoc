@@ -1,0 +1,22 @@
+{
+  "name": "solardoc",
+  "version": "0.0.1",
+  "description": "The SolarDoc project containing all the project code and documentation",
+  "engines": {
+    "node": "16 || 18 || 20",
+    "pnpm": "8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc"
+  },
+  "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
+  "license": "GPL-3.0",
+  "scripts": {
+    "build": "pnpm run -r build"
+  },
+  "devDependencies": {
+    "@solardoc/frontend": "workspace:~",
+    "@solardoc/rest-api": "workspace:~"
+  }
+}
