@@ -1,0 +1,49 @@
+{
+  "name": "asciidoc-renderer",
+  "version": "0.1.0",
+  "description": "AsciiDoc Rendered for SolarDoc, which generates PDFs and reveal.js presentations",
+  "main": "index.js",
+  "keywords": [
+    "solardoc",
+    "solardoc-renderer",
+    "asciidoc",
+    "asciidoctor",
+    "reveal.js",
+    "pdf"
+  ],
+  "dependencies": {
+    "asciidoctor": "3.0.2",
+    "@asciidoctor/reveal.js": "5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.17.17",
+    "typescript": "~5.2.0",
+    "eslint": "^8.49.0",
+    "tsify": "5.0.4",
+    "browserify": "17.0.0",
+    "ts-node": "10.9.1",
+    "uglify-js": "3.17.4"
+  },
+  "engines": {
+    "node": "16 || 18 || 20",
+    "pnpm": "8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc"
+  },
+  "bugs": {
+    "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc/issues"
+  },
+  "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
+  "license": "GPL-3.0",
+  "scripts": {
+    "build": "tsc & pnpm run browserify",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "eslint": "pnpm run lint",
+    "format": "prettier --write src/",
+    "prettier": "pnpm run format",
+    "browserify": "browserify ./src/index.ts -p [ tsify --noImplicitAny -p ./tsconfig.json ] > ./solardoc-ascii-renderer.js",
+    "postbrowserify": "uglifyjs ./solardoc-ascii-renderer.js -o ./solardoc-ascii-renderer.min.js"
+  }
+}

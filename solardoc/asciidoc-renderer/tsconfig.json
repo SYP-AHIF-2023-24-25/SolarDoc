@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+    "importHelpers": true,
+    "removeComments": true,
+    "lib": [
+      "ES2016",
+      "DOM",
+      "DOM.Iterable"
+    ]
+  }
+}
