@@ -1,4 +1,4 @@
-import type {Asciidoctor} from "asciidoctor";
+import type {Asciidoctor} from "@asciidoctor/core";
 import { AsciidocFile } from './asciidoc-file'
 import { Presentation } from '../presentation'
 import { loadAsciidoctor } from "../asciidoc-loader";

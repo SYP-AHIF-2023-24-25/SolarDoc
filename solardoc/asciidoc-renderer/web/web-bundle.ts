@@ -4,7 +4,7 @@
  * @copyright 2023 Luna Klatzer, Emma Walchshofer & Lisa Pichler
  * @since 0.10.0
  */
-import * as AsciidocRenderer from "../src/index";
+import * as AsciidocRenderer from "../dist/index";
 
 // Try to determine the global scope
 // @ts-ignore

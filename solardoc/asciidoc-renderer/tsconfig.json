@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
     "strict": false,
@@ -6,10 +7,10 @@
     "declaration": true,
     "importHelpers": true,
     "removeComments": true,
-    "noImplicitUseStrict": true,
-    "ignoreDeprecations": "5.0",
     "module": "commonjs",
     "target": "es2015",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "lib": [
       "ES2015"
     ],
@@ -19,5 +20,5 @@
   },
   "include": [
     "./src/**/*"
-  ],
+  ]
 }

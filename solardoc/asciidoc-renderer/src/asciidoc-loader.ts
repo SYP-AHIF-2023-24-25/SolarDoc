@@ -16,7 +16,7 @@ export function loadAsciidoctor(): AsciidoctorLib.Asciidoctor {
 
   // Try to get the opal runtime and then define it on the global scope
   // @ts-ignore
-  globalScope.Opal = globalScope.Opal || require("opal-runtime").Opal;
+  // globalScope.Opal = globalScope.Opal || require("opal-runtime").Opal;
 
   // Load the asciidoctor library
   // @ts-ignore
