@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 devDependencies:
+  '@solardoc/asciidoc-renderer':
+    specifier: workspace:~
+    version: link:solardoc/asciidoc-renderer
   '@solardoc/frontend':
     specifier: workspace:~
     version: link:solardoc/frontend
