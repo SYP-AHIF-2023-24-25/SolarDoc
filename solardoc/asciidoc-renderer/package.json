@@ -50,8 +50,8 @@
     "eslint": "pnpm run lint",
     "format": "prettier --write src/",
     "prettier": "pnpm run format",
-    "browserify": "ts-node ./compile/web-target.ts > ./solardoc-ascii-renderer.js",
-    "postbrowserify": "uglifyjs ./solardoc-ascii-renderer.js -o ./solardoc-ascii-renderer.min.js"
+    "browserify": "ts-node ./compile/web-target.ts > ./dist/web/solardoc-ascii-renderer.js",
+    "postbrowserify": "uglifyjs ./dist/web/solardoc-ascii-renderer.js -o ./dist/web/solardoc-ascii-renderer.min.js"
   },
   "browserify": {
     "transform": [
