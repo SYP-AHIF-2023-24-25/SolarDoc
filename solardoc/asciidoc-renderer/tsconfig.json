@@ -1,15 +1,23 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "strict": true,
+    "strict": false,
     "sourceMap": true,
     "declaration": true,
     "importHelpers": true,
     "removeComments": true,
+    "noImplicitUseStrict": true,
+    "ignoreDeprecations": "5.0",
+    "module": "commonjs",
+    "target": "es2015",
     "lib": [
-      "ES2016",
-      "DOM",
-      "DOM.Iterable"
+      "ES2015"
+    ],
+    "types": [
+      "./src/types/asciidoctor-reveal-js.d.ts"
     ]
-  }
+  },
+  "include": [
+    "./src/**/*"
+  ],
 }
