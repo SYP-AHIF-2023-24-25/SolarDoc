@@ -35,7 +35,7 @@ jobs:
 
       - name: Run ESLint
         run: pnpm 
-          --filter "@solardoc/${{ matrix.packages }}"
+          --filter "@solardoc/${{ matrix.package }}"
           run eslint
           --format @microsoft/eslint-formatter-sarif
           --output-file ../../eslint-results.sarif
