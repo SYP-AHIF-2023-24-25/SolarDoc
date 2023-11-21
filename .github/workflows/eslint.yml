@@ -29,9 +29,10 @@ jobs:
           version: 8.x.x
           run_install: true
 
-      - name: Install ESLint
+      - name: Install ESLint Formatter
         run: |
-          pnpm install -g @microsoft/eslint-formatter-sarif@2.1.7
+          cd ./solardoc/${{ matrix.package }}
+          pnpm install -D @microsoft/eslint-formatter-sarif@2.1.7
 
       - name: Run ESLint
         run: pnpm 
