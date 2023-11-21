@@ -17,6 +17,8 @@
   },
   "devDependencies": {
     "@solardoc/frontend": "workspace:~",
-    "@solardoc/rest-api": "workspace:~"
+    "@solardoc/rest-api": "workspace:~",
+    "@solardoc/asciidoc-renderer": "workspace:~",
+    "eslint": "^8.48.0"
   }
 }
