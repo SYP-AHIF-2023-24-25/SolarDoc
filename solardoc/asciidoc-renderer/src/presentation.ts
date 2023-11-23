@@ -1,4 +1,4 @@
-import type {TargetRenderer, AsciidocCompiler} from './renderer'
+import type { TargetRenderer, AsciidocCompiler } from './renderer'
 
 /**
  * A presentation is a collection of slides, which internally are reveal.js slides. These can be converted to HTML,
@@ -6,10 +6,10 @@ import type {TargetRenderer, AsciidocCompiler} from './renderer'
  * @since 0.2.0
  */
 export class Presentation {
-  private readonly _compiler: AsciidocCompiler;
+  private readonly _compiler: AsciidocCompiler
 
   public constructor(compiler: AsciidocCompiler) {
-    this._compiler = compiler;
+    this._compiler = compiler
 
     // TODO!
     throw new Error('Not implemented yet!')
@@ -21,7 +21,7 @@ export class Presentation {
    * @since 0.2.0
    */
   public get compiler(): AsciidocCompiler {
-    return this._compiler;
+    return this._compiler
   }
 
   /**

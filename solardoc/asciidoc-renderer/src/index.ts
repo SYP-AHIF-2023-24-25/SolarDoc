@@ -2,9 +2,9 @@
  * Solardoc AsciiDoc Renderer, which is used to render AsciiDoc files to reveal.js presentations, PDFs and images.
  * @author Luna Klatzer, Emma Walchshofer & Lisa Pichler
  */
-export * from "./presentation";
-export * from "./slide";
-export * from "./renderer";
+export * from './presentation'
+export * from './slide'
+export * from './renderer'
 
 // eslint-disable-next-line no-unused-vars
 export const name = '@solardoc/asciidoc-renderer'
