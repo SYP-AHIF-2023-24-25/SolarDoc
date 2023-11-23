@@ -4,7 +4,7 @@
  * @copyright 2023 Luna Klatzer, Emma Walchshofer & Lisa Pichler
  * @since 0.10.0
  */
-import * as AsciidocRenderer from "../dist/index";
+import * as AsciidocRenderer from "@solardoc/asciidoc-renderer";
 
 // Try to determine the global scope
 // @ts-ignore

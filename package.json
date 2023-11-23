@@ -15,6 +15,7 @@
   "scripts": {
     "build": "pnpm run -r build",
     "test": "pnpm run test-no-rebuild",
+    "pretest": "pnpm run build",
     "test-no-rebuild": "nyc mocha ./test/"
   },
   "devDependencies": {
@@ -27,6 +28,7 @@
     "ts-mocha": "10.0.0",
     "ts-node": "10.9.1",
     "nyc": "15.1.0",
+    "tslib": "2.6.2",
     "eslint": "^8.48.0",
     "@istanbuljs/nyc-config-typescript": "1.0.2",
     "@solardoc/asciidoc-renderer": "workspace:~",
