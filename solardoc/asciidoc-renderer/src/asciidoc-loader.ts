@@ -1,5 +1,5 @@
-import type * as AsciidoctorLib from "@asciidoctor/core";
-import type AsciidoctorRevealJS from "@asciidoctor/reveal.js";
+import type * as AsciidoctorLib from '@asciidoctor/core'
+import type AsciidoctorRevealJS from '@asciidoctor/reveal.js'
 
 /**
  * Loads the asciidoctor library and returns the instance of it.
@@ -12,7 +12,16 @@ export function loadAsciidoctor(): AsciidoctorLib.Asciidoctor {
   // Try to determine the global scope
   // @ts-ignore
   // eslint-disable-next-line no-undef
-  const globalScope = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
+  const globalScope =
+    typeof globalThis !== 'undefined'
+      ? globalThis
+      : typeof window !== 'undefined'
+        ? window
+        : typeof global !== 'undefined'
+          ? global
+          : typeof self !== 'undefined'
+            ? self
+            : {}
 
   // Try to get the opal runtime and then define it on the global scope
   // @ts-ignore
@@ -20,12 +29,14 @@ export function loadAsciidoctor(): AsciidoctorLib.Asciidoctor {
 
   // Load the asciidoctor library
   // @ts-ignore
-  globalScope.Asciidoctor = globalScope.Asciidoctor || (<typeof AsciidoctorLib>require('@asciidoctor/core'))();
+  globalScope.Asciidoctor =
+    globalScope.Asciidoctor || (<typeof AsciidoctorLib>require('@asciidoctor/core'))()
 
   // Get the reveal.js converter
-  globalScope.asciidoctorRevealJS = globalScope.asciidoctorRevealJS || (<typeof AsciidoctorRevealJS>require('@asciidoctor/reveal.js'));
-  globalScope.asciidoctorRevealJS.register();
+  globalScope.asciidoctorRevealJS =
+    globalScope.asciidoctorRevealJS || <typeof AsciidoctorRevealJS>require('@asciidoctor/reveal.js')
+  globalScope.asciidoctorRevealJS.register()
 
   // Return the asciidoctor instance
-  return globalScope.Asciidoctor;
+  return globalScope.Asciidoctor
 }

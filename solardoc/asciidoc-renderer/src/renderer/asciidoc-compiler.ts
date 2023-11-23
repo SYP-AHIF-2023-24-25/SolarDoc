@@ -1,8 +1,7 @@
-import type {Asciidoctor} from "@asciidoctor/core";
+import type { Asciidoctor } from '@asciidoctor/core'
 import { AsciidocFile } from './asciidoc-file'
 import { Presentation } from '../presentation'
-import { loadAsciidoctor } from "../asciidoc-loader";
-
+import { loadAsciidoctor } from '../asciidoc-loader'
 
 /**
  * The compiler for {@link AsciidocFile} instances. This compiler will take the given file and compile it into a
@@ -13,13 +12,13 @@ import { loadAsciidoctor } from "../asciidoc-loader";
  * @since 0.2.0
  */
 export class AsciidocCompiler {
-  public readonly asciidoctor: Asciidoctor;
+  public readonly asciidoctor: Asciidoctor
 
   public constructor() {
-    this.asciidoctor = loadAsciidoctor();
+    this.asciidoctor = loadAsciidoctor()
 
     // TODO!
-    throw new Error('Not implemented yet!')
+    //throw new Error('Not implemented yet!')
   }
 
   /**
@@ -27,8 +26,9 @@ export class AsciidocCompiler {
    * @param input The asciidoc file which should be compiled.
    * @since 0.2.0
    */
-  public static async compile(input: AsciidocFile): Promise<Presentation> {
+  public async compile(input: AsciidocFile): Promise<Presentation> {
     // TODO!
+    //this.asciidoctor.convert()
     throw new Error('Not implemented yet!')
   }
 }
