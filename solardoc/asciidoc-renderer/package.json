@@ -46,7 +46,8 @@
   "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
   "license": "GPL-3.0",
   "scripts": {
-    "build": "pnpm run tsc-build; pnpm run browserify",
+    "build": "pnpm run browserify",
+    "prebuild": "pnpm run tsc-build",
     "tsc-build": "tsc",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "eslint": "pnpm run lint",
