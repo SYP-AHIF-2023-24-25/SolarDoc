@@ -1,9 +1,23 @@
 import browserify from 'browserify';
 import * as path from 'path';
+import * as fs from "fs";
 
 const entryFile = path.join(__dirname, '..', 'web', 'web-bundle.ts');
 const tsconfig = path.join(__dirname, '..', 'tsconfig.json');
+const outputDir = path.join(__dirname, '..', 'dist', 'web');
+const outputFile = path.join(outputDir, 'solardoc-ascii-renderer.js');
 
+function ensureOutputDirExists(): void {
+  fs.mkdir(
+    outputDir,
+    { recursive: true },
+    (err) => {
+      if (err) throw err;
+    }
+  );
+}
+
+ensureOutputDirExists();
 browserify({
   entries: entryFile,
   extension: ['js', 'ts'],
@@ -15,4 +29,4 @@ browserify({
   .bundle()
   .on('error', (error: any) => console.error(error.toString()))
   .on('log', (msg: any) => console.info(msg))
-  .pipe(process.stdout)
+  .pipe(fs.createWriteStream(outputFile))

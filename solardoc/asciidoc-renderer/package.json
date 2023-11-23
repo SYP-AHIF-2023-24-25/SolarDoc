@@ -46,13 +46,13 @@
   "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
   "license": "GPL-3.0",
   "scripts": {
-    "build": "pnpm run tsc-build & pnpm run browserify",
+    "build": "pnpm run tsc-build; pnpm run browserify",
     "tsc-build": "tsc",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "eslint": "pnpm run lint",
     "format": "prettier --write src/",
     "prettier": "pnpm run format",
-    "browserify": "ts-node ./compile/web-target.ts > ./dist/web/solardoc-ascii-renderer.js",
+    "browserify": "ts-node ./compile/web-target.ts",
     "postbrowserify": "uglifyjs ./dist/web/solardoc-ascii-renderer.js -o ./dist/web/solardoc-ascii-renderer.min.js"
   },
   "browserify": {
