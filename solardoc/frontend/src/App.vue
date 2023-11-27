@@ -17,5 +17,10 @@ import Navbar from '@/components/Navbar.vue'
 main {
   display: flex;
   flex-direction: column;
+
+  header {
+    padding: 0;
+    margin: 0;
+  }
 }
 </style>

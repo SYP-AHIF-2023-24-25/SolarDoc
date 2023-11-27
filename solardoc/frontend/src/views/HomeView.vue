@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import SolardocStreamSVG from "@/components/icons/SolardocStreamSVG.vue";
+</script>
 
 <template>
-  <main>
+  <div id="home-page">
     <div id="text-and-buttons">
       <div id="welcome-text">
         <p>Create <br />presentations</p>
@@ -12,19 +14,23 @@
         <button class="home-button transparent" @click="$router.push('docs')">Docs</button>
       </div>
     </div>
-    <img class="stream-svg" alt="stream" src="@/assets/stream.svg" />
-  </main>
+    <div id="stream-svg">
+      <SolardocStreamSVG />
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
-@import '@/assets/core/var';
+@use '@/assets/core/mixins/view-presets' as *;
+@use '@/assets/core/var' as var;
 
-main {
+div#home-page {
+  @include view-presets;
+
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   align-self: flex-end;
-  width: 100vw;
 
   #text-and-buttons {
     z-index: 1;
@@ -38,13 +44,13 @@ main {
         padding: 0;
         font-size: 6rem;
 
-        @media screen and (max-width: $window-large) {
+        @media screen and (max-width: var.$window-large) {
           & {
             font-size: 4rem;
           }
         }
 
-        @media screen and (max-width: $window-medium) {
+        @media screen and (max-width: var.$window-medium) {
           & {
             font-size: 2rem;
           }
@@ -53,11 +59,18 @@ main {
     }
   }
 
-  .stream-svg {
+  #stream-svg {
+    display: flex;
+    height: 100%;
     z-index: 0;
-    height: 80vh;
     margin: 0;
-    align-self: flex-end;
+
+    svg {
+      width: 65vw;
+      height: 65vh;
+      bottom: -2;
+      align-self: flex-end;
+    }
   }
 }
 </style>

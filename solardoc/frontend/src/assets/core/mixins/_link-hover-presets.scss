@@ -1,0 +1,15 @@
+@use '../var' as *;
+
+@mixin link-hover-presets {
+  &:hover {
+    cursor: pointer;
+    color: $scheme-cs-2;
+
+    /* For SVGs we have to use fill instead of color */
+    svg {
+      &, * {
+        fill: $scheme-cs-2;
+      }
+    }
+  }
+}

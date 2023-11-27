@@ -19,11 +19,24 @@
 
   // Font-size presets
   --home-button-font-size: 20px;
+  --editor-button-font-size: 16px;
 
   // Window size presets
   --window-large: 1200px;
   --window-medium: 900px;
   --window-small: 600px;
+
+  // Nav-bar presets (Required to allow for easier dynamic resizing)
+  --nav-bar-height: 60px;
+  --nav-bar-width: 100%;
+  --nav-bar-padding: 0 1rem;
+  --nav-bar-margin: 0;
+
+  // Main body presets
+  --main-body-height: calc(100vh - var(--nav-bar-height));
+  --main-body-width: 100%;
+  --main-body-padding: 0;
+  --main-body-margin: 0;
 }
 
 // Color-scheme presets
@@ -46,11 +59,24 @@ $scheme-editor-blue: var(--scheme-editor-blue);
 
 // Font-size presets
 $home-button-font-size: var(--home-button-font-size);
+$editor-button-font-size: var(--editor-button-font-size);
 
 // Window size presets
 $window-large: 1200px;
 $window-medium: 900px;
 $window-small: 600px;
+
+// Nav-bar presets (Required to allow for easier dynamic resizing)
+$nav-bar-height: var(--nav-bar-height);
+$nav-bar-width: var(--nav-bar-width);
+$nav-bar-padding: var(--nav-bar-padding);
+$nav-bar-margin: var(--nav-bar-margin);
+
+// Main body presets
+$main-body-height: var(--main-body-height);
+$main-body-width: var(--main-body-width);
+$main-body-padding: var(--main-body-padding);
+$main-body-margin: var(--main-body-margin);
 
 // Light & Dark Theme
 html,

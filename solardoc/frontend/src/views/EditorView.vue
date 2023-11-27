@@ -1,17 +1,31 @@
 <script setup lang="ts">
 import Editor from '@/components/editor/Editor.vue'
+import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
 </script>
 
 <template>
-  <main>
+  <div id="editor-page">
     <div id="menu">
-      <div id="button-menu">
-        <p>Copy</p>
-        <p>Share</p>
-        <p>Download</p>
+      <div id="menu-left-side">
+        <button id="sandwich-menu-button" class="sandwich-button">
+          <SandwichMenuSVG />
+        </button>
+        <div id="button-menu">
+          <button class="editor-button">Copy</button>
+          <button class="editor-button">Share</button>
+          <button class="editor-button">Download</button>
+        </div>
       </div>
-      <p>sample-presentation.adoc</p>
-      <p>Last edited: 20:08 14-10-2023 CET</p>
+      <div id="menu-center">
+        <div>
+          <p>sample-presentation.adoc</p>
+        </div>
+      </div>
+      <div id="menu-right-side">
+        <div>
+          <p>Last edited: 20:08 14-10-2023 CET</p>
+        </div>
+      </div>
     </div>
     <div id="editor-and-preview-wrapper">
       <div id="editor-wrapper">
@@ -33,20 +47,72 @@ import Editor from '@/components/editor/Editor.vue'
         </div>
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <style scoped lang="scss">
-main {
+@use '@/assets/core/mixins/link-hover-presets' as *;
+@use '@/assets/core/mixins/view-presets' as *;
+@use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/var' as var;
+
+$left-menu-width: calc(40vw - 0.5rem);
+$center-menu-width: 20vw;
+$right-menu-width: calc(40vw - 0.5rem);
+
+@mixin menu-child-presets {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+div#editor-page {
+  @include view-presets;
+
   #menu {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
+    padding: 0 0.5rem;
+    height: 2rem;
 
-    #button-menu {
-      display: flex;
-      flex-flow: row nowrap;
-      gap: 1rem;
+    #menu-left-side {
+      @include menu-child-presets;
+      width: $left-menu-width;
+
+      #sandwich-menu-button {
+        // TODO!
+      }
+
+      #button-menu {
+        display: flex;
+        flex-flow: row nowrap;
+
+        .editor-button {
+
+        }
+      }
+    }
+
+    #menu-center {
+      @include menu-child-presets;
+      width: $center-menu-width;
+      justify-content: center;
+      align-content: center;
+
+      div {
+        @include align-center;
+      }
+    }
+
+    #menu-right-side {
+      @include menu-child-presets;
+      width: $right-menu-width;
+      justify-content: flex-end;
+
+      div {
+        @include align-center;
+      }
     }
   }
 

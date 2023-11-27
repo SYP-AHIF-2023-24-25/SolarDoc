@@ -1,6 +1,6 @@
 // Boilerplate styles which serve as a starting point for the rest of the styles
-@use './core/boilerplate/main';
-@use './core/boilerplate/normalise';
+@use './core/boilerplate/main' as *;
+@use './core/boilerplate/normalise' as *;
 
 // Core opinionated styles which are used throughout the app
 @use './core/var' as *;
