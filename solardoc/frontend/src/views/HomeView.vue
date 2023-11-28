@@ -58,9 +58,9 @@ div#home-page {
           }
         }
 
-        @media screen and (max-width: var.$window-medium) {
+        @media screen and (max-width: var.$window-small) {
           & {
-            font-size: 2rem;
+            font-size: 3rem;
           }
         }
       }
@@ -90,23 +90,28 @@ div#home-page {
   }
 
   #stream-svg {
+    position: fixed;
     display: flex;
     height: 100%;
+    width: 100%;
     z-index: 0;
     margin: 0;
 
     svg {
-      height: 75vh;
+      height: 80vh;
+      position: fixed;
+      bottom: 0;
+      right: 0;
 
       @media screen and (max-width: var.$window-large) {
         & {
-          height: 70vh;
+          height: 75vh;
         }
       }
 
       @media screen and (max-width: var.$window-medium) {
         & {
-          height: 65vh;
+          height: 70vh;
         }
       }
       width: unset;
