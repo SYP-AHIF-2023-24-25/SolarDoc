@@ -7,9 +7,9 @@ import SolardocStreamSVG from "@/components/icons/SolardocStreamSVG.vue";
     <div id="text-and-buttons">
       <div id="welcome-text">
         <p>Create <br />presentations</p>
-        <p>your way.</p>
+        <p id="gradient-text">your way.</p>
       </div>
-      <div class="buttons-wrapper">
+      <div id="buttons-wrapper">
         <button class="home-button" @click="$router.push('editor')">Try now</button>
         <button class="home-button transparent" @click="$router.push('docs')">Docs</button>
       </div>
@@ -26,11 +26,17 @@ import SolardocStreamSVG from "@/components/icons/SolardocStreamSVG.vue";
 
 div#home-page {
   @include view-presets;
-
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   align-self: flex-end;
+  padding: 0 0 0 3rem;
+
+  @media screen and (max-width: var.$window-medium) {
+    & {
+      padding: 0 0 0 2rem;
+    }
+  }
 
   #text-and-buttons {
     z-index: 1;
@@ -39,6 +45,8 @@ div#home-page {
     justify-content: center;
 
     #welcome-text {
+      padding-bottom: 2rem;
+
       p {
         margin: 0;
         padding: 0;
@@ -56,6 +64,12 @@ div#home-page {
           }
         }
       }
+    }
+
+    #buttons-wrapper {
+      display: flex;
+      flex-flow: row nowrap;
+      gap: 1.5rem;
     }
   }
 
