@@ -66,9 +66,20 @@ div#home-page {
     margin: 0;
 
     svg {
-      width: 65vw;
-      height: 65vh;
-      bottom: -2;
+      height: 75vh;
+
+      @media screen and (max-width: var.$window-large) {
+        & {
+          height: 70vh;
+        }
+      }
+
+      @media screen and (max-width: var.$window-medium) {
+        & {
+          height: 65vh;
+        }
+      }
+      width: unset;
       align-self: flex-end;
     }
   }
