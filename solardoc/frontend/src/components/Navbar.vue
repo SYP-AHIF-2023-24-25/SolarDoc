@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {ref} from "vue";
+import {useLoadingStore} from "@/stores/loading";
 import HalfMoonSVG from "@/components/icons/HalfMoonSVG.vue";
 import GithubLogoSVG from "@/components/icons/GithubLogoSVG.vue";
 import SolardocLogoSVG from "@/components/icons/SolardocLogoSVG.vue";
@@ -6,7 +8,12 @@ import GithubLogoDarkModeSVG from "@/components/icons/GithubLogoDarkModeSVG.vue"
 import SolardocLogoDarkModeSVG from "@/components/icons/SolardocLogoDarkModeSVG.vue";
 import Constants from "@/plugins/Constants";
 import SunDarkModeSVG from "@/components/icons/SunDarkModeSVG.vue";
-import {ref} from "vue";
+
+const loadingStore = useLoadingStore();
+
+function setLoading(state: boolean): void {
+  loadingStore.setLoading(state);
+}
 
 function inDarkMode(): boolean {
   const html = document.querySelector("html") as HTMLElement;
@@ -36,15 +43,15 @@ function toggleDarkMode(): void {
         <SolardocLogoSVG v-show="!darkMode" />
       </div>
       <div id="title">
-        <p @click="$router.push('/')">SolarDoc</p>
+        <RouterLink to="/" @click="setLoading(true)">SolarDoc</RouterLink>
       </div>
     </div>
     <div id="right-components">
       <div id="navigation-links">
         <div id="router-links">
-          <RouterLink to="/docs">docs</RouterLink>
-          <RouterLink to="/editor">editor</RouterLink>
-          <RouterLink to="/about">about</RouterLink>
+          <RouterLink to="/docs" @click="setLoading(true)">docs</RouterLink>
+          <RouterLink to="/editor" @click="setLoading(true)">editor</RouterLink>
+          <RouterLink to="/about" @click="setLoading(true)">about</RouterLink>
         </div>
       </div>
       <div id="clickable-icons">
@@ -91,7 +98,9 @@ function toggleDarkMode(): void {
       font-size: 2rem;
       margin: 0 0 0 0.5rem;
 
-      p {
+      * {
+        text-decoration: none;
+
         &:hover {
           @include link-hover-presets;
         }

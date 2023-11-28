@@ -6,6 +6,7 @@
 @use './core/var' as *;
 @use './core/text' as *;
 @use './core/button' as *;
+@use './core/spinner' as *;
 
 // Make app take up whole screen
 body #app {

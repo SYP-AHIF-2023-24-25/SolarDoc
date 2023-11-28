@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import Navbar from '@/components/Navbar.vue'
+import ProgressSpinner from "@/components/ProgressSpinner.vue";
 </script>
 
 <template>
@@ -10,6 +11,7 @@ import Navbar from '@/components/Navbar.vue'
     </header>
 
     <RouterView />
+    <ProgressSpinner />
   </main>
 </template>
 
