@@ -2,16 +2,28 @@
 import HalfMoonSVG from "@/components/icons/HalfMoonSVG.vue";
 import GithubLogoSVG from "@/components/icons/GithubLogoSVG.vue";
 import SolardocLogoSVG from "@/components/icons/SolardocLogoSVG.vue";
+import GithubLogoDarkModeSVG from "@/components/icons/GithubLogoDarkModeSVG.vue";
+import SolardocLogoDarkModeSVG from "@/components/icons/SolardocLogoDarkModeSVG.vue";
 import Constants from "@/plugins/Constants";
+import SunDarkModeSVG from "@/components/icons/SunDarkModeSVG.vue";
+import {ref} from "vue";
 
+function inDarkMode(): boolean {
+  const html = document.querySelector("html") as HTMLElement;
+  return html.dataset.theme === "dark";
+}
+
+let darkMode = ref(inDarkMode());
 function toggleDarkMode(): void {
   const html = document.querySelector("html") as HTMLElement;
 
   /* Dark mode is specified by the 'data-theme' attribute on the <html> tag. */
   if (html.dataset.theme === "dark") {
     html.dataset.theme = "light";
+    darkMode.value = false;
   } else {
     html.dataset.theme = "dark";
+    darkMode.value = true;
   }
 }
 </script>
@@ -20,7 +32,8 @@ function toggleDarkMode(): void {
   <nav id="navbar">
     <div id="left-components">
       <div id="solardoc-logo">
-        <SolardocLogoSVG />
+        <SolardocLogoDarkModeSVG v-show="darkMode" />
+        <SolardocLogoSVG v-show="!darkMode" />
       </div>
       <div id="title">
         <p @click="$router.push('/')">SolarDoc</p>
@@ -35,8 +48,14 @@ function toggleDarkMode(): void {
         </div>
       </div>
       <div id="clickable-icons">
-        <a :href="Constants.githubURL" target="_blank" rel="noopener noreferrer"><GithubLogoSVG /></a>
-        <a @click="toggleDarkMode()"><HalfMoonSVG /></a>
+        <a :href="Constants.githubURL" target="_blank" rel="noopener noreferrer">
+          <GithubLogoDarkModeSVG v-show="darkMode" />
+          <GithubLogoSVG v-show="!darkMode" />
+        </a>
+        <a @click="toggleDarkMode()">
+          <SunDarkModeSVG v-show="darkMode" />
+          <HalfMoonSVG v-show="!darkMode" />
+        </a>
       </div>
     </div>
   </nav>
