@@ -6,12 +6,17 @@
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
 import type { Ref } from 'vue'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import { editorTheme } from './monaco-config/editor-theme'
+import { lightEditorTheme } from './monaco-config/light-editor-theme'
+import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
+import {useDarkModeStore} from "@/stores/dark-mode";
+import type {MutationType} from "pinia";
 
-let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
+const darkModeStore = useDarkModeStore();
+
 let localStorageIdentifier = 'reloadText'
+let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
 const editorRef = <Ref<HTMLElement>>ref(document.querySelector('#editor'))
 onMounted(() => {
   // Register a new language
@@ -24,14 +29,15 @@ onMounted(() => {
   )
 
   // Define a new theme that contains only rules that match this language
-  monaco.editor.defineTheme('asciiDocTheme', <editor.IStandaloneThemeData>editorTheme)
+  monaco.editor.defineTheme('asciiDocLightTheme', <editor.IStandaloneThemeData>lightEditorTheme)
+  monaco.editor.defineTheme('asciiDocDarkTheme', <editor.IStandaloneThemeData>darkEditorTheme)
 
   let reloadText =
     localStorage.getItem(localStorageIdentifier) ||
     '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
   // Creating the editor with desired theme and language
   editorInstance = monaco.editor.create(editorRef.value!, {
-    theme: 'asciiDocTheme',
+    theme: darkModeStore.darkMode ? 'asciiDocDarkTheme' : 'asciiDocLightTheme',
     language: 'asciiDoc',
     value: [`${reloadText}`].join('\n'),
     fontFamily: 'JetBrains Mono',
@@ -54,6 +60,20 @@ onMounted(() => {
       console.log('saving new text to local storage')
       localStorage.setItem(localStorageIdentifier, editorInstance!.getValue())
     }, 1000)
+  })
+
+  // Register an event listener to the darkModeStore to change the theme of the editor
+  darkModeStore.$subscribe((mutation: MutationType, state: { darkMode: boolean }) => {
+    console.log("Changing editor theme to " + (state.darkMode ? "dark" : "light"))
+    if (state.darkMode) {
+      editorInstance!.updateOptions({
+        theme: 'asciiDocDarkTheme'
+      })
+    } else {
+      editorInstance!.updateOptions({
+        theme: 'asciiDocLightTheme'
+      })
+    }
   })
 })
 </script>

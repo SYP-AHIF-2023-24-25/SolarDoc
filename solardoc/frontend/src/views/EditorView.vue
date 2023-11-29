@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import Editor from '@/components/editor/Editor.vue'
 import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
+import SandwichMenuDarkModeSVG from "@/components/icons/SandwichMenuDarkModeSVG.vue";
+import {useDarkModeStore} from "@/stores/dark-mode";
+import {ref} from "vue";
+
+const darkModeStore = useDarkModeStore();
 </script>
 
 <template>
@@ -8,7 +13,8 @@ import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
     <div id="menu">
       <div id="menu-left-side">
         <button id="sandwich-menu-button" class="sandwich-button">
-          <SandwichMenuSVG />
+          <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
+          <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
         </button>
         <div id="button-menu">
           <button class="editor-button">Copy</button>
@@ -18,7 +24,8 @@ import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
       </div>
       <div id="menu-center">
         <div>
-          <p>sample-presentation.adoc</p>
+          <label for="file-name-input"></label>
+          <input id="file-name-input" value="sample-presentation.adoc" />
         </div>
       </div>
       <div id="menu-right-side">
@@ -35,7 +42,7 @@ import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
         <div id="preview">
           <h2>Preview loading...</h2>
         </div>
-        <div id="preview-menu">
+        <div id="preview-meta-info">
           <p>3 slides</p>
           <p>1.2 MB Raw Size</p>
         </div>
@@ -73,7 +80,8 @@ div#editor-page {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
-    padding: 0 0.5rem;
+    padding: var.$editor-menu-padding;
+    margin: var.$editor-menu-margin;
     height: 2rem;
 
     #menu-left-side {
@@ -87,10 +95,8 @@ div#editor-page {
       #button-menu {
         display: flex;
         flex-flow: row nowrap;
-
-        .editor-button {
-
-        }
+        padding: var.$editor-menu-button-menu-padding;
+        margin: var.$editor-menu-button-menu-margin;
       }
     }
 
@@ -102,6 +108,21 @@ div#editor-page {
 
       div {
         @include align-center;
+
+        #file-name-input {
+          border: none;
+          background-color: transparent;
+          text-align: center;
+          width: 100%;
+          height: calc(100% - 2px);
+          padding: 0;
+          margin: 0;
+
+          &:focus {
+            outline: var.$scheme-cs-1 solid 2px;
+            border-radius: 2px;
+          }
+        }
       }
     }
 
@@ -129,37 +150,43 @@ div#editor-page {
       padding-top: var.$editor-monaco-padding-top;
     }
 
-    #editor-wrapper{
+    #editor-wrapper {
       border-right: var.$editor-border;
     }
 
-    #preview-wrapper{
+    #preview-wrapper {
       display: flex;
       flex-direction: column;
-      width: 107vh;
-      text-align: center;
+      flex-grow: 1;
 
-      #preview-menu {
-        display: flex;
+      #preview {
+        @include align-center();
+        margin: 0;
+        padding: 0;
+      }
+
+      #preview-meta-info {
+        @include align-center();
         flex-flow: row nowrap;
-        padding-top: 1vh;
-        padding-bottom: 1vh;
+        height: var.$editor-preview-meta-info-height;
+        padding: var.$editor-preview-meta-info-padding;
         border-bottom: var.$editor-border;
         justify-content: space-between;
       }
 
-      #slides-navigator{
+      #slides-navigator {
+        @include align-center();
+        height: var.$editor-preview-slides-navigator-height;
+        padding: var.$editor-preview-slides-navigator-padding;
         border-bottom: var.$editor-border;
-        padding-top: 4vh;
-        padding-bottom: 4vh;
       }
 
-      #sub-slides-navigator{
-        padding-top: 13vh;
-        padding-bottom: 13vh;
+      #sub-slides-navigator {
+        @include align-center();
+        flex-grow: 1;
       }
 
-      #preview{
+      #preview {
         border-bottom: var.$editor-border;
         padding-top: 16.4vh;
         padding-bottom: 16.4vh;

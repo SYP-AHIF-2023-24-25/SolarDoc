@@ -1,4 +1,5 @@
 @use './mixins/link-hover-presets' as *;
+@use './mixins/align-center' as *;
 @use './var' as *;
 
 button {
@@ -49,9 +50,9 @@ button.home-button {
 button.editor-button {
   font-size: $editor-button-font-size;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  margin: 0;
   background: transparent;
+  padding: 0.5rem 1.5rem;
+  margin: 0;
 
   &:hover {
     @include link-hover-presets;
@@ -60,11 +61,18 @@ button.editor-button {
 }
 
 button.sandwich-button {
+  @include align-center();
+
+  $sandwich-button-height: 2rem;
+
   font-size: $editor-button-font-size;
   text-decoration: none;
+  background: transparent;
+  height: $sandwich-button-height;
+  width: $sandwich-button-height;
+  flex-shrink: 0;
   padding: 0;
   margin: 0;
-  background: transparent;
 
   &:hover {
     @include link-hover-presets;

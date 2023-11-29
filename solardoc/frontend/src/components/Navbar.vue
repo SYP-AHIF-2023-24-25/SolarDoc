@@ -8,30 +8,13 @@ import GithubLogoDarkModeSVG from "@/components/icons/GithubLogoDarkModeSVG.vue"
 import SolardocLogoDarkModeSVG from "@/components/icons/SolardocLogoDarkModeSVG.vue";
 import Constants from "@/plugins/Constants";
 import SunDarkModeSVG from "@/components/icons/SunDarkModeSVG.vue";
+import {useDarkModeStore} from "@/stores/dark-mode";
 
 const loadingStore = useLoadingStore();
+const darkModeStore = useDarkModeStore();
 
 function setLoading(state: boolean): void {
   loadingStore.setLoading(state);
-}
-
-function inDarkMode(): boolean {
-  const html = document.querySelector("html") as HTMLElement;
-  return html.dataset.theme === "dark";
-}
-
-let darkMode = ref(inDarkMode());
-function toggleDarkMode(): void {
-  const html = document.querySelector("html") as HTMLElement;
-
-  /* Dark mode is specified by the 'data-theme' attribute on the <html> tag. */
-  if (html.dataset.theme === "dark") {
-    html.dataset.theme = "light";
-    darkMode.value = false;
-  } else {
-    html.dataset.theme = "dark";
-    darkMode.value = true;
-  }
 }
 </script>
 
@@ -39,8 +22,8 @@ function toggleDarkMode(): void {
   <nav id="navbar">
     <div id="left-components">
       <div id="solardoc-logo">
-        <SolardocLogoDarkModeSVG v-show="darkMode" />
-        <SolardocLogoSVG v-show="!darkMode" />
+        <SolardocLogoDarkModeSVG v-show="darkModeStore.darkMode" />
+        <SolardocLogoSVG v-show="!darkModeStore.darkMode" />
       </div>
       <div id="title">
         <RouterLink to="/" @click="setLoading(true)">SolarDoc</RouterLink>
@@ -56,12 +39,12 @@ function toggleDarkMode(): void {
       </div>
       <div id="clickable-icons">
         <a :href="Constants.githubURL" target="_blank" rel="noopener noreferrer">
-          <GithubLogoDarkModeSVG v-show="darkMode" />
-          <GithubLogoSVG v-show="!darkMode" />
+          <GithubLogoDarkModeSVG v-show="darkModeStore.darkMode" />
+          <GithubLogoSVG v-show="!darkModeStore.darkMode" />
         </a>
-        <a @click="toggleDarkMode()">
-          <SunDarkModeSVG v-show="darkMode" />
-          <HalfMoonSVG v-show="!darkMode" />
+        <a @click="darkModeStore.toggleDarkMode()">
+          <SunDarkModeSVG v-show="darkModeStore.darkMode" />
+          <HalfMoonSVG v-show="!darkModeStore.darkMode" />
         </a>
       </div>
     </div>
