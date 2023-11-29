@@ -119,18 +119,18 @@ div#editor-page {
   #editor-and-preview-wrapper {
     display: flex;
     flex-flow: row nowrap;
-    border-top: 0.1rem black solid;
+    border-top: var.$editor-border;
 
     #editor {
       display: flex;
       flex-flow: column nowrap;
-      width: 105vh;
-      height: 86.2vh;
-      padding-top: 1rem;
+      width: var.$editor-monaco-width;
+      height: var.$editor-monaco-height;
+      padding-top: var.$editor-monaco-padding-top;
     }
 
     #editor-wrapper{
-      border-right: 0.1rem black solid;
+      border-right: var.$editor-border;
     }
 
     #preview-wrapper{
@@ -144,12 +144,12 @@ div#editor-page {
         flex-flow: row nowrap;
         padding-top: 1vh;
         padding-bottom: 1vh;
-        border-bottom: 0.1rem black solid;
+        border-bottom: var.$editor-border;
         justify-content: space-between;
       }
 
       #slides-navigator{
-        border-bottom: 0.1rem black solid;
+        border-bottom: var.$editor-border;
         padding-top: 4vh;
         padding-bottom: 4vh;
       }
@@ -160,7 +160,7 @@ div#editor-page {
       }
 
       #preview{
-        border-bottom: 0.1rem black solid;
+        border-bottom: var.$editor-border;
         padding-top: 16.4vh;
         padding-bottom: 16.4vh;
       }
