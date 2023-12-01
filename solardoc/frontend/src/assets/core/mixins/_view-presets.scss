@@ -1,0 +1,8 @@
+@use '../var' as *;
+
+@mixin view-presets {
+  height: $main-body-height;
+  width: $main-body-width;
+  padding: $main-body-padding;
+  margin: $main-body-margin;
+}

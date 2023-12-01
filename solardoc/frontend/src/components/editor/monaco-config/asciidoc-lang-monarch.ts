@@ -7,8 +7,8 @@ export default {
       [/\*{1,3}[^*]+\*{1,3}/, 'bold'], // Bold text between * or ** or ***
       [/_{1,3}[^_]+_{1,3}/, 'italic'], // Italic text between _ or __ or ___
       [/\[[^\]]+]/, 'link'], // Links denoted by [text]
-      [/^([.]+)\s+.+$/, 'unordered'], // unordered lists
-      [/^([*]+)\s+.+$/, 'ordered'], // ordered lists
+      [/^\s*(?:[*]+|(-))\s+.+$/, 'unordered'], // unordered lists
+      [/^\s*(?:(\w+\.)|(\.+))\s+.+$/, 'ordered'], // ordered lists
       [/\/\/.+/, 'comment'],
       [/:.+:/, 'special-token'], // for setting themes in reveal.js and attribute entries
 
