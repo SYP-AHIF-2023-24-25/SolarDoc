@@ -11,7 +11,7 @@ import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import {useDarkModeStore} from "@/stores/dark-mode";
-import type {MutationType} from "pinia";
+import type {MutationType, SubscriptionCallbackMutation} from "pinia";
 
 const darkModeStore = useDarkModeStore();
 
@@ -63,7 +63,7 @@ onMounted(() => {
   })
 
   // Register an event listener to the darkModeStore to change the theme of the editor
-  darkModeStore.$subscribe((mutation: MutationType, state: { darkMode: boolean }) => {
+  darkModeStore.$subscribe((mutation: SubscriptionCallbackMutation<{ darkMode: boolean }>, state: { darkMode: boolean }) => {
     console.log("Changing editor theme to " + (state.darkMode ? "dark" : "light"))
     if (state.darkMode) {
       editorInstance!.updateOptions({
