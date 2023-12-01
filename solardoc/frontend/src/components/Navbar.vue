@@ -6,8 +6,8 @@ import GithubLogoSVG from "@/components/icons/GithubLogoSVG.vue";
 import SolardocLogoSVG from "@/components/icons/SolardocLogoSVG.vue";
 import GithubLogoDarkModeSVG from "@/components/icons/GithubLogoDarkModeSVG.vue";
 import SolardocLogoDarkModeSVG from "@/components/icons/SolardocLogoDarkModeSVG.vue";
-import Constants from "@/plugins/Constants";
 import SunDarkModeSVG from "@/components/icons/SunDarkModeSVG.vue";
+import constants from "@/plugins/constants";
 import {useDarkModeStore} from "@/stores/dark-mode";
 
 const loadingStore = useLoadingStore();
@@ -38,7 +38,7 @@ function setLoading(state: boolean): void {
         </div>
       </div>
       <div id="clickable-icons">
-        <a :href="Constants.githubURL" target="_blank" rel="noopener noreferrer">
+        <a :href="constants.githubURL" target="_blank" rel="noopener noreferrer">
           <GithubLogoDarkModeSVG v-show="darkModeStore.darkMode" />
           <GithubLogoSVG v-show="!darkModeStore.darkMode" />
         </a>
