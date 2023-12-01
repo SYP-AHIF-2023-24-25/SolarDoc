@@ -8,7 +8,9 @@ services:
     depends_on:
       - rest-api
   rest-api:
-    build: ./solardoc/rest-api
+    build:
+      context: .
+      dockerfile: ./solardoc/rest-api/Dockerfile
     volumes:
       - ./solardoc/rest-api:/home/node/app
     ports:
