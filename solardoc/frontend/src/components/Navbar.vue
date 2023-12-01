@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {ref} from "vue";
 import {useLoadingStore} from "@/stores/loading";
 import HalfMoonSVG from "@/components/icons/HalfMoonSVG.vue";
 import GithubLogoSVG from "@/components/icons/GithubLogoSVG.vue";

@@ -3,7 +3,6 @@ import Editor from '@/components/editor/Editor.vue'
 import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
 import SandwichMenuDarkModeSVG from "@/components/icons/SandwichMenuDarkModeSVG.vue";
 import {useDarkModeStore} from "@/stores/dark-mode";
-import {ref} from "vue";
 
 const darkModeStore = useDarkModeStore();
 </script>
