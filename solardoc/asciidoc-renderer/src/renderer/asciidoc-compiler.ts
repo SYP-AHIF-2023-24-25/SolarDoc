@@ -28,7 +28,7 @@ export class AsciidocCompiler {
    */
   public async compile(input: AsciidocFile): Promise<Presentation> {
     // TODO!
-    //this.asciidoctor.convert()
+    this.asciidoctor.convert(input.content)
     throw new Error('Not implemented yet!')
   }
 }

@@ -7,15 +7,15 @@ export class AsciidocFile {
   private readonly _fileName: string
 
   public get content(): string {
-    return this._content;
+    return this._content
   }
 
   public get fileName(): string {
-    return this._fileName;
+    return this._fileName
   }
   public constructor(fileName: string, content: string) {
-    this._content = content;
-    this._fileName = fileName;
+    this._content = content
+    this._fileName = fileName
   }
 
   /**
@@ -25,6 +25,6 @@ export class AsciidocFile {
    * @since 0.2.0
    */
   public static async fromString(fileName: string, fileContent: string): Promise<AsciidocFile> {
-    return new AsciidocFile(fileName, fileContent);
+    return new AsciidocFile(fileName, fileContent)
   }
 }
