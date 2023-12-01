@@ -28,7 +28,9 @@ export class AsciidocCompiler {
    */
   public async compile(input: AsciidocFile): Promise<Presentation> {
     // TODO!
-    this.asciidoctor.convert(input.content)
+    let options = { safe: 'safe', backend: 'revealjs' };
+    this.asciidoctor.convert(input.content, options);
+
     throw new Error('Not implemented yet!')
   }
 }

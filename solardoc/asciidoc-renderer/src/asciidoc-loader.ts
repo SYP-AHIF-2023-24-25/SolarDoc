@@ -12,7 +12,7 @@ export function loadAsciidoctor(): AsciidoctorLib.Asciidoctor {
   // Try to determine the global scope
   // @ts-ignore
   // eslint-disable-next-line no-undef
-  const globalScope = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
+  const globalScope =  typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {}
 
   // Try to get the opal runtime and then define it on the global scope
   // @ts-ignore
