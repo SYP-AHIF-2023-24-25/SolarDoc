@@ -1,5 +1,5 @@
-import {model, property} from "@loopback/repository";
-import {DownloadModel} from "./download.model";
+import {model, property} from '@loopback/repository';
+import {DownloadModel} from './download.model';
 
 @model()
 export class RenderedSlideModel {

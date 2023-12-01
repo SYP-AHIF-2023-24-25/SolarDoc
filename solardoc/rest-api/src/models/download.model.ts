@@ -1,4 +1,4 @@
-import {model, property} from "@loopback/repository";
+import {model, property} from '@loopback/repository';
 
 @model()
 export class DownloadModel {
@@ -10,7 +10,7 @@ export class DownloadModel {
 
   @property({
     required: true,
-    description: 'The name of the file that can be downloaded'
+    description: 'The name of the file that can be downloaded',
   })
   fileName: string;
 }

@@ -1,5 +1,5 @@
-import {model, property} from "@loopback/repository";
-import {IncomingHttpHeaders} from "http";
+import {model, property} from '@loopback/repository';
+import {IncomingHttpHeaders} from 'http';
 
 @model()
 export class PingModel {
@@ -23,7 +23,8 @@ export class PingModel {
 
   @property({
     required: true,
-    description: 'The ip of the request from the client (May be undefined in certain circumstances)',
+    description:
+      'The ip of the request from the client (May be undefined in certain circumstances)',
   })
   ip: string | undefined;
 
@@ -31,5 +32,5 @@ export class PingModel {
     required: true,
     description: 'The headers of the request',
   })
-  headers: IncomingHttpHeaders
+  headers: IncomingHttpHeaders;
 }

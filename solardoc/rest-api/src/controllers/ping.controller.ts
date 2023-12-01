@@ -4,9 +4,10 @@ import {
   RestBindings,
   get,
   response,
-  ResponseObject, getModelSchemaRef,
+  ResponseObject,
+  getModelSchemaRef,
 } from '@loopback/rest';
-import {PingModel} from "../models/ping.model";
+import {PingModel} from '../models/ping.model';
 
 /**
  * A simple controller to bounce back http requests
@@ -14,17 +15,14 @@ import {PingModel} from "../models/ping.model";
 export class PingController {
   constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
 
-  @get(
-    '/ping',
-    {
-      responses: {
-        '200': {
-          description: 'Ping Response',
-          content: {'application/json': {schema: getModelSchemaRef(PingModel)}},
-        }
-      }
-    }
-  )
+  @get('/ping', {
+    responses: {
+      '200': {
+        description: 'Ping Response',
+        content: {'application/json': {schema: getModelSchemaRef(PingModel)}},
+      },
+    },
+  })
   async ping(): Promise<PingModel> {
     // Reply with a greeting, the current time, the url, and request headers
     return {
@@ -32,7 +30,7 @@ export class PingController {
       date: Date.now(),
       url: this.req.url,
       headers: Object.assign({}, this.req.headers),
-      ip: this.req.socket.remoteAddress
+      ip: this.req.socket.remoteAddress,
     };
   }
 }

@@ -1,8 +1,8 @@
-import {RestApiApplication} from "../../application";
-import {Client} from "@loopback/testlab";
-import {setupApplication} from "./test-helper";
+import {RestApiApplication} from '../../application';
+import {Client} from '@loopback/testlab';
+import {setupApplication} from './test-helper';
 
-describe("Render", () => {
+describe('Render', () => {
   let app: RestApiApplication;
   let client: Client;
 

@@ -5,9 +5,10 @@ import {AsciidocCompiler} from '@solardoc/asciidoc-renderer';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class RenderService {
-  // private _compiler: AsciidocCompiler;
+  private _compiler: AsciidocCompiler;
 
   constructor() {
-    // this._compiler = new AsciidocCompiler();
+    this._compiler = new AsciidocCompiler();
+    console.log(this._compiler);
   }
 }

@@ -1,6 +1,6 @@
-import {model, property} from "@loopback/repository";
-import {DownloadModel} from "./download.model";
-import {CacheModel} from "./cache.model";
+import {model, property} from '@loopback/repository';
+import {DownloadModel} from './download.model';
+import {CacheModel} from './cache.model';
 
 @model()
 export class RenderedPresentationModel {
