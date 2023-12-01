@@ -20,7 +20,7 @@ export class PingController {
       responses: {
         '200': {
           description: 'Ping Response',
-          content: {schema: getModelSchemaRef(PingModel)},
+          content: {'application/json': {schema: getModelSchemaRef(PingModel)}},
         }
       }
     }
