@@ -7,7 +7,7 @@ import { Slide } from '../../../slide'
  * Renders a presentation or slide to an image file.
  * @since 0.2.0
  */
-export class HTMLRenderer extends TargetRenderer<HTMLOutput> {
+export class HTMLRenderer extends TargetRenderer<unknown, unknown> {
   public constructor() {
     super()
     // TODO!

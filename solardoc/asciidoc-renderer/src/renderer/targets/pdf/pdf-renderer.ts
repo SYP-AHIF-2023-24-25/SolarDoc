@@ -7,7 +7,7 @@ import { Slide } from '../../../slide'
  * Renders a presentation or slide to a PDF file.
  * @since 0.2.0
  */
-export class PDFRenderer extends TargetRenderer<PDFOutput> {
+export class PDFRenderer extends TargetRenderer<unknown, unknown> {
   public constructor() {
     super()
     // TODO!

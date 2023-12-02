@@ -1,4 +1,6 @@
 import type { TargetRenderer, AsciidocCompiler } from './renderer'
+import {RenderOutput} from "./renderer";
+import {Asciidoctor} from "@asciidoctor/core";
 
 /**
  * A presentation is a collection of slides, which internally are reveal.js slides. These can be converted to HTML,
@@ -7,12 +9,21 @@ import type { TargetRenderer, AsciidocCompiler } from './renderer'
  */
 export class Presentation {
   private readonly _compiler: AsciidocCompiler
+  private readonly _parsedFile: Asciidoctor.Document
 
-  public constructor(compiler: AsciidocCompiler) {
+  public constructor(
+      compiler: AsciidocCompiler,
+      parsedFile: Asciidoctor.Document,
+  ) {
     this._compiler = compiler
+    this._parsedFile = parsedFile
 
     // TODO!
-    throw new Error('Not implemented yet!')
+    //throw new Error('Not implemented yet!')
+  }
+
+  public get parsedFile(){
+    return this._parsedFile;
   }
 
   /**
@@ -29,8 +40,9 @@ export class Presentation {
    * @param target The target that should be used to render the presentation.
    * @since 0.2.0
    */
-  public async render<T>(target: TargetRenderer<T>): Promise<void> {
+  public async render<T>(target: TargetRenderer<T, T>): Promise<RenderOutput<T, T>> {
     // TODO!
+
     throw new Error('Not implemented yet!')
   }
 }

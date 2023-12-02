@@ -27,9 +27,8 @@ export class AsciidocCompiler {
    * @since 0.2.0
    */
   public async compile(input: AsciidocFile): Promise<Presentation> {
-    // TODO!
-    let options = { safe: 'safe', backend: 'revealjs' };
-    this.asciidoctor.convert(input.content, options);
+    const metadata: Asciidoctor.Document = this.asciidoctor.load(input.content);
+    const presentation = new Presentation(this, metadata);
 
     throw new Error('Not implemented yet!')
   }
