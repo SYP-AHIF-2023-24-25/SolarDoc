@@ -40,9 +40,9 @@ export class Presentation {
    * @param target The target that should be used to render the presentation.
    * @since 0.2.0
    */
-  public async render<T>(target: TargetRenderer<T, T>): Promise<RenderOutput<T, T>> {
+  public async render<RawT,OutT>(target: TargetRenderer<RawT, OutT>): Promise<RenderOutput<RawT, OutT>> {
     // TODO!
-
-    throw new Error('Not implemented yet!')
+    return await target.render(this);
+    //throw new Error('Not implemented yet!')
   }
 }

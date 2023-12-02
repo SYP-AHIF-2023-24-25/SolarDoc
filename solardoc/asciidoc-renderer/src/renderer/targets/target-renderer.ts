@@ -9,7 +9,7 @@ import {RenderOutput} from "../render-output";
 export abstract class TargetRenderer<RawT, OutT> {
   public constructor() {
     // TODO!
-    throw new Error('Not implemented yet!')
+    //throw new Error('Not implemented yet!')
   }
 
   /**

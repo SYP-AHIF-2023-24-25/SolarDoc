@@ -4,14 +4,14 @@ import { RenderOutput } from '../../render-output'
  * Wrapper class for an HTML output.
  * @since 0.2.0
  */
-export class HTMLOutput extends RenderOutput<unknown, unknown> {
+export class HTMLOutput extends RenderOutput<string, unknown> {
   // TODO! Properly type the generics
-  public constructor(content: unknown) {
+  public constructor(content: string) {
     // TODO! Properly type the raw content.
     super(content)
 
     // TODO!
-    throw new Error('Not implemented yet!')
+   // throw new Error('Not implemented yet!')
   }
 
   /**

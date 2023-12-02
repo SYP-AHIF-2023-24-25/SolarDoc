@@ -28,8 +28,9 @@ export class AsciidocCompiler {
    */
   public async compile(input: AsciidocFile): Promise<Presentation> {
     const metadata: Asciidoctor.Document = this.asciidoctor.load(input.content);
-    const presentation = new Presentation(this, metadata);
+    console.log("html: "+this.asciidoctor.convert(input.content));
+    return new Presentation(this, metadata);
 
-    throw new Error('Not implemented yet!')
+    //throw new Error('Not implemented yet!')
   }
 }

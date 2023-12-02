@@ -11,7 +11,7 @@ export class HTMLRenderer extends TargetRenderer<unknown, unknown> {
   public constructor() {
     super()
     // TODO!
-    throw new Error('Not implemented yet!')
+    //throw new Error('Not implemented yet!')
   }
 
   /**
@@ -21,7 +21,13 @@ export class HTMLRenderer extends TargetRenderer<unknown, unknown> {
    */
   public async render(presentation: Presentation): Promise<HTMLOutput> {
     // TODO!
-    throw new Error('Not implemented yet!')
+    let htmlOutput = presentation.compiler.asciidoctor.convert(presentation.parsedFile.getSource());
+    if(typeof htmlOutput === "string"){
+      return new HTMLOutput(htmlOutput);
+    }
+    return new HTMLOutput("no string");
+
+    //throw new Error('Not implemented yet!')
   }
 
   /**

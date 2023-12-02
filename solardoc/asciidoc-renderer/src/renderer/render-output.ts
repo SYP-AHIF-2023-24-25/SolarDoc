@@ -9,7 +9,7 @@ export abstract class RenderOutput<RawT, OutT> {
     this._internalData = content
 
     // TODO!
-    throw new Error('Not implemented yet!')
+    //throw new Error('Not implemented yet!')
   }
 
   /**
