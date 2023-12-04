@@ -1,6 +1,6 @@
 import { Presentation } from '../../presentation'
 import { Slide } from '../../slide'
-import {RenderOutput} from "../render-output";
+import { RenderOutput } from '../render-output'
 
 /**
  * The render target is used to render a presentation to a specific format, i.e. HTML, PDF or images.
@@ -23,12 +23,18 @@ export abstract class TargetRenderer<RawT, OutT> {
    * @param presentation The presentation that should be rendered.
    * @param slide The slide that should be rendered.
    */
-  public abstract renderSlide(presentation: Presentation, slide: Slide): Promise<RenderOutput<RawT, OutT>>
+  public abstract renderSlide(
+    presentation: Presentation,
+    slide: Slide
+  ): Promise<RenderOutput<RawT, OutT>>
 
   /**
    * Renders a single {@link Slide slide} of the presentation.
    * @param presentation The presentation that should be rendered.
    * @param slide The index of the slide that should be rendered.
    */
-  public abstract renderSlide(presentation: Presentation, slide: number): Promise<RenderOutput<RawT, OutT>>
+  public abstract renderSlide(
+    presentation: Presentation,
+    slide: number
+  ): Promise<RenderOutput<RawT, OutT>>
 }
