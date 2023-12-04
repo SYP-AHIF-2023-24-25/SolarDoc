@@ -9,4 +9,4 @@ COPY init.sh ./
 
 RUN chmod +x init.sh
 
-CMD ["sh", "-c", "./init.sh"]
+CMD ["bash", "-c", "./init.sh"]
