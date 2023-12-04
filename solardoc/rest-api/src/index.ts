@@ -1,8 +1,13 @@
 import {ApplicationConfig, RestApiApplication} from './application';
+import {loadEnv} from './services';
 
 export * from './application';
 
 export async function main(options: ApplicationConfig = {}) {
+  // First load the environment variables from the .env file
+  loadEnv();
+
+  // Then start the application
   const app = new RestApiApplication(options);
   await app.boot();
   await app.start();
@@ -33,7 +38,7 @@ if (require.main === module) {
     },
   };
   main(config).catch(err => {
-    console.error('Cannot start the application.', err);
+    console.error(`Cannot start the application. \n\n${err}`);
     process.exit(1);
   });
 }
