@@ -26,12 +26,12 @@ describe("AsciidocCompiler", () => {
       assert.equal(
         presentation.parsedFile,
         metadata,
-        "Presentation is not correct"
+        "Presentation 'parsedFile' should equal parsedFile is not correct"
       );
       assert.equal(
         presentation.compiler,
         asciidocCompiler,
-        "Presentation is not correct"
+        "Presentation 'compiler' property is not correct"
       );
     });
   });

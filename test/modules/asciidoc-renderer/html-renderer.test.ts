@@ -15,8 +15,6 @@ describe("HtmlRenderer", () => {
 
       const html = await presentation.render(new HTMLRenderer());
       assert.equal(html.internalData, "", "HTML is not correct");
-
-      //fs.writeFileSync("test.html",await html.write());
     });
   });
 });
