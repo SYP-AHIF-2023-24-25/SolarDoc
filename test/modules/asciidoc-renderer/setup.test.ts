@@ -27,7 +27,9 @@ describe("Setup & Load testing", () => {
         try {
           new module.AsciidocCompiler();
         } catch (e) {
-          throw new Error(`Expected 'AsciidocCompiler' to be constructable without errors (Cause: ${e})`);
+          throw new Error(
+            `Expected 'AsciidocCompiler' to be constructable without errors (Cause: ${e})`
+          );
         }
       });
     });
