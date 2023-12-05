@@ -1,7 +1,7 @@
 import {model, property} from '@loopback/repository';
 
 @model()
-export class CacheModel {
+export class CacheDtoModel {
   @property({
     required: true,
     description:

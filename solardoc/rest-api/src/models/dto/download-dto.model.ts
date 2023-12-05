@@ -1,7 +1,7 @@
 import {model, property} from '@loopback/repository';
 
 @model()
-export class DownloadModel {
+export class DownloadDtoModel {
   @property({
     required: true,
     description: 'The download url of the presentation',

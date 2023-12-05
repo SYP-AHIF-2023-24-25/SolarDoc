@@ -2,7 +2,7 @@ import {model, property} from '@loopback/repository';
 import {IncomingHttpHeaders} from 'http';
 
 @model()
-export class PingModel {
+export class PingDtoModel {
   @property({
     required: true,
     description: 'The greeting to be returned',

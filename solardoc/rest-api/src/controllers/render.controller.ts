@@ -1,14 +1,16 @@
 import {getModelSchemaRef, param, post, requestBody} from '@loopback/rest';
-import {RenderPresentationModel} from '../models/render-presentation.model';
-import {RenderedPresentationPdfModel} from '../models/rendered-presentation-pdf.model';
-import {RenderedPresentationRjsHtmlModel} from '../models/rendered-presentation-rjs-html.model';
-import {RenderedPresentationImagesModel} from '../models/rendered-presentation-images.model';
-import {RenderedSlideImageModel} from '../models/rendered-slide-image.model';
+import {RenderPresentationDtoModel,RenderedPresentationPdfDtoModel,RenderedPresentationRjsHtmlDtoModel,RenderedSlideImageDtoModel,RenderedPresentationImagesDtoModel} from '../models';
+import {CacheService} from "../services/cache.service";
+import {inject} from "@loopback/core";
 
 /**
  * The controller for managing the render operation of Asciidoc presentations.
  */
 export class RenderController {
+  constructor(
+    @inject('services.CacheService') public cacheService: CacheService,
+  ) {}
+
   @post('/render/presentation/pdf', {
     responses: {
       '200': {
@@ -16,15 +18,15 @@ export class RenderController {
           'Object containing the metadata and the download object for downloading the presentation as pdf',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(RenderedPresentationPdfModel),
+            schema: getModelSchemaRef(RenderedPresentationPdfDtoModel),
           },
         },
       },
     },
   })
   async renderPresentationPdf(
-    @requestBody() presentationModel: RenderPresentationModel,
-  ): Promise<RenderedPresentationPdfModel> {
+    @requestBody() presentationModel: RenderPresentationDtoModel,
+  ): Promise<RenderedPresentationPdfDtoModel> {
     throw new Error('Not implemented yet!');
   }
 
@@ -35,15 +37,15 @@ export class RenderController {
           'Object containing the metadata and the download object for downloading the presentation as rjs-html',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(RenderedPresentationRjsHtmlModel),
+            schema: getModelSchemaRef(RenderedPresentationRjsHtmlDtoModel),
           },
         },
       },
     },
   })
   async renderPresentationRjsHtml(
-    @requestBody() presentationModel: RenderPresentationModel,
-  ): Promise<RenderedPresentationRjsHtmlModel> {
+    @requestBody() presentationModel: RenderPresentationDtoModel,
+  ): Promise<RenderedPresentationRjsHtmlDtoModel> {
     throw new Error('Not implemented yet!');
   }
 
@@ -54,15 +56,15 @@ export class RenderController {
           'Object containing the metadata and the download object for downloading the presentation as images',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(RenderedPresentationImagesModel),
+            schema: getModelSchemaRef(RenderedPresentationImagesDtoModel),
           },
         },
       },
     },
   })
   async renderPresentationImages(
-    @requestBody() presentationModel: RenderPresentationModel,
-  ): Promise<RenderedPresentationImagesModel> {
+    @requestBody() presentationModel: RenderPresentationDtoModel,
+  ): Promise<RenderedPresentationImagesDtoModel> {
     throw new Error('Not implemented yet!');
   }
 
@@ -73,7 +75,7 @@ export class RenderController {
           'Object containing the metadata and the download object for downloading the slide as image',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(RenderedSlideImageModel),
+            schema: getModelSchemaRef(RenderedSlideImageDtoModel),
           },
         },
       },
@@ -81,8 +83,8 @@ export class RenderController {
   })
   async renderSlideImage(
     @param.path.string('uuid') id: number,
-    @requestBody() presentationModel: RenderPresentationModel,
-  ): Promise<RenderedSlideImageModel> {
+    @requestBody() presentationModel: RenderPresentationDtoModel,
+  ): Promise<RenderedSlideImageDtoModel> {
     throw new Error('Not implemented yet!');
   }
 }

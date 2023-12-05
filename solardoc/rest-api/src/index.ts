@@ -3,10 +3,10 @@ import {loadEnv} from './services';
 
 export * from './application';
 
-export async function main(options: ApplicationConfig = {}) {
-  // First load the environment variables from the .env file
-  loadEnv();
+// First load the environment variables from the .env file
+loadEnv();
 
+export async function main(options: ApplicationConfig = {}) {
   // Then start the application
   const app = new RestApiApplication(options);
   await app.boot();

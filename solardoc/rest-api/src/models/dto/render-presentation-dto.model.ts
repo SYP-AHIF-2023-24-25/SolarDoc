@@ -1,7 +1,7 @@
 import {model, property} from '@loopback/repository';
 
 @model()
-export class RenderPresentationModel {
+export class RenderPresentationDtoModel {
   @property({
     required: true,
     description: 'The name of the file to upload',

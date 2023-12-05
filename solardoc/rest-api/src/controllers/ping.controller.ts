@@ -7,7 +7,7 @@ import {
   ResponseObject,
   getModelSchemaRef,
 } from '@loopback/rest';
-import {PingModel} from '../models/ping.model';
+import {PingDtoModel} from '../models';
 
 /**
  * A simple controller to bounce back http requests
@@ -19,11 +19,11 @@ export class PingController {
     responses: {
       '200': {
         description: 'Ping Response',
-        content: {'application/json': {schema: getModelSchemaRef(PingModel)}},
+        content: {'application/json': {schema: getModelSchemaRef(PingDtoModel)}},
       },
     },
   })
-  async ping(): Promise<PingModel> {
+  async ping(): Promise<PingDtoModel> {
     // Reply with a greeting, the current time, the url, and request headers
     return {
       greeting: 'Hello from LoopBack',

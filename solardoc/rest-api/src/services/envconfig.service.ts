@@ -5,6 +5,19 @@ let envLoaded = false;
 let envConfig: dotenv.DotenvParseOutput = {};
 
 /**
+ * This function is used to ensure that the environment variables are loaded.
+ *
+ * It simply checks if the environment variables have been loaded, and if not
+ * calls the `loadEnv()` function.
+ * @since 0.2.0
+ */
+export function ensureEnvLoaded(): void {
+  if (!envLoaded) {
+    loadEnv();
+  }
+}
+
+/**
  * This function is used to load the environment variables from the .env file.
  *
  * It is automatically called before any application is started, and will throw
@@ -39,7 +52,9 @@ ${result.error?.stack ? result.error?.stack : "Error details: " + (result.error 
   }
 
   envLoaded = true;
-  envConfig = Object.seal(parsed);
+  envConfig = Object.seal(
+    Object.assign({}, parsed, rootParsed)
+  );
 }
 
 /**

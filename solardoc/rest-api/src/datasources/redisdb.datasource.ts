@@ -1,16 +1,15 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler, Options} from '@loopback/repository';
-import {getEnv} from "../services";
+import {ensureEnvLoaded, getEnv} from "../services";
 
+ensureEnvLoaded()
 const config = {
   name: 'redisdb',
   connector: 'loopback-connector-redis',
   host: getEnv("REDIS_HOST"),
-  port: getEnv("REDIS_PORT"),
-  password: getEnv("REDIS_PASSWORD"),
-  username: getEnv("REDIS_USERNAME"),
-  db: getEnv("REDIS_DB"),
-} satisfies Options;
+  port: Number(getEnv("REDIS_PORT")),
+  password: getEnv("REDIS_ROOT_PASSWORD"),
+}
 
 // Observe application's life cycle to disconnect the datasource when
 // application is stopped. This allows the application to be shut down

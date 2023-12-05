@@ -1,9 +1,9 @@
 import {model, property} from '@loopback/repository';
-import {DownloadModel} from './download.model';
-import {CacheModel} from './cache.model';
+import {DownloadDtoModel} from './download-dto.model';
+import {CacheDtoModel} from './cache-dto.model';
 
 @model()
-export class RenderedPresentationModel {
+export class RenderedPresentationDtoModel {
   @property({
     required: true,
     description: 'The name of the presentation (original file name)',
@@ -14,5 +14,5 @@ export class RenderedPresentationModel {
     required: true,
     description: 'The cache metadata',
   })
-  cache: CacheModel;
+  cache: CacheDtoModel;
 }
