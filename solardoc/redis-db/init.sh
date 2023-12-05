@@ -13,6 +13,12 @@
 echo "[init.sh] Setting overcommit_memory to 1 to avoid OOE errors..."
 sysctl vm.overcommit_memory=1 >/dev/null
 
+# Ensure 'REDIS_ROOT_PASSWORD' is set
+if [ -z "$REDIS_ROOT_PASSWORD" ]; then
+  echo "[init.sh] 'REDIS_ROOT_PASSWORD' is not set. Exiting..."
+  exit 1
+fi
+
 add_redis_user() {
   # Wait for redis server to start
   echo "[init.sh] Waiting for redis server to start..."
@@ -22,14 +28,18 @@ add_redis_user() {
   echo "[init.sh] Adding user '$REDIS_USERNAME' to redis..."
   echo -e "
   AUTH $REDIS_ROOT_PASSWORD
-  ACL SETUSER $REDIS_USERNAME on >$REDIS_PASSWORD +@all -@dangerous allkeys
+  ACL SETUSER $REDIS_USERNAME on >$REDIS_PASSWORD +@all -@admin
   " | redis-cli
 
   # Wrap up and start new non-daemonized redis instance, which will be the actual one running
   echo "[init.sh] Redis configuration completed! Log in using root password or user '$REDIS_USERNAME' :D"
 }
 
-# Start redis server
+# Start redis server (and add user if needed if 'REDIS_USERNAME' and 'REDIS_PASSWORD' are set)
 echo "[init.sh] Starting redis server..."
-add_redis_user &
+if [[ -n "$REDIS_USERNAME" && -n "$REDIS_PASSWORD" ]]; then
+  redis-server /usr/local/etc/redis/redis.conf --bind
+else
+  echo "[init.sh] 'REDIS_USERNAME' and 'REDIS_PASSWORD' are not set. Please use 'REDIS_ROOT_PASSWORD' to log in."
+fi
 redis-server /usr/local/etc/redis/redis.conf --bind 0.0.0.0 --requirepass $REDIS_ROOT_PASSWORD
