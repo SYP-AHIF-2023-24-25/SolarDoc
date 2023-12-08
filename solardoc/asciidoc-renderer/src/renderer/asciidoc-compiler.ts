@@ -2,6 +2,7 @@ import type { Asciidoctor } from '@asciidoctor/core'
 import { AsciidocFile } from './asciidoc-file'
 import { Presentation } from '../presentation'
 import { loadAsciidoctor } from '../asciidoc-loader'
+import { PresentationMetadata } from '../presentation-metadata'
 
 /**
  * The compiler for {@link AsciidocFile} instances. This compiler will take the given file and compile it into a
@@ -27,10 +28,7 @@ export class AsciidocCompiler {
    * @since 0.2.0
    */
   public async compile(input: AsciidocFile): Promise<Presentation> {
-    const metadata: Asciidoctor.Document = this.asciidoctor.load(input.content)
-    console.log('html: ' + this.asciidoctor.convert(input.content))
-    return new Presentation(this, metadata)
-
-    //throw new Error('Not implemented yet!')
+    const document: Asciidoctor.Document = this.asciidoctor.load(input.content)
+    return new Presentation(this, document);
   }
 }

@@ -1,6 +1,7 @@
 import type { TargetRenderer, AsciidocCompiler } from './renderer'
 import { RenderOutput } from './renderer'
 import { Asciidoctor } from '@asciidoctor/core'
+import { PresentationMetadata } from './presentation-metadata'
 
 /**
  * A presentation is a collection of slides, which internally are reveal.js slides. These can be converted to HTML,
@@ -10,13 +11,23 @@ import { Asciidoctor } from '@asciidoctor/core'
 export class Presentation {
   private readonly _compiler: AsciidocCompiler
   private readonly _parsedFile: Asciidoctor.Document
+  private readonly _metadata: PresentationMetadata
 
   public constructor(compiler: AsciidocCompiler, parsedFile: Asciidoctor.Document) {
     this._compiler = compiler
     this._parsedFile = parsedFile
+    this._metadata = this.getDocumentMetadata(parsedFile)
 
     // TODO!
     //throw new Error('Not implemented yet!')
+  }
+
+  /**
+   * The metadata of the presentation.
+   * @since 0.2.0
+   */
+  public get metadata(): PresentationMetadata {
+    return this._metadata
   }
 
   /**
@@ -56,5 +67,23 @@ export class Presentation {
   ): Promise<RenderOutput<RawT, OutT>> {
     // TODO! Finish implementation and add remaining tests
     return await target.render(this)
+  }
+
+  /**
+   * Determines the metadata of the given document.
+   * @param document The document of which the metadata should be determined.
+   * @since 0.2.0
+   */
+  private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
+    // TODO!
+    const metadata: PresentationMetadata = {
+      title: document.getDocumentTitle(),
+      author: document.getAuthor(),
+      slideCount: document.getBlocks().length,
+      mainSlideCount: undefined,
+      originalDocument: document
+    }
+
+    return metadata
   }
 }

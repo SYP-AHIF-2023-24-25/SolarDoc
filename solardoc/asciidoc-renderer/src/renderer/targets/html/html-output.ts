@@ -7,17 +7,16 @@ import { RenderOutput } from '../../render-output'
 export class HTMLOutput extends RenderOutput<string, string> {
   public constructor(internalData: string) {
     super(internalData)
-
-    // TODO!
-    // throw new Error('Not implemented yet!')
   }
 
   /**
    * Converts the content to a file-writable HTML format.
+   *
+   * In this case the {@link HTMLOutput.internalData internalData} is returned, as it already
+   * in the correct format.
    * @since 0.2.0
    */
   public async write(): Promise<string> {
-    // TODO!
-    throw new Error('Not implemented yet!')
+    return this.internalData
   }
 }

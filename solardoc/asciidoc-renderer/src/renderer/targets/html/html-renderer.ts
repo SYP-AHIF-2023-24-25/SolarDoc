@@ -2,8 +2,8 @@ import { TargetRenderer } from '../target-renderer'
 import { HTMLOutput } from './html-output'
 import { Presentation } from '../../../presentation'
 import { Slide } from '../../../slide'
-import {Asciidoctor} from "@asciidoctor/core";
-import {InternalError} from "../../../errors";
+import { Asciidoctor } from '@asciidoctor/core'
+import { InternalError } from '../../../errors'
 
 /**
  * Renders a presentation or slide to an image file.
@@ -27,8 +27,8 @@ export class HTMLRenderer extends TargetRenderer<unknown, unknown> {
      * This is to ensure it doesn't just return an empty string when rendering a full document.
      * @since 0.2.0
      */
-    standalone: true,
-  } satisfies Asciidoctor.ProcessorOptions;
+    standalone: true
+  } satisfies Asciidoctor.ProcessorOptions
 
   public constructor() {
     super()
@@ -43,10 +43,7 @@ export class HTMLRenderer extends TargetRenderer<unknown, unknown> {
    */
   public async render(presentation: Presentation): Promise<HTMLOutput> {
     // TODO!
-    let htmlOutput = presentation.compiler.asciidoctor.convert(
-      presentation.sourceCode,
-      HTMLRenderer.renderOptions
-    )
+    let htmlOutput = presentation.parsedFile.convert(HTMLRenderer.renderOptions)
     if (typeof htmlOutput !== 'string') {
       throw new InternalError(
         `HTML output is not a string! Potential bug in asciidoctor.js! (Input: ${presentation.sourceCode})`
