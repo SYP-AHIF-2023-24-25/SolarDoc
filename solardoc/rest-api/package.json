@@ -34,7 +34,10 @@
     "migrate": "node ./dist/migrate",
     "preopenapi-spec": "pnpm run build",
     "openapi-spec": "node ./dist/openapi-spec",
-    "prestart": "pnpm run rebuild",
+    "preopenapi-spec:write": "pnpm run preopenapi-spec",
+    "openapi-spec:write": "pnpm run openapi-spec:write:no-build",
+    "openapi-spec:write:no-build": "node ./dist/openapi-spec > ./openapi.json",
+    "prestart": "pnpm run rebuild; pnpm run openapi-spec:write",
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "pnpm run clean && pnpm run build"
