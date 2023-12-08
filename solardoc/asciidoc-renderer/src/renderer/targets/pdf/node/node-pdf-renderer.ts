@@ -1,6 +1,7 @@
 import type {Presentation} from "../../../../presentation";
 import {PDFOutput} from "../pdf-output";
 import {TargetRenderer} from "../../target-renderer";
+import {Slide} from "../../../../slide";
 
 /**
  * Renders a presentation or slide to a PDF file.
@@ -16,6 +17,7 @@ export class NodePDFRenderer extends TargetRenderer<unknown, unknown> {
    * @param presentation The presentation that should be rendered.
    * @since 0.2.0
    */
+  // eslint-disable-next-line no-unused-vars
   public async render(presentation: Presentation): Promise<PDFOutput> {
     // TODO!
     throw new Error('Not implemented yet!')
@@ -29,6 +31,7 @@ export class NodePDFRenderer extends TargetRenderer<unknown, unknown> {
    * @param slide The slide that should be rendered. (Index or {@link Slide})
    * @since 0.2.0
    */
+  // eslint-disable-next-line no-unused-vars
   public async renderSlide(presentation: Presentation, slide: number | Slide): Promise<PDFOutput> {
     // TODO!
     throw new Error('Not implemented yet!')
