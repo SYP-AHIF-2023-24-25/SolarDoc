@@ -1,6 +1,6 @@
 import type { TargetRenderer, AsciidocCompiler } from './renderer'
-import {RenderOutput} from "./renderer";
-import {Asciidoctor} from "@asciidoctor/core";
+import { RenderOutput } from './renderer'
+import { Asciidoctor } from '@asciidoctor/core'
 
 /**
  * A presentation is a collection of slides, which internally are reveal.js slides. These can be converted to HTML,
@@ -11,10 +11,7 @@ export class Presentation {
   private readonly _compiler: AsciidocCompiler
   private readonly _parsedFile: Asciidoctor.Document
 
-  public constructor(
-      compiler: AsciidocCompiler,
-      parsedFile: Asciidoctor.Document,
-  ) {
+  public constructor(compiler: AsciidocCompiler, parsedFile: Asciidoctor.Document) {
     this._compiler = compiler
     this._parsedFile = parsedFile
 
@@ -22,8 +19,22 @@ export class Presentation {
     //throw new Error('Not implemented yet!')
   }
 
-  public get parsedFile(){
-    return this._parsedFile;
+  /**
+   * The parsed asciidoc file that was generated from the source to create the presentation.
+   * @since 0.2.0
+   */
+  public get parsedFile(): Asciidoctor.Document {
+    return this._parsedFile
+  }
+
+  /**
+   * The source of the asciidoc file that was passed.
+   *
+   * This is equivalent to {@link this.parsedFile.getSource parsedFile.getSource()}.
+   * @since 0.2.0
+   */
+  public get sourceCode(): string {
+    return this.parsedFile.getSource()
   }
 
   /**
@@ -40,9 +51,10 @@ export class Presentation {
    * @param target The target that should be used to render the presentation.
    * @since 0.2.0
    */
-  public async render<T>(target: TargetRenderer<T, T>): Promise<RenderOutput<T, T>> {
-    // TODO!
-
-    throw new Error('Not implemented yet!')
+  public async render<RawT, OutT>(
+    target: TargetRenderer<RawT, OutT>
+  ): Promise<RenderOutput<RawT, OutT>> {
+    // TODO! Finish implementation and add remaining tests
+    return await target.render(this)
   }
 }

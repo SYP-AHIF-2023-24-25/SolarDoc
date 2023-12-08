@@ -5,11 +5,11 @@
 export abstract class RenderOutput<RawT, OutT> {
   protected _internalData: RawT
 
-  protected constructor(content: RawT) {
-    this._internalData = content
+  protected constructor(internalData: RawT) {
+    this._internalData = internalData
 
     // TODO!
-    throw new Error('Not implemented yet!')
+    //throw new Error('Not implemented yet!')
   }
 
   /**
