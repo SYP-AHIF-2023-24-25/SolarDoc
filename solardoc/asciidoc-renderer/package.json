@@ -30,7 +30,8 @@
     "ts-node": "10.9.1",
     "uglify-js": "3.17.4",
     "prettier": "^3.0.3",
-    "babelify": "10.0.0"
+    "babelify": "10.0.0",
+    "browserify-shim": "3.8.16"
   },
   "engines": {
     "node": "16 || 18 || 20",
@@ -56,16 +57,7 @@
     "browserify": "ts-node ./compile/web-target.ts",
     "postbrowserify": "uglifyjs ./dist/web/solardoc-ascii-renderer.js -o ./dist/web/solardoc-ascii-renderer.min.js"
   },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "presets": [
-            "@babel/preset-env"
-          ]
-        }
-      ]
-    ]
+  "browserify-shim": {
+    "decktape": "global:decktape"
   }
 }
