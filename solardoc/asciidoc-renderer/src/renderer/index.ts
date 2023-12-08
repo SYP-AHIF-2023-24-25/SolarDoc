@@ -4,7 +4,7 @@
  * @since 0.2.0
  */
 export * from './targets/'
-export * from "./simulator"
+export * from './simulator'
 export * from './asciidoc-compiler'
 export * from './asciidoc-file'
 export * from './render-output'

@@ -1,40 +1,40 @@
-import {InvalidEnvError} from "../errors/invalid-env-error";
+import { InvalidEnvError } from '../errors'
 
 /**
  * The browser environment constant name.
  * @since 0.2.0
  */
-export type Browser = "browser";
+export type Browser = 'browser'
 
 /**
  * The browser environment constant name.
  * @since 0.2.0
  */
-export const BROWSER: Browser = "browser";
+export const BROWSER: Browser = 'browser'
 
 /**
  * The node environment constant name.
  * @since 0.2.0
  */
-export type Node = "node";
+export type Node = 'node'
 
 /**
  * The node environment constant name.
  * @since 0.2.0
  */
-export const NODE: Node = "node";
+export const NODE: Node = 'node'
 
 /**
  * Union of all compatible environment constant names.
  * @since 0.2.0
  */
-export type CompatibleEnv = Browser | Node;
+export type CompatibleEnv = Browser | Node
 
 /**
  * List of all compatible environment constant names.
  * @since 0.2.0
  */
-export const COMPATIBLE_ENVS: [Browser, Node] = [BROWSER, NODE];
+export const COMPATIBLE_ENVS: [Browser, Node] = [BROWSER, NODE]
 
 /**
  * Determines if the given code is running in a browser or node environment.
@@ -47,11 +47,15 @@ export const COMPATIBLE_ENVS: [Browser, Node] = [BROWSER, NODE];
  */
 export function detEnv(): CompatibleEnv {
   // @ts-ignore
-  if (typeof window !== "undefined" && typeof document !== "undefined") {
-    return "browser";
-  // @ts-ignore
-  } else if (typeof process !== "undefined" && process.versions != null && process.versions.node != null) {
-    return "node";
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    return 'browser'
+    // @ts-ignore
+  } else if (
+    typeof process !== 'undefined' &&
+    process.versions != null &&
+    process.versions.node != null
+  ) {
+    return 'node'
   }
-  throw new InvalidEnvError("Unsupported environment!");
+  throw new InvalidEnvError('Unsupported environment!')
 }

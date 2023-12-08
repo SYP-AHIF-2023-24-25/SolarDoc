@@ -1,4 +1,4 @@
-import {AsciidocRendererError} from "./asciidoc-renderer-error";
+import { AsciidocRendererError } from './asciidoc-renderer-error'
 
 /**
  * An error that is thrown when the environment is not supported.
@@ -6,7 +6,7 @@ import {AsciidocRendererError} from "./asciidoc-renderer-error";
  */
 export class InvalidEnvError extends AsciidocRendererError {
   public constructor(message: string) {
-    super(message);
-    this.name = "InvalidEnvError";
+    super(message)
+    this.name = 'InvalidEnvError'
   }
 }

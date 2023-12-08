@@ -3,7 +3,7 @@
  *
  * It is based on the decktape module version 3.10.0.
  */
-import {PDFDocument} from "pdf-lib";
+import { PDFDocument } from 'pdf-lib'
 
 /**
  * This is a slimmed down version of the decktape module, which is not CLI-bound.
@@ -27,7 +27,6 @@ export class DecktapeSlim {
     throw new Error('Not implemented yet!')
   }
 
-
   /**
    * Renders the given HTML to an image using a headless browser (puppeteer), where the HTML is rendered using
    * the Reveal.js library.
@@ -40,7 +39,7 @@ export class DecktapeSlim {
    * @since 0.2.0
    */
   // eslint-disable-next-line no-unused-vars
-  public async renderRJSHTMLToImage(rjsHTML: string, format: "png" | "jpg"): Promise<Buffer> {
+  public async renderRJSHTMLToImage(rjsHTML: string, format: 'png' | 'jpg'): Promise<Buffer> {
     throw new Error('Not implemented yet!')
   }
 }

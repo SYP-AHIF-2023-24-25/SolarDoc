@@ -1,2 +1,1 @@
-export * from "./decktape-slim"
-
+export * from './decktape-slim'

@@ -1,7 +1,7 @@
-import type {Presentation} from "../../../../presentation";
-import {PDFOutput} from "../pdf-output";
-import {TargetRenderer} from "../../target-renderer";
-import {Slide} from "../../../../slide";
+import type { Presentation } from '../../../../presentation'
+import { PDFOutput } from '../pdf-output'
+import { TargetRenderer } from '../../target-renderer'
+import { Slide } from '../../../../slide'
 
 /**
  * Renders a presentation or slide to a PDF file.
