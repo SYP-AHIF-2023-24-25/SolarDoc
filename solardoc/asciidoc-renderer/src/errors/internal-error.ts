@@ -1,4 +1,4 @@
-import { AsciidocRendererError } from './AsciidocRendererError'
+import { AsciidocRendererError } from './asciidoc-renderer-error'
 
 /**
  * Error thrown when an internal error occurs in the AsciidocRenderer.
