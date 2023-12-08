@@ -12,6 +12,19 @@ import { loadAsciidoctor } from '../asciidoc-loader'
  * @since 0.2.0
  */
 export class AsciidocCompiler {
+  public static readonly parseOptions = {
+    /**
+     * The safe mode that should be used to render the document.
+     *
+     * Read more here: https://docs.asciidoctor.org/asciidoctor/latest/safe-modes/
+     */
+    safe: 'safe',
+    /**
+     * The backend that should be used to render the document.
+     */
+    backend: 'revealjs',
+  }
+
   public readonly asciidoctor: Asciidoctor
 
   public constructor() {
@@ -27,7 +40,7 @@ export class AsciidocCompiler {
    * @since 0.2.0
    */
   public async parse(input: AsciidocFile): Promise<Presentation> {
-    const document: Asciidoctor.Document = this.asciidoctor.load(input.content)
+    const document: Asciidoctor.Document = this.asciidoctor.load(input.content, AsciidocCompiler.parseOptions)
     return new Presentation(this, document)
   }
 }

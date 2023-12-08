@@ -4,6 +4,7 @@ import { Presentation } from '../../../presentation'
 import { Slide } from '../../../slide'
 import { Asciidoctor } from '@asciidoctor/core'
 import { InternalError } from '../../../errors'
+import {AsciidocCompiler} from "../../asciidoc-compiler";
 
 /**
  * Renders a presentation or slide to an image file.
@@ -11,16 +12,7 @@ import { InternalError } from '../../../errors'
  */
 export class HTMLRenderer extends TargetRenderer<string, string> {
   private static readonly renderOptions = {
-    /**
-     * The safe mode that should be used to render the document.
-     *
-     * Read more here: https://docs.asciidoctor.org/asciidoctor/latest/safe-modes/
-     */
-    safe: 'safe',
-    /**
-     * The backend that should be used to render the document.
-     */
-    backend: 'revealjs',
+    ...AsciidocCompiler.parseOptions,
     /**
      * Standalone hints to the processor that the document requires a full document render.
      *
