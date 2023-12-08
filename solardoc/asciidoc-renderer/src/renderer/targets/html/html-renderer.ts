@@ -9,7 +9,7 @@ import { InternalError } from '../../../errors'
  * Renders a presentation or slide to an image file.
  * @since 0.2.0
  */
-export class HTMLRenderer extends TargetRenderer<unknown, unknown> {
+export class HTMLRenderer extends TargetRenderer<string, string> {
   private static readonly renderOptions = {
     /**
      * The safe mode that should be used to render the document.
