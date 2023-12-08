@@ -26,7 +26,7 @@ export class AsciidocCompiler {
    * @param input The asciidoc file which should be compiled.
    * @since 0.2.0
    */
-  public async compile(input: AsciidocFile): Promise<Presentation> {
+  public async parse(input: AsciidocFile): Promise<Presentation> {
     const document: Asciidoctor.Document = this.asciidoctor.load(input.content)
     return new Presentation(this, document)
   }
