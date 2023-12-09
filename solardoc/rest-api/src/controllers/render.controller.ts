@@ -1,15 +1,19 @@
-import {getModelSchemaRef, param, post, requestBody} from '@loopback/rest';
-import {RenderPresentationDtoModel,RenderedPresentationPdfDtoModel,RenderedPresentationRjsHtmlDtoModel,RenderedSlideImageDtoModel,RenderedPresentationImagesDtoModel} from '../models';
-import {CacheService} from "../services/cache.service";
-import {inject} from "@loopback/core";
+import { getModelSchemaRef, param, post, requestBody } from '@loopback/rest'
+import {
+  RenderedPresentationImagesDtoModel,
+  RenderedPresentationPdfDtoModel,
+  RenderedPresentationRjsHtmlDtoModel,
+  RenderedSlideImageDtoModel,
+  RenderPresentationDtoModel,
+} from '../models'
+import { CacheService } from '../services/cache.service'
+import { inject } from '@loopback/core'
 
 /**
  * The controller for managing the render operation of Asciidoc presentations.
  */
 export class RenderController {
-  constructor(
-    @inject('services.CacheService') public cacheService: CacheService,
-  ) {}
+  constructor(@inject('services.CacheService') public cacheService: CacheService) {}
 
   @post('/render/presentation/pdf', {
     responses: {
@@ -27,7 +31,7 @@ export class RenderController {
   async renderPresentationPdf(
     @requestBody() presentationModel: RenderPresentationDtoModel,
   ): Promise<RenderedPresentationPdfDtoModel> {
-    throw new Error('Not implemented yet!');
+    throw new Error('Not implemented yet!')
   }
 
   @post('/render/presentation/rjs-html', {
@@ -46,7 +50,7 @@ export class RenderController {
   async renderPresentationRjsHtml(
     @requestBody() presentationModel: RenderPresentationDtoModel,
   ): Promise<RenderedPresentationRjsHtmlDtoModel> {
-    throw new Error('Not implemented yet!');
+    throw new Error('Not implemented yet!')
   }
 
   @post('/render/presentation/images', {
@@ -65,7 +69,7 @@ export class RenderController {
   async renderPresentationImages(
     @requestBody() presentationModel: RenderPresentationDtoModel,
   ): Promise<RenderedPresentationImagesDtoModel> {
-    throw new Error('Not implemented yet!');
+    throw new Error('Not implemented yet!')
   }
 
   @post('/render/slide/{uuid}/image', {
@@ -85,6 +89,6 @@ export class RenderController {
     @param.path.string('uuid') id: number,
     @requestBody() presentationModel: RenderPresentationDtoModel,
   ): Promise<RenderedSlideImageDtoModel> {
-    throw new Error('Not implemented yet!');
+    throw new Error('Not implemented yet!')
   }
 }

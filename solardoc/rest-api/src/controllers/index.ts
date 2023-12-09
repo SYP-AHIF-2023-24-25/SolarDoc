@@ -1,1 +1,1 @@
-export * from './render.controller';
+export * from './render.controller'

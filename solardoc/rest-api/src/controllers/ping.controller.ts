@@ -1,25 +1,23 @@
-import {inject} from '@loopback/core';
-import {
-  Request,
-  RestBindings,
-  get,
-  response,
-  ResponseObject,
-  getModelSchemaRef,
-} from '@loopback/rest';
-import {PingDtoModel} from '../models';
+import { inject } from '@loopback/core'
+import { get, getModelSchemaRef, Request, RestBindings } from '@loopback/rest'
+import { PingDtoModel } from '../models'
+import { CacheService } from '../services'
 
 /**
  * A simple controller to bounce back http requests
  */
 export class PingController {
-  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+  constructor(
+    @inject(RestBindings.Http.REQUEST) private req: Request,
+  ) {}
 
   @get('/ping', {
     responses: {
       '200': {
         description: 'Ping Response',
-        content: {'application/json': {schema: getModelSchemaRef(PingDtoModel)}},
+        content: {
+          'application/json': { schema: getModelSchemaRef(PingDtoModel) },
+        },
       },
     },
   })
@@ -31,6 +29,6 @@ export class PingController {
       url: this.req.url,
       headers: Object.assign({}, this.req.headers),
       ip: this.req.socket.remoteAddress,
-    };
+    }
   }
 }

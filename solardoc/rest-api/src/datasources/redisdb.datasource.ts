@@ -1,14 +1,25 @@
-import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
-import {juggler, Options} from '@loopback/repository';
-import {ensureEnvLoaded, getEnv} from "../services";
+import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core'
+import { juggler } from '@loopback/repository'
+import { ensureEnvLoaded, getEnv } from '../services'
+import { createClient as createV4Client, RedisClientType } from 'redis'
+import { DataSourceError } from '../errors'
 
+// Ensure all env files have been loaded.
 ensureEnvLoaded()
+
 const config = {
   name: 'redisdb',
   connector: 'loopback-connector-redis',
-  host: getEnv("REDIS_HOST"),
-  port: Number(getEnv("REDIS_PORT")),
-  password: getEnv("REDIS_ROOT_PASSWORD"),
+  host: getEnv('REDIS_HOST'),
+  port: Number(getEnv('REDIS_PORT')),
+  password: getEnv('REDIS_ROOT_PASSWORD'),
+}
+
+const v4Config = {
+  host: getEnv('REDIS_HOST'),
+  port: Number(getEnv('REDIS_PORT')),
+  username: getEnv('REDIS_USERNAME'),
+  password: getEnv('REDIS_PASSWORD'),
 }
 
 // Observe application's life cycle to disconnect the datasource when
@@ -16,15 +27,81 @@ const config = {
 // gracefully. The `stop()` method is inherited from `juggler.DataSource`.
 // Learn more at https://loopback.io/doc/en/lb4/Life-cycle.html
 @lifeCycleObserver('datasource')
-export class RedisDBDataSource extends juggler.DataSource
-  implements LifeCycleObserver {
-  static dataSourceName = 'redisdb';
-  static readonly defaultConfig = config;
+export class RedisDBDataSource extends juggler.DataSource implements LifeCycleObserver {
+  static dataSourceName = 'redisdb'
+  static readonly defaultConfig = config
+
+  /**
+   * The *modern* Redis Client which exposes a far more modern API than the default one.
+   *
+   * This is terrible, as we are basically maintaining two connections to the same database, but it's the only way
+   * to get the modern API. (The default one from `loopback-connector-redis` is only at version 2.8.0, which is
+   * very outdated (2017), but seems to still work on the most basic level i.e. creating hash maps, maintaining keys,
+   * updating values and fetching values.)
+   * @since 0.2.0
+   */
+  public readonly v4Client: RedisClientType & ReturnType<typeof createV4Client>
 
   constructor(
-    @inject('datasources.config.redisdb', {optional: true})
+    @inject('datasources.config.redisdb', { optional: true })
     dsConfig: object = config,
   ) {
-    super(dsConfig);
+    super(dsConfig)
+    this.v4Client = <RedisClientType>createV4Client(v4Config)
+
+    // Ensure that the connector is defined
+    if (this.connector === undefined) {
+      throw new DataSourceError("Required 'connector' property is missing from the data source.")
+    }
+  }
+
+  /**
+   * The URL of the database.
+   *
+   * Only the host and port are included.
+   * @since 0.2.0
+   */
+  public get url(): string {
+    return `${v4Config.host}:${v4Config.port}`
+  }
+
+  /**
+   * Connects the v4 client to the database.
+   * @private
+   */
+  private async connectV4Client(): Promise<void> {
+    await this.v4Client.connect()
+    console.log(`[REDISv4] Connected to Redis v4 database at ${this.url}`)
+
+    await this.logDBDiagnostics()
+  }
+
+  /**
+   * Log all (important) diagnostic data from the database.
+   * @private
+   */
+  private async logDBDiagnostics(): Promise<void> {
+    const dbServerInfo = await this.v4Client.info('server')
+    const dbErrorInfo = await this.v4Client.info('errorstats')
+    console.log(`[REDISv4] Database info:\n${dbServerInfo}`)
+    console.log(`[REDISv4] Database error info:\n${dbErrorInfo}`)
+  }
+
+  /**
+   * Initialise the data source. This in this case only prepares the v4 client, as the default client is initialised
+   * by the {@link Connector} class.
+   * @since 0.2.0
+   */
+  public async init(): Promise<void> {
+    await this.connectV4Client()
+  }
+
+  /**
+   * Disconnects and stops the data source.
+   * @since 0.2.0
+   */
+  public override async stop(): Promise<void> {
+    await this.v4Client.quit()
+    await super.stop()
   }
 }

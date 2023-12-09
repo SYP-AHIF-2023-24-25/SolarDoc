@@ -1,5 +1,4 @@
-import {model, property} from '@loopback/repository';
-import {DownloadDtoModel} from './download-dto.model';
+import { model, property } from '@loopback/repository'
 
 @model()
 export class RenderedSlideDtoModel {
@@ -7,5 +6,5 @@ export class RenderedSlideDtoModel {
     required: true,
     description: 'The name of the presentation (original file name)',
   })
-  fileName: string;
+  fileName: string
 }

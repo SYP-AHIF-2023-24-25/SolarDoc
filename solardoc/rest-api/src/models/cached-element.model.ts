@@ -1,18 +1,19 @@
-import {Entity, model, property} from '@loopback/repository';
+import { model, property } from '@loopback/repository'
+import { RedisEntity } from './abstract/redis-entity'
 
-@model({settings: {strict: false}})
-export class CachedElement extends Entity {
+@model({ settings: { strict: false } })
+export class CachedElement extends RedisEntity {
   @property({
     type: 'number',
     required: true,
   })
-  expiresAt: number;
+  expiresAt: number
 
   @property({
     type: 'string',
     required: true,
   })
-  name: string;
+  name: string
 
   @property({
     type: 'string',
@@ -20,21 +21,29 @@ export class CachedElement extends Entity {
   })
   serverPath: string;
 
-  @property({
-    type: 'string',
-    id: true,
-    generated: true,
-  })
-  uuid?: string;
-
-  // Define well-known properties here
-
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  [prop: string]: any
 
+  /**
+   * Create a new cached element.
+   * @param data The data to create the cached element from. (Ignores any {@link CachedElement.uuid} property, as this
+   * is auto-generated.)
+   */
   constructor(data?: Partial<CachedElement>) {
-    super(data);
+    super(data)
+  }
+
+  /**
+   * Returns whether this cached element has expired.
+   * @since 0.2.0
+   */
+  public hasExpired(): boolean {
+    return this.expiresAt <= Date.now()
+  }
+
+  public override get redisKey(): string {
+    return `${CachedElement.modelName}:${this.id}`
   }
 }
 
@@ -42,4 +51,4 @@ export interface CachedElementRelations {
   // describe navigational properties here
 }
 
-export type CachedElementWithRelations = CachedElement & CachedElementRelations;
+export type CachedElementWithRelations = CachedElement & CachedElementRelations

@@ -1,8 +1,8 @@
-import {injectable, /* inject, */ BindingScope} from '@loopback/core';
-import * as dotenv from "dotenv";
+import { BindingScope, injectable } from '@loopback/core'
+import * as dotenv from 'dotenv'
 
-let envLoaded = false;
-let envConfig: dotenv.DotenvParseOutput = {};
+let envLoaded = false
+let envConfig: dotenv.DotenvParseOutput = {}
 
 /**
  * This function is used to ensure that the environment variables are loaded.
@@ -13,7 +13,7 @@ let envConfig: dotenv.DotenvParseOutput = {};
  */
 export function ensureEnvLoaded(): void {
   if (!envLoaded) {
-    loadEnv();
+    loadEnv()
   }
 }
 
@@ -26,16 +26,20 @@ export function ensureEnvLoaded(): void {
  */
 export function loadEnv(): void {
   // First load the work dir .env file
-  const result = dotenv.config();
-  const { parsed } = result;
+  const result = dotenv.config()
+  const { parsed } = result
 
   // Then load the monorepo root .env file
-  const rootResult = dotenv.config({ path: "../../.env" });
-  const { parsed: rootParsed } = rootResult;
+  const rootResult = dotenv.config({ path: '../../.env' })
+  const { parsed: rootParsed } = rootResult
 
   if (
-    result.error || !parsed || Object.keys(parsed).length === 0
-    || rootResult.error || !rootParsed || Object.keys(rootParsed).length === 0
+    result.error ||
+    !parsed ||
+    Object.keys(parsed).length === 0 ||
+    rootResult.error ||
+    !rootParsed ||
+    Object.keys(rootParsed).length === 0
   ) {
     throw new Error(
       `[CRITICAL] Failed to load environment variables from work dir .env file or monorepo root .env file.
@@ -47,14 +51,16 @@ If the .env files exist, please make sure to check the following:
 - The .env file is valid, and all required variables are set (see .env.example)
 - The .env file is readable by the user running the application (check file permissions)
 
-${result.error?.stack ? result.error?.stack : "Error details: " + (result.error ? result.error?.message : "Empty .env file.")}`
-    );
+${
+  result.error?.stack
+    ? result.error?.stack
+    : 'Error details: ' + (result.error ? result.error?.message : 'Empty .env file.')
+}`,
+    )
   }
 
-  envLoaded = true;
-  envConfig = Object.seal(
-    Object.assign({}, parsed, rootParsed)
-  );
+  envLoaded = true
+  envConfig = Object.seal(Object.assign({}, parsed, rootParsed))
 }
 
 /**
@@ -68,28 +74,26 @@ ${result.error?.stack ? result.error?.stack : "Error details: " + (result.error 
  * @since 0.2.0
  */
 export function getEnv(key: string, throwIfUndef: boolean = true): string {
-if (!envLoaded) {
-    throw new Error(
-      `[CRITICAL] Attempted to access environment variables before they were loaded.`
-    );
+  if (!envLoaded) {
+    throw new Error(`[CRITICAL] Attempted to access environment variables before they were loaded.`)
   }
 
-  const value = envConfig[key];
+  const value = envConfig[key]
   if (throwIfUndef && !value) {
     throw new Error(
-      `[CRITICAL] Attempted to access undefined environment variable "${key}" (Marked as required by application).`
-    );
+      `[CRITICAL] Attempted to access undefined environment variable "${key}" (Marked as required by application).`,
+    )
   }
-  return value;
+  return value
 }
 
-@injectable({scope: BindingScope.TRANSIENT})
+@injectable({ scope: BindingScope.TRANSIENT })
 export class EnvConfigService {
   constructor(/* Add @inject to inject parameters */) {
     if (!envLoaded) {
       throw new Error(
-        `[CRITICAL] Attempted to access environment variables before they were loaded.`
-      );
+        `[CRITICAL] Attempted to access environment variables before they were loaded.`,
+      )
     }
   }
 
@@ -98,6 +102,6 @@ export class EnvConfigService {
    * @since 0.2.0
    */
   public get raw(): dotenv.DotenvParseOutput {
-    return envConfig;
+    return envConfig
   }
 }

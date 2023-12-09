@@ -1,22 +1,22 @@
-import {ApplicationConfig, RestApiApplication} from './application';
-import {loadEnv} from './services';
+import { ApplicationConfig, RestApiApplication } from './application'
+import { loadEnv } from './services'
 
-export * from './application';
+export * from './application'
 
 // First load the environment variables from the .env file
-loadEnv();
+loadEnv()
 
 export async function main(options: ApplicationConfig = {}) {
   // Then start the application
-  const app = new RestApiApplication(options);
-  await app.boot();
-  await app.start();
+  const app = new RestApiApplication(options)
+  await app.boot()
+  await app.start()
 
-  const url = app.restServer.url;
-  console.log(`Server is running at ${url}`);
-  console.log(`Try ${url}/ping`);
+  const url = app.restServer.url
+  console.log(`Server is running at ${url}`)
+  console.log(`Try ${url}/ping`)
 
-  return app;
+  return app
 }
 
 if (require.main === module) {
@@ -36,9 +36,9 @@ if (require.main === module) {
         setServersFromRequest: true,
       },
     },
-  };
+  }
   main(config).catch(err => {
-    console.error(`Cannot start the application. \n\n${err}`);
-    process.exit(1);
-  });
+    console.error(`Cannot start the application. \n\n${err}`)
+    process.exit(1)
+  })
 }

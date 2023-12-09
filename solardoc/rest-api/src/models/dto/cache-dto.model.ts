@@ -1,4 +1,4 @@
-import {model, property} from '@loopback/repository';
+import { model, property } from '@loopback/repository'
 
 @model()
 export class CacheDtoModel {
@@ -7,12 +7,11 @@ export class CacheDtoModel {
     description:
       'The UUID of the presentation (which is used to access the cached rendered presentation)',
   })
-  cacheUUID: string;
+  cacheUUID: string
 
   @property({
     required: true,
-    description:
-      'The expiration date of the cache entry (in milliseconds since epoch)',
+    description: 'The expiration date of the cache entry (in milliseconds since epoch)',
   })
-  expiresAt: number;
+  expiresAt: number
 }

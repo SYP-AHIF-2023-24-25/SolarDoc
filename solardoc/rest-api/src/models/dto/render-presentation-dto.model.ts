@@ -1,4 +1,4 @@
-import {model, property} from '@loopback/repository';
+import { model, property } from '@loopback/repository'
 
 @model()
 export class RenderPresentationDtoModel {
@@ -6,11 +6,11 @@ export class RenderPresentationDtoModel {
     required: true,
     description: 'The name of the file to upload',
   })
-  fileName: string;
+  fileName: string
 
   @property({
     required: true,
     description: 'The file to upload',
   })
-  fileContent: string;
+  fileContent: string
 }
