@@ -33,7 +33,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "eslint": "pnpm run lint",
     "format": "prettier --write src/",
-    "prettier": "pnpm run format"
+    "prettier": "pnpm run format",
+    "oazapfts": "oazapfts ../rest-api/openapi.json ./src/services/http-service.ts"
   },
   "dependencies": {
     "@vueuse/core": "10.5.0",
