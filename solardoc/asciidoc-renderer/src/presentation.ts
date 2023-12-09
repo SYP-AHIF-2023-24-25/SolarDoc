@@ -79,9 +79,18 @@ export class Presentation {
     const metadata: PresentationMetadata = {
       title: document.getDocumentTitle(),
       author: document.getAuthor(),
-      slideCount: document.getBlocks().length,
-      mainSlideCount: undefined,
+      slideCount: 0,
+      mainSlideCount: 0,
       originalDocument: document
+    }
+
+    let slides = document.getBlocks();
+    metadata.mainSlideCount = slides.length;
+    metadata.slideCount = slides.length;
+    for(let slide in slides) {
+      let subBlocks = slides[slide].getBlocks();
+      let subSlideCount = subBlocks.filter((block: { getContext: () => string }) => block.getContext() === 'section').length;
+      metadata.slideCount += subSlideCount;
     }
 
     return metadata

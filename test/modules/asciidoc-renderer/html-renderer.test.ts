@@ -1,4 +1,4 @@
-import { AsciidocCompiler, AsciidocFile, HTMLRenderer } from "@solardoc/asciidoc-renderer";
+import {AsciidocCompiler, AsciidocFile, HTMLRenderer} from "@solardoc/asciidoc-renderer";
 import { assert } from "chai";
 
 describe("HtmlRenderer", () => {
