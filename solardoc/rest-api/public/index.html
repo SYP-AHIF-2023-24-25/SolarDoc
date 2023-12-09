@@ -8,19 +8,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" type="image/x-icon" href="./img/favicon.ico">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=League+Spartan">
 
   <style lang="scss">
-    h3 {
-      margin-left: 25px;
-      text-align: center;
-    }
-
-    a, a:visited {
-      color: #3f5dff;
-    }
-
-    h3 a {
-      margin-left: 10px;
+    html {
+      font-family: 'League Spartan', 'Inter', sans-serif;
     }
 
     a:hover, a:focus, a:active {
@@ -35,21 +27,27 @@
     }
 
     .info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%)
+      transform: translate(-50%, -50%);
     }
 
-    .info h1 {
+    .info img {
+      margin-bottom: 2rem;
+    }
+
+    .info h1,
+    .info h3 {
       text-align: center;
-      margin-bottom: 0;
+      margin: 0 0 1rem 0;
     }
 
     .info p {
-      text-align: center;
-      margin-bottom: 3em;
-      margin-top: 1em;
+      margin: 1rem 0 3rem 0;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -68,11 +66,10 @@
     }
   </style>
 </head>
-
 <body>
   <div class="info">
-    <h1>rest-api</h1>
-    <p>Version 1.0.0</p>
+    <img src="https://raw.githubusercontent.com/SYP-AHIF-2023-24-25/SolarDoc/main/images/500x500-transparent-logo.png" alt="SolarDoc Logo" width="200px" />
+    <h1>Solardoc Rest-API</h1>
 
     <h3>OpenAPI spec: <a href="./openapi.json">/openapi.json</a></h3>
     <h3>API Explorer: <a href="./explorer">/explorer</a></h3>
@@ -84,5 +81,4 @@
     </a>
   </footer>
 </body>
-
 </html>
