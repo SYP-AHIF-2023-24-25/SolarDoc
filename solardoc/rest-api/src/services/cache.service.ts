@@ -11,7 +11,7 @@ export class CacheService {
   private static readonly DEFAULT_EXPIRATION_TIME: number = 60 * 30 // 30 minutes
 
   public async get(uuid: string): Promise<CachedElement> {
-    return await this.cache.findById(uuid)
+    return this.cache.findById(uuid);
   }
 
   /**
@@ -40,7 +40,7 @@ export class CacheService {
       await this.cache.setCacheExpiration(dbElement, true)
       return dbElement
     } catch (e) {
-      console.error((<Error>e).name, (<Error>e).message, (<Error>e).stack || '')
+      console.error((<Error>e).name, (<Error>e).message, (<Error>e).stack ?? '')
       throw e
     }
   }
