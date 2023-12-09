@@ -28,7 +28,7 @@ add_redis_user() {
   echo "[init.sh] Adding user '$REDIS_USERNAME' to redis..."
   echo -e "
   AUTH $REDIS_ROOT_PASSWORD
-  ACL SETUSER $REDIS_USERNAME on >$REDIS_PASSWORD +@all -@admin
+  ACL SETUSER $REDIS_USERNAME on ~* &* +@all -@dangerous +info >$REDIS_PASSWORD
   " | redis-cli
 
   # Wrap up and start new non-daemonized redis instance, which will be the actual one running
@@ -37,8 +37,8 @@ add_redis_user() {
 
 # Start redis server (and add user if needed if 'REDIS_USERNAME' and 'REDIS_PASSWORD' are set)
 echo "[init.sh] Starting redis server..."
-if [[ -n "$REDIS_USERNAME" && -n "$REDIS_PASSWORD" ]]; then
-  redis-server /usr/local/etc/redis/redis.conf --bind
+if [ -n "$REDIS_USERNAME" ] && [ -n "$REDIS_PASSWORD" ]; then
+  add_redis_user &
 else
   echo "[init.sh] 'REDIS_USERNAME' and 'REDIS_PASSWORD' are not set. Please use 'REDIS_ROOT_PASSWORD' to log in."
 fi
