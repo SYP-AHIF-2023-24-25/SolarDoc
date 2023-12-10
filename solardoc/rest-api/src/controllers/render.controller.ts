@@ -6,14 +6,17 @@ import {
   RenderedSlideImageDtoModel,
   RenderPresentationDtoModel,
 } from '../models'
-import { CacheService } from '../services'
+import {CacheService, RenderService} from '../services'
 import { inject } from '@loopback/core'
 
 /**
  * The controller for managing the render operation of Asciidoc presentations.
  */
 export class RenderController {
-  constructor(@inject('services.CacheService') public cacheService: CacheService) {}
+  constructor(
+    @inject('services.CacheService') public cacheService: CacheService,
+    @inject('services.RenderService') public renderService: RenderService,
+  ) {}
 
   @post('/render/presentation/pdf', {
     responses: {
