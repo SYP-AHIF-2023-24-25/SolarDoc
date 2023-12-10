@@ -1,79 +1,139 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import {useLoadingStore} from "@/stores/loading";
+import HalfMoonSVG from "@/components/icons/HalfMoonSVG.vue";
+import GithubLogoSVG from "@/components/icons/GithubLogoSVG.vue";
+import SolardocLogoSVG from "@/components/icons/SolardocLogoSVG.vue";
+import GithubLogoDarkModeSVG from "@/components/icons/GithubLogoDarkModeSVG.vue";
+import SolardocLogoDarkModeSVG from "@/components/icons/SolardocLogoDarkModeSVG.vue";
+import SunDarkModeSVG from "@/components/icons/SunDarkModeSVG.vue";
+import constants from "@/plugins/constants";
+import {useDarkModeStore} from "@/stores/dark-mode";
+
+const loadingStore = useLoadingStore();
+const darkModeStore = useDarkModeStore();
+
+function setLoading(state: boolean): void {
+  loadingStore.setLoading(state);
+}
+</script>
 
 <template>
   <nav id="navbar">
     <div id="left-components">
-      <img alt="SolarDoc logo" src="@/assets/logo.svg" width="50" height="50" />
+      <div id="solardoc-logo">
+        <SolardocLogoDarkModeSVG v-show="darkModeStore.darkMode" />
+        <SolardocLogoSVG v-show="!darkModeStore.darkMode" />
+      </div>
       <div id="title">
-        <p @click="$router.push('/')">SolarDoc</p>
+        <RouterLink to="/" @click="setLoading(true)">SolarDoc</RouterLink>
       </div>
     </div>
-    <div id="navigation-links">
-      <div id="router-links">
-        <RouterLink to="/docs">docs</RouterLink>
-        <RouterLink to="/editor">editor</RouterLink>
-        <RouterLink to="/about">about</RouterLink>
+    <div id="right-components">
+      <div id="navigation-links">
+        <div id="router-links">
+          <RouterLink to="/docs" @click="setLoading(true)">docs</RouterLink>
+          <RouterLink to="/editor" @click="setLoading(true)">editor</RouterLink>
+          <RouterLink to="/about" @click="setLoading(true)">about</RouterLink>
+        </div>
       </div>
-      <div id="right-components">
-        <img alt="Github Icon" src="@/assets/github-logo.svg" />
-        <img alt="Moon Icon" src="@/assets/moon.svg" />
+      <div id="clickable-icons">
+        <a :href="constants.githubURL" target="_blank" rel="noopener noreferrer">
+          <GithubLogoDarkModeSVG v-show="darkModeStore.darkMode" />
+          <GithubLogoSVG v-show="!darkModeStore.darkMode" />
+        </a>
+        <a @click="darkModeStore.toggleDarkMode()">
+          <SunDarkModeSVG v-show="darkModeStore.darkMode" />
+          <HalfMoonSVG v-show="!darkModeStore.darkMode" />
+        </a>
       </div>
     </div>
   </nav>
 </template>
 
 <style scoped lang="scss">
-@import '@/assets/core/var';
+@use '@/assets/core/mixins/link-hover-presets' as *;
+@use '@/assets/core/mixins/align-horizontal-center' as *;
+@use '@/assets/core/var' as var;
 
 #navbar {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  padding: 0 1rem;
+  height: var.$nav-bar-height;
+  width: var.$nav-bar-width;
+  padding: var.$nav-bar-padding;
+  margin: var.$nav-bar-margin;
+  gap: 2rem;
 
-  #title {
-    display: flex;
-    align-items: center;
-    font-size: 2rem;
-    margin: 0 0 0 0.2rem;
+  #left-components {
+    @include align-horizontal-center;
 
-    p {
-      &:hover {
-        cursor: pointer;
-        color: var(--scheme-cs-2);
+    #solardoc-logo {
+      svg {
+        width: 50px;
+        height: 50px;
+      }
+    }
+
+    #title {
+      @include align-horizontal-center;
+      font-size: 2rem;
+      margin: 0 0 0 0.5rem;
+
+      * {
+        text-decoration: none;
+
+        &:hover {
+          @include link-hover-presets;
+        }
       }
     }
   }
 
-  #left-components {
+  #right-components {
+    @include align-horizontal-center;
     display: flex;
-  }
+    flex-flow: row nowrap;
+    gap: 4rem;
 
-  #navigation-links {
-    margin-top: 0.5rem;
-    display: flex;
-    gap: 1rem;
-
-    #router-links {
-      width: 30rem;
+    #navigation-links {
+      @include align-horizontal-center;
       display: flex;
-      justify-content: space-between;
+      gap: 1rem;
 
-      & > * {
-        text-decoration: none;
-        color: black;
-        font-size: 1.5rem;
+      #router-links {
+        width: 30rem;
+        display: flex;
+        justify-content: space-between;
 
-        &:hover {
-          color: $scheme-cs-2;
+        @media screen and (max-width: var.$window-large) {
+          & {
+            max-width: 20rem;
+            width: 40vw;
+          }
+        }
+
+        & > * {
+          text-decoration: none;
+          font-size: 1.5rem;
+
+          &:hover {
+            @include link-hover-presets;
+          }
         }
       }
     }
 
-    #right-components {
+    #clickable-icons {
+      @include align-horizontal-center;
       display: flex;
+      gap: 2rem;
 
       & > * {
+        @include link-hover-presets;
+
+        padding: 0;
+        margin: 0;
         width: 30px;
         height: 30px;
       }

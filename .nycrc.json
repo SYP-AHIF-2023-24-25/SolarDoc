@@ -1,0 +1,12 @@
+{
+  "extends": "@istanbuljs/nyc-config-typescript",
+  "reporter": [
+    "json-summary",
+    "lcov"
+  ],
+  "extension": ["ts"],
+  "exclude": [
+    "**/frontend/**",
+    "**/node_modules/**"
+  ]
+}

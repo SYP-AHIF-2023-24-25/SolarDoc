@@ -13,10 +13,29 @@
   "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
   "license": "GPL-3.0",
   "scripts": {
-    "build": "pnpm run -r build"
+    "build": "pnpm run -r build",
+    "test": "pnpm run test-no-rebuild",
+    "pretest": "pnpm run build",
+    "test-no-rebuild": "nyc mocha ./test/"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "1.0.2",
+    "@solardoc/asciidoc-renderer": "workspace:~",
     "@solardoc/frontend": "workspace:~",
-    "@solardoc/rest-api": "workspace:~"
+    "@solardoc/rest-api": "workspace:~",
+    "@types/chai": "4.3.0",
+    "@types/mocha": "10.0.1",
+    "@types/node": "20.9.3",
+    "chai": "4.3.6",
+    "eslint": "^8.48.0",
+    "mocha": "10.2.0",
+    "nyc": "15.1.0",
+    "ts-mocha": "10.0.0",
+    "ts-node": "10.9.1",
+    "tslib": "2.6.2",
+    "typescript": "5.2.2"
+  },
+  "dependencies": {
+    "reveal.js": "^5.0.2"
   }
 }

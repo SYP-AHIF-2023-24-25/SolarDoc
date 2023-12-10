@@ -1,0 +1,12 @@
+{
+  "short_name": "SolarDoc",
+  "name": "SolarDoc",
+  "icons": [{
+    "src": "favicon.ico",
+    "type": "image/ico",
+    "sizes": "256x256"
+  }],
+  "start_url": "/?utm_source=homescreen",
+  "background_color": "#ffffff",
+  "theme_color": "#0e21a0"
+}
