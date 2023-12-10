@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import Editor from '@/components/editor/Editor.vue'
-import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
-import SandwichMenuDarkModeSVG from "@/components/icons/SandwichMenuDarkModeSVG.vue";
-import {useDarkModeStore} from "@/stores/dark-mode";
-import * as backendAPI from "@/services/backend/api-service";
+import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
+import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
+import { useDarkModeStore } from '@/stores/dark-mode'
+import * as backendAPI from '@/services/backend/api-service'
 
-const darkModeStore = useDarkModeStore();
+const darkModeStore = useDarkModeStore()
 
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error

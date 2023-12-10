@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {useLoadingStore} from "@/stores/loading";
+import { useLoadingStore } from '@/stores/loading'
 
-const loadingStore = useLoadingStore();
+const loadingStore = useLoadingStore()
 </script>
 
 <template>

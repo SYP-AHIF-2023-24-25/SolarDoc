@@ -12,10 +12,10 @@ export const lightEditorTheme = {
     { token: 'check-boxes', foreground: '#be005e' },
     { token: 'comment', foreground: '#657c6e', fontStyle: 'italic' },
     { token: 'special-token', foreground: '#b0b0b0', fontStyle: 'bold' },
-    { token: 'bold-italic', foreground: '#750046', fontStyle: 'bold italic' }
+    { token: 'bold-italic', foreground: '#750046', fontStyle: 'bold italic' },
   ],
   colors: {
     'editor.background': '#ffffff',
     'editor.foreground': '#0f111a',
-  }
+  },
 }

@@ -45,7 +45,9 @@
   --editor-menu-margin: 0;
   --editor-menu-button-menu-padding: 0;
   --editor-menu-button-menu-margin: 0;
-  --editor-monaco-height: calc(var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width));
+  --editor-monaco-height: calc(
+    var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
+  );
   --editor-monaco-width: 60vw;
   --editor-monaco-padding-top: 1rem;
   --editor-monaco-margin: 0;

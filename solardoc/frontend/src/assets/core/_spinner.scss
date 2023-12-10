@@ -24,13 +24,16 @@
     border-color: $scheme-background-black rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
   }
   33% {
-    border-color: $scheme-background-black $scheme-background-black rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    border-color: $scheme-background-black $scheme-background-black rgba(0, 0, 0, 0)
+      rgba(0, 0, 0, 0);
   }
   66% {
-    border-color: $scheme-background-black $scheme-background-black $scheme-background-black rgba(0, 0, 0, 0);
+    border-color: $scheme-background-black $scheme-background-black $scheme-background-black
+      rgba(0, 0, 0, 0);
   }
   100% {
-    border-color: $scheme-background-black $scheme-background-black $scheme-background-black $scheme-background-black;
+    border-color: $scheme-background-black $scheme-background-black $scheme-background-black
+      $scheme-background-black;
   }
 }
 

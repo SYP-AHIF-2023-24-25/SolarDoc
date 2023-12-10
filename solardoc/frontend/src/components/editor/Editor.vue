@@ -10,10 +10,10 @@ import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
-import {useDarkModeStore} from "@/stores/dark-mode";
-import type {MutationType, SubscriptionCallbackMutation} from "pinia";
+import { useDarkModeStore } from '@/stores/dark-mode'
+import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
 
-const darkModeStore = useDarkModeStore();
+const darkModeStore = useDarkModeStore()
 
 let localStorageIdentifier = 'reloadText'
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
@@ -25,7 +25,7 @@ onMounted(() => {
   // Register a tokens provider for the language
   monaco.languages.setMonarchTokensProvider(
     'asciiDoc',
-    <languages.IMonarchLanguage>asciiDocLangMonarch
+    <languages.IMonarchLanguage>asciiDocLangMonarch,
   )
 
   // Define a new theme that contains only rules that match this language
@@ -42,15 +42,15 @@ onMounted(() => {
     value: [`${reloadText}`].join('\n'),
     fontFamily: 'JetBrains Mono',
     minimap: {
-      enabled: false
+      enabled: false,
     },
     wordWrap: 'on',
     automaticLayout: true,
-    scrollBeyondLastLine: false
+    scrollBeyondLastLine: false,
   })
 
   // This is an ID of the timeout
-  let activeTimeout: ReturnType<typeof setTimeout>;
+  let activeTimeout: ReturnType<typeof setTimeout>
   editorInstance.onKeyUp(() => {
     // If there is an active timeout, then cancel it and force the creation of a new one
     // (to avoid saving the text too often)
@@ -63,18 +63,23 @@ onMounted(() => {
   })
 
   // Register an event listener to the darkModeStore to change the theme of the editor
-  darkModeStore.$subscribe((mutation: SubscriptionCallbackMutation<{ darkMode: boolean }>, state: { darkMode: boolean }) => {
-    console.log("Changing editor theme to " + (state.darkMode ? "dark" : "light"))
-    if (state.darkMode) {
-      editorInstance!.updateOptions({
-        theme: 'asciiDocDarkTheme'
-      })
-    } else {
-      editorInstance!.updateOptions({
-        theme: 'asciiDocLightTheme'
-      })
-    }
-  })
+  darkModeStore.$subscribe(
+    (
+      mutation: SubscriptionCallbackMutation<{ darkMode: boolean }>,
+      state: { darkMode: boolean },
+    ) => {
+      console.log('Changing editor theme to ' + (state.darkMode ? 'dark' : 'light'))
+      if (state.darkMode) {
+        editorInstance!.updateOptions({
+          theme: 'asciiDocDarkTheme',
+        })
+      } else {
+        editorInstance!.updateOptions({
+          theme: 'asciiDocLightTheme',
+        })
+      }
+    },
+  )
 })
 </script>
 
