@@ -7,7 +7,7 @@
 import * as Oazapfts from "oazapfts/lib/runtime";
 import * as QS from "oazapfts/lib/runtime/query";
 export const defaults: Oazapfts.RequestOpts = {
-    baseUrl: "/",
+    baseUrl: "localhost:3000",
 };
 const oazapfts = Oazapfts.runtime(defaults);
 export const servers = {

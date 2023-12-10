@@ -1,11 +1,18 @@
 services:
   frontend:
-    build: ./solardoc/frontend
+    build:
+      context: .
+      dockerfile: ./solardoc/frontend/Dockerfile
+      args:
+        VITE_PROD_BACKEND_HOST: http://localhost
+        VITE_PROD_BACKEND_PORT: 3000
     volumes:
       - ./solardoc/frontend:/home/node/app
     ports:
       - "80:80"
     depends_on:
+      - rest-api
+    links:
       - rest-api
   rest-api:
     build: ./solardoc/rest-api
