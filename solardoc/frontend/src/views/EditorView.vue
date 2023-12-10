@@ -7,9 +7,16 @@ import * as backendAPI from "@/services/backend/api-service";
 
 const darkModeStore = useDarkModeStore();
 
-backendAPI.getPing().then((response) => {
-  console.log(response);
-});
+// Ensure the backend is running and reachable
+// TODO! Implement proper popup in case of error
+backendAPI.checkIfBackendIsReachable()
+  .then(response => {
+    console.log(response)
+  })
+  .catch(error => {
+    console.error(error)
+    alert('Backend is not reachable. Please copy the logs and contact the developers.')
+  })
 </script>
 
 <template>

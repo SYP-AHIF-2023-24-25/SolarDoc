@@ -9,4 +9,12 @@ api.defaults.baseUrl = isDev ?
 // Log the base URL in case there is a problem
 console.log(`[api-service.ts] Using backend at '${api.defaults.baseUrl}'`)
 
-export * from "./gen/backend-rest-service"
+export async function checkIfBackendIsReachable(): Promise<void> {
+  const ping = await api.getPing()
+  if (ping.status !== 200) {
+    throw new Error(`Backend is not reachable. Response:\n${ping}`)
+  }
+}
+
+// Export all the generated API functions
+export * from './gen/backend-rest-service'
