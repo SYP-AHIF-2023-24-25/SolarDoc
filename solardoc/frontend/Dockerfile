@@ -9,28 +9,69 @@ RUN pnpm i -g pnpm@8.9.2
 # Set to a non-root built-in user `node`
 USER node
 
+FROM base AS build-stage
+
 # Create app directory (with user `node`)
 RUN mkdir -p /home/node/app
-
 WORKDIR /home/node/app
 
-FROM base AS build-stage
-WORKDIR /home/node/app
+COPY --chown=node ./package.json ./
+COPY --chown=node ./pnpm-lock.yaml ./
+COPY --chown=node ./pnpm-workspace.yaml ./
+COPY --chown=node ./.npmrc.docker ./.npmrc
 
-# Bundle app source code
-COPY --chown=node . .
+# Copy 'asciidoc-renderer' package
+RUN mkdir -p ./solardoc/asciidoc-renderer
+COPY --chown=node ./solardoc/asciidoc-renderer ./solardoc/asciidoc-renderer
 
-RUN pnpm install --frozen-lockfile
+# Copy 'rest-api' package
+RUN mkdir -p ./solardoc/rest-api
+COPY --chown=node ./solardoc/rest-api ./solardoc/rest-api
 
-RUN pnpm run build
+# Copy 'frontend' package
+RUN mkdir -p ./solardoc/frontend
+COPY --chown=node ./solardoc/frontend ./solardoc/frontend
+
+# Build 'asciidoc-renderer' package
+RUN pnpm install --filter @solardoc/asciidoc-renderer --frozen-lockfile
+RUN pnpm run --filter @solardoc/asciidoc-renderer tsc-build
+
+# Build 'rest-api' package
+RUN pnpm install --filter @solardoc/rest-api --frozen-lockfile
+RUN pnpm run --filter @solardoc/rest-api build
+
+# Build 'frontend' package (we need to first define the required ENV variables)
+ARG VITE_PROD_BACKEND_HOST
+ARG VITE_PROD_BACKEND_PORT
+ENV VITE_PROD_BACKEND_HOST=$VITE_PROD_BACKEND_HOST
+ENV VITE_PROD_BACKEND_PORT=$VITE_PROD_BACKEND_PORT
+
+RUN echo "VITE_PROD_BACKEND_HOST=$VITE_PROD_BACKEND_HOST" >> ./solardoc/frontend/.env
+RUN echo "VITE_PROD_BACKEND_PORT=$VITE_PROD_BACKEND_PORT" >> ./solardoc/frontend/.env
+
+RUN pnpm install --filter @solardoc/frontend --frozen-lockfile
+RUN pnpm run --filter @solardoc/frontend deploy
 
 # production stage
 FROM nginx:stable-alpine as production-stage
-COPY --from=build-stage /home/node/app/dist /usr/share/nginx/html
+
+# We will work in the default nginx directory though (for simplicity)
+WORKDIR /usr/share/nginx/html
+
+# Install bash
+RUN apk add --no-cache bash
+
+# Start script for running nginx
+COPY --from=build-stage /home/node/app/solardoc/frontend/docker/init.sh /etc/nginx/init.sh
+RUN chmod +x /etc/nginx/init.sh
+
+# Copy the built frontend
+COPY --from=build-stage /home/node/app/solardoc/frontend/dist /usr/share/nginx/html
+COPY --from=build-stage /home/node/app/solardoc/frontend/.env /usr/share/nginx/html/.env
 
 # Remove default nginx configs and replace with ours
 RUN rm /etc/nginx/conf.d/default.conf
-COPY --from=build-stage /home/node/app/nginx.conf /etc/nginx/conf.d/nginx.conf
+COPY --from=build-stage /home/node/app/solardoc/frontend/nginx.conf /etc/nginx/conf.d/nginx.conf
 
 # Since we are running in Docker we can always say that we are in production
 ENV NODE_ENV=production
@@ -39,4 +80,4 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0 PORT=80
 
 EXPOSE ${PORT}
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["bash", "-c", "/etc/nginx/init.sh"]

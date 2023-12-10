@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  reveal.js:
+    specifier: ^5.0.2
+    version: 5.0.2
+
 devDependencies:
   '@istanbuljs/nyc-config-typescript':
     specifier: 1.0.2
@@ -1709,6 +1714,11 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
     dev: true
+
+  /reveal.js@5.0.2:
+    resolution: {integrity: sha512-G5dhsr/2wormdrYPtZBfRamvnPrHc/8TtYVH3EpIzfMyKSiTprFwn61nFZbcmeK4iKKdLq2MMiiMNqlRmkBU4A==}
+    engines: {node: '>=18.0.0'}
+    dev: false
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}

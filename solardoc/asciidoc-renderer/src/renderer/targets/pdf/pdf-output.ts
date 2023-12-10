@@ -6,9 +6,9 @@ import { RenderOutput } from '../../render-output'
  */
 export class PDFOutput extends RenderOutput<unknown, unknown> {
   // TODO! Properly type the generics
-  public constructor(content: unknown) {
+  public constructor(internalData: unknown) {
     // TODO! Properly type the raw content.
-    super(content)
+    super(internalData)
 
     // TODO!
     throw new Error('Not implemented yet!')

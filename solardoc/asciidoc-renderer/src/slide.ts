@@ -15,7 +15,7 @@ export class Slide {
    * Renders the slide to the given target.
    * @param target The target that should be used to render the slide.
    */
-  public async render<T>(target: TargetRenderer<T>): Promise<void> {
+  public async render<RawT, OutT>(target: TargetRenderer<RawT, OutT>): Promise<void> {
     // TODO!
     throw new Error('Not implemented yet!')
   }
