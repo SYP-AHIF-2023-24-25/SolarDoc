@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import {useLoadingStore} from "@/stores/loading";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,5 +41,20 @@ const router = createRouter({
     }
   ]
 })
+
+// Add spinner when navigating between routes (spinner may already be active, but that doesn't matter, as we just need
+// to make sure it stops spinning when the new route is loaded)
+router.beforeResolve((to, from, next) => {
+  if (to.name) {
+    const loadingStore = useLoadingStore()
+    loadingStore.setLoading(true)
+  }
+  next()
+});
+
+router.afterEach(() => {
+  const loadingStore = useLoadingStore()
+  loadingStore.setLoading(false)
+});
 
 export default router

@@ -37,7 +37,7 @@
     "preopenapi-spec:write": "pnpm run preopenapi-spec",
     "openapi-spec:write": "pnpm run openapi-spec:write:no-build",
     "openapi-spec:write:no-build": "node ./dist/openapi-spec > ./openapi.json",
-    "prestart": "pnpm run rebuild",
+    "prestart": "pnpm run rebuild; pnpm run openapi-spec:write",
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "pnpm run clean && pnpm run build"
@@ -74,7 +74,7 @@
     "@types/mocha": "10.0.2",
     "@microsoft/eslint-formatter-sarif": "3.0.0",
     "@loopback/eslint-config": "^14.0.4",
-    "eslint": "^8.48.0",
-    "typescript": "~5.2.2"
+    "eslint": "8.48.0",
+    "typescript": "5.2.2"
   }
 }
