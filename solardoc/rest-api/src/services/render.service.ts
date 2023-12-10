@@ -9,6 +9,13 @@ export class RenderService {
 
   constructor() {
     this._compiler = new AsciidocCompiler()
-    console.log(this._compiler)
+  }
+
+  /**
+   * Get the initialised compiler instance.
+   * @since 0.2.0
+   */
+  public get compiler(): AsciidocCompiler {
+    return this._compiler
   }
 }
