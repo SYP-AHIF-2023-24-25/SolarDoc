@@ -6,7 +6,7 @@ import {
   RenderedSlideImageDtoModel,
   RenderPresentationDtoModel,
 } from '../models'
-import { CacheService } from '../services/cache.service'
+import { CacheService } from '../services'
 import { inject } from '@loopback/core'
 
 /**

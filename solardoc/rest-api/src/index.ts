@@ -1,10 +1,12 @@
 import { ApplicationConfig, RestApiApplication } from './application'
-import { loadEnv } from './services'
+import {ensureEnvLoaded} from './env'
 
 export * from './application'
 
-// First load the environment variables from the .env file
-loadEnv()
+// Ensure that the environment variables are loaded (only relevant for development mode, as in production mode the .env
+// files are not used but rather global environment variables are used instead. This simplifies the deployment process
+// using Docker.)
+ensureEnvLoaded()
 
 export async function main(options: ApplicationConfig = {}) {
   // Then start the application

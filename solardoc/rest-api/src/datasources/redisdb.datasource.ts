@@ -1,26 +1,32 @@
 import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core'
 import { juggler } from '@loopback/repository'
-import { ensureEnvLoaded, getEnv } from '../services'
+import {ensureEnvLoaded, getEnv, isDev} from '../env'
 import { createClient as createV4Client, RedisClientType } from 'redis'
 import { DataSourceError } from '../errors'
 
-// Ensure all env files have been loaded.
+// Ensure all env files have been loaded (only relevant for development mode)
 ensureEnvLoaded()
 
 const config = {
   name: 'redisdb',
   connector: 'loopback-connector-redis',
-  host: getEnv('REDIS_HOST'),
-  port: Number(getEnv('REDIS_PORT')),
+  host: getEnv(isDev ? 'REDIS_DEV_HOST' : 'REDIS_HOST'),
+  port: Number(getEnv(isDev ? 'REDIS_DEV_PORT' : 'REDIS_PORT')),
   password: getEnv('REDIS_ROOT_PASSWORD'),
 }
 
-const v4Config = {
-  host: getEnv('REDIS_HOST'),
-  port: Number(getEnv('REDIS_PORT')),
-  username: getEnv('REDIS_USERNAME'),
-  password: getEnv('REDIS_PASSWORD'),
-}
+const v4Config = (() => {
+  const baseConfig = {
+    host: config.host,
+    port: config.port,
+    username: getEnv('REDIS_USERNAME'),
+    password: getEnv('REDIS_PASSWORD'),
+  }
+  return {
+    ...baseConfig,
+    url: `redis://${baseConfig.host}:${baseConfig.port}`
+  }
+})()
 
 // Observe application's life cycle to disconnect the datasource when
 // application is stopped. This allows the application to be shut down
@@ -42,12 +48,14 @@ export class RedisDBDataSource extends juggler.DataSource implements LifeCycleOb
    */
   public readonly v4Client: RedisClientType & ReturnType<typeof createV4Client>
 
+  static readonly v4DefaultConfig = v4Config
+
   constructor(
     @inject('datasources.config.redisdb', { optional: true })
     dsConfig: object = config,
   ) {
     super(dsConfig)
-    this.v4Client = <RedisClientType>createV4Client(v4Config)
+    this.v4Client = <RedisClientType>createV4Client(RedisDBDataSource.v4DefaultConfig)
 
     // Ensure that the connector is defined
     if (this.connector === undefined) {
@@ -56,13 +64,13 @@ export class RedisDBDataSource extends juggler.DataSource implements LifeCycleOb
   }
 
   /**
-   * The URL of the database.
+   * The URL of the database. Does not include the password or username.
    *
    * Only the host and port are included.
    * @since 0.2.0
    */
-  public get url(): string {
-    return `${v4Config.host}:${v4Config.port}`
+  public get sanitisedUrl(): string {
+    return `redis://${RedisDBDataSource.v4DefaultConfig.host}:${RedisDBDataSource.v4DefaultConfig.port}`
   }
 
   /**
@@ -70,8 +78,12 @@ export class RedisDBDataSource extends juggler.DataSource implements LifeCycleOb
    * @private
    */
   private async connectV4Client(): Promise<void> {
-    await this.v4Client.connect()
-    console.log(`[REDISv4] Connected to Redis v4 database at ${this.url}`)
+    try {
+      await this.v4Client.connect()
+    } catch (e) {
+      throw new DataSourceError(`Failed to connect to Redis v4 database at "${this.sanitisedUrl}":\n > ${e}`)
+    }
+    console.log(`[REDISv4] Connected to Redis v4 database at ${this.sanitisedUrl}`)
 
     await this.logDBDiagnostics()
   }
