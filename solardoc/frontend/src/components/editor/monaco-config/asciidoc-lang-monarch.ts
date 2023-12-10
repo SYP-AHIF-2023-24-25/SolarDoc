@@ -14,19 +14,19 @@ export default {
 
       //multi line rule
       { regex: /``/, action: { token: 'code', next: '@codeblock' } },
-      { regex: /----/, action: { token: 'code', next: '@sourceblock' } }
+      { regex: /----/, action: { token: 'code', next: '@sourceblock' } },
     ],
     codeblock: [
       // Content inside the code block
       { regex: /[^`]+/, action: { token: 'code.content' } },
       // End of the code block (double backticks)
-      { regex: /``/, action: { token: 'code', next: '@pop' } }
+      { regex: /``/, action: { token: 'code', next: '@pop' } },
       // Other rules for code block content
     ],
     sourceblock: [
       { regex: /[^-]+/, action: { token: 'code.content' } },
       // End of the code block (double backticks)
-      { regex: /----/, action: { token: 'code', next: '@pop' } }
-    ]
-  }
+      { regex: /----/, action: { token: 'code', next: '@pop' } },
+    ],
+  },
 }

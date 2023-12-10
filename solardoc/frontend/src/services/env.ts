@@ -1,7 +1,6 @@
 // Check what type of environment we are running in
-export const envType: 'development' | 'production' = import.meta.env.MODE === 'production' ?
-  'production'
-  : 'development'
+export const envType: 'development' | 'production' =
+  import.meta.env.MODE === 'production' ? 'production' : 'development'
 export const isDev = envType === 'development'
 export const isProd = envType === 'production'
 

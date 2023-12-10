@@ -11,7 +11,8 @@
 
     /* For SVGs we have to use fill instead of color */
     svg {
-      &, * {
+      &,
+      * {
         fill: $scheme-cs-2;
       }
     }
@@ -22,7 +23,8 @@
 
     /* For SVGs we have to use fill instead of color */
     svg {
-      &, * {
+      &,
+      * {
         fill: $scheme-cs-1;
       }
     }

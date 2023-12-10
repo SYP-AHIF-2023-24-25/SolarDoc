@@ -1,4 +1,4 @@
-import type {editor} from 'monaco-editor/esm/vs/editor/editor.api';
+import type { editor } from 'monaco-editor/esm/vs/editor/editor.api'
 
 export const darkEditorTheme: editor.IStandaloneThemeData = {
   base: 'vs',
@@ -14,16 +14,16 @@ export const darkEditorTheme: editor.IStandaloneThemeData = {
     { token: 'check-boxes', foreground: '#be005e' },
     { token: 'comment', foreground: '#65707c', fontStyle: 'italic' },
     { token: 'special-token', foreground: '#7f7f7f', fontStyle: 'bold' },
-    { token: 'bold-italic', foreground: '#750046', fontStyle: 'bold italic' }
+    { token: 'bold-italic', foreground: '#750046', fontStyle: 'bold italic' },
   ],
   colors: {
     'editor.background': '#0f111a',
     'editor.foreground': '#ffffff',
-    "editor.selectionBackground": "#2e3b4d",
-    "editor.lineHighlightBackground": "#1e2133",
-    "editorCursor.foreground": "#80a4c2",
-    "editorWhitespace.foreground": "#2e2040",
-    "editorIndentGuide.background": "#5e81ce52",
-    "editor.selectionHighlightBorder": "#122d42"
-  }
+    'editor.selectionBackground': '#2e3b4d',
+    'editor.lineHighlightBackground': '#1e2133',
+    'editorCursor.foreground': '#80a4c2',
+    'editorWhitespace.foreground': '#2e2040',
+    'editorIndentGuide.background': '#5e81ce52',
+    'editor.selectionHighlightBorder': '#122d42',
+  },
 }

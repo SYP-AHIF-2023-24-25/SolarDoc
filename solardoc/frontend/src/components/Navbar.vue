@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import {useLoadingStore} from "@/stores/loading";
-import HalfMoonSVG from "@/components/icons/HalfMoonSVG.vue";
-import GithubLogoSVG from "@/components/icons/GithubLogoSVG.vue";
-import SolardocLogoSVG from "@/components/icons/SolardocLogoSVG.vue";
-import GithubLogoDarkModeSVG from "@/components/icons/GithubLogoDarkModeSVG.vue";
-import SolardocLogoDarkModeSVG from "@/components/icons/SolardocLogoDarkModeSVG.vue";
-import SunDarkModeSVG from "@/components/icons/SunDarkModeSVG.vue";
-import constants from "@/plugins/constants";
-import {useDarkModeStore} from "@/stores/dark-mode";
+import { useLoadingStore } from '@/stores/loading'
+import HalfMoonSVG from '@/components/icons/HalfMoonSVG.vue'
+import GithubLogoSVG from '@/components/icons/GithubLogoSVG.vue'
+import SolardocLogoSVG from '@/components/icons/SolardocLogoSVG.vue'
+import GithubLogoDarkModeSVG from '@/components/icons/GithubLogoDarkModeSVG.vue'
+import SolardocLogoDarkModeSVG from '@/components/icons/SolardocLogoDarkModeSVG.vue'
+import SunDarkModeSVG from '@/components/icons/SunDarkModeSVG.vue'
+import constants from '@/plugins/constants'
+import { useDarkModeStore } from '@/stores/dark-mode'
 
-const loadingStore = useLoadingStore();
-const darkModeStore = useDarkModeStore();
+const loadingStore = useLoadingStore()
+const darkModeStore = useDarkModeStore()
 
 function setLoading(state: boolean): void {
-  loadingStore.setLoading(state);
+  loadingStore.setLoading(state)
 }
 </script>
 
