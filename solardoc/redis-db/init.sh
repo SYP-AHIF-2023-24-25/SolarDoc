@@ -19,27 +19,78 @@ if [ -z "$REDIS_ROOT_PASSWORD" ]; then
   exit 1
 fi
 
+USERS_ACL=/usr/local/etc/redis/users.acl
+
+# Create 'users.acl' file if it doesn't exist
+if [ ! -f $USERS_ACL ]; then
+  echo "[init.sh] 'users.acl' file doesn't exist. Creating..."
+  touch $USERS_ACL
+fi
+
 add_redis_user() {
-  # Wait for redis server to start
-  echo "[init.sh] Waiting for redis server to start..."
-  sleep 8
-
-  # Add user to redis to allow remote access
-  echo "[init.sh] Adding user '$REDIS_USERNAME' to redis..."
-  echo -e "
-  AUTH $REDIS_ROOT_PASSWORD
-  ACL SETUSER $REDIS_USERNAME on ~* &* +@all -@dangerous +info >$REDIS_PASSWORD
-  " | redis-cli
-
-  # Wrap up and start new non-daemonized redis instance, which will be the actual one running
-  echo "[init.sh] Redis configuration completed! Log in using root password or user '$REDIS_USERNAME' :D"
+  # Check if user already exists
+  if grep -q "user $REDIS_USERNAME" $USERS_ACL; then
+    echo "[init.sh] User '$REDIS_USERNAME' already exists. Skipping..."
+  else
+    # Add user to 'users.acl'
+    echo "[init.sh] Adding user '$REDIS_USERNAME' to 'users.acl'..."
+    echo "user $REDIS_USERNAME on ~* &* +@all -@dangerous +info >$REDIS_PASSWORD" >> $USERS_ACL
+  fi
 }
 
-# Start redis server (and add user if needed if 'REDIS_USERNAME' and 'REDIS_PASSWORD' are set)
-echo "[init.sh] Starting redis server..."
+add_redis_default() {
+  # Check if default user already exists
+  if grep -q "user default" $USERS_ACL; then
+    echo "[init.sh] User 'default' already exists. Skipping..."
+  else
+    # Add default user to 'users.acl'
+    echo "[init.sh] Adding 'default' user to 'users.acl'..."
+    echo "user default on ~* &* +@all >$REDIS_ROOT_PASSWORD" >> $USERS_ACL
+  fi
+}
+
+# Add 'default' user if it doesn't exist
+echo "[init.sh] Adding 'default' user to 'users.acl'..."
+add_redis_default
+
+# Add user if 'REDIS_USERNAME' and 'REDIS_PASSWORD' are set
 if [ -n "$REDIS_USERNAME" ] && [ -n "$REDIS_PASSWORD" ]; then
-  add_redis_user &
+  add_redis_user
 else
   echo "[init.sh] 'REDIS_USERNAME' and 'REDIS_PASSWORD' are not set. Please use 'REDIS_ROOT_PASSWORD' to log in."
 fi
-redis-server /usr/local/etc/redis/redis.conf --bind 0.0.0.0 --requirepass $REDIS_ROOT_PASSWORD
+
+# Starting Redis Stack (Copied from https://github.com/redis-stack/redis-stack/blob/6b4a316f06965e41b248d238f84862f5c3027061/etc/scripts/entrypoint.sh)
+BASEDIR=/opt/redis-stack
+cd ${BASEDIR}
+
+CMD=${BASEDIR}/bin/redis-server
+CONF_FILE=/usr/local/etc/redis/redis.conf
+
+# When running in redis-stack (as opposed to redis-stack-server)
+if [ -f ${BASEDIR}/nodejs/bin/node ]; then
+    ${BASEDIR}/nodejs/bin/node -r ${BASEDIR}/share/redisinsight/api/node_modules/dotenv/config share/redisinsight/api/dist/src/main.js dotenv_config_path=${BASEDIR}/share/redisinsight/.env &
+fi
+
+if [ -z ${REDISEARCH_ARGS} ]; then
+  REDISEARCH_ARGS="MAXSEARCHRESULTS 10000 MAXAGGREGATERESULTS 10000"
+fi
+
+if [ -z ${REDISGRAPH_ARGS} ]; then
+  REDISGRAPH_ARGS="MAX_QUEUED_QUERIES 25 TIMEOUT 1000 RESULTSET_SIZE 10000"
+fi
+
+echo "[init.sh] Starting redis server..."
+
+ls -l /opt/redis-stack/lib
+
+${CMD} \
+${CONF_FILE} \
+--protected-mode no \
+--daemonize no \
+--loadmodule /opt/redis-stack/lib/redisearch.so ${REDISEARCH_ARGS} \
+--loadmodule /opt/redis-stack/lib/redistimeseries.so ${REDISTIMESERIES_ARGS} \
+--loadmodule /opt/redis-stack/lib/rejson.so ${REDISJSON_ARGS} \
+--loadmodule /opt/redis-stack/lib/redisbloom.so ${REDISBLOOM_ARGS} \
+--loadmodule /opt/redis-stack/lib/redisgears.so v8-plugin-path /opt/redis-stack/lib/libredisgears_v8_plugin.so ${REDISGEARS_ARGS} \
+${REDIS_ARGS}
