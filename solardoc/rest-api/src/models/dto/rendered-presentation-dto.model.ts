@@ -1,8 +1,9 @@
 import { model, property } from '@loopback/repository'
 import { CacheDtoModel } from './cache-dto.model'
+import {DtoModel} from "../abstract/dto-model";
 
 @model()
-export class RenderedPresentationDtoModel {
+export class RenderedPresentationDtoModel extends DtoModel<RenderedPresentationDtoModel> {
   @property({
     required: true,
     description: 'The name of the presentation (original file name)',
@@ -14,4 +15,8 @@ export class RenderedPresentationDtoModel {
     description: 'The cache metadata',
   })
   cache: CacheDtoModel
+
+  constructor(data?: Partial<RenderedPresentationDtoModel>) {
+    super(data)
+  }
 }

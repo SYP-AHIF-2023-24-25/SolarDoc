@@ -10,4 +10,8 @@ export class RenderedSlideImageDtoModel extends RenderedSlideDtoModel {
       'The download object containing the data for downloading the slide of the presentation',
   })
   download: DownloadDtoModel
+
+  constructor(data?: Partial<RenderedSlideImageDtoModel>) {
+    super(data)
+  }
 }

@@ -9,4 +9,8 @@ export class RenderedPresentationPdfDtoModel extends RenderedPresentationDtoMode
     description: 'The download object containing the data for downloading the presentation',
   })
   download: DownloadDtoModel
+
+  constructor(data?: Partial<RenderedPresentationPdfDtoModel>) {
+    super(data)
+  }
 }

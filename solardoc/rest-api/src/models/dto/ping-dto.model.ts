@@ -1,8 +1,9 @@
 import { model, property } from '@loopback/repository'
 import { IncomingHttpHeaders } from 'http'
+import {DtoModel} from "../abstract/dto-model";
 
 @model()
-export class PingDtoModel {
+export class PingDtoModel extends DtoModel<PingDtoModel> {
   @property({
     required: true,
     description: 'The greeting to be returned',
@@ -33,4 +34,8 @@ export class PingDtoModel {
     description: 'The headers of the request',
   })
   headers: IncomingHttpHeaders
+
+  constructor(data?: Partial<PingDtoModel>) {
+    super(data)
+  }
 }

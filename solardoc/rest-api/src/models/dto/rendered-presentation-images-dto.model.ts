@@ -9,4 +9,8 @@ export class RenderedPresentationImagesDtoModel extends RenderedPresentationDtoM
     description: 'Every slide of the presentation mapped to its download object',
   })
   download: Record<number, DownloadDtoModel>
+
+  constructor(data?: Partial<RenderedPresentationImagesDtoModel>) {
+    super(data)
+  }
 }

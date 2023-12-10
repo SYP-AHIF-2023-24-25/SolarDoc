@@ -8,6 +8,7 @@ import {
 } from '../models'
 import {CacheService, RenderService} from '../services'
 import { inject } from '@loopback/core'
+import {HTMLOutput} from "@solardoc/asciidoc-renderer";
 
 /**
  * The controller for managing the render operation of Asciidoc presentations.
@@ -53,7 +54,23 @@ export class RenderController {
   async renderPresentationRjsHtml(
     @requestBody() presentationModel: RenderPresentationDtoModel,
   ): Promise<RenderedPresentationRjsHtmlDtoModel> {
-    throw new Error('Not implemented yet!')
+    const htmlOutput: HTMLOutput = await this.renderService.renderRJSHTMLPresentation(
+      presentationModel.fileName,
+      presentationModel.fileContent,
+    )
+
+    // Write out the file and save it to the cache
+    const content: string = await htmlOutput.write()
+    const cachedElement = await this.cacheService.addFile(
+      htmlOutput.outFilename,
+      content,
+    )
+
+    return {
+      fileName: presentationModel.fileName, // Original filename
+      cache: cachedElement.toCacheDtoModel(),
+      download: cachedElement.toDownloadDtoModel(),
+    }
   }
 
   @post('/render/presentation/images', {

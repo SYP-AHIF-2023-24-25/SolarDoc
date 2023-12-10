@@ -41,6 +41,6 @@ export class AsciidocCompiler {
    */
   public async parse(input: AsciidocFile): Promise<Presentation> {
     const document: Asciidoctor.Document = this.asciidoctor.load(input.content, AsciidocCompiler.parseOptions)
-    return new Presentation(this, document)
+    return new Presentation(this, input, document)
   }
 }

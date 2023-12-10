@@ -1,5 +1,7 @@
 import { ApplicationConfig, RestApiApplication } from './application'
-import {ensureEnvLoaded} from './env'
+import {ensureEnvLoaded, getEnv} from './env'
+import * as fs from "fs/promises";
+import * as path from "path";
 
 export * from './application'
 
@@ -8,7 +10,32 @@ export * from './application'
 // using Docker.)
 ensureEnvLoaded()
 
+/**
+ * The path to the persistent storage directory.
+ */
+const persistentStoragePath: string = getEnv('PERSISTENT_STORAGE_PATH', true)!
+
+/**
+ * Ensures that the {@link persistentStoragePath} exists and is writable. If it does not exist, it will be created.
+ * @since 0.2.0
+ */
+async function ensurePersistentStorageExists(): Promise<void> {
+  try {
+    await fs.access(persistentStoragePath, fs.constants.W_OK)
+  } catch (e) {
+    // If the directory does not exist, create it
+    if ((<NodeJS.ErrnoException>e)?.code === 'ENOENT') {
+      await fs.mkdir(persistentStoragePath, { recursive: true })
+    } else {
+      throw e
+    }
+  }
+}
+
 export async function main(options: ApplicationConfig = {}) {
+  // First ensure the persistent storage exists
+  await ensurePersistentStorageExists()
+
   // Then start the application
   const app = new RestApiApplication(options)
   await app.boot()

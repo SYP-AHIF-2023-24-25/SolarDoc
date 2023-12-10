@@ -18,6 +18,8 @@ services:
     build:
       context: .
       dockerfile: ./solardoc/rest-api/Dockerfile
+      args:
+        PERSISTENT_STORAGE_PATH: ${PERSISTENT_STORAGE_PATH}
     ports:
       - "3000:3000"
     environment:
@@ -26,6 +28,9 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_HOST: redis-db
       REDIS_PORT: 6379
+      PERSISTENT_STORAGE_PATH: ${PERSISTENT_STORAGE_PATH}
+    volumes:
+      - rest-api-persistent-storage:${PERSISTENT_STORAGE_PATH}
     depends_on:
       redis-db:
         condition: service_healthy
@@ -48,3 +53,6 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
+
+volumes:
+  rest-api-persistent-storage:

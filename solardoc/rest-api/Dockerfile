@@ -59,6 +59,10 @@ FROM base as production-stage
 
 COPY --from=build-stage /home/node/build /home/node/app
 
+# Add persistent storage for the generated files
+ARG PERSISTENT_STORAGE_PATH
+RUN mkdir -p ${PERSISTENT_STORAGE_PATH}
+
 # Since we are running in Docker we can always say that we are in production
 ENV NODE_ENV=production
 

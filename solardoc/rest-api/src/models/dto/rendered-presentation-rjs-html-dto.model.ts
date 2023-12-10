@@ -9,4 +9,8 @@ export class RenderedPresentationRjsHtmlDtoModel extends RenderedPresentationDto
     description: 'The download object containing the data for downloading the presentation',
   })
   download: DownloadDtoModel
+
+  constructor(data?: Partial<RenderedPresentationRjsHtmlDtoModel>) {
+    super(data)
+  }
 }
