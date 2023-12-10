@@ -1,20 +1,29 @@
 services:
   frontend:
     build: ./solardoc/frontend
-    volumes:
-      - ./solardoc/frontend:/home/node/app
     ports:
       - "80:80"
     depends_on:
+      - rest-api
+    links:
       - rest-api
   rest-api:
     build:
       context: .
       dockerfile: ./solardoc/rest-api/Dockerfile
-    volumes:
-      - ./solardoc/rest-api:/home/node/app
     ports:
       - "3000:3000"
+    environment:
+      REDIS_ROOT_PASSWORD: ${REDIS_ROOT_PASSWORD}
+      REDIS_USERNAME: ${REDIS_USERNAME}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: redis-db
+      REDIS_PORT: 6379
+    depends_on:
+      redis-db:
+        condition: service_healthy
+    links:
+      - redis-db
   redis-db:
     build: ./solardoc/redis-db
     ports:
@@ -22,8 +31,13 @@ services:
       - "8001:8001"
     privileged: true
     volumes:
-      - ./solardoc/redis-db/data:/data
+      - ./solardoc/redis-db/data:/redis/data
     environment:
       REDIS_ROOT_PASSWORD: ${REDIS_ROOT_PASSWORD}
       REDIS_USERNAME: ${REDIS_USERNAME}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
