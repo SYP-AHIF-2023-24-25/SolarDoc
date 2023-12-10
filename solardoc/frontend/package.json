@@ -34,7 +34,7 @@
     "eslint": "pnpm run lint",
     "format": "prettier --write src/",
     "prettier": "pnpm run format",
-    "oazapfts": "oazapfts ../rest-api/openapi.json ./src/services/http-service.ts"
+    "oazapfts": "oazapfts ../rest-api/openapi.json src/services/backend-rest-service.ts"
   },
   "dependencies": {
     "@vueuse/core": "10.5.0",
