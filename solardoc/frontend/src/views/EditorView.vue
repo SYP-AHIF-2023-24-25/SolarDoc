@@ -3,8 +3,13 @@ import Editor from '@/components/editor/Editor.vue'
 import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
 import SandwichMenuDarkModeSVG from "@/components/icons/SandwichMenuDarkModeSVG.vue";
 import {useDarkModeStore} from "@/stores/dark-mode";
+import * as backendAPI from "@/services/backend/api-service";
 
 const darkModeStore = useDarkModeStore();
+
+backendAPI.getPing().then((response) => {
+  console.log(response);
+});
 </script>
 
 <template>

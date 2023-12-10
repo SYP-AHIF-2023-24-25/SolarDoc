@@ -1,5 +1,6 @@
 scripts-prepend-node-path=true
-link-workspace-packages=true
+link-workspace-packages=false
 prefer-workspace-packages=true
 shared-workspace-lockfile=false
 enable-pre-post-scripts=true
+dedupe-peer-dependents=false
