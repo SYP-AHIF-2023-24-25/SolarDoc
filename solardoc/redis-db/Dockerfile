@@ -5,8 +5,11 @@ WORKDIR /redis
 # Copy redis configuration file
 COPY config/redis.conf /usr/local/etc/redis/redis.conf
 
-COPY init.sh ./
+# COpy ACL configuration file
+COPY config/users.acl /usr/local/etc/redis/users.acl
 
-RUN chmod +x init.sh
+# Copy redis init script
+COPY init.sh ./init.sh
+RUN chmod +x ./init.sh
 
-CMD ["bash", "-c", "./init.sh"]
+CMD ["bash", "-c", "/redis/init.sh"]
