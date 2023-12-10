@@ -1,2 +1,4 @@
 dist
 *.json
+node_modules
+asciidoc-loader.ts

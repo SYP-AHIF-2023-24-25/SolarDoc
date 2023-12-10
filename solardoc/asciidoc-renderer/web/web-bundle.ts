@@ -14,6 +14,9 @@ const globalScope = typeof globalThis !== "undefined" ? globalThis : typeof wind
 // @ts-ignore
 globalScope.AsciidocRenderer = globalScope.AsciidocRenderer || AsciidocRenderer;
 
+// @ts-ignore - This is a shim for the 'decktape' dependency
+globalScope.decktape = globalScope.decktape || {};
+
 // Validating integrity of the module
 (() => {
   console.log(`Starting 'AsciidocCompiler' module integrity check...`);

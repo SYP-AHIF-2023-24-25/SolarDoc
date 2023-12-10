@@ -6,8 +6,9 @@
     "declaration": true,
     "importHelpers": true,
     "removeComments": true,
-    "module": "commonjs",
+    "module": "Node16",
     "target": "es2015",
+    "moduleResolution": "node16",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "lib": [

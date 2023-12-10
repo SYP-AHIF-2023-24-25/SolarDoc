@@ -2,16 +2,30 @@ import { TargetRenderer } from '../target-renderer'
 import { HTMLOutput } from './html-output'
 import { Presentation } from '../../../presentation'
 import { Slide } from '../../../slide'
+import { Asciidoctor } from '@asciidoctor/core'
+import { InternalError } from '../../../errors'
+import {AsciidocCompiler} from "../../asciidoc-compiler";
 
 /**
  * Renders a presentation or slide to an image file.
  * @since 0.2.0
  */
-export class HTMLRenderer extends TargetRenderer<HTMLOutput> {
+export class HTMLRenderer extends TargetRenderer<string, string> {
+  private static readonly renderOptions = {
+    ...AsciidocCompiler.parseOptions,
+    /**
+     * Standalone hints to the processor that the document requires a full document render.
+     *
+     * This is to ensure it doesn't just return an empty string when rendering a full document.
+     * @since 0.2.0
+     */
+    standalone: true
+  } satisfies Asciidoctor.ProcessorOptions
+
   public constructor() {
     super()
     // TODO!
-    throw new Error('Not implemented yet!')
+    //throw new Error('Not implemented yet!')
   }
 
   /**
@@ -21,7 +35,13 @@ export class HTMLRenderer extends TargetRenderer<HTMLOutput> {
    */
   public async render(presentation: Presentation): Promise<HTMLOutput> {
     // TODO!
-    throw new Error('Not implemented yet!')
+    let htmlOutput = presentation.parsedFile.convert(HTMLRenderer.renderOptions)
+    if (typeof htmlOutput !== 'string') {
+      throw new InternalError(
+        `HTML output is not a string! Potential bug in asciidoctor.js! (Input: ${presentation.sourceCode})`
+      )
+    }
+    return new HTMLOutput(htmlOutput)
   }
 
   /**

@@ -3,13 +3,13 @@
  * @since 0.2.0
  */
 export abstract class RenderOutput<RawT, OutT> {
-  protected _content: RawT
+  protected _internalData: RawT
 
-  protected constructor(content: RawT) {
-    this._content = content
+  protected constructor(internalData: RawT) {
+    this._internalData = internalData
 
     // TODO!
-    throw new Error('Not implemented yet!')
+    //throw new Error('Not implemented yet!')
   }
 
   /**
@@ -18,8 +18,8 @@ export abstract class RenderOutput<RawT, OutT> {
    * This may be a string, a buffer or any other format that is used internally.
    * @since 0.2.0
    */
-  get content(): RawT {
-    return this._content
+  public get internalData(): RawT {
+    return this._internalData
   }
 
   /**
