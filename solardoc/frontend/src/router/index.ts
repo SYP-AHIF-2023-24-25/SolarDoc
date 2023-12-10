@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import { useLoadingStore } from '@/stores/loading'
 
+const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -11,7 +12,12 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/about',
+      path: '/index' + htmlExtMatcher,
+      name: 'index',
+      redirect: '/'
+    },
+    {
+      path: '/about' + htmlExtMatcher,
       name: 'about',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
@@ -19,17 +25,17 @@ const router = createRouter({
       component: () => import('@/views/AboutView.vue'),
     },
     {
-      path: '/docs',
+      path: '/docs' + htmlExtMatcher,
       name: 'docs',
       component: () => import('@/views/DocsView.vue'),
     },
     {
-      path: '/editor',
+      path: '/editor'+ htmlExtMatcher,
       name: 'editor',
       component: () => import('@/views/EditorView.vue'),
     },
     {
-      path: '/test-editor',
+      path: '/test-editor' + htmlExtMatcher,
       name: 'test-editor',
       component: () => import('@/views/TestEditorView.vue'),
     },

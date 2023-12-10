@@ -14,8 +14,10 @@ backendAPI.checkIfBackendIsReachable()
     console.log(response)
   })
   .catch(error => {
-    console.error(error)
-    alert('Backend is not reachable. Please copy the logs and contact the developers.')
+    if (error) {
+      console.error(error)
+    }
+    console.error('Backend is not reachable. Please copy the logs and contact the developers.')
   })
 </script>
 
