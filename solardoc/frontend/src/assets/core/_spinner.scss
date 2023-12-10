@@ -1,0 +1,50 @@
+@use './var' as *;
+
+.loader {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 10px solid;
+  box-sizing: border-box;
+
+  html &,
+  html[data-theme='light'] & {
+    animation: spinner-light-mode 1s linear infinite alternate;
+  }
+
+  html[data-theme='dark'] & {
+    animation: spinner-dark-mode 1s linear infinite alternate;
+  }
+}
+
+@keyframes spinner-light-mode {
+  0% {
+    border-color: $scheme-background-black rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+  }
+  33% {
+    border-color: $scheme-background-black $scheme-background-black rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+  }
+  66% {
+    border-color: $scheme-background-black $scheme-background-black $scheme-background-black rgba(0, 0, 0, 0);
+  }
+  100% {
+    border-color: $scheme-background-black $scheme-background-black $scheme-background-black $scheme-background-black;
+  }
+}
+
+@keyframes spinner-dark-mode {
+  0% {
+    border-color: white rgba(255, 255, 255, 0) rgba(255, 255, 255, 0) rgba(255, 255, 255, 0);
+  }
+  33% {
+    border-color: white white rgba(255, 255, 255, 0) rgba(255, 255, 255, 0);
+  }
+  66% {
+    border-color: white white white rgba(255, 255, 255, 0);
+  }
+  100% {
+    border-color: white white white white;
+  }
+}

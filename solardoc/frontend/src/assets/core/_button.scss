@@ -1,4 +1,18 @@
+@use './mixins/link-hover-presets' as *;
+@use './mixins/align-center' as *;
 @use './var' as *;
+
+button {
+  /* Revert the default button styles */
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  outline: inherit;
+  text-decoration: none;
+}
 
 button.home-button {
   font-size: $home-button-font-size;
@@ -30,5 +44,38 @@ button.home-button {
       color: $home-button-transparent-hover-text-color;
       background-color: $home-button-transparent-text-color;
     }
+  }
+}
+
+button.editor-button {
+  font-size: $editor-button-font-size;
+  text-decoration: none;
+  background: transparent;
+  padding: 0.5rem 1.5rem;
+  margin: 0;
+
+  &:hover {
+    @include link-hover-presets;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+button.sandwich-button {
+  @include align-center();
+
+  $sandwich-button-height: 2rem;
+
+  font-size: $editor-button-font-size;
+  text-decoration: none;
+  background: transparent;
+  height: $sandwich-button-height;
+  width: $sandwich-button-height;
+  flex-shrink: 0;
+  padding: 0;
+  margin: 0;
+
+  &:hover {
+    @include link-hover-presets;
+    background-color: rgba(0, 0, 0, 0.1);
   }
 }
