@@ -63,9 +63,7 @@ export class CachedElement extends RedisEntity {
    * @param downloadURL The URL to download the file from.
    * @since 0.2.0
    */
-  public toDownloadDtoModel(
-    downloadURL: string,
-  ): DownloadDtoModel {
+  public toDownloadDtoModel(downloadURL: string): DownloadDtoModel {
     return new DownloadDtoModel({
       fileName: this.filename,
       downloadURL: downloadURL,

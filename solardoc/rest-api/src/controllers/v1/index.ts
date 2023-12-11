@@ -25,7 +25,6 @@ export const API_PREFIXED_VERSION = `v${API_VERSION}`
  */
 export const API_VERSIONED_FULL_BASE_PATH = `/${API_BASE_PATH}/v${API_VERSION}`
 
-
 export * from './ping.controller'
 export * from './render.controller'
 export * from './result.controller'

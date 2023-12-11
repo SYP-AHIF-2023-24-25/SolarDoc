@@ -1,4 +1,4 @@
-import {CacheError} from "./cache-error";
+import { CacheError } from './cache-error'
 
 /**
  * Error which is thrown when a specified key was not found in the Redis cache.
@@ -6,7 +6,7 @@ import {CacheError} from "./cache-error";
  */
 export class CacheRedisKeyNotFoundError extends CacheError {
   constructor(message: string) {
-    super(message);
-    this.name = 'CacheRedisKeyNotFoundError';
+    super(message)
+    this.name = 'CacheRedisKeyNotFoundError'
   }
 }

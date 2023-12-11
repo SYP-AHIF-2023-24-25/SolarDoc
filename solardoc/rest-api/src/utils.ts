@@ -1,6 +1,6 @@
-import { Request } from "@loopback/rest";
-import path from "path";
-import {API_BASE_PATH} from "./index";
+import { Request } from '@loopback/rest'
+import path from 'path'
+import { API_BASE_PATH } from './index'
 
 /**
  * Returns the current date in seconds.
@@ -76,11 +76,7 @@ function trimLastSlash(str: string): string {
  * @param controllerBase The base path to the controller.
  * @param subRoutePath The path to the route relative to {@link controllerBase}.
  */
-export function buildAPIURL(
-  req: Request,
-  controllerBase: string,
-  subRoutePath: string,
-): string {
+export function buildAPIURL(req: Request, controllerBase: string, subRoutePath: string): string {
   controllerBase = trimLastSlash(trimFirstSlash(controllerBase))
   subRoutePath = trimLastSlash(trimFirstSlash(subRoutePath))
   return `${getHostURL(req)}${API_BASE_PATH}/${controllerBase}/${subRoutePath}`

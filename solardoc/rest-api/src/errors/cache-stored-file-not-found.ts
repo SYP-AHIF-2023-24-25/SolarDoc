@@ -1,4 +1,4 @@
-import {CacheError} from "./cache-error";
+import { CacheError } from './cache-error'
 
 /**
  * Error which is thrown when a file was not found in the cache.

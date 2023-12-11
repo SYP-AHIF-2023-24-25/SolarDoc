@@ -1,4 +1,4 @@
-import {getModelSchemaRef, param, post, Request, requestBody, RestBindings} from '@loopback/rest'
+import { getModelSchemaRef, param, post, Request, requestBody, RestBindings } from '@loopback/rest'
 import {
   RenderedPresentationImagesDtoModel,
   RenderedPresentationPdfDtoModel,
@@ -9,8 +9,8 @@ import {
 import { CacheService, RenderService } from '../../services'
 import { inject } from '@loopback/core'
 import { HTMLOutput } from '@solardoc/asciidoc-renderer'
-import {API_PREFIXED_VERSION, ResultController} from "./index";
-import {buildAPIURL, getHostURL} from "../../utils";
+import { API_PREFIXED_VERSION, ResultController } from './index'
+import { buildAPIURL } from '../../utils'
 
 /**
  * The controller for managing the ${RenderController.BASE_PATH} operation of Asciidoc presentations.

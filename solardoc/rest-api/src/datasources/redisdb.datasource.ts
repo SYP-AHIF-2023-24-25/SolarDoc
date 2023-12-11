@@ -3,7 +3,7 @@ import { juggler } from '@loopback/repository'
 import { ensureEnvLoaded, getEnv, isDev } from '../env'
 import { createClient as createV4Client, RedisClientType } from 'redis'
 import { DataSourceError } from '../errors'
-import {RedisError} from "../errors/redis-error";
+import { RedisError } from '../errors/redis-error'
 
 // Ensure all env files have been loaded (only relevant for development mode)
 ensureEnvLoaded()

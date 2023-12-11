@@ -6,19 +6,17 @@ import { DataObject } from '@loopback/repository/src/common-types'
 import { getEnv } from '../env'
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import {checkFileExtensionForMimeType, getDateNowInSeconds, getFileExtension} from '../utils'
+import { checkFileExtensionForMimeType, getDateNowInSeconds, getFileExtension } from '../utils'
 import { CacheError } from '../errors'
-import {CacheRedisKeyNotFoundError} from "../errors/cache-redis-key-not-found-error";
-import {CacheStoredFileNotFound} from "../errors/cache-stored-file-not-found";
-import {RedisDBDataSource} from "../datasources";
+import { CacheRedisKeyNotFoundError } from '../errors/cache-redis-key-not-found-error'
+import { CacheStoredFileNotFound } from '../errors/cache-stored-file-not-found'
+import { RedisDBDataSource } from '../datasources'
 
 @injectable({ scope: BindingScope.TRANSIENT })
 export class CacheService {
   private readonly persistentStoragePath: string
 
-  constructor(
-    @repository(CacheRepository) public cache: CacheRepository
-  ) {
+  constructor(@repository(CacheRepository) public cache: CacheRepository) {
     this.persistentStoragePath = getEnv('PERSISTENT_STORAGE_PATH', true)!
   }
 
@@ -123,7 +121,7 @@ export class CacheService {
     try {
       return await fs.readFile(storeFilePath, { encoding: 'utf-8' })
     } catch (e) {
-      if ("code" in e && e.code === 'ENOENT') {
+      if ('code' in e && e.code === 'ENOENT') {
         throw new CacheStoredFileNotFound(`File '${storeFilePath}' not found`)
       }
 
@@ -153,10 +151,18 @@ export class CacheService {
     })
 
     // Save the file to the persistent storage
-    cachedElement.storeFilename = await this.saveToPersistentStorage(filename, fileContent, cachedElement.id)
+    cachedElement.storeFilename = await this.saveToPersistentStorage(
+      filename,
+      fileContent,
+      cachedElement.id,
+    )
 
     // Set the store filename in the database
-    await this.redisDataSource.hset(cachedElement.redisKey, 'storeFilename', cachedElement.storeFilename)
+    await this.redisDataSource.hset(
+      cachedElement.redisKey,
+      'storeFilename',
+      cachedElement.storeFilename,
+    )
 
     return cachedElement
   }
@@ -167,25 +173,27 @@ export class CacheService {
    * @returns The file content.
    */
   public async getFile(uuid: string): Promise<{
-    mimeType: string,
-    fileContent: string,
-    originalFilename: string,
+    mimeType: string
+    fileContent: string
+    originalFilename: string
   }> {
     const cachedElement = await this.cache.findById(uuid)
     if (!cachedElement) {
       throw new CacheRedisKeyNotFoundError(`Cached element with UUID '${uuid}' not found`)
     } else if (!cachedElement.storeFilename) {
-      throw new CacheStoredFileNotFound(`Cached element with UUID '${uuid}' does not have a stored file`)
+      throw new CacheStoredFileNotFound(
+        `Cached element with UUID '${uuid}' does not have a stored file`,
+      )
     }
 
     const content = await this.readFromPersistentStorage(
-      this.getStoreFilePath(cachedElement.storeFilename)
+      this.getStoreFilePath(cachedElement.storeFilename),
     )
     const mimeType = checkFileExtensionForMimeType(getFileExtension(cachedElement.storeFilename))
     return {
       mimeType,
       fileContent: content,
-      originalFilename: cachedElement.filename
+      originalFilename: cachedElement.filename,
     }
   }
 }

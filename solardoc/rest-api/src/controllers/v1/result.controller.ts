@@ -1,9 +1,9 @@
 import { inject } from '@loopback/core'
 import { CacheService } from '../../services'
-import {get, getModelSchemaRef, param, Request, Response, RestBindings} from '@loopback/rest'
+import { get, getModelSchemaRef, param, Response, RestBindings } from '@loopback/rest'
 import { RenderedPresentationPdfDtoModel } from '../../models'
-import {API_PREFIXED_VERSION} from "./index";
-import {CacheError} from "../../errors";
+import { API_PREFIXED_VERSION } from './index'
+import { CacheError } from '../../errors'
 
 export class ResultController {
   public static readonly BASE_PATH = `/${API_PREFIXED_VERSION}/result`
@@ -31,7 +31,7 @@ export class ResultController {
     @inject(RestBindings.Http.RESPONSE) res: Response,
   ) {
     try {
-      const { mimeType, fileContent, originalFilename} = await this.cacheService.getFile(uuid)
+      const { mimeType, fileContent, originalFilename } = await this.cacheService.getFile(uuid)
       res.setHeader('Content-Type', mimeType)
       res.setHeader('Content-Disposition', `attachment; filename="${originalFilename}"`)
       res.status(200).send(fileContent)

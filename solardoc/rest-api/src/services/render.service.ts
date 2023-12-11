@@ -8,7 +8,6 @@ import {
   HTMLRenderer,
   Presentation,
 } from '@solardoc/asciidoc-renderer'
-import fs from 'fs/promises'
 
 @injectable({ scope: BindingScope.TRANSIENT })
 export class RenderService {

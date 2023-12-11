@@ -1,4 +1,4 @@
-import {RestApiError} from "./rest-api-error";
+import { RestApiError } from './rest-api-error'
 
 /**
  * Error that is thrown whenever an issue with the Redis db is encountered.
@@ -10,4 +10,3 @@ export class RedisError extends RestApiError {
     this.name = 'RedisError'
   }
 }
-

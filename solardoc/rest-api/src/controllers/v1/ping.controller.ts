@@ -1,7 +1,7 @@
 import { inject } from '@loopback/core'
 import { get, getModelSchemaRef, Request, RestBindings } from '@loopback/rest'
 import { PingDtoModel } from '../../models'
-import {API_PREFIXED_VERSION} from "./index";
+import { API_PREFIXED_VERSION } from './index'
 
 /**
  * A simple controller to bounce back http requests
@@ -21,9 +21,7 @@ export class PingController {
       },
     },
   })
-  async ping(
-    @inject(RestBindings.Http.REQUEST) req: Request,
-  ): Promise<PingDtoModel> {
+  async ping(@inject(RestBindings.Http.REQUEST) req: Request): Promise<PingDtoModel> {
     // Reply with a greeting, the current time, the url, and request headers
     return {
       greeting: 'Hello from LoopBack',
