@@ -21,7 +21,7 @@ describe("HtmlRenderer", () => {
     });
 
     it(
-      "should return a reveal.js html string with custom reveal.js dependency path [revealJSDependencyPrepend=true]",
+      "should return a reveal.js html string with custom reveal.js dependency path [revealJSAssetsPath=true]",
       async () => {
         const adocFile = await AsciidocFile.fromString(
           adocFilename,
@@ -31,7 +31,7 @@ describe("HtmlRenderer", () => {
         const presentation = await asciidocCompiler.parse(adocFile);
 
         const html = await presentation.render(new HTMLRenderer(), {
-          revealJSDependencyPrepend: "test",
+          revealJSAssetsPath: "test",
         });
         assert.notEqual(html.internalData, "", "internalData is empty");
         assert.isTrue(html.internalData.includes("src=\"test/reveal.js"));

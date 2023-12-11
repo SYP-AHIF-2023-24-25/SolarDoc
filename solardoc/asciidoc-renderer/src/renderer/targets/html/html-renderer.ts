@@ -47,10 +47,10 @@ export class HTMLRenderer extends TargetRenderer<string, string> {
     }
 
     // Replace the reveal.js dependency path if needed
-    if (config?.revealJSDependencyPrepend) {
+    if (config?.revealJSAssetsPath) {
       htmlOutput = htmlOutput.replace(
         new RegExp(`(src|href)="(${HTMLRenderer.DEFAULT_REVEAL_JS_DEPENDENCY_PATH}/)([^"]+)"`, 'g'),
-        `$1="${config.revealJSDependencyPrepend}/$3"`
+        `$1="${config.revealJSAssetsPath}/$3"`
       )
     }
 

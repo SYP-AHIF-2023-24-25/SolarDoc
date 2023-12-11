@@ -9,5 +9,5 @@ export interface HTMLRendererConfig {
    * This is to allow for a custom directory other than 'node_modules/reveal.js/dist' to be used.
    * @since 0.2.0
    */
-  revealJSDependencyPrepend?: string
+  revealJSAssetsPath?: string
 }
