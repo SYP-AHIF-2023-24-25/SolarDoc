@@ -6,7 +6,7 @@ import {
 } from "@solardoc/asciidoc-renderer";
 
 describe("AsciidocCompiler", () => {
-  describe("compile()", () => {
+  describe("parse()", () => {
     it("should return presentation", async () => {
       const content = "= Test\n== Still testing";
       const fileName = "test.adoc";
@@ -15,23 +15,26 @@ describe("AsciidocCompiler", () => {
         content
       );
       const asciidocCompiler = new AsciidocCompiler();
-      const metadata = asciidocCompiler.asciidoctor.load(testFile.content);
+      const presentation: Presentation = await asciidocCompiler.parse(testFile);
       assert.equal(
-        metadata.getSource(),
-        content,
-        "Test file content is not correct"
-      );
-
-      const presentation = new Presentation(asciidocCompiler, metadata);
-      assert.equal(
-        presentation.parsedFile,
-        metadata,
+        presentation.parsedFile.getSource(),
+        testFile.content,
         "Presentation 'parsedFile' should equal parsedFile is not correct"
       );
       assert.equal(
         presentation.compiler,
         asciidocCompiler,
         "Presentation 'compiler' property is not correct"
+      );
+      assert.equal(
+        presentation.compiler.asciidoctor,
+        asciidocCompiler.asciidoctor,
+        "Presentation 'asciidoctor' property is not correct"
+      )
+      assert.equal(
+        presentation.metadata.title,
+        "Test",
+        "Presentation 'metadata.title' property is not correct"
       );
     });
   });

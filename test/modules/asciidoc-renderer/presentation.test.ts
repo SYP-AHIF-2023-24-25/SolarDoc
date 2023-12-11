@@ -3,6 +3,34 @@ import {assert} from "chai";
 
 
 describe("Presentation", () => {
+  describe("constructor()", () => {
+    it("should return instance", async () => {
+      const content = "= Test\n== Still testing";
+      const fileName = "test.adoc";
+      const testFile: AsciidocFile = await AsciidocFile.fromString(
+        fileName,
+        content
+      );
+      const asciidocCompiler = new AsciidocCompiler();
+      const presentation = await asciidocCompiler.parse(testFile);
+      assert.equal(
+        presentation.parsedFile.getSource(),
+        testFile.content,
+        "Presentation 'parsedFile' should equal parsedFile is not correct"
+      );
+      assert.equal(
+        presentation.compiler,
+        asciidocCompiler,
+        "Presentation 'compiler' property is not correct"
+      );
+      assert.equal(
+        presentation.metadata.title,
+        "Test",
+        "Presentation 'metadata.title' property is not correct"
+      );
+    })
+  })
+
   describe("getDocumentMetadata()", () => {
     it("should return proper metadata for document without sub-slides", async () => {
       const adocString =
@@ -64,8 +92,6 @@ describe("Presentation", () => {
       assert.equal(presentation.metadata.title, "Test");
       assert.equal(presentation.metadata.slideCount,8 );
       assert.equal(presentation.metadata.mainSlideCount,4);
-
     });
   });
-
 });
