@@ -1,8 +1,9 @@
 import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core'
 import { juggler } from '@loopback/repository'
-import {ensureEnvLoaded, getEnv, isDev} from '../env'
+import { ensureEnvLoaded, getEnv, isDev } from '../env'
 import { createClient as createV4Client, RedisClientType } from 'redis'
 import { DataSourceError } from '../errors'
+import {RedisError} from "../errors/redis-error";
 
 // Ensure all env files have been loaded (only relevant for development mode)
 ensureEnvLoaded()
@@ -24,7 +25,7 @@ const v4Config = (() => {
   }
   return {
     ...baseConfig,
-    url: `redis://${baseConfig.host}:${baseConfig.port}`
+    url: `redis://${baseConfig.host}:${baseConfig.port}`,
   }
 })()
 
@@ -81,7 +82,9 @@ export class RedisDBDataSource extends juggler.DataSource implements LifeCycleOb
     try {
       await this.v4Client.connect()
     } catch (e) {
-      throw new DataSourceError(`Failed to connect to Redis v4 database at "${this.sanitisedUrl}":\n > ${e}`)
+      throw new DataSourceError(
+        `Failed to connect to Redis v4 database at "${this.sanitisedUrl}":\n > ${e}`,
+      )
     }
     console.log(`[REDISv4] Connected to Redis v4 database at ${this.sanitisedUrl}`)
 
@@ -115,5 +118,19 @@ export class RedisDBDataSource extends juggler.DataSource implements LifeCycleOb
   public override async stop(): Promise<void> {
     await this.v4Client.quit()
     await super.stop()
+  }
+
+  /**
+   * Sets the value for the given key and subkey. This performs a raw Redis HSET operation.
+   * @param key The key to set the value for.
+   * @param subkey The subkey to set the value for.
+   * @param value The value to set.
+   */
+  public async hset(key: string, subkey: string, value: string): Promise<boolean> {
+    const status = await this.v4Client.HSET(key, subkey, value)
+    if (status !== 1) {
+      throw new RedisError(`Could not set value for key '${key}' and subkey '${subkey}'`)
+    }
+    return true
   }
 }

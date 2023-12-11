@@ -1,9 +1,36 @@
 import { ApplicationConfig, RestApiApplication } from './application'
-import {ensureEnvLoaded, getEnv} from './env'
-import * as fs from "fs/promises";
-import * as path from "path";
+import { ensureEnvLoaded, getEnv } from './env'
+import * as fs from 'fs/promises'
 
 export * from './application'
+
+/**
+ * The latest version of the API.
+ *
+ * This does not exclude the possibility of legacy versions being supported in their own independent legacy controllers.
+ * @since 0.2.0
+ */
+export const API_VERSION = '1'
+
+/**
+ * The base path to the API, versioned. This includes the 'v' prefix.
+ * @since 0.2.0
+ */
+export const API_PREFIXED_VERSION = `v${API_VERSION}`
+
+/**
+ * The base path to the API, not versioned.
+ * @since 0.2.0
+ */
+export const API_BASE_PATH = '/api'
+
+/**
+ * The base path to the API, versioned.
+ *
+ * This points to the latest version of the API and is a root path.
+ * @since 0.2.0
+ */
+export const API_VERSIONED_FULL_BASE_PATH = `/${API_BASE_PATH}/v${API_VERSION}`
 
 // Ensure that the environment variables are loaded (only relevant for development mode, as in production mode the .env
 // files are not used but rather global environment variables are used instead. This simplifies the deployment process
@@ -38,12 +65,17 @@ export async function main(options: ApplicationConfig = {}) {
 
   // Then start the application
   const app = new RestApiApplication(options)
+
+  // Set the base path for the API
+  app.basePath(API_BASE_PATH)
+
+  // Start the application
   await app.boot()
   await app.start()
 
   const url = app.restServer.url
   console.log(`Server is running at ${url}`)
-  console.log(`Try ${url}/ping`)
+  console.log(`Try ${url}/${API_PREFIXED_VERSION}/ping`)
 
   return app
 }

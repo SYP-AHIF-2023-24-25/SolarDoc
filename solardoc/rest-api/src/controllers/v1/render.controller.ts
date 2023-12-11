@@ -1,25 +1,29 @@
-import { getModelSchemaRef, param, post, requestBody } from '@loopback/rest'
+import {getModelSchemaRef, param, post, Request, requestBody, RestBindings} from '@loopback/rest'
 import {
   RenderedPresentationImagesDtoModel,
   RenderedPresentationPdfDtoModel,
   RenderedPresentationRjsHtmlDtoModel,
   RenderedSlideImageDtoModel,
   RenderPresentationDtoModel,
-} from '../models'
-import {CacheService, RenderService} from '../services'
+} from '../../models'
+import { CacheService, RenderService } from '../../services'
 import { inject } from '@loopback/core'
-import {HTMLOutput} from "@solardoc/asciidoc-renderer";
+import { HTMLOutput } from '@solardoc/asciidoc-renderer'
+import {API_PREFIXED_VERSION, ResultController} from "./index";
+import {buildAPIURL, getHostURL} from "../../utils";
 
 /**
- * The controller for managing the render operation of Asciidoc presentations.
+ * The controller for managing the ${RenderController.BASE_PATH} operation of Asciidoc presentations.
  */
 export class RenderController {
+  public static readonly BASE_PATH = `/${API_PREFIXED_VERSION}/render`
+
   constructor(
     @inject('services.CacheService') public cacheService: CacheService,
     @inject('services.RenderService') public renderService: RenderService,
   ) {}
 
-  @post('/render/presentation/pdf', {
+  @post(`/${RenderController.BASE_PATH}/presentation/pdf`, {
     responses: {
       '200': {
         description:
@@ -38,7 +42,7 @@ export class RenderController {
     throw new Error('Not implemented yet!')
   }
 
-  @post('/render/presentation/rjs-html', {
+  @post(`/${RenderController.BASE_PATH}/presentation/rjs-html`, {
     responses: {
       '200': {
         description:
@@ -53,6 +57,7 @@ export class RenderController {
   })
   async renderPresentationRjsHtml(
     @requestBody() presentationModel: RenderPresentationDtoModel,
+    @inject(RestBindings.Http.REQUEST) req: Request,
   ): Promise<RenderedPresentationRjsHtmlDtoModel> {
     const htmlOutput: HTMLOutput = await this.renderService.renderRJSHTMLPresentation(
       presentationModel.fileName,
@@ -61,19 +66,19 @@ export class RenderController {
 
     // Write out the file and save it to the cache
     const content: string = await htmlOutput.write()
-    const cachedElement = await this.cacheService.addFile(
-      htmlOutput.outFilename,
-      content,
-    )
+    const cachedElement = await this.cacheService.addFile(htmlOutput.outFilename, content)
+
+    // Build the download URL where the user can download the file
+    const downloadURL: string = buildAPIURL(req, ResultController.BASE_PATH, cachedElement.id)
 
     return {
       fileName: presentationModel.fileName, // Original filename
       cache: cachedElement.toCacheDtoModel(),
-      download: cachedElement.toDownloadDtoModel(),
+      download: cachedElement.toDownloadDtoModel(downloadURL),
     }
   }
 
-  @post('/render/presentation/images', {
+  @post(`/${RenderController.BASE_PATH}/presentation/images`, {
     responses: {
       '200': {
         description:
@@ -92,7 +97,7 @@ export class RenderController {
     throw new Error('Not implemented yet!')
   }
 
-  @post('/render/slide/{uuid}/image', {
+  @post(`/${RenderController.BASE_PATH}/slide/{uuid}/image`, {
     responses: {
       '200': {
         description:

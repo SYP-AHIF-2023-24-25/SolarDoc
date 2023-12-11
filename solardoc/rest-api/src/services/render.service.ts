@@ -1,8 +1,14 @@
 import { BindingScope, injectable } from '@loopback/core'
 
 // Import render library
-import {AsciidocCompiler, AsciidocFile, HTMLOutput, HTMLRenderer, Presentation} from '@solardoc/asciidoc-renderer'
-import fs from "fs/promises";
+import {
+  AsciidocCompiler,
+  AsciidocFile,
+  HTMLOutput,
+  HTMLRenderer,
+  Presentation,
+} from '@solardoc/asciidoc-renderer'
+import fs from 'fs/promises'
 
 @injectable({ scope: BindingScope.TRANSIENT })
 export class RenderService {
@@ -31,8 +37,8 @@ export class RenderService {
     fileName: string,
     fileContent: string,
   ): Promise<HTMLOutput> {
-    const file: AsciidocFile = await AsciidocFile.fromString(fileName, fileContent);
-    const presentation: Presentation = await this.compiler.parse(file);
-    return presentation.render(new HTMLRenderer());
+    const file: AsciidocFile = await AsciidocFile.fromString(fileName, fileContent)
+    const presentation: Presentation = await this.compiler.parse(file)
+    return presentation.render(new HTMLRenderer())
   }
 }

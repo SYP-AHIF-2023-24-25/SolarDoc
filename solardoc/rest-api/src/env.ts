@@ -1,9 +1,8 @@
 import * as dotenv from 'dotenv'
 
 // Check what type of environment we are running in
-export const envType: 'development' | 'production' = process.env.NODE_ENV === 'production' ?
-  'production'
-  : 'development'
+export const envType: 'development' | 'production' =
+  process.env.NODE_ENV === 'production' ? 'production' : 'development'
 export const isDev = envType === 'development'
 export const isProd = envType === 'production'
 
@@ -62,10 +61,10 @@ If the .env files exist, please make sure to check the following:
 - The .env file is readable by the user running the application (check file permissions)
 
 ${
-        localResult.error?.stack
-          ? localResult.error?.stack
-          : 'Error details: ' + (localResult.error ? localResult.error?.message : 'Empty .env file.')
-      }`,
+  localResult.error?.stack
+    ? localResult.error?.stack
+    : 'Error details: ' + (localResult.error ? localResult.error?.message : 'Empty .env file.')
+}`,
     )
   }
 
@@ -93,7 +92,7 @@ export function getEnv(key: string, throwIfUndef: boolean = true): string | unde
     }
     return value
   } else {
-    const val: string | undefined = process.env[key];
+    const val: string | undefined = process.env[key]
     if (throwIfUndef && !val) {
       throw new Error(
         `[CRITICAL] Attempted to access undefined environment variable "${key}" (Marked as required by application).`,

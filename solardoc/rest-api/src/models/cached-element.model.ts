@@ -1,6 +1,6 @@
 import { model, property } from '@loopback/repository'
 import { RedisEntity } from './abstract/redis-entity'
-import {CacheDtoModel, DownloadDtoModel} from "./dto";
+import { CacheDtoModel, DownloadDtoModel } from './dto'
 
 @model({ settings: { strict: false } })
 export class CachedElement extends RedisEntity {
@@ -14,13 +14,13 @@ export class CachedElement extends RedisEntity {
     type: 'string',
     required: true,
   })
-  name: string
+  filename: string
 
   @property({
     type: 'string',
     required: false,
   })
-  storageURL: string | undefined;
+  storeFilename: string | undefined;
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,12 +60,15 @@ export class CachedElement extends RedisEntity {
 
   /**
    * Converts this cached element to a {@link DownloadDtoModel}.
+   * @param downloadURL The URL to download the file from.
    * @since 0.2.0
    */
-  public toDownloadDtoModel(): DownloadDtoModel {
+  public toDownloadDtoModel(
+    downloadURL: string,
+  ): DownloadDtoModel {
     return new DownloadDtoModel({
-      fileName: this.name,
-      storageURL: this.storageURL,
+      fileName: this.filename,
+      downloadURL: downloadURL,
     })
   }
 }

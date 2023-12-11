@@ -1,5 +1,5 @@
 import { model, property } from '@loopback/repository'
-import {DtoModel} from "../abstract/dto-model";
+import { DtoModel } from '../abstract/dto-model'
 
 @model()
 export class DownloadDtoModel extends DtoModel<DownloadDtoModel> {
@@ -7,7 +7,7 @@ export class DownloadDtoModel extends DtoModel<DownloadDtoModel> {
     required: true,
     description: 'The download url of the presentation',
   })
-  storageURL: string
+  downloadURL: string
 
   @property({
     required: true,

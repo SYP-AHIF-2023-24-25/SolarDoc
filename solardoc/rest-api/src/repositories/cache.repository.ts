@@ -4,6 +4,7 @@ import { RedisDBDataSource } from '../datasources'
 import { CachedElement, CachedElementRelations } from '../models'
 import { CacheError } from '../errors'
 import { v4 as uuidV4 } from 'uuid'
+import {RedisError} from "../errors/redis-error";
 
 /**
  * A type alias for a UUID.

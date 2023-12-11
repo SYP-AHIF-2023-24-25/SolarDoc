@@ -1,6 +1,6 @@
 import { model, property } from '@loopback/repository'
 import { IncomingHttpHeaders } from 'http'
-import {DtoModel} from "../abstract/dto-model";
+import { DtoModel } from '../abstract/dto-model'
 
 @model()
 export class PingDtoModel extends DtoModel<PingDtoModel> {

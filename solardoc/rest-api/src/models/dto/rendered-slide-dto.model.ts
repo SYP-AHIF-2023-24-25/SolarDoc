@@ -1,5 +1,5 @@
 import { model, property } from '@loopback/repository'
-import {DtoModel} from "../abstract/dto-model";
+import { DtoModel } from '../abstract/dto-model'
 
 @model()
 export class RenderedSlideDtoModel extends DtoModel<RenderedSlideDtoModel> {
