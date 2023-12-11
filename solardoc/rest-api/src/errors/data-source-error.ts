@@ -6,7 +6,7 @@ import { RestApiError } from './rest-api-error'
  */
 export class DataSourceError extends RestApiError {
   constructor(message?: string) {
-    super(message || 'An error occurred with a data source.')
+    super(message ?? 'An error occurred with a data source.')
     this.name = 'DataSourceError'
   }
 }
