@@ -17,8 +17,9 @@ export class ImageRenderer extends TargetRenderer<unknown, unknown> {
   /**
    * Renders the given {@link Presentation presentation} to a collection of images (one per slide).
    * @param presentation The presentation that should be rendered.
+   * @param config The configuration for the image renderer.
    */
-  public async render(presentation: Presentation): Promise<ImageOutput> {
+  public async render(presentation: Presentation, config?: { [key: string]: any }): Promise<ImageOutput> {
     // TODO!
     throw new Error('Not implemented yet!')
   }
@@ -27,8 +28,10 @@ export class ImageRenderer extends TargetRenderer<unknown, unknown> {
    * Renders a single {@link Slide slide} of the presentation to an image.
    * @param presentation The presentation that should be rendered.
    * @param slide The slide that should be rendered. (Index or {@link Slide})
+   * @param config The configuration for the image renderer.
+   * @since 0.2.0
    */
-  public renderSlide(presentation: Presentation, slide: number | Slide): Promise<ImageOutput> {
+  public renderSlide(presentation: Presentation, slide: number | Slide, config?: { [key: string]: any }): Promise<ImageOutput> {
     // TODO!
     throw new Error('Not implemented yet!')
   }

@@ -19,5 +19,23 @@ describe("HtmlRenderer", () => {
       const html = await presentation.render(new HTMLRenderer());
       assert.notEqual(html.internalData, "", "internalData is empty");
     });
+
+    it(
+      "should return a reveal.js html string with custom reveal.js dependency path [revealJSDependencyPrepend=true]",
+      async () => {
+        const adocFile = await AsciidocFile.fromString(
+          adocFilename,
+          adocString,
+        );
+        const asciidocCompiler = new AsciidocCompiler();
+        const presentation = await asciidocCompiler.parse(adocFile);
+
+        const html = await presentation.render(new HTMLRenderer(), {
+          revealJSDependencyPrepend: "test",
+        });
+        assert.notEqual(html.internalData, "", "internalData is empty");
+        assert.isTrue(html.internalData.includes("src=\"test/reveal.js"));
+      }
+    );
   });
 });

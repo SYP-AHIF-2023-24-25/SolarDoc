@@ -5,6 +5,7 @@ import { Slide } from '../../../slide'
 import { Asciidoctor } from '@asciidoctor/core'
 import { InternalError } from '../../../errors'
 import {AsciidocCompiler} from "../../asciidoc-compiler";
+import {HTMLRendererConfig} from "./html-renderer-config";
 
 /**
  * Renders a presentation or slide to an image file.
@@ -22,25 +23,37 @@ export class HTMLRenderer extends TargetRenderer<string, string> {
     standalone: true
   } satisfies Asciidoctor.ProcessorOptions
 
+  private static readonly DEFAULT_REVEAL_JS_DEPENDENCY_PATH = 'node_modules/reveal.js/dist'
+
   public constructor() {
     super()
-    // TODO!
-    //throw new Error('Not implemented yet!')
   }
 
   /**
    * Renders the given {@link Presentation presentation} to a reveal.js HTML presentation.
    * @param presentation The presentation that should be rendered.
+   * @param config The configuration for the HTML renderer.
    * @since 0.2.0
    */
-  public async render(presentation: Presentation): Promise<HTMLOutput> {
-    // TODO!
+  public async render(
+    presentation: Presentation,
+    config?: HTMLRendererConfig
+  ): Promise<HTMLOutput> {
     let htmlOutput = presentation.parsedFile.convert(HTMLRenderer.renderOptions)
     if (typeof htmlOutput !== 'string') {
       throw new InternalError(
         `HTML output is not a string! Potential bug in asciidoctor.js! (Input: ${presentation.sourceCode})`
       )
     }
+
+    // Replace the reveal.js dependency path if needed
+    if (config?.revealJSDependencyPrepend) {
+      htmlOutput = htmlOutput.replace(
+        new RegExp(`(src|href)="(${HTMLRenderer.DEFAULT_REVEAL_JS_DEPENDENCY_PATH}/)([^"]+)"`, 'g'),
+        `$1="${config.revealJSDependencyPrepend}/$3"`
+      )
+    }
+
     return new HTMLOutput(htmlOutput, presentation)
   }
 
@@ -51,9 +64,10 @@ export class HTMLRenderer extends TargetRenderer<string, string> {
    * will be decided later.
    * @param presentation The presentation that should be rendered.
    * @param slide The slide that should be rendered. (Index or {@link Slide})
+   * @param config The configuration for the HTML renderer.
    * @since 0.2.0
    */
-  public renderSlide(presentation: Presentation, slide: number | Slide): Promise<HTMLOutput> {
+  public renderSlide(presentation: Presentation, slide: number | Slide, config?: { [key: string]: any }): Promise<HTMLOutput> {
     // TODO!
     throw new Error('Not implemented yet!')
   }

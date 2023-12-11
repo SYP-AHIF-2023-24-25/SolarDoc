@@ -15,10 +15,11 @@ export class NodePDFRenderer extends TargetRenderer<unknown, unknown> {
    *
    * This is node-specific, and will not work in the browser.
    * @param presentation The presentation that should be rendered.
+   * @param config The configuration for the PDF renderer.
    * @since 0.2.0
    */
   // eslint-disable-next-line no-unused-vars
-  public async render(presentation: Presentation): Promise<PDFOutput> {
+  public async render(presentation: Presentation, config?: { [key: string]: any }): Promise<PDFOutput> {
     // TODO!
     throw new Error('Not implemented yet!')
   }
@@ -29,10 +30,11 @@ export class NodePDFRenderer extends TargetRenderer<unknown, unknown> {
    * This is node-specific, and will not work in the browser.
    * @param presentation The presentation that should be rendered.
    * @param slide The slide that should be rendered. (Index or {@link Slide})
+   * @param config The configuration for the PDF renderer.
    * @since 0.2.0
    */
   // eslint-disable-next-line no-unused-vars
-  public async renderSlide(presentation: Presentation, slide: number | Slide): Promise<PDFOutput> {
+  public async renderSlide(presentation: Presentation, slide: number | Slide, config?: { [key: string]: any }): Promise<PDFOutput> {
     // TODO!
     throw new Error('Not implemented yet!')
   }
