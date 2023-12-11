@@ -10,7 +10,7 @@ api.defaults.baseUrl = isDev
 console.log(`[api-service.ts] Using backend at '${api.defaults.baseUrl}'`)
 
 export async function checkIfBackendIsReachable(): Promise<void> {
-  const ping = await api.getPing()
+  const ping = await api.getV1Ping()
   if (ping.status !== 200) {
     throw new Error(`Backend is not reachable. Response:\n${ping}`)
   }
