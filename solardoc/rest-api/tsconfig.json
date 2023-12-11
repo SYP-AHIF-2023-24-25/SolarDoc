@@ -3,7 +3,10 @@
   "extends": "@loopback/build/config/tsconfig.common.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "lib": ["es2020"],
+    "target": "es2018",
+    "importHelpers": false
   },
   "include": ["src"]
 }

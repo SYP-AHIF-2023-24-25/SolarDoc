@@ -3,6 +3,8 @@ npm-debug.log
 /dist
 # Cache used by TypeScript's incremental build
 *.tsbuildinfo
-.prettierrc.json
 .eslintrc.cjs
+.eslintignore
+.prettierignore
+.prettierrc.json
 .env

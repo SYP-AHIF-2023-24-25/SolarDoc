@@ -1,4 +1,4 @@
-import type { TargetRenderer, AsciidocCompiler } from './renderer'
+import {TargetRenderer, AsciidocCompiler, AsciidocFile} from './renderer'
 import { RenderOutput } from './renderer'
 import { Asciidoctor } from '@asciidoctor/core'
 import { PresentationMetadata } from './presentation-metadata'
@@ -10,16 +10,19 @@ import { PresentationMetadata } from './presentation-metadata'
  */
 export class Presentation {
   private readonly _compiler: AsciidocCompiler
+  private readonly _sourceFile: AsciidocFile
   private readonly _parsedFile: Asciidoctor.Document
   private readonly _metadata: PresentationMetadata
 
-  public constructor(compiler: AsciidocCompiler, parsedFile: Asciidoctor.Document) {
+  public constructor(
+    compiler: AsciidocCompiler,
+    sourceFile: AsciidocFile,
+    parsedFile: Asciidoctor.Document
+  ) {
     this._compiler = compiler
+    this._sourceFile = sourceFile
     this._parsedFile = parsedFile
     this._metadata = this.getDocumentMetadata(parsedFile)
-
-    // TODO!
-    //throw new Error('Not implemented yet!')
   }
 
   /**
@@ -28,6 +31,14 @@ export class Presentation {
    */
   public get metadata(): PresentationMetadata {
     return this._metadata
+  }
+
+  /**
+   * The source file that was used to create the presentation.
+   * @since 0.2.0
+   */
+  public get sourceFile(): AsciidocFile {
+    return this._sourceFile
   }
 
   /**

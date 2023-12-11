@@ -10,10 +10,8 @@ const darkModeStore = useDarkModeStore()
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
 backendAPI.checkIfBackendIsReachable()
-  .then(response => {
-    console.log(response)
-  })
-  .catch(error => {
+  .then(void 0)
+  .catch((error: Error) => {
     if (error) {
       console.error(error)
     }

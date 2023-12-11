@@ -41,7 +41,7 @@ export class HTMLRenderer extends TargetRenderer<string, string> {
         `HTML output is not a string! Potential bug in asciidoctor.js! (Input: ${presentation.sourceCode})`
       )
     }
-    return new HTMLOutput(htmlOutput)
+    return new HTMLOutput(htmlOutput, presentation)
   }
 
   /**

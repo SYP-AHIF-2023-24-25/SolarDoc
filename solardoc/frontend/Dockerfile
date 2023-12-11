@@ -73,6 +73,9 @@ COPY --from=build-stage /home/node/app/solardoc/frontend/.env /usr/share/nginx/h
 RUN rm /etc/nginx/conf.d/default.conf
 COPY --from=build-stage /home/node/app/solardoc/frontend/nginx.conf /etc/nginx/conf.d/nginx.conf
 
+# Since we are running in Docker we can always say that we are in production
+ENV NODE_ENV=production
+
 # Bind to all network interfaces so that it can be mapped to the host OS
 ENV HOST=0.0.0.0 PORT=80
 

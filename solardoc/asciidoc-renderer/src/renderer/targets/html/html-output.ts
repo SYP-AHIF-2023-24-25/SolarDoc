@@ -1,12 +1,17 @@
 import { RenderOutput } from '../../render-output'
+import {Presentation} from "../../../presentation";
 
 /**
  * Wrapper class for an HTML output.
  * @since 0.2.0
  */
 export class HTMLOutput extends RenderOutput<string, string> {
-  public constructor(internalData: string) {
-    super(internalData)
+  public constructor(internalData: string, source: Presentation) {
+    super(internalData, source)
+  }
+
+  public get extension(): string {
+    return 'html'
   }
 
   /**
