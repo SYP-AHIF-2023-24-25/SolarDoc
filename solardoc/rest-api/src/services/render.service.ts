@@ -29,15 +29,17 @@ export class RenderService {
    * Renders an Asciidoc presentation to a reveal.js HTML presentation.
    * @param fileName The name of the file.
    * @param fileContent The content of the file.
+   * @param revealJSAssetsPath The path to the reveal.js assets.
    * @returns The output object containing the metadata as well as the output HTML.
    * @since 0.2.0
    */
   public async renderRJSHTMLPresentation(
     fileName: string,
     fileContent: string,
+    revealJSAssetsPath?: string,
   ): Promise<HTMLOutput> {
     const file: AsciidocFile = await AsciidocFile.fromString(fileName, fileContent)
     const presentation: Presentation = await this.compiler.parse(file)
-    return presentation.render(new HTMLRenderer())
+    return presentation.render(new HTMLRenderer(), {revealJSAssetsPath})
   }
 }

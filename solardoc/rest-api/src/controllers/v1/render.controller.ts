@@ -11,6 +11,7 @@ import { inject } from '@loopback/core'
 import { HTMLOutput } from '@solardoc/asciidoc-renderer'
 import { API_PREFIXED_VERSION, ResultController } from './index'
 import { buildAPIURL } from '../../utils'
+import {RenderPresentationRjsHtmlDtoModel} from "../../models/dto/render-presentation-rjs-html-dto.model";
 
 /**
  * The controller for managing the ${RenderController.BASE_PATH} operation of Asciidoc presentations.
@@ -56,12 +57,13 @@ export class RenderController {
     },
   })
   async renderPresentationRjsHtml(
-    @requestBody() presentationModel: RenderPresentationDtoModel,
+    @requestBody() presentationModel: RenderPresentationRjsHtmlDtoModel,
     @inject(RestBindings.Http.REQUEST) req: Request,
   ): Promise<RenderedPresentationRjsHtmlDtoModel> {
     const htmlOutput: HTMLOutput = await this.renderService.renderRJSHTMLPresentation(
       presentationModel.fileName,
       presentationModel.fileContent,
+      presentationModel.revealJSAssetsPath,
     )
 
     // Write out the file and save it to the cache

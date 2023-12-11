@@ -48,11 +48,19 @@
   --editor-monaco-height: calc(
     var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
   );
-  --editor-monaco-width: 60vw;
+  --editor-monaco-width: 65vw;
   --editor-monaco-padding-top: 1rem;
   --editor-monaco-margin: 0;
   --editor-border-width: 1px;
   --editor-border: 1px solid var(--text-color);
+
+  // Editor preview presets (Has a ratio of 2:1)
+  --editor-preview-frame-width: calc(100vw - var(--editor-monaco-width) - var(--editor-border-width));
+  --editor-preview-frame-height: calc(var(--editor-preview-frame-width) * 0.5);
+  --editor-preview-frame-padding: 0;
+  --editor-preview-frame-margin: 0;
+
+  // Editor preview remaining presets
   --editor-preview-meta-info-height: 3rem;
   --editor-preview-meta-info-padding: 0 1rem;
   --editor-preview-slides-navigator-height: 25vh;
@@ -111,6 +119,14 @@ $editor-monaco-padding-top: var(--editor-monaco-padding-top);
 $editor-monaco-margin: var(--editor-monaco-margin);
 $editor-border-width: var(--editor-border-width);
 $editor-border: var(--editor-border);
+
+// Editor preview presets (Has a ratio of 2:1)
+$editor-preview-frame-width: var(--editor-preview-frame-width);
+$editor-preview-frame-height: var(--editor-preview-frame-height);
+$editor-preview-frame-padding: var(--editor-preview-frame-padding);
+$editor-preview-frame-margin: var(--editor-preview-frame-margin);
+
+// Editor preview remaining presets
 $editor-preview-meta-info-height: var(--editor-preview-meta-info-height);
 $editor-preview-meta-info-padding: var(--editor-preview-meta-info-padding);
 $editor-preview-slides-navigator-height: var(--editor-preview-slides-navigator-height);

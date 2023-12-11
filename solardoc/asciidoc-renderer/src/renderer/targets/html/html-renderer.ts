@@ -23,7 +23,7 @@ export class HTMLRenderer extends TargetRenderer<string, string> {
     standalone: true
   } satisfies Asciidoctor.ProcessorOptions
 
-  private static readonly DEFAULT_REVEAL_JS_DEPENDENCY_PATH = 'node_modules/reveal.js/dist'
+  private static readonly DEFAULT_REVEAL_JS_DEPENDENCY_PATH = 'node_modules/reveal.js'
 
   public constructor() {
     super()
@@ -48,9 +48,18 @@ export class HTMLRenderer extends TargetRenderer<string, string> {
 
     // Replace the reveal.js dependency path if needed
     if (config?.revealJSAssetsPath) {
+      config.revealJSAssetsPath = config.revealJSAssetsPath.replace(/\/$/, '')
+
+      // Replace the dependency path in the head for any resources that uses it i.e. style sheets and scripts
       htmlOutput = htmlOutput.replace(
         new RegExp(`(src|href)="(${HTMLRenderer.DEFAULT_REVEAL_JS_DEPENDENCY_PATH}/)([^"]+)"`, 'g'),
         `$1="${config.revealJSAssetsPath}/$3"`
+      )
+
+      // Replace all dependency paths within "src: '...'" code (Both ' and " are supported, must be inside a script tag)
+      htmlOutput = htmlOutput.replace(
+        new RegExp(`src: (['"])(${HTMLRenderer.DEFAULT_REVEAL_JS_DEPENDENCY_PATH}/)([^'"]+)(['"])`, 'g'),
+        `src: $1${config.revealJSAssetsPath}/$3$4`
       )
     }
 

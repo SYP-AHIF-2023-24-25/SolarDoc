@@ -4,8 +4,8 @@
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
-import * as Oazapfts from 'oazapfts/lib/runtime'
-import * as QS from 'oazapfts/lib/runtime/query'
+import * as Oazapfts from "oazapfts/lib/runtime";
+import * as QS from "oazapfts/lib/runtime/query";
 export const defaults: Oazapfts.RequestOpts = {
     baseUrl: "/",
 };
@@ -41,6 +41,11 @@ export type RenderedPresentationPdfDtoModel = {
     fileName: string;
     cache: CacheDtoModel;
     download: DownloadDtoModel;
+};
+export type RenderPresentationRjsHtmlDtoModel = {
+    fileName: string;
+    fileContent: string;
+    revealJSAssetsPath?: string;
 };
 export type RenderedPresentationRjsHtmlDtoModel = {
     fileName: string;
@@ -79,14 +84,14 @@ export function postV1RenderPresentationPdf(renderPresentationDtoModel?: RenderP
         body: renderPresentationDtoModel
     }));
 }
-export function postV1RenderPresentationRjsHtml(renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
+export function postV1RenderPresentationRjsHtml(renderPresentationRjsHtmlDtoModel?: RenderPresentationRjsHtmlDtoModel, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
         data: RenderedPresentationRjsHtmlDtoModel;
     }>("/v1/render/presentation/rjs-html", oazapfts.json({
         ...opts,
         method: "POST",
-        body: renderPresentationDtoModel
+        body: renderPresentationRjsHtmlDtoModel
     }));
 }
 export function postV1RenderSlideByUuidImage(uuid: string, renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
@@ -100,9 +105,9 @@ export function postV1RenderSlideByUuidImage(uuid: string, renderPresentationDto
     }));
 }
 export function getV1ResultByUuid(uuid: string, opts?: Oazapfts.RequestOpts) {
-    return oazapfts.fetchJson<{
+    return oazapfts.fetchBlob<{
         status: 200;
-        data: RenderedPresentationPdfDtoModel;
+        data: Blob;
     } | {
         status: 404;
     }>(`/v1/result/${encodeURIComponent(uuid)}`, {

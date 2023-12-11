@@ -34,7 +34,7 @@ describe("HtmlRenderer", () => {
           revealJSAssetsPath: "test",
         });
         assert.notEqual(html.internalData, "", "internalData is empty");
-        assert.isTrue(html.internalData.includes("src=\"test/reveal.js"));
+        assert.isTrue(html.internalData.includes("src=\"test/dist/reveal.js"));
       }
     );
   });

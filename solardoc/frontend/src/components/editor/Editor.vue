@@ -12,8 +12,19 @@ import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
+import {useEditorContentStore} from "@/stores/editor-content";
+import {usePreviewLoadingStore} from "@/stores/preview-loading";
 
 const darkModeStore = useDarkModeStore()
+const editorContentStore = useEditorContentStore()
+const previewLoadingStore = usePreviewLoadingStore()
+
+/**
+ * The timeout after which the editor will save the text to the local storage.
+ *
+ * This is used to avoid saving the text too often.
+ */
+const EDITOR_UPDATE_TIMEOUT = 2000
 
 let localStorageIdentifier = 'reloadText'
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
@@ -52,14 +63,19 @@ onMounted(() => {
   // This is an ID of the timeout
   let activeTimeout: ReturnType<typeof setTimeout>
   editorInstance.onKeyUp(() => {
+    previewLoadingStore.setPreviewLoading(true)
+
     // If there is an active timeout, then cancel it and force the creation of a new one
     // (to avoid saving the text too often)
     if (activeTimeout) clearTimeout(activeTimeout)
 
     activeTimeout = setTimeout(() => {
-      console.log('saving new text to local storage')
+      console.log('[Editor] Saving editor content to local storage')
       localStorage.setItem(localStorageIdentifier, editorInstance!.getValue())
-    }, 1000)
+
+      console.log('[Editor] Broadcasting update')
+      editorContentStore.setEditorContent(editorInstance!.getValue())
+    }, EDITOR_UPDATE_TIMEOUT)
   })
 
   // Register an event listener to the darkModeStore to change the theme of the editor
