@@ -13,6 +13,7 @@ services:
       - "80:80"
     environment:
       PUPPETEER_SKIP_DOWNLOAD: true
+      NODE_ENV: production
     depends_on:
       - rest-api
     links:
@@ -35,6 +36,7 @@ services:
       REDIS_PORT: 6379
       PERSISTENT_STORAGE_PATH: ${PERSISTENT_STORAGE_PATH}
       PUPPETEER_SKIP_DOWNLOAD: true
+      NODE_ENV: production
     volumes:
       - rest-api-persistent-storage:${PERSISTENT_STORAGE_PATH}
     depends_on:
