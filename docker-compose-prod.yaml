@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: ghcr.io/syp-ahif-2023-24-25/solardoc-redis-db:latest
+    image: ghcr.io/syp-ahif-2023-24-25/solardoc-frontend:latest
   rest-api:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-rest-api:latest
   redis-db:
