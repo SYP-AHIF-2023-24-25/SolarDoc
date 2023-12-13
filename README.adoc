@@ -96,6 +96,16 @@ If you already had a build before, use `--build` to force a rebuild:
 docker compose up -d --build
 ----
 
+==== Deploying using the GHCR (GitHub Container Registry) images 🐳
+
+For every tag and release GitHub automatically builds a Docker image and pushes it to the GHCR. To use these images
+simply run the following command (This will use the `latest` tag):
+
+[source,bash]
+----
+docker compose -f ./docker-compose.yaml -f ./docker-compose-prod.yaml up
+----
+
 === Testing
 
 At the moment, tests are only implemented for `@solardoc/asciidoc-renderer`. This is expected to change by v0.3.0, but
