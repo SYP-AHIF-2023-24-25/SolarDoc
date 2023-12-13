@@ -38,7 +38,7 @@ jobs:
       - name: Run ESLint
         run: |
           cd ./solardoc/${{ matrix.package }}
-          eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore "--format" "@microsoft/eslint-formatter-sarif" "--output-file" "../../eslint-results.sarif"
+          $(pnpm bin)/eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore "--format" "@microsoft/eslint-formatter-sarif" "--output-file" "../../eslint-results.sarif"
         continue-on-error: true
 
       - name: Upload analysis results to GitHub
