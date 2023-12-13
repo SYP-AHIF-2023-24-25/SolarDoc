@@ -68,6 +68,9 @@ RUN echo "VITE_PROD_BACKEND_PORT=$VITE_PROD_BACKEND_PORT" >> ./solardoc/frontend
 # Set to production mode to make the build use the correct env variables
 ENV NODE_ENV=production
 
+# Install 'run-p' (in the package 'npm-run-all') to run multiple commands in parallel
+RUN pnpm add --ignore-workspace-root-check npm-run-all
+
 RUN pnpm install --filter @solardoc/frontend --frozen-lockfile
 RUN pnpm run --filter @solardoc/frontend deploy
 
