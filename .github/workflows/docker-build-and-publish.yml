@@ -39,10 +39,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args:
-            - PUPPETEER_SKIP_DOWNLOAD=true
-            - VITE_PROD_BACKEND_HOST=http://localhost
-            - VITE_PROD_BACKEND_PORT=3000
+          build-args: |
+            PUPPETEER_SKIP_DOWNLOAD=true
+            VITE_PROD_BACKEND_HOST=http://localhost
+            VITE_PROD_BACKEND_PORT=3000
 
   build-and-push-rest-api-image:
     runs-on: ubuntu-latest
@@ -71,10 +71,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args:
-            - PERSISTENT_STORAGE_PATH=/var/tmp/solardoc
-            - NODE_ENV=production
-            - PUPPETEER_SKIP_DOWNLOAD=true
+          build-args: |
+            PERSISTENT_STORAGE_PATH=/var/tmp/solardoc
+            NODE_ENV=production
+            PUPPETEER_SKIP_DOWNLOAD=true
 
   build-and-push-redis-db-image:
     runs-on: ubuntu-latest
