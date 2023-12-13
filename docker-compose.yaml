@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: ./solardoc/frontend/Dockerfile
       args:
-        VITE_PROD_BACKEND_HOST: http://localhost
+        VITE_PROD_BACKEND_HOST: http://152.67.66.155
         VITE_PROD_BACKEND_PORT: 3000
         PUPPETEER_SKIP_DOWNLOAD: true
     volumes:
