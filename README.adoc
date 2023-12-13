@@ -4,6 +4,8 @@ image::images/500x1500-banner-with-desc.png[]
 
 SolarDoc is a dynamic online editor which allows you to create beautiful presentations using AsciiDoc in your browser. Collaborate with your colleagues and friends in the online editor and freely share your work with anyone! 
 
+🚀 The latest preview of Solardoc can be viewed http://152.67.66.155[here]! (_HTTP-only_) 🚀
+
 == Problem & Background 🛑
 
 === Given Situation ⚡
