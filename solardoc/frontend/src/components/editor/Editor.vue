@@ -26,7 +26,7 @@ const initStateStore = useInitStateStore()
  *
  * This is used to avoid saving the text too often.
  */
-const EDITOR_UPDATE_TIMEOUT = 2000
+const EDITOR_UPDATE_TIMEOUT = 1000
 
 let localStorageIdentifier = 'reloadText'
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
