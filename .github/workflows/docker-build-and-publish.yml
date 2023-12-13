@@ -40,6 +40,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
+            NODE_ENV=production
             PUPPETEER_SKIP_DOWNLOAD=true
             VITE_PROD_BACKEND_HOST=http://152.67.66.155
             VITE_PROD_BACKEND_PORT=3000

@@ -65,6 +65,9 @@ ENV VITE_PROD_BACKEND_PORT=$VITE_PROD_BACKEND_PORT
 RUN echo "VITE_PROD_BACKEND_HOST=$VITE_PROD_BACKEND_HOST" >> ./solardoc/frontend/.env
 RUN echo "VITE_PROD_BACKEND_PORT=$VITE_PROD_BACKEND_PORT" >> ./solardoc/frontend/.env
 
+# Set to production mode to make the build use the correct env variables
+ENV NODE_ENV=production
+
 RUN pnpm install --filter @solardoc/frontend --frozen-lockfile
 RUN pnpm run --filter @solardoc/frontend deploy
 
