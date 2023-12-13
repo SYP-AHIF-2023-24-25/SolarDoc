@@ -9,6 +9,8 @@ import router from './router'
 
 const app = createApp(App)
 
+console.log(`[main.ts] Running in '${import.meta.env.MODE}' mode`)
+
 app.use(createPinia())
 app.use(router)
 
