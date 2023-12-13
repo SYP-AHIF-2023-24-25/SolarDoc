@@ -10,13 +10,16 @@ on:
     - cron: '25 10 * * 2'
 
 jobs:
-  eslint-frontend:
+  eslint:
     name: Frontend ESLint Scan
     runs-on: ubuntu-latest
     permissions:
       contents: read
       security-events: write
       actions: read
+    strategy:
+      matrix:
+        package: [ frontend, rest-api, asciidoc-renderer ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -24,54 +27,18 @@ jobs:
       - uses: pnpm/action-setup@v2.2.4
         with:
           version: 8.x.x
-          run_install: false
+          run_install: true
 
-      - name: Install ESLint
+      - name: Install dependencies & ESLint Formatter
         run: |
+          cd ./solardoc/${{ matrix.package }}
           pnpm install
-          pnpm install -g @microsoft/eslint-formatter-sarif@2.1.7
+          pnpm install -D @microsoft/eslint-formatter-sarif@2.1.7
 
       - name: Run ESLint
-        run: pnpm 
-          --filter "@solardoc/frontend"
-          run eslint
-          --format @microsoft/eslint-formatter-sarif
-          --output-file ../../eslint-results.sarif
-        continue-on-error: true
-
-      - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: eslint-results.sarif
-          wait-for-processing: true
-
-  eslint-rest-api:
-    name: REST API ESLint Scan
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - uses: pnpm/action-setup@v2.2.4
-        with:
-          version: 8.x.x
-          run_install: false
-
-      - name: Install ESLint
         run: |
-          pnpm install
-          pnpm install -g @microsoft/eslint-formatter-sarif@2.1.7
-
-      - name: Run ESLint
-        run: pnpm
-          --filter "@solardoc/rest-api"
-          run eslint
-          --format @microsoft/eslint-formatter-sarif
-          --output-file ../../eslint-results.sarif
+          cd ./solardoc/${{ matrix.package }}
+          $(pnpm bin)/eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore "--format" "@microsoft/eslint-formatter-sarif" "--output-file" "../../eslint-results.sarif"
         continue-on-error: true
 
       - name: Upload analysis results to GitHub

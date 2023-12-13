@@ -1,0 +1,17 @@
+{
+  "extension": ["ts"],
+  "timeout": 15000,
+  "exit": true,
+  "recursive": true,
+  "watch": false,
+  "watch-files": [
+    "./solardoc/asciidoc-renderer"
+  ],
+  "reporter": "spec",
+  "require": [
+    "ts-node/register"
+  ],
+  "spec": [
+    "**/*.test.ts"
+  ]
+}

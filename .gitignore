@@ -1,2 +1,7 @@
 /.idea
+dist
 node_modules
+tsconfig.tsbuildinfo
+coverage
+.nyc_output
+.env

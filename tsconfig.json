@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": true,
+    "importHelpers": true,
+    "removeComments": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": false,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "outDir": "./lib",
+    "target": "es2015",
+    "lib": [
+      "ES2015"
+    ],
+    // ES7 -> ES2016
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "rootDir": ".",
+      "sourceRoot": ".",
+    },
+    "files": true
+  },
+  "include": [],
+  "exclude": [
+    "node_modules"
+  ]
+}

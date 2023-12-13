@@ -1,0 +1,52 @@
+@use './var' as var;
+
+.dot-flashing {
+  display: block;
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  background-color: var.$dot-dot-dot-color;
+  color: var.$dot-dot-dot-color;
+  animation: dot-flashing 1s infinite linear alternate;
+  animation-delay: 0.5s;
+  content: "";
+
+  &::before, &::after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 0;
+  }
+
+  &::before {
+    left: -18px;
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    background-color: var.$dot-dot-dot-color;
+    color: var.$dot-dot-dot-color;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 0s;
+  }
+
+  &::after {
+    left: 18px;
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    background-color: var.$dot-dot-dot-color;
+    color: var.$dot-dot-dot-color;
+    animation: dot-flashing 1s infinite alternate;
+    animation-delay: 1s;
+  }
+}
+
+@keyframes dot-flashing {
+  0% {
+    background-color: var.$dot-dot-dot-color;
+  }
+  50%, 100% {
+    background-color: var.$dot-dot-dot-color-subtle;
+  }
+}

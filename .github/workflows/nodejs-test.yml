@@ -1,0 +1,46 @@
+name: Node.js Tests
+
+on: [push, pull_request]
+
+jobs:
+  # Run tests with 'pnpm install --frozen-lockfile' dependencies
+  tests-with-pck-lock-dependencies:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 8.x.x
+          run_install: false
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+
+  # Run tests with 'pnpm i' dependencies
+  tests-with-pck-dependencies:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 8.x.x
+          run_install: false
+      - run: pnpm i
+      - run: pnpm test

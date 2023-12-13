@@ -3,7 +3,15 @@ import Editor from '@/components/editor/Editor.vue'
 </script>
 
 <template>
-  <Editor></Editor>
+  <div id="test-editor-page">
+    <Editor></Editor>
+  </div>
 </template>
 
-<style></style>
+<style scoped lang="scss">
+@use '@/assets/core/mixins/view-presets' as *;
+
+div#test-editor-page {
+  @include view-presets;
+}
+</style>
