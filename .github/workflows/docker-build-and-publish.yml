@@ -41,7 +41,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             PUPPETEER_SKIP_DOWNLOAD=true
-            VITE_PROD_BACKEND_HOST=http://localhost
+            VITE_PROD_BACKEND_HOST=http://152.67.66.155
             VITE_PROD_BACKEND_PORT=3000
 
   build-and-push-rest-api-image:
