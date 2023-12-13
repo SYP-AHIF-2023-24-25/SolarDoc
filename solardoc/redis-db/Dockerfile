@@ -9,7 +9,7 @@ COPY config/redis.conf /usr/local/etc/redis/redis.conf
 COPY config/users.acl /usr/local/etc/redis/users.acl
 
 # Copy redis init script
-COPY init.sh ./init.sh
+COPY ./docker/init.sh ./init.sh
 RUN chmod +x ./init.sh
 
 CMD ["bash", "-c", "/redis/init.sh"]
