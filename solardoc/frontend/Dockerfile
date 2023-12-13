@@ -32,6 +32,10 @@ COPY --chown=node ./solardoc/rest-api ./solardoc/rest-api
 RUN mkdir -p ./solardoc/frontend
 COPY --chown=node ./solardoc/frontend ./solardoc/frontend
 
+# See issue #62 (As we are not using puppeteer yet, we can ignore this)
+ARG PUPPETEER_SKIP_DOWNLOAD
+ENV PUPPETEER_SKIP_DOWNLOAD=$PUPPETEER_SKIP_DOWNLOAD
+
 # Build 'asciidoc-renderer' package
 RUN pnpm install --filter @solardoc/asciidoc-renderer --frozen-lockfile
 RUN pnpm run --filter @solardoc/asciidoc-renderer tsc-build
@@ -39,6 +43,18 @@ RUN pnpm run --filter @solardoc/asciidoc-renderer tsc-build
 # Build 'rest-api' package
 RUN pnpm install --filter @solardoc/rest-api --frozen-lockfile
 RUN pnpm run --filter @solardoc/rest-api build
+
+# To allow the frontend to generate the API client, the openapi-spec needs to be present
+# (Additionally, since it's loading the entire Rest API, we will have to set required env variables (but they can be empty)
+RUN touch ./solardoc/rest-api/.env
+RUN echo "REDIS_DEV_HOST=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN echo "REDIS_DEV_PORT=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN echo "REDIS_ROOT_PASSWORD=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN echo "REDIS_USERNAME=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN echo "REDIS_PASSWORD=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUn echo "PERSISTENT_STORAGE_PATH=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN cp ./solardoc/rest-api/.env ./.env
+RUN pnpm run --filter @solardoc/rest-api openapi-spec:write:no-build
 
 # Build 'frontend' package (we need to first define the required ENV variables)
 ARG VITE_PROD_BACKEND_HOST

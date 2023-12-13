@@ -12,8 +12,21 @@ import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
+import {useEditorContentStore} from "@/stores/editor-content";
+import {usePreviewLoadingStore} from "@/stores/preview-loading";
+import {useInitStateStore} from "@/stores/init-state";
 
 const darkModeStore = useDarkModeStore()
+const editorContentStore = useEditorContentStore()
+const previewLoadingStore = usePreviewLoadingStore()
+const initStateStore = useInitStateStore()
+
+/**
+ * The timeout after which the editor will save the text to the local storage.
+ *
+ * This is used to avoid saving the text too often.
+ */
+const EDITOR_UPDATE_TIMEOUT = 1000
 
 let localStorageIdentifier = 'reloadText'
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
@@ -51,15 +64,30 @@ onMounted(() => {
 
   // This is an ID of the timeout
   let activeTimeout: ReturnType<typeof setTimeout>
-  editorInstance.onKeyUp(() => {
+  editorInstance.onKeyDown((event: monaco.IKeyboardEvent) => {
+    // Ensure it was an actual input (printable character)
+    const unsupportedKeyCharacters = [
+      "Shift", "Escape", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Control", "Alt", "CapsLock",
+      "Tab", "Backspace", "Meta", "ContextMenu", "PageUp", "PageDown", "End", "Home", "Insert", "Delete", "Pause",
+      "ScrollLock", "PrintScreen", "NumLock", "Clear", "Help", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9",
+      "F10", "F11", "F12"
+    ];
+    if (unsupportedKeyCharacters.includes(event.code)) return
+
+    initStateStore.setFalse()
+    previewLoadingStore.setPreviewLoading(true)
+
     // If there is an active timeout, then cancel it and force the creation of a new one
     // (to avoid saving the text too often)
     if (activeTimeout) clearTimeout(activeTimeout)
 
     activeTimeout = setTimeout(() => {
-      console.log('saving new text to local storage')
+      console.log('[Editor] Saving editor content to local storage')
       localStorage.setItem(localStorageIdentifier, editorInstance!.getValue())
-    }, 1000)
+
+      console.log('[Editor] Broadcasting update')
+      editorContentStore.setEditorContent(editorInstance!.getValue())
+    }, EDITOR_UPDATE_TIMEOUT)
   })
 
   // Register an event listener to the darkModeStore to change the theme of the editor

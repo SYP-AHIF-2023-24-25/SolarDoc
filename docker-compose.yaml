@@ -6,19 +6,25 @@ services:
       args:
         VITE_PROD_BACKEND_HOST: http://localhost
         VITE_PROD_BACKEND_PORT: 3000
+        PUPPETEER_SKIP_DOWNLOAD: true
     volumes:
       - ./solardoc/frontend:/home/node/app
     ports:
       - "80:80"
+    environment:
+      PUPPETEER_SKIP_DOWNLOAD: true
+      NODE_ENV: production
     depends_on:
       - rest-api
     links:
       - rest-api
+    restart: always
   rest-api:
     build:
       context: .
       dockerfile: ./solardoc/rest-api/Dockerfile
       args:
+        PUPPETEER_SKIP_DOWNLOAD: true
         PERSISTENT_STORAGE_PATH: ${PERSISTENT_STORAGE_PATH}
     ports:
       - "3000:3000"
@@ -29,6 +35,8 @@ services:
       REDIS_HOST: redis-db
       REDIS_PORT: 6379
       PERSISTENT_STORAGE_PATH: ${PERSISTENT_STORAGE_PATH}
+      PUPPETEER_SKIP_DOWNLOAD: true
+      NODE_ENV: production
     volumes:
       - rest-api-persistent-storage:${PERSISTENT_STORAGE_PATH}
     depends_on:
@@ -36,6 +44,7 @@ services:
         condition: service_healthy
     links:
       - redis-db
+    restart: always
   redis-db:
     build: ./solardoc/redis-db
     ports:
@@ -53,6 +62,7 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
+    restart: always
 
 volumes:
   rest-api-persistent-storage:

@@ -1,11 +1,32 @@
 <script setup lang="ts">
+import {ref} from "vue";
 import Editor from '@/components/editor/Editor.vue'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import * as backendAPI from '@/services/backend/api-service'
+import {useEditorContentStore} from "@/stores/editor-content";
+import type { SubscriptionCallbackMutation} from "pinia";
+import {usePreviewLoadingStore} from "@/stores/preview-loading";
+import * as backendAPI from '@/services/backend/api-service';
+import type {
+  RenderedPresentationRjsHtmlDtoModel,
+  RenderPresentationRjsHtmlDtoModel
+} from "@/services/backend/api-service";
+import {useInitStateStore} from "@/stores/init-state";
 
 const darkModeStore = useDarkModeStore()
+const editorContentStore = useEditorContentStore()
+const previewLoadingStore = usePreviewLoadingStore()
+const initStateStore = useInitStateStore()
+
+// Default filename is sample-presentation.adoc
+const fileName = ref('sample-presentation.adoc')
+
+// The download URL where the preview is available
+const previewUrl = ref('')
+
+// The reveal.js CDN URL which provides the reveal.js assets
+const REVEAL_JS_CDN_URL = 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/'
 
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
@@ -17,6 +38,33 @@ backendAPI.checkIfBackendIsReachable()
     }
     console.error('Backend is not reachable. Please copy the logs and contact the developers.')
   })
+
+// Ensure the render preview is updated whenever the editor content changes
+editorContentStore.$subscribe(async (
+  mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
+  state: { editorContent: string },
+) => {
+  const { editorContent } = state
+  const renderPresentationDtoModel: RenderPresentationRjsHtmlDtoModel = {
+    fileName: fileName.value,
+    fileContent: editorContent,
+    revealJSAssetsPath: REVEAL_JS_CDN_URL,
+  }
+
+  // Send a render request to the backend
+  let renderRespObj: RenderedPresentationRjsHtmlDtoModel;
+  const renderResp = await backendAPI.postV1RenderPresentationRjsHtml(renderPresentationDtoModel)
+  if (renderResp.status === 200) {
+    renderRespObj = renderResp.data
+  } else {
+    throw new Error(`[EditorView] Failed to execute render presentation request:\n${renderResp}`)
+  }
+
+  // Update the preview URL
+  previewUrl.value = renderRespObj.download.downloadURL
+
+  previewLoadingStore.setPreviewLoading(false)
+})
 </script>
 
 <template>
@@ -36,7 +84,7 @@ backendAPI.checkIfBackendIsReachable()
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
-          <input id="file-name-input" value="sample-presentation.adoc" />
+          <input id="file-name-input" v-model="fileName"/>
         </div>
       </div>
       <div id="menu-right-side">
@@ -51,7 +99,9 @@ backendAPI.checkIfBackendIsReachable()
       </div>
       <div id="preview-wrapper">
         <div id="preview">
-          <h2>Preview loading...</h2>
+          <h2 v-if="initStateStore.init">Start typing and see preview!</h2>
+          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init"><span class="dot-flashing"></span></h2>
+          <iframe v-else :src="previewUrl"></iframe>
         </div>
         <div id="preview-meta-info">
           <p>3 slides</p>
@@ -198,9 +248,16 @@ div#editor-page {
       }
 
       #preview {
+        @include align-center();
         border-bottom: var.$editor-border;
-        padding-top: 16.4vh;
-        padding-bottom: 16.4vh;
+        width: var.$editor-preview-frame-width;
+        height: var.$editor-preview-frame-height;
+
+        iframe {
+          border: none;
+          width: 100%;
+          height: 100%;
+        }
       }
     }
   }

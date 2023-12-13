@@ -4,6 +4,8 @@
   --scheme-blue: var(--scheme-cs-1);
   --scheme-cs-2: #4d2db7;
   --scheme-purple: var(--scheme-cs-2);
+  --scheme-cs-2-subtle: rgba(112, 90, 183, 0.5);
+  --scheme-purple-subtle: var(--scheme-cs-2-subtle);
   --scheme-cs-3: #9d44c0;
   --scheme-lavender: var(--scheme-cs-3);
   --scheme-cs-4: #ec53b0;
@@ -16,6 +18,7 @@
   --scheme-background-black: #0f111a;
   --scheme-editor-black: var(--scheme-background-black);
   --scheme-editor-blue: #10355b;
+  --scheme-white-subtle: rgba(255, 255, 255, 0.2);
 
   // Font-size presets
   --home-button-font-size: 20px;
@@ -48,11 +51,19 @@
   --editor-monaco-height: calc(
     var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
   );
-  --editor-monaco-width: 60vw;
+  --editor-monaco-width: 65vw;
   --editor-monaco-padding-top: 1rem;
   --editor-monaco-margin: 0;
   --editor-border-width: 1px;
   --editor-border: 1px solid var(--text-color);
+
+  // Editor preview presets (Has a ratio of 2:1)
+  --editor-preview-frame-width: calc(100vw - var(--editor-monaco-width) - var(--editor-border-width));
+  --editor-preview-frame-height: calc(var(--editor-preview-frame-width) * 0.5);
+  --editor-preview-frame-padding: 0;
+  --editor-preview-frame-margin: 0;
+
+  // Editor preview remaining presets
   --editor-preview-meta-info-height: 3rem;
   --editor-preview-meta-info-padding: 0 1rem;
   --editor-preview-slides-navigator-height: 25vh;
@@ -111,6 +122,14 @@ $editor-monaco-padding-top: var(--editor-monaco-padding-top);
 $editor-monaco-margin: var(--editor-monaco-margin);
 $editor-border-width: var(--editor-border-width);
 $editor-border: var(--editor-border);
+
+// Editor preview presets (Has a ratio of 2:1)
+$editor-preview-frame-width: var(--editor-preview-frame-width);
+$editor-preview-frame-height: var(--editor-preview-frame-height);
+$editor-preview-frame-padding: var(--editor-preview-frame-padding);
+$editor-preview-frame-margin: var(--editor-preview-frame-margin);
+
+// Editor preview remaining presets
 $editor-preview-meta-info-height: var(--editor-preview-meta-info-height);
 $editor-preview-meta-info-padding: var(--editor-preview-meta-info-padding);
 $editor-preview-slides-navigator-height: var(--editor-preview-slides-navigator-height);
@@ -122,14 +141,20 @@ html[data-theme='light'] {
   --text-color: black;
   --home-button-transparent-background-color: var(--scheme-cs-2);
   --home-button-transparent-hover-text-color: white;
+  --dot-dot-dot-color: var(--scheme-cs-2);
+  --dot-dot-dot-color-subtle: var(--scheme-cs-2-subtle);
 }
 
 html[data-theme='dark'] {
   --text-color: white;
   --home-button-transparent-background-color: white;
   --home-button-transparent-hover-text-color: black;
+  --dot-dot-dot-color: white;
+  --dot-dot-dot-color-subtle: var(--scheme-white-subtle);
 }
 
 $text-color: var(--text-color);
 $home-button-transparent-text-color: var(--home-button-transparent-background-color);
 $home-button-transparent-hover-text-color: var(--home-button-transparent-hover-text-color);
+$dot-dot-dot-color: var(--dot-dot-dot-color);
+$dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);

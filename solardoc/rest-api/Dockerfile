@@ -41,6 +41,10 @@ COPY --chown=node ./solardoc/frontend/package.json ./solardoc/frontend/package.j
 RUN mkdir -p ./solardoc/rest-api
 COPY --chown=node ./solardoc/rest-api ./solardoc/rest-api
 
+# See issue #62 (As we are not using puppeteer yet, we can ignore this)
+ARG PUPPETEER_SKIP_DOWNLOAD
+ENV PUPPETEER_SKIP_DOWNLOAD=$PUPPETEER_SKIP_DOWNLOAD
+
 # Build 'asciidoc-renderer' package
 RUN pnpm install --filter @solardoc/asciidoc-renderer --frozen-lockfile
 RUN pnpm run --filter @solardoc/asciidoc-renderer tsc-build

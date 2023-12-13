@@ -1,7 +1,6 @@
 import { inject } from '@loopback/core'
 import { CacheService } from '../../services'
-import { get, getModelSchemaRef, param, Response, RestBindings } from '@loopback/rest'
-import { RenderedPresentationPdfDtoModel } from '../../models'
+import { get, param, Response, RestBindings } from '@loopback/rest'
 import { API_PREFIXED_VERSION } from './index'
 import { CacheError } from '../../errors'
 
@@ -13,11 +12,14 @@ export class ResultController {
   @get(`/${ResultController.BASE_PATH}/{uuid}`, {
     responses: {
       '200': {
-        description:
-          'Object containing the metadata and the download object for downloading the presentation as pdf',
+        description: 'The file for the specified uuid',
         content: {
-          'application/json': {
-            schema: getModelSchemaRef(RenderedPresentationPdfDtoModel),
+          'application/octet-stream': {
+            'x-is-file': true,
+            schema: {
+              type: 'string',
+              format: 'binary',
+            },
           },
         },
       },
@@ -33,7 +35,7 @@ export class ResultController {
     try {
       const { mimeType, fileContent, originalFilename } = await this.cacheService.getFile(uuid)
       res.setHeader('Content-Type', mimeType)
-      res.setHeader('Content-Disposition', `attachment; filename="${originalFilename}"`)
+      res.setHeader('Content-Disposition', `inline; filename="${originalFilename}"`)
       res.status(200).send(fileContent)
     } catch (e) {
       if (e instanceof CacheError) {

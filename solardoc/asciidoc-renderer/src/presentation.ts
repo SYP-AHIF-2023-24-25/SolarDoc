@@ -71,13 +71,14 @@ export class Presentation {
   /**
    * Renders the presentation to the given target.
    * @param target The target that should be used to render the presentation.
+   * @param config The configuration that should be used to render the presentation.
    * @since 0.2.0
    */
   public async render<RawT, OutT>(
-    target: TargetRenderer<RawT, OutT>
+    target: TargetRenderer<RawT, OutT>,
+    config?: { [key: string]: any }
   ): Promise<RenderOutput<RawT, OutT>> {
-    // TODO! Finish implementation and add remaining tests
-    return await target.render(this)
+    return await target.render(this, config)
   }
 
   /**
@@ -86,7 +87,6 @@ export class Presentation {
    * @since 0.2.0
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
-    // TODO!
     const metadata: PresentationMetadata = {
       title: document.getDocumentTitle(),
       author: document.getAuthor(),
