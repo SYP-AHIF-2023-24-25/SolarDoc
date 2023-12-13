@@ -12,10 +12,12 @@ import type {
   RenderedPresentationRjsHtmlDtoModel,
   RenderPresentationRjsHtmlDtoModel
 } from "@/services/backend/api-service";
+import {useInitStateStore} from "@/stores/init-state";
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
+const initStateStore = useInitStateStore()
 
 // Default filename is sample-presentation.adoc
 const fileName = ref('sample-presentation.adoc')
@@ -97,7 +99,8 @@ editorContentStore.$subscribe(async (
       </div>
       <div id="preview-wrapper">
         <div id="preview">
-          <h2 v-if="previewLoadingStore.previewLoading">Preview loading...</h2>
+          <h2 v-if="initStateStore.init">Start typing and see preview!</h2>
+          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init"><span class="dot-flashing"></span></h2>
           <iframe v-else :src="previewUrl"></iframe>
         </div>
         <div id="preview-meta-info">
