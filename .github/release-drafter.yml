@@ -12,6 +12,7 @@ categories:
     labels:
       - "other"
       - "maintenance"
+      - "dev-env"
   - title: "Dependency Updates"
     label:
       - "dependencies"
