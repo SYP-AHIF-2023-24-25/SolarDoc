@@ -31,6 +31,38 @@ const EDITOR_UPDATE_TIMEOUT = 1000
 let localStorageIdentifier = 'reloadText'
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
 const editorRef = <Ref<HTMLElement>>ref(document.querySelector('#editor'))
+
+//TODO!! check if works
+function performErrorChecking() {
+  const model = editorInstance?.getModel();
+  if (!model) return;
+
+  const lines = model.getLinesContent();
+  const markers = [];
+
+  // Your custom error-checking logic
+  lines.forEach((line, lineNumber) => {
+    if (line.match(/^={1,6}[^ =].*$/)) {
+      const startColumn = line.indexOf('=') + 1;
+      const endColumn = line.length;
+      const message = 'Error: Heading should have a space after the equal signs';
+      markers.push({
+        severity: monaco.MarkerSeverity.Error,
+        message: message,
+        startLineNumber: lineNumber + 1,
+        startColumn: startColumn,
+        endLineNumber: lineNumber + 1,
+        endColumn: endColumn,
+      });
+    }
+    // Add more custom error-checking logic as needed
+  });
+
+  // Update markers in the editor
+  monaco.editor.setModelMarkers(model, 'asciidoc', markers);
+}
+//TODO!! end of new stuff
+
 onMounted(() => {
   // Register a new language
   monaco.languages.register({ id: 'asciiDoc' })
@@ -77,6 +109,11 @@ onMounted(() => {
     initStateStore.setFalse()
     previewLoadingStore.setPreviewLoading(true)
 
+    //TODO!! new code
+    console.log("performing error checking")
+    performErrorChecking();
+    //TODO!! end new code
+
     // If there is an active timeout, then cancel it and force the creation of a new one
     // (to avoid saving the text too often)
     if (activeTimeout) clearTimeout(activeTimeout)
@@ -89,6 +126,12 @@ onMounted(() => {
       editorContentStore.setEditorContent(editorInstance!.getValue())
     }, EDITOR_UPDATE_TIMEOUT)
   })
+
+  //TODO!! new code
+  editorInstance.onDidChangeModelContent(() => {
+    performErrorChecking();
+  });
+  //TODO!! end new code
 
   // Register an event listener to the darkModeStore to change the theme of the editor
   darkModeStore.$subscribe(
