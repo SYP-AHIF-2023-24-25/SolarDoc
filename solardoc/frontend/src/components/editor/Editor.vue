@@ -32,16 +32,20 @@ let localStorageIdentifier = 'reloadText'
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
 const editorRef = <Ref<HTMLElement>>ref(document.querySelector('#editor'))
 
-//TODO!! check if works
+/**
+ * Checks the editor content for errors and adds markers to the editor.
+ * (if a heading doesn't have a space after the equal signs or if a list is inconsistent)
+ */
 function performErrorChecking() {
   const model = editorInstance?.getModel();
   if (!model) return;
 
   const lines = model.getLinesContent();
   const markers = [];
-
-  // Your custom error-checking logic
+  let currentListSymbol: string | null = null;
   lines.forEach((line, lineNumber) => {
+
+    // Checking for errors with headings (==someTextWithoutASpace, ===MoreFalseText, etc.) correct: == someText
     if (line.match(/^={1,6}[^ =].*$/)) {
       const startColumn = line.indexOf('=') + 1;
       const endColumn = line.length;
@@ -55,13 +59,39 @@ function performErrorChecking() {
         endColumn: endColumn,
       });
     }
-    // Add more custom error-checking logic as needed
+    else {
+      // Checking for list errors (continuing a list with a different symbol)
+      const match = line.match(/^([*.])\s+[a-zA-Z]/);
+      if (match) {
+        const listSymbol = match[1];
+
+        // Check if the list symbol changes
+        if (currentListSymbol && currentListSymbol !== listSymbol) {
+          console.log("list symbol changed" + currentListSymbol + " " + listSymbol)
+          const startColumn = line.indexOf(listSymbol) + 1;
+          const endColumn = startColumn + 1;
+          const message = 'Error: Lists should be consistent (use either "." or "*")';
+          markers.push({
+            severity: monaco.MarkerSeverity.Error,
+            message: message,
+            startLineNumber: lineNumber + 1,  // Lines are 1-indexed
+            startColumn: startColumn,
+            endLineNumber: lineNumber + 1,
+            endColumn: endColumn,
+          });
+        }
+        currentListSymbol = listSymbol;
+      }
+      else{
+        // In case there is a different line, reset the current list symbol to null, to avoid wrong errors
+        currentListSymbol = null;
+      }
+    }
   });
 
   // Update markers in the editor
   monaco.editor.setModelMarkers(model, 'asciidoc', markers);
 }
-//TODO!! end of new stuff
 
 onMounted(() => {
   // Register a new language
@@ -109,10 +139,8 @@ onMounted(() => {
     initStateStore.setFalse()
     previewLoadingStore.setPreviewLoading(true)
 
-    //TODO!! new code
-    console.log("performing error checking")
+    // Checking new lines for errors
     performErrorChecking();
-    //TODO!! end new code
 
     // If there is an active timeout, then cancel it and force the creation of a new one
     // (to avoid saving the text too often)
@@ -127,11 +155,10 @@ onMounted(() => {
     }, EDITOR_UPDATE_TIMEOUT)
   })
 
-  //TODO!! new code
+  // Checking for errors when the editor content changes
   editorInstance.onDidChangeModelContent(() => {
     performErrorChecking();
   });
-  //TODO!! end new code
 
   // Register an event listener to the darkModeStore to change the theme of the editor
   darkModeStore.$subscribe(
