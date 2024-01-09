@@ -139,6 +139,7 @@ $editor-preview-slides-navigator-padding: var(--editor-preview-slides-navigator-
 html,
 html[data-theme='light'] {
   --text-color: black;
+  --text-color-inverted: white;
   --home-button-transparent-background-color: var(--scheme-cs-2);
   --home-button-transparent-hover-text-color: white;
   --dot-dot-dot-color: var(--scheme-cs-2);
@@ -147,6 +148,7 @@ html[data-theme='light'] {
 
 html[data-theme='dark'] {
   --text-color: white;
+  --text-color-inverted: black;
   --home-button-transparent-background-color: white;
   --home-button-transparent-hover-text-color: black;
   --dot-dot-dot-color: white;
@@ -154,6 +156,7 @@ html[data-theme='dark'] {
 }
 
 $text-color: var(--text-color);
+$text-color-inverted: var(--text-color-inverted);
 $home-button-transparent-text-color: var(--home-button-transparent-background-color);
 $home-button-transparent-hover-text-color: var(--home-button-transparent-hover-text-color);
 $dot-dot-dot-color: var(--dot-dot-dot-color);
