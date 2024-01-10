@@ -56,11 +56,6 @@ editorContentStore.$subscribe(async (
 function handlePreviewButtonPress() {
   fullScreenPreviewStore.setFullScreenPreview(true)
   console.log('Preview button clicked')
-
-  // Only set the preview url if the preview url is not empty
-  if (previewURLStore.previewURL) {
-    fullScreenPreviewStore.setPreviewUrl(previewURLStore.previewURL)
-  }
 }
 </script>
 
