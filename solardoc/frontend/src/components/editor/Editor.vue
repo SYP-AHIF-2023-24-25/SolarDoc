@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
+import type { editor, languages} from 'monaco-editor/esm/vs/editor/editor.api'
 import type { Ref } from 'vue'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
@@ -11,12 +11,12 @@ import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
+import type { SubscriptionCallbackMutation } from 'pinia'
 import {useEditorContentStore} from "@/stores/editor-content";
 import {usePreviewLoadingStore} from "@/stores/preview-loading";
 import {useInitStateStore} from "@/stores/init-state";
-import IMarkerData = editor.IMarkerData;
-import IMarker = editor.IMarker;
+
+type IMarkerData = editor.IMarkerData;
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -43,7 +43,7 @@ function performErrorChecking() {
   if (!model) return;
 
   const lines = model.getLinesContent();
-  const markers :IMarkerData[]= [];
+  const markers: IMarkerData[]= [];
   let currentListSymbol: string | null = null;
   lines.forEach((line, lineNumber) => {
 
