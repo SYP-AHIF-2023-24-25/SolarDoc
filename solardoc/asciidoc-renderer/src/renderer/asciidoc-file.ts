@@ -23,6 +23,31 @@ export class AsciidocFile {
     return this._fileSize
   }
 
+  /**
+   * Returns the file size in the given format.
+   * @param format The format in which the file size should be returned. Default: 'B' (Bytes)
+   * @returns The file size in the given format.
+   * @since 0.3.0
+   */
+  public getFileSize(format: 'B' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB' = 'B'): number {
+    switch (format) {
+      case 'B':
+        return this._fileSize
+      case 'KB':
+        return this._fileSize / 1024
+      case 'MB':
+        return this.getFileSize('KB') / 1024
+      case 'GB':
+        return this.getFileSize('MB') / 1024
+      case 'TB':
+        return this.getFileSize('GB') / 1024
+      case 'PB':
+        return this.getFileSize('TB') / 1024
+      default:
+        throw new Error(`Unknown format: ${format}`)
+    }
+  }
+
   public constructor(fileName: string, content: string) {
     this._content = content
     this._fileName = fileName
