@@ -15,6 +15,8 @@ import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
 import {useEditorContentStore} from "@/stores/editor-content";
 import {usePreviewLoadingStore} from "@/stores/preview-loading";
 import {useInitStateStore} from "@/stores/init-state";
+import IMarkerData = editor.IMarkerData;
+import IMarker = editor.IMarker;
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -41,7 +43,7 @@ function performErrorChecking() {
   if (!model) return;
 
   const lines = model.getLinesContent();
-  const markers = [];
+  const markers :IMarkerData[]= [];
   let currentListSymbol: string | null = null;
   lines.forEach((line, lineNumber) => {
 
