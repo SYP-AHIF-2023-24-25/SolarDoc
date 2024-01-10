@@ -1,6 +1,6 @@
 /**
  * @solardoc/rest-api
- * 0.1.0
+ * 0.2.0
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
@@ -30,6 +30,9 @@ export type CacheDtoModel = {
 };
 export type RenderedPresentationImagesDtoModel = {
     fileName: string;
+    rawSize: number;
+    slideCountInclSubslides: number;
+    slideCount: number;
     cache: CacheDtoModel;
     download: object;
 };
@@ -39,6 +42,9 @@ export type DownloadDtoModel = {
 };
 export type RenderedPresentationPdfDtoModel = {
     fileName: string;
+    rawSize: number;
+    slideCountInclSubslides: number;
+    slideCount: number;
     cache: CacheDtoModel;
     download: DownloadDtoModel;
 };
@@ -49,6 +55,9 @@ export type RenderPresentationRjsHtmlDtoModel = {
 };
 export type RenderedPresentationRjsHtmlDtoModel = {
     fileName: string;
+    rawSize: number;
+    slideCountInclSubslides: number;
+    slideCount: number;
     cache: CacheDtoModel;
     download: DownloadDtoModel;
 };
