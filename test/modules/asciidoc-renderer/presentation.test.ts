@@ -43,8 +43,8 @@ describe("Presentation", () => {
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
       assert.equal(presentation.metadata.title, "Test");
+      assert.equal(presentation.metadata.slideCountInclSubslides, 4);
       assert.equal(presentation.metadata.slideCount, 4);
-      assert.equal(presentation.metadata.mainSlideCount, 4);
     });
 
     it("should return proper metadata for document with a sub-slide", async () => {
@@ -59,8 +59,8 @@ describe("Presentation", () => {
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
       assert.equal(presentation.metadata.title, "Test");
-      assert.equal(presentation.metadata.slideCount,5 );
-      assert.equal(presentation.metadata.mainSlideCount,4);
+      assert.equal(presentation.metadata.slideCountInclSubslides,5 );
+      assert.equal(presentation.metadata.slideCount,4);
     });
 
     it("should return proper metadata for document with multiple sub-slides in a slide", async () => {
@@ -75,8 +75,8 @@ describe("Presentation", () => {
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
       assert.equal(presentation.metadata.title, "Test");
-      assert.equal(presentation.metadata.slideCount,6 );
-      assert.equal(presentation.metadata.mainSlideCount,4);
+      assert.equal(presentation.metadata.slideCountInclSubslides,6 );
+      assert.equal(presentation.metadata.slideCount,4);
     });
 
     it("should return proper metadata for document with multiple sub-slides in multiple slides and paragraphs", async () => {
@@ -90,8 +90,8 @@ describe("Presentation", () => {
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
       assert.equal(presentation.metadata.title, "Test");
-      assert.equal(presentation.metadata.slideCount,8 );
-      assert.equal(presentation.metadata.mainSlideCount,4);
+      assert.equal(presentation.metadata.slideCountInclSubslides,8 );
+      assert.equal(presentation.metadata.slideCount,4);
     });
   });
 });
