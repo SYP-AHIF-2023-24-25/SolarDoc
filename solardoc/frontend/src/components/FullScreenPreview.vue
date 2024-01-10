@@ -4,19 +4,37 @@ import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
 import LoadAnywayButton from "@/components/LoadAnywayButton.vue";
 import {useInitStateStore} from "@/stores/init-state";
 import {usePreviewURLStore} from "@/stores/preview-url";
+import OpenFullscreenSVG from "@/components/icons/OpenFullscreenSVG.vue";
+import {ref} from "vue";
+import CloseFullscreenSVG from "@/components/icons/CloseFullscreenSVG.vue";
 
 const fullScreenPreviewStore = useFullScreenPreviewStore()
 const initStateStore = useInitStateStore()
 const previewURLStore = usePreviewURLStore()
+
+let fillWholeScreen = ref(false)
+function toggleFillWholeScreen() {
+  const preview = document.getElementById("full-screen-preview")
+  if (preview) {
+    fillWholeScreen.value = preview.classList.toggle("fill-whole-screen")
+  }
+}
 </script>
 
 <template>
   <div id="full-screen-preview-wrapper" v-if="fullScreenPreviewStore.fullScreenPreview">
     <button
-        id="close-button"
-        @click="fullScreenPreviewStore.setFullScreenPreview(false)"
+      id="close-button"
+      @click="fullScreenPreviewStore.setFullScreenPreview(false)"
     >
       <CloseButtonSVG />
+    </button>
+    <button
+      id="toggle-fill-whole-screen"
+      @click="toggleFillWholeScreen()"
+    >
+      <OpenFullscreenSVG v-if="!fillWholeScreen" />
+      <CloseFullscreenSVG v-else />
     </button>
     <div id="full-screen-preview">
       <div id="msg-wrapper" v-if="initStateStore.init">
@@ -58,6 +76,19 @@ const previewURLStore = usePreviewURLStore()
     }
   }
 
+  #toggle-fill-whole-screen {
+    position: fixed;
+    top: 7rem;
+    right: 4rem;
+    z-index: 101;
+
+    svg {
+      width: 2rem;
+      height: 2rem;
+      fill: white;
+    }
+  }
+
   #full-screen-preview {
     $margin: 2rem;
 
@@ -68,6 +99,13 @@ const previewURLStore = usePreviewURLStore()
     width: calc(100vw - $margin * 2);
     height: calc(100vh - $margin * 2);
     border: none;
+
+    &.fill-whole-screen {
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+    }
 
     iframe {
       width: inherit;
