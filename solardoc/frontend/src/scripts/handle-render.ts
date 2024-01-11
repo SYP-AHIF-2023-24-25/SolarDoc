@@ -19,10 +19,10 @@ const REVEAL_JS_CDN_URL = 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/'
  * @since 0.3.0
  */
 export interface RenderedPresentation {
-  rawSize: number;
-  slideCountInclSubslides: number;
-  slideCount: number;
-  previewURL: string;
+  rawSize: number
+  slideCountInclSubslides: number
+  slideCount: number
+  previewURL: string
 }
 
 /**
@@ -32,7 +32,10 @@ export interface RenderedPresentation {
  * @returns The download URL of the rendered presentation.
  * @since 0.3.0
  */
-export async function handleRender(fileName: string, editorContent: string): Promise<RenderedPresentation> {
+export async function handleRender(
+  fileName: string,
+  editorContent: string,
+): Promise<RenderedPresentation> {
   initStateStore.setFalse()
   previewLoadingStore.setPreviewLoading(true)
 

@@ -1,5 +1,5 @@
-import {defineStore} from "pinia";
-import constants from "@/plugins/constants";
+import { defineStore } from 'pinia'
+import constants from '@/plugins/constants'
 
 export const useLastModifiedStore = defineStore('lastModified', {
   state: () => {
@@ -9,7 +9,7 @@ export const useLastModifiedStore = defineStore('lastModified', {
       localStorage.setItem(constants.localStorageLastModifiedKey, localStorageLastModified)
     }
     return {
-      lastModified: new Date(localStorageLastModified)
+      lastModified: new Date(localStorageLastModified),
     }
   },
   actions: {

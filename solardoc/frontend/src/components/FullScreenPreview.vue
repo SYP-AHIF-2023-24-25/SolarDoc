@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {useFullScreenPreviewStore} from "@/stores/full-screen-preview";
-import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
-import LoadAnywayButton from "@/components/LoadAnywayButton.vue";
-import {useInitStateStore} from "@/stores/init-state";
-import OpenFullscreenSVG from "@/components/icons/OpenFullscreenSVG.vue";
-import {ref} from "vue";
-import CloseFullscreenSVG from "@/components/icons/CloseFullscreenSVG.vue";
-import {useRenderDataStore} from "@/stores/render-data";
+import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
+import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
+import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import { useInitStateStore } from '@/stores/init-state'
+import OpenFullscreenSVG from '@/components/icons/OpenFullscreenSVG.vue'
+import { ref } from 'vue'
+import CloseFullscreenSVG from '@/components/icons/CloseFullscreenSVG.vue'
+import { useRenderDataStore } from '@/stores/render-data'
 
 const fullScreenPreviewStore = useFullScreenPreviewStore()
 const initStateStore = useInitStateStore()
@@ -14,31 +14,27 @@ const renderData = useRenderDataStore()
 
 let fillWholeScreen = ref(false)
 function toggleFillWholeScreen() {
-  const preview = document.getElementById("full-screen-preview")
+  const preview = document.getElementById('full-screen-preview')
   if (preview) {
-    fillWholeScreen.value = preview.classList.toggle("fill-whole-screen")
+    fillWholeScreen.value = preview.classList.toggle('fill-whole-screen')
   }
 }
 </script>
 
 <template>
   <div id="full-screen-preview-wrapper" v-if="fullScreenPreviewStore.fullScreenPreview">
-    <button
-      id="close-button"
-      @click="fullScreenPreviewStore.setFullScreenPreview(false)"
-    >
+    <button id="close-button" @click="fullScreenPreviewStore.setFullScreenPreview(false)">
       <CloseButtonSVG />
     </button>
-    <button
-      id="toggle-fill-whole-screen"
-      @click="toggleFillWholeScreen()"
-    >
+    <button id="toggle-fill-whole-screen" @click="toggleFillWholeScreen()">
       <OpenFullscreenSVG v-if="!fillWholeScreen" />
       <CloseFullscreenSVG v-else />
     </button>
     <div id="full-screen-preview">
       <div id="msg-wrapper" v-if="initStateStore.init">
-        <p id="preview-not-loadable-msg">Modify source code before previewing fullscreen presentation</p>
+        <p id="preview-not-loadable-msg">
+          Modify source code before previewing fullscreen presentation
+        </p>
         <LoadAnywayButton color-mode="dark" />
       </div>
       <iframe v-else :src="renderData.previewURL"></iframe>

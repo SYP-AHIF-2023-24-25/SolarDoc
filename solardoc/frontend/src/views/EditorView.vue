@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import {storeToRefs, type SubscriptionCallbackMutation} from "pinia";
+import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import Editor from '@/components/editor/Editor.vue'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import {useEditorContentStore} from "@/stores/editor-content";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import * as backendAPI from '@/services/backend/api-service';
-import {useInitStateStore} from "@/stores/init-state";
-import FullScreenPreview from "@/components/FullScreenPreview.vue";
-import {useFullScreenPreviewStore} from "@/stores/full-screen-preview";
-import LoadAnywayButton from "@/components/LoadAnywayButton.vue";
-import {handleRender} from "@/scripts/handle-render";
-import {useFileNameStore} from "@/stores/file-name";
-import {useRenderDataStore} from "@/stores/render-data";
-import {useLastModifiedStore} from "@/stores/last-modified";
-import {getHumanReadableTimeInfo} from "@/scripts/format-date";
-import {ref} from "vue";
+import { useEditorContentStore } from '@/stores/editor-content'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import * as backendAPI from '@/services/backend/api-service'
+import { useInitStateStore } from '@/stores/init-state'
+import FullScreenPreview from '@/components/FullScreenPreview.vue'
+import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
+import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import { handleRender } from '@/scripts/handle-render'
+import { useFileNameStore } from '@/stores/file-name'
+import { useRenderDataStore } from '@/stores/render-data'
+import { useLastModifiedStore } from '@/stores/last-modified'
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import { ref } from 'vue'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -34,7 +34,8 @@ fileNameStore.setFileName('sample-presentation.adoc')
 
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
-backendAPI.checkIfBackendIsReachable()
+backendAPI
+  .checkIfBackendIsReachable()
   .then(void 0)
   .catch((error: Error) => {
     if (error) {
@@ -44,14 +45,16 @@ backendAPI.checkIfBackendIsReachable()
   })
 
 // Ensure the render preview is updated whenever the editor content changes
-editorContentStore.$subscribe(async (
-  mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
-  state: { editorContent: string },
-) => {
-  const { editorContent } = state
-  const renderResp = await handleRender(fileNameStore.fileName, editorContent)
-  renderData.setRenderData(renderResp)
-})
+editorContentStore.$subscribe(
+  async (
+    mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
+    state: { editorContent: string },
+  ) => {
+    const { editorContent } = state
+    const renderResp = await handleRender(fileNameStore.fileName, editorContent)
+    renderData.setRenderData(renderResp)
+  },
+)
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
@@ -65,7 +68,7 @@ function getLastModified(): string {
   return getHumanReadableTimeInfo(lastModifiedStore.lastModified)
 }
 
-const updateLastModified = () => lastModified.value = getLastModified()
+const updateLastModified = () => (lastModified.value = getLastModified())
 setInterval(updateLastModified, 500)
 </script>
 
@@ -87,15 +90,28 @@ setInterval(updateLastModified, 500)
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
-          <input id="file-name-input" v-model="fileNameStore.fileName"/>
+          <input id="file-name-input" v-model="fileNameStore.fileName" />
         </div>
       </div>
       <div id="menu-right-side">
         <div>
-          <p>Last edited: {{ previewLoadingStore.previewLoading ? (updateLastModified() && false) || 'now' : lastModified }}</p>
+          <p>
+            Last edited:
+            {{
+              previewLoadingStore.previewLoading
+                ? (updateLastModified() && false) || 'now'
+                : lastModified
+            }}
+          </p>
         </div>
         <div>
-          <button class="editor-button" id="fullscreen-preview-button" @click="handlePreviewButtonPress()">Fullscreen</button>
+          <button
+            class="editor-button"
+            id="fullscreen-preview-button"
+            @click="handlePreviewButtonPress()"
+          >
+            Fullscreen
+          </button>
         </div>
       </div>
     </div>
@@ -109,17 +125,36 @@ setInterval(updateLastModified, 500)
             <p id="init-msg">Start typing and see preview!</p>
             <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
           </div>
-          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init"><span class="dot-dot-dot-flashing"></span></h2>
+          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
+            <span class="dot-dot-dot-flashing"></span>
+          </h2>
           <iframe v-else :src="previewURL"></iframe>
         </div>
-        <div id="preview-meta-info" class="loading" v-if="previewLoadingStore.previewLoading && !initStateStore.init">
+        <div
+          id="preview-meta-info"
+          class="loading"
+          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
+        >
           <div>
-            <div class="dot-dot-dot-flashing-mini"></div><p>slides (</p><div class="dot-dot-dot-flashing-mini"></div><p> Subslides)</p>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>slides (</p>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>Subslides)</p>
           </div>
-          <div><div class="dot-dot-dot-flashing-mini"></div><p>KB Raw Size</p></div>
+          <div>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>KB Raw Size</p>
+          </div>
         </div>
         <div id="preview-meta-info" v-else>
-          <p>{{ slideCount ? slideCount! : '?' }} {{ slideCount == 1 ? 'slide' : 'slides' }} ({{ slideCount && slideCountInclSubslides ? slideCountInclSubslides - slideCount : '?' }} {{ (slideCountInclSubslides ?? 0) - (slideCount ?? 0) == 1 ? 'subslide' : 'subslides' }})</p>
+          <p>
+            {{ slideCount ? slideCount! : '?' }} {{ slideCount == 1 ? 'slide' : 'slides' }} ({{
+              slideCount && slideCountInclSubslides ? slideCountInclSubslides - slideCount : '?'
+            }}
+            {{
+              (slideCountInclSubslides ?? 0) - (slideCount ?? 0) == 1 ? 'subslide' : 'subslides'
+            }})
+          </p>
           <p>{{ rawSize ? Math.round(rawSize! * 100) / 100 : '?' }} KB Raw Size</p>
         </div>
         <div id="slides-navigator">

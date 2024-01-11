@@ -4,9 +4,8 @@
 
 <script setup lang="ts">
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
-import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
+import type { SubscriptionCallbackMutation } from 'pinia'
 import type { Ref } from 'vue'
-import constants from '@/plugins/constants'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
@@ -17,7 +16,8 @@ import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
 import { KeyCode } from 'monaco-editor'
-import {useLastModifiedStore} from "@/stores/last-modified";
+import { useLastModifiedStore } from '@/stores/last-modified'
+import { performErrorChecking } from '@/components/editor/error-checking'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -72,9 +72,11 @@ onMounted(() => {
     // Ensure it was an actual input (printable character)
     if (
       event.keyCode > 0 &&
-      ![KeyCode.Backspace, KeyCode.Tab, KeyCode.Enter, KeyCode.Delete, KeyCode.Space].includes(event.keyCode) &&
+      ![KeyCode.Backspace, KeyCode.Tab, KeyCode.Enter, KeyCode.Delete, KeyCode.Space].includes(
+        event.keyCode,
+      ) &&
       (event.keyCode <= KeyCode.DownArrow ||
-      (event.keyCode >= KeyCode.Meta && event.keyCode <= KeyCode.ScrollLock))
+        (event.keyCode >= KeyCode.Meta && event.keyCode <= KeyCode.ScrollLock))
     ) {
       return
     }
@@ -94,8 +96,8 @@ onMounted(() => {
 
   // Checking for errors when the editor content changes
   editorInstance.onDidChangeModelContent(() => {
-    performErrorChecking(editorInstance!);
-  });
+    performErrorChecking(editorInstance!)
+  })
 
   // Register an event listener to the darkModeStore to change the theme of the editor
   darkModeStore.$subscribe(

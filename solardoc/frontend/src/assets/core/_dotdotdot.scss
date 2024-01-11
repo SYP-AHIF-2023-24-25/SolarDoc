@@ -47,7 +47,8 @@
   0% {
     background-color: var.$dot-dot-dot-color;
   }
-  50%, 100% {
+  50%,
+  100% {
     background-color: var.$dot-dot-dot-color-subtle;
   }
 }
@@ -62,10 +63,11 @@
   color: var.$dot-dot-dot-color;
   animation: dot-dot-dot-flashing-ani-mini 1s infinite linear alternate;
   animation-delay: 0.5s;
-  content: "";
+  content: '';
 
-  &::before, &::after {
-    content: "";
+  &::before,
+  &::after {
+    content: '';
     display: inline-block;
     position: absolute;
     top: 0;
