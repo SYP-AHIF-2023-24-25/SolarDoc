@@ -1,4 +1,4 @@
-import {defineStore} from "pinia";
+import { defineStore } from 'pinia'
 
 /**
  * The init store is used to indicate that the app has finished loading, but the editor content has not yet been changed.
@@ -10,6 +10,6 @@ export const useInitStateStore = defineStore('init', {
   actions: {
     setFalse() {
       this.init = false
-    }
+    },
   },
 })
