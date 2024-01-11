@@ -1,6 +1,6 @@
 @use './var' as var;
 
-.dot-flashing {
+.dot-dot-dot-flashing {
   display: block;
   position: relative;
   width: 12px;
@@ -8,7 +8,7 @@
   border-radius: 6px;
   background-color: var.$dot-dot-dot-color;
   color: var.$dot-dot-dot-color;
-  animation: dot-flashing 1s infinite linear alternate;
+  animation: dot-dot-dot-flashing-ani 1s infinite linear alternate;
   animation-delay: 0.5s;
   content: '';
 
@@ -27,7 +27,7 @@
     border-radius: 6px;
     background-color: var.$dot-dot-dot-color;
     color: var.$dot-dot-dot-color;
-    animation: dot-flashing 1s infinite alternate;
+    animation: dot-dot-dot-flashing-ani 1s infinite alternate;
     animation-delay: 0s;
   }
 
@@ -38,12 +38,65 @@
     border-radius: 6px;
     background-color: var.$dot-dot-dot-color;
     color: var.$dot-dot-dot-color;
-    animation: dot-flashing 1s infinite alternate;
+    animation: dot-dot-dot-flashing-ani 1s infinite alternate;
     animation-delay: 1s;
   }
 }
 
-@keyframes dot-flashing {
+@keyframes dot-dot-dot-flashing-ani {
+  0% {
+    background-color: var.$dot-dot-dot-color;
+  }
+  50%,
+  100% {
+    background-color: var.$dot-dot-dot-color-subtle;
+  }
+}
+
+.dot-dot-dot-flashing-mini {
+  display: block;
+  position: relative;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 0.125rem;
+  background-color: var.$dot-dot-dot-color;
+  color: var.$dot-dot-dot-color;
+  animation: dot-dot-dot-flashing-ani-mini 1s infinite linear alternate;
+  animation-delay: 0.5s;
+  content: '';
+
+  &::before,
+  &::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+  }
+
+  &::before {
+    left: -0.375rem;
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 0.125rem;
+    background-color: var.$dot-dot-dot-color;
+    color: var.$dot-dot-dot-color;
+    animation: dot-dot-dot-flashing-ani-mini 1s infinite alternate;
+    animation-delay: 0s;
+  }
+
+  &::after {
+    left: 0.375rem;
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 0.125rem;
+    background-color: var.$dot-dot-dot-color;
+    color: var.$dot-dot-dot-color;
+    animation: dot-dot-dot-flashing-ani-mini 1s infinite alternate;
+    animation-delay: 1s;
+  }
+}
+
+@keyframes dot-dot-dot-flashing-ani-mini {
   0% {
     background-color: var.$dot-dot-dot-color;
   }
