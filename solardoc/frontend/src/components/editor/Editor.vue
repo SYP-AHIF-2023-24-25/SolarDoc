@@ -3,23 +3,21 @@
 </template>
 
 <script setup lang="ts">
-
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
 import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
 import type { Ref } from 'vue'
-import constants from "@/plugins/constants";
+import constants from '@/plugins/constants'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import {useEditorContentStore} from "@/stores/editor-content";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import {useInitStateStore} from "@/stores/init-state";
-import {KeyCode} from "monaco-editor";
-
-type IMarkerData = editor.IMarkerData;
+import { useEditorContentStore } from '@/stores/editor-content'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import { useInitStateStore } from '@/stores/init-state'
+import { KeyCode } from 'monaco-editor'
+import { performErrorChecking } from '@/components/editor/error-checking'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -35,67 +33,6 @@ const EDITOR_UPDATE_TIMEOUT = 1000
 
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
 const editorRef = <Ref<HTMLElement>>ref(document.querySelector('#editor'))
-
-/**
- * Checks the editor content for errors and adds markers to the editor.
- * (if a heading doesn't have a space after the equal signs or if a list is inconsistent)
- */
-function performErrorChecking() {
-  const model = editorInstance?.getModel();
-  if (!model) return;
-
-  const lines = model.getLinesContent();
-  const markers: IMarkerData[]= [];
-  let currentListSymbol: string | null = null;
-  lines.forEach((line, lineNumber) => {
-
-    // Checking for errors with headings (==someTextWithoutASpace, ===MoreFalseText, etc.) correct: == someText
-    if (line.match(/^={1,6}[^ =].*$/)) {
-      const startColumn = line.indexOf('=') + 1;
-      const endColumn = line.length;
-      const message = 'Error: Heading should have a space after the equal signs';
-      markers.push({
-        severity: monaco.MarkerSeverity.Error,
-        message: message,
-        startLineNumber: lineNumber + 1,
-        startColumn: startColumn,
-        endLineNumber: lineNumber + 1,
-        endColumn: endColumn,
-      });
-    }
-    else {
-      // Checking for list errors (continuing a list with a different symbol)
-      const match = line.match(/^([*.])\s+[a-zA-Z]/);
-      if (match) {
-        const listSymbol = match[1];
-
-        // Check if the list symbol changes
-        if (currentListSymbol && currentListSymbol !== listSymbol) {
-          console.log("list symbol changed" + currentListSymbol + " " + listSymbol)
-          const startColumn = line.indexOf(listSymbol) + 1;
-          const endColumn = startColumn + 1;
-          const message = 'Error: Lists should be consistent (use either "." or "*")';
-          markers.push({
-            severity: monaco.MarkerSeverity.Error,
-            message: message,
-            startLineNumber: lineNumber + 1,  // Lines are 1-indexed
-            startColumn: startColumn,
-            endLineNumber: lineNumber + 1,
-            endColumn: endColumn,
-          });
-        }
-        currentListSymbol = listSymbol;
-      }
-      else{
-        // In case there is a different line, reset the current list symbol to null, to avoid wrong errors
-        currentListSymbol = null;
-      }
-    }
-  });
-
-  // Update markers in the editor
-  monaco.editor.setModelMarkers(model, 'asciidoc', markers);
-}
 
 onMounted(() => {
   // Register a new language
@@ -125,6 +62,9 @@ onMounted(() => {
     scrollBeyondLastLine: false,
   })
 
+  // Error checking on init
+  performErrorChecking(editorInstance!)
+
   // This is an ID of the timeout
   let activeTimeout: ReturnType<typeof setTimeout>
   editorInstance.onKeyDown((event: monaco.IKeyboardEvent) => {
@@ -136,9 +76,6 @@ onMounted(() => {
     }
     initStateStore.setFalse()
     previewLoadingStore.setPreviewLoading(true)
-
-    // Checking new lines for errors
-    performErrorChecking();
 
     // If there is an active timeout, then cancel it and force the creation of a new one
     // (to avoid saving the text too often)
@@ -155,7 +92,7 @@ onMounted(() => {
 
   // Checking for errors when the editor content changes
   editorInstance.onDidChangeModelContent(() => {
-    performErrorChecking();
+    performErrorChecking(editorInstance!);
   });
 
   // Register an event listener to the darkModeStore to change the theme of the editor

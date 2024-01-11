@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from 'vue'
 import Editor from '@/components/editor/Editor.vue'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import {useEditorContentStore} from "@/stores/editor-content";
-import type { SubscriptionCallbackMutation} from "pinia";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import * as backendAPI from '@/services/backend/api-service';
+import { useEditorContentStore } from '@/stores/editor-content'
+import type { SubscriptionCallbackMutation } from 'pinia'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import * as backendAPI from '@/services/backend/api-service'
 import type {
   RenderedPresentationRjsHtmlDtoModel,
-  RenderPresentationRjsHtmlDtoModel
-} from "@/services/backend/api-service";
-import {useInitStateStore} from "@/stores/init-state";
-import FullScreenPreview from "@/components/FullScreenPreview.vue";
-import {useFullScreenPreviewStore} from "@/stores/full-screen-preview";
-import LoadAnywayButton from "@/components/LoadAnywayButton.vue";
-import {handleRender} from "@/scripts/handle-render";
-import {usePreviewURLStore} from "@/stores/preview-url";
-import {useFileNameStore} from "@/stores/file-name";
+  RenderPresentationRjsHtmlDtoModel,
+} from '@/services/backend/api-service'
+import { useInitStateStore } from '@/stores/init-state'
+import FullScreenPreview from '@/components/FullScreenPreview.vue'
+import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
+import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import { handleRender } from '@/scripts/handle-render'
+import { usePreviewURLStore } from '@/stores/preview-url'
+import { useFileNameStore } from '@/stores/file-name'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -33,7 +33,8 @@ fileNameStore.setFileName('sample-presentation.adoc')
 
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
-backendAPI.checkIfBackendIsReachable()
+backendAPI
+  .checkIfBackendIsReachable()
   .then(void 0)
   .catch((error: Error) => {
     if (error) {
@@ -43,14 +44,16 @@ backendAPI.checkIfBackendIsReachable()
   })
 
 // Ensure the render preview is updated whenever the editor content changes
-editorContentStore.$subscribe(async (
-  mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
-  state: { editorContent: string },
-) => {
-  const { editorContent } = state
-  const previewURL = await handleRender(fileNameStore.fileName, editorContent)
-  previewURLStore.setPreviewURL(previewURL)
-})
+editorContentStore.$subscribe(
+  async (
+    mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
+    state: { editorContent: string },
+  ) => {
+    const { editorContent } = state
+    const previewURL = await handleRender(fileNameStore.fileName, editorContent)
+    previewURLStore.setPreviewURL(previewURL)
+  },
+)
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
@@ -77,7 +80,7 @@ function handlePreviewButtonPress() {
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
-          <input id="file-name-input" v-model="fileNameStore.fileName"/>
+          <input id="file-name-input" v-model="fileNameStore.fileName" />
         </div>
       </div>
       <div id="menu-right-side">
@@ -85,7 +88,13 @@ function handlePreviewButtonPress() {
           <p>Last edited: 20:08 14-10-2023 CET</p>
         </div>
         <div>
-          <button class="editor-button" id="fullscreen-preview-button" @click="handlePreviewButtonPress()">Fullscreen</button>
+          <button
+            class="editor-button"
+            id="fullscreen-preview-button"
+            @click="handlePreviewButtonPress()"
+          >
+            Fullscreen
+          </button>
         </div>
       </div>
     </div>
@@ -99,7 +108,9 @@ function handlePreviewButtonPress() {
             <p id="init-msg">Start typing and see preview!</p>
             <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
           </div>
-          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init"><span class="dot-flashing"></span></h2>
+          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
+            <span class="dot-flashing"></span>
+          </h2>
           <iframe v-else :src="previewURLStore.previewURL"></iframe>
         </div>
         <div id="preview-meta-info">
