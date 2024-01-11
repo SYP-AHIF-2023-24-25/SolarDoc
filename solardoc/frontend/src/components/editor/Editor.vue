@@ -69,9 +69,12 @@ onMounted(() => {
   let activeTimeout: ReturnType<typeof setTimeout>
   editorInstance.onKeyDown((event: monaco.IKeyboardEvent) => {
     // Ensure it was an actual input (printable character)
-    if (event.keyCode > 0 &&
-        (event.keyCode <= KeyCode.DownArrow ||
-            event.keyCode >= KeyCode.Meta && event.keyCode <= KeyCode.ScrollLock)) {
+    if (
+      event.keyCode > 0 &&
+      ![KeyCode.Backspace, KeyCode.Tab, KeyCode.Enter, KeyCode.Delete, KeyCode.Space].includes(event.keyCode) &&
+      (event.keyCode <= KeyCode.DownArrow ||
+      (event.keyCode >= KeyCode.Meta && event.keyCode <= KeyCode.ScrollLock))
+    ) {
       return
     }
     initStateStore.setFalse()
