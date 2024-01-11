@@ -6,7 +6,7 @@ const loadingStore = useLoadingStore()
 
 <template>
   <div id="progress-spinner" v-show="loadingStore.loading">
-    <span class="loader"></span>
+    <span class="loader-spinner"></span>
   </div>
 </template>
 

@@ -13,12 +13,26 @@ const initStateStore = useInitStateStore()
 const REVEAL_JS_CDN_URL = 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/'
 
 /**
+ * The data returned by the backend when rendering a presentation.
+ *
+ * This is a subset of the data returned by the backend.
+ * @since 0.3.0
+ */
+export interface RenderedPresentation {
+  rawSize: number;
+  slideCountInclSubslides: number;
+  slideCount: number;
+  previewURL: string;
+}
+
+/**
  * Handles a render request by sending it to the backend and returning the download URL.
  * @param fileName The name of the file to render.
  * @param editorContent The content of the editor.
  * @returns The download URL of the rendered presentation.
+ * @since 0.3.0
  */
-export async function handleRender(fileName: string, editorContent: string): Promise<string> {
+export async function handleRender(fileName: string, editorContent: string): Promise<RenderedPresentation> {
   initStateStore.setFalse()
   previewLoadingStore.setPreviewLoading(true)
 
@@ -38,5 +52,10 @@ export async function handleRender(fileName: string, editorContent: string): Pro
   }
 
   previewLoadingStore.setPreviewLoading(false)
-  return renderRespObj.download.downloadURL
+  return {
+    rawSize: renderRespObj.rawSize,
+    slideCountInclSubslides: renderRespObj.slideCountInclSubslides,
+    slideCount: renderRespObj.slideCount,
+    previewURL: renderRespObj.download.downloadURL,
+  } satisfies RenderedPresentation
 }
