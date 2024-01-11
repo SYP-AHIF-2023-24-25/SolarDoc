@@ -3,18 +3,23 @@
 </template>
 
 <script setup lang="ts">
+
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
+import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
 import type { Ref } from 'vue'
+import constants from "@/plugins/constants";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
 import {useEditorContentStore} from "@/stores/editor-content";
 import {usePreviewLoadingStore} from "@/stores/preview-loading";
 import {useInitStateStore} from "@/stores/init-state";
+import {KeyCode} from "monaco-editor";
+
+type IMarkerData = editor.IMarkerData;
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -28,7 +33,6 @@ const initStateStore = useInitStateStore()
  */
 const EDITOR_UPDATE_TIMEOUT = 1000
 
-let localStorageIdentifier = 'reloadText'
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
 const editorRef = <Ref<HTMLElement>>ref(document.querySelector('#editor'))
 
@@ -41,7 +45,7 @@ function performErrorChecking() {
   if (!model) return;
 
   const lines = model.getLinesContent();
-  const markers = [];
+  const markers: IMarkerData[]= [];
   let currentListSymbol: string | null = null;
   lines.forEach((line, lineNumber) => {
 
@@ -107,14 +111,11 @@ onMounted(() => {
   monaco.editor.defineTheme('asciiDocLightTheme', <editor.IStandaloneThemeData>lightEditorTheme)
   monaco.editor.defineTheme('asciiDocDarkTheme', <editor.IStandaloneThemeData>darkEditorTheme)
 
-  let reloadText =
-    localStorage.getItem(localStorageIdentifier) ||
-    '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
   // Creating the editor with desired theme and language
   editorInstance = monaco.editor.create(editorRef.value!, {
     theme: darkModeStore.darkMode ? 'asciiDocDarkTheme' : 'asciiDocLightTheme',
     language: 'asciiDoc',
-    value: [`${reloadText}`].join('\n'),
+    value: editorContentStore.editorContent,
     fontFamily: 'JetBrains Mono',
     minimap: {
       enabled: false,
@@ -128,14 +129,11 @@ onMounted(() => {
   let activeTimeout: ReturnType<typeof setTimeout>
   editorInstance.onKeyDown((event: monaco.IKeyboardEvent) => {
     // Ensure it was an actual input (printable character)
-    const unsupportedKeyCharacters = [
-      "Shift", "Escape", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Control", "Alt", "CapsLock",
-      "Tab", "Backspace", "Meta", "ContextMenu", "PageUp", "PageDown", "End", "Home", "Insert", "Delete", "Pause",
-      "ScrollLock", "PrintScreen", "NumLock", "Clear", "Help", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9",
-      "F10", "F11", "F12"
-    ];
-    if (unsupportedKeyCharacters.includes(event.code)) return
-
+    if (event.keyCode > 0 &&
+        (event.keyCode <= KeyCode.DownArrow ||
+            event.keyCode >= KeyCode.Meta && event.keyCode <= KeyCode.ScrollLock)) {
+      return
+    }
     initStateStore.setFalse()
     previewLoadingStore.setPreviewLoading(true)
 
@@ -148,7 +146,7 @@ onMounted(() => {
 
     activeTimeout = setTimeout(() => {
       console.log('[Editor] Saving editor content to local storage')
-      localStorage.setItem(localStorageIdentifier, editorInstance!.getValue())
+      localStorage.setItem(constants.localStorageTextKey, editorInstance!.getValue())
 
       console.log('[Editor] Broadcasting update')
       editorContentStore.setEditorContent(editorInstance!.getValue())
