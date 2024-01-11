@@ -2,6 +2,16 @@
 import { RouterView } from 'vue-router'
 import Navbar from '@/components/Navbar.vue'
 import ProgressSpinner from '@/components/ProgressSpinner.vue'
+import {useEditorContentStore} from "@/stores/editor-content"
+import constants from "@/plugins/constants";
+
+const editorContentStore = useEditorContentStore()
+
+// Load the text from the locale storage
+let initText =
+    localStorage.getItem(constants.localStorageTextKey) ||
+    '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
+editorContentStore.setEditorContent(initText)
 </script>
 
 <template>
