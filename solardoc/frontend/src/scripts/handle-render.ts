@@ -1,10 +1,10 @@
 import type {
   RenderedPresentationRjsHtmlDtoModel,
-  RenderPresentationRjsHtmlDtoModel
-} from "@/services/backend/gen/backend-rest-service";
-import * as backendAPI from "@/services/backend/api-service";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import {useInitStateStore} from "@/stores/init-state";
+  RenderPresentationRjsHtmlDtoModel,
+} from '@/services/backend/gen/backend-rest-service'
+import * as backendAPI from '@/services/backend/api-service'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import { useInitStateStore } from '@/stores/init-state'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
@@ -43,7 +43,7 @@ export async function handleRender(fileName: string, editorContent: string): Pro
   }
 
   // Send a render request to the backend
-  let renderRespObj: RenderedPresentationRjsHtmlDtoModel;
+  let renderRespObj: RenderedPresentationRjsHtmlDtoModel
   const renderResp = await backendAPI.postV1RenderPresentationRjsHtml(renderPresentationDtoModel)
   if (renderResp.status === 200) {
     renderRespObj = renderResp.data

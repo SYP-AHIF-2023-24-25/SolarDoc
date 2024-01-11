@@ -14,7 +14,7 @@ const router = createRouter({
     {
       path: '/index' + htmlExtMatcher,
       name: 'index',
-      redirect: '/'
+      redirect: '/',
     },
     {
       path: '/about' + htmlExtMatcher,
@@ -30,7 +30,7 @@ const router = createRouter({
       component: () => import('@/views/DocsView.vue'),
     },
     {
-      path: '/editor'+ htmlExtMatcher,
+      path: '/editor' + htmlExtMatcher,
       name: 'editor',
       component: () => import('@/views/EditorView.vue'),
     },

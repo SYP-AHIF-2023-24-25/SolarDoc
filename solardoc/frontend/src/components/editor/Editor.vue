@@ -6,16 +6,17 @@
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
 import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
 import type { Ref } from 'vue'
+import constants from '@/plugins/constants'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import {useEditorContentStore} from "@/stores/editor-content";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import {useInitStateStore} from "@/stores/init-state";
-import {KeyCode} from "monaco-editor";
+import { useEditorContentStore } from '@/stores/editor-content'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import { useInitStateStore } from '@/stores/init-state'
+import { KeyCode } from 'monaco-editor'
 import {useLastModifiedStore} from "@/stores/last-modified";
 
 const darkModeStore = useDarkModeStore()
@@ -33,6 +34,7 @@ const EDITOR_UPDATE_TIMEOUT = 1000
 
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
 const editorRef = <Ref<HTMLElement>>ref(document.querySelector('#editor'))
+
 onMounted(() => {
   // Register a new language
   monaco.languages.register({ id: 'asciiDoc' })
@@ -61,13 +63,19 @@ onMounted(() => {
     scrollBeyondLastLine: false,
   })
 
+  // Error checking on init
+  performErrorChecking(editorInstance!)
+
   // This is an ID of the timeout
   let activeTimeout: ReturnType<typeof setTimeout>
   editorInstance.onKeyDown((event: monaco.IKeyboardEvent) => {
     // Ensure it was an actual input (printable character)
-    if (event.keyCode > 0 &&
-        (event.keyCode <= KeyCode.DownArrow ||
-            event.keyCode >= KeyCode.Meta && event.keyCode <= KeyCode.ScrollLock)) {
+    if (
+      event.keyCode > 0 &&
+      ![KeyCode.Backspace, KeyCode.Tab, KeyCode.Enter, KeyCode.Delete, KeyCode.Space].includes(event.keyCode) &&
+      (event.keyCode <= KeyCode.DownArrow ||
+      (event.keyCode >= KeyCode.Meta && event.keyCode <= KeyCode.ScrollLock))
+    ) {
       return
     }
     initStateStore.setFalse()
@@ -83,6 +91,11 @@ onMounted(() => {
       lastModifiedStore.setLastModified(new Date())
     }, EDITOR_UPDATE_TIMEOUT)
   })
+
+  // Checking for errors when the editor content changes
+  editorInstance.onDidChangeModelContent(() => {
+    performErrorChecking(editorInstance!);
+  });
 
   // Register an event listener to the darkModeStore to change the theme of the editor
   darkModeStore.$subscribe(

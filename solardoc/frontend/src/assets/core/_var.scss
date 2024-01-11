@@ -58,7 +58,9 @@
   --editor-border: 1px solid var(--text-color);
 
   // Editor preview presets (Has a ratio of 2:1)
-  --editor-preview-frame-width: calc(100vw - var(--editor-monaco-width) - var(--editor-border-width));
+  --editor-preview-frame-width: calc(
+    100vw - var(--editor-monaco-width) - var(--editor-border-width)
+  );
   --editor-preview-frame-height: calc(var(--editor-preview-frame-width) * 0.5);
   --editor-preview-frame-padding: 0;
   --editor-preview-frame-margin: 0;
