@@ -60,6 +60,16 @@ function handlePreviewButtonPress() {
   fullScreenPreviewStore.setFullScreenPreview(true)
   console.log('Preview button clicked')
 }
+
+function handleCopyButtonClick() {
+  navigator.clipboard.writeText(editorContentStore.editorContent);
+  console.log('Copy button clicked');
+}
+
+function handleDownloadButtonClick() {
+  //download asciidoc file
+  console.log('Download button clicked')
+}
 </script>
 
 <template>
@@ -72,9 +82,9 @@ function handlePreviewButtonPress() {
           <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
         </button>
         <div id="button-menu">
-          <button class="editor-button">Copy</button>
+          <button class="editor-button" @click="handleCopyButtonClick()">Copy</button>
           <button class="editor-button">Share</button>
-          <button class="editor-button">Download</button>
+          <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
       </div>
       <div id="menu-center">
