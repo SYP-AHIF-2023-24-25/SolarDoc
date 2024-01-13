@@ -12,6 +12,8 @@ import type {
   RenderedPresentationRjsHtmlDtoModel,
   RenderPresentationRjsHtmlDtoModel
 } from "@/services/backend/api-service";
+import SlidesNavigator from "@/components/slides-navigator/SlidesNavigator.vue";
+import SubSlidesNavigator from "@/components/sub-slides-navigator/SubSlidesNavigator.vue";
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -104,11 +106,11 @@ editorContentStore.$subscribe(async (
           <p>3 slides</p>
           <p>1.2 MB Raw Size</p>
         </div>
-        <div id="slides-navigator">
-          <p>Slides Navigator</p>
+        <div id="slides-navigator-wrapper">
+          <SlidesNavigator></SlidesNavigator>
         </div>
-        <div id="sub-slides-navigator">
-          <p>Sub Slides Navigator</p>
+        <div id="sub-slides-navigator-wrapper">
+          <SubSlidesNavigator></SubSlidesNavigator>
         </div>
       </div>
     </div>
@@ -232,15 +234,14 @@ div#editor-page {
         justify-content: space-between;
       }
 
-      #slides-navigator {
-        @include align-center();
+      #slides-navigator-wrapper {
+        padding: 0;
+        margin: 0;
         height: var.$editor-preview-slides-navigator-height;
-        padding: var.$editor-preview-slides-navigator-padding;
         border-bottom: var.$editor-border;
       }
 
-      #sub-slides-navigator {
-        @include align-center();
+      #sub-slides-navigator-wrapper {
         flex-grow: 1;
       }
 

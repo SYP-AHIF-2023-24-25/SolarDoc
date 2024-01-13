@@ -63,8 +63,16 @@
   // Editor preview remaining presets
   --editor-preview-meta-info-height: 3rem;
   --editor-preview-meta-info-padding: 0 1rem;
-  --editor-preview-slides-navigator-height: 25vh;
-  --editor-preview-slides-navigator-padding: 1rem;
+  --editor-preview-slides-navigator-height: 10rem;
+  --editor-preview-slides-navigator-width: var(--editor-preview-frame-width);
+  --editor-preview-sub-slides-navigator-height: calc(
+    100vh
+    - var(--nav-bar-height)
+    - var(--editor-menu-height)
+    - var(--editor-preview-frame-height)
+    - var(--editor-preview-meta-info-height)
+    - var(--editor-preview-slides-navigator-height)
+  );
 }
 
 // Color-scheme presets
@@ -130,7 +138,8 @@ $editor-preview-frame-margin: var(--editor-preview-frame-margin);
 $editor-preview-meta-info-height: var(--editor-preview-meta-info-height);
 $editor-preview-meta-info-padding: var(--editor-preview-meta-info-padding);
 $editor-preview-slides-navigator-height: var(--editor-preview-slides-navigator-height);
-$editor-preview-slides-navigator-padding: var(--editor-preview-slides-navigator-padding);
+$editor-preview-slides-navigator-width: var(--editor-preview-slides-navigator-width);
+$editor-preview-sub-slides-navigator-height: var(--editor-preview-sub-slides-navigator-height);
 
 // Light & Dark Theme
 html,
