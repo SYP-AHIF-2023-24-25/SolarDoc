@@ -1,10 +1,28 @@
 <script setup lang="ts">
+import {useRenderDataStore} from "@/stores/render-data";
+import {storeToRefs} from "pinia";
+import SlidePreview from "@/components/slides-navigator/SlidePreview.vue";
+import {useInitStateStore} from "@/stores/init-state";
+import {ref} from "vue";
 
+const renderDataStore = useRenderDataStore()
+const initStateStore = useInitStateStore()
+
+const { slideCount } = storeToRefs(renderDataStore)
+
+// Per default, we show the first two slides
+const visibleSlides = ref<number[]>([0, 1])
 </script>
 
 <template>
-<div id="slides-navigator">
-
+<div id="slides-navigator" v-if="!initStateStore.init">
+  <!-- For every *main* slide, create a slide preview -->
+  <SlidePreview
+    v-for="i in <Array<number>>Array(slideCount).fill(null).map((_, i) => i)"
+    :key="i"
+    :slide-index="i"
+    v-show="visibleSlides.includes(i)"
+  />
 </div>
 </template>
 
@@ -12,11 +30,15 @@
 @use '@/assets/core/var' as var;
 
 #slides-navigator {
-  flex-flow: column nowrap;
-  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: var.$editor-preview-slides-navigator-padding;
+  margin: 0;
+  height: var.$editor-preview-slides-navigator-height;
   width: var.$editor-preview-slides-navigator-width;
 
   // Scrollable content on the x-axis
   overflow-x: scroll;
+  overflow-y: hidden;
 }
 </style>

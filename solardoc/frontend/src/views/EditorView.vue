@@ -25,11 +25,11 @@ const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const fullScreenPreviewStore = useFullScreenPreviewStore()
-const renderData = useRenderDataStore()
+const renderDataStore = useRenderDataStore()
 const fileNameStore = useFileNameStore()
 const lastModifiedStore = useLastModifiedStore()
 
-const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderData)
+const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 
 // Default filename is sample-presentation.adoc
 fileNameStore.setFileName('sample-presentation.adoc')
@@ -54,7 +54,7 @@ editorContentStore.$subscribe(
   ) => {
     const { editorContent } = state
     const renderResp = await handleRender(fileNameStore.fileName, editorContent)
-    renderData.setRenderData(renderResp)
+    renderDataStore.setRenderData(renderResp)
   },
 )
 
@@ -236,7 +236,7 @@ div#editor-page {
           margin: 0;
 
           &:focus {
-            outline: var.$scheme-cs-1 solid 2px;
+            outline: var.$scheme-link-hover-color solid 2px;
             border-radius: 2px;
           }
         }

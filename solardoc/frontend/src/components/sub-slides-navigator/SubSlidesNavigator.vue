@@ -13,11 +13,11 @@
 
 #sub-slides-navigator {
   flex-flow: column nowrap;
-  height: 100%;
+  height: var.$editor-preview-sub-slides-navigator-height;
+  max-height: var.$editor-preview-sub-slides-navigator-height;
   width: 100%;
 
   // Ensure that the content is scrollable
   overflow-y: scroll;
-  max-height: var.$editor-preview-sub-slides-navigator-height;
 }
 </style>
