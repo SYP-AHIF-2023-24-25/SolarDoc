@@ -4,8 +4,6 @@ services:
       context: .
       dockerfile: ./solardoc/frontend/Dockerfile
       args:
-        VITE_PROD_BACKEND_HOST: http://localhost
-        VITE_PROD_BACKEND_PORT: 3000
         PUPPETEER_SKIP_DOWNLOAD: true
     volumes:
       - ./solardoc/frontend:/home/node/app
@@ -13,6 +11,9 @@ services:
       - "80:80"
     environment:
       PUPPETEER_SKIP_DOWNLOAD: true
+      PROD_BACKEND_PORT: ${PROD_BACKEND_PORT}
+      PROD_BACKEND_HOST: ${PROD_BACKEND_HOST}
+      NODE_ENV: production
     depends_on:
       - rest-api
     links:
@@ -35,6 +36,7 @@ services:
       REDIS_PORT: 6379
       PERSISTENT_STORAGE_PATH: ${PERSISTENT_STORAGE_PATH}
       PUPPETEER_SKIP_DOWNLOAD: true
+      NODE_ENV: production
     volumes:
       - rest-api-persistent-storage:${PERSISTENT_STORAGE_PATH}
     depends_on:

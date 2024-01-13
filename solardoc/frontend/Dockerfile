@@ -1,4 +1,4 @@
-FROM docker.io/library/node:20-slim AS base
+FROM node:18.10.0-alpine3.15 AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -43,25 +43,31 @@ RUN pnpm run --filter @solardoc/asciidoc-renderer tsc-build
 # Build 'rest-api' package
 RUN pnpm install --filter @solardoc/rest-api --frozen-lockfile
 RUN pnpm run --filter @solardoc/rest-api build
+
+# To allow the frontend to generate the API client, the openapi-spec needs to be present
+# (Additionally, since it's loading the entire Rest API, we will have to set the required env variables,
+# but they can be set to anything)
+RUN touch ./solardoc/rest-api/.env
+RUN echo "REDIS_DEV_HOST=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN echo "REDIS_DEV_PORT=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN echo "REDIS_ROOT_PASSWORD=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN echo "REDIS_USERNAME=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN echo "REDIS_PASSWORD=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN echo "PERSISTENT_STORAGE_PATH=PLACEHOLDER" >> ./solardoc/rest-api/.env
+RUN cp ./solardoc/rest-api/.env ./.env
 RUN pnpm run --filter @solardoc/rest-api openapi-spec:write:no-build
-
-# Build 'frontend' package (we need to first define the required ENV variables)
-ARG VITE_PROD_BACKEND_HOST
-ARG VITE_PROD_BACKEND_PORT
-ENV VITE_PROD_BACKEND_HOST=$VITE_PROD_BACKEND_HOST
-ENV VITE_PROD_BACKEND_PORT=$VITE_PROD_BACKEND_PORT
-
-RUN echo "VITE_PROD_BACKEND_HOST=$VITE_PROD_BACKEND_HOST" >> ./solardoc/frontend/.env
-RUN echo "VITE_PROD_BACKEND_PORT=$VITE_PROD_BACKEND_PORT" >> ./solardoc/frontend/.env
 
 RUN pnpm install --filter @solardoc/frontend --frozen-lockfile
 RUN pnpm run --filter @solardoc/frontend deploy
 
-# production stage
+# Lastly set the env variables for the frontend (which will be injected at runtime using @import-meta-env/cli)
+RUN npx pkg ./solardoc/frontend/node_modules/@import-meta-env/cli/bin/import-meta-env.js -t node18-alpine-x64 -o import-meta-env
+
+# -- PRODUCTION STAGE --
 FROM nginx:stable-alpine as production-stage
 
 # We will work in the default nginx directory though (for simplicity)
-WORKDIR /usr/share/nginx/html
+WORKDIR /etc/nginx/
 
 # Install bash
 RUN apk add --no-cache bash
@@ -70,9 +76,12 @@ RUN apk add --no-cache bash
 COPY --from=build-stage /home/node/app/solardoc/frontend/docker/init.sh /etc/nginx/init.sh
 RUN chmod +x /etc/nginx/init.sh
 
-# Copy the built frontend
+# Copy the built frontend + .env.template files which will be injected into the frontend at runtime
 COPY --from=build-stage /home/node/app/solardoc/frontend/dist /usr/share/nginx/html
-COPY --from=build-stage /home/node/app/solardoc/frontend/.env /usr/share/nginx/html/.env
+COPY --from=build-stage /home/node/app/solardoc/frontend/.env.prod.template /usr/share/nginx/html/.env.prod.template
+
+# Copy the import-meta-env binary
+COPY --from=build-stage /home/node/app/import-meta-env /etc/nginx/import-meta-env
 
 # Remove default nginx configs and replace with ours
 RUN rm /etc/nginx/conf.d/default.conf

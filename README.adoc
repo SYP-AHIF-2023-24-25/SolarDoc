@@ -2,13 +2,15 @@ image::images/500x1500-banner-with-desc.png[]
 
 = SolarDoc 🌌✨
 
-SolarDoc is a dynamic online editor which allows you to create beautiful presentations using AsciiDoc in your browser. Collaborate with your colleagues and friends in the online editor and freely share your work with anyone! 
+SolarDoc is a dynamic online editor which allows you to create beautiful presentations using AsciiDoc in your browser. Collaborate with your colleagues and friends in the online editor and freely share your work with anyone!
+
+🚀 The latest preview of Solardoc can be viewed http://152.67.66.155[here]! (_HTTP-only_) 🚀
 
 == Problem & Background 🛑
 
 === Given Situation ⚡
 
-There is no collaborative environment for creating presentations using AsciiDoc. As such, it is difficult to efficiently develop presentations. Currently, there are tools & plugins available to render real-time AsciiDoc and AsciiDoc presentations using revael.js, but they either lack functionality or require monthly license payments. As such they are unsuitable for students and teachers given the college environment. 
+There is no collaborative environment for creating presentations using AsciiDoc. As such, it is difficult to efficiently develop presentations. Currently, there are tools & plugins available to render real-time AsciiDoc and AsciiDoc presentations using revael.js, but they either lack functionality or require monthly license payments. As such they are unsuitable for students and teachers given the college environment.
 
 === Potential for improvement 💡
 
@@ -36,9 +38,86 @@ The user stories and goals for the project are listed here in the https://github
 * Sprint 1 (Finished 09.11.2023):
 ** Project Setup & Docker Deployment
 ** Website Structure & Layout
-** Editor (https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/2) 
-* Sprint 2 (Planned for 14.12.2023):
+** Editor (https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/2)
+* Sprint 2 (Finished 14.12.2023):
 ** Presentation Rendering & Preview (https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/3)
 ** Integration into editor view
-* Sprint 3 (To be determined):
-** ...
+* Sprint 3 (Planned for 18.01.2024):
+** PDF & Image Render Target
+** Additional frontend features
+** UX Enhancements
+
+== Development 🛠
+
+=== Setup
+
+To set up the project please install PNPM and Node>=16. Then run the following commands:
+
+[source,bash]
+----
+pnpm install
+----
+
+In this project we use a PNPM monorepo structure to manage the various dependencies and packages. As such, PNPM can NOT
+be replaced with NPM or Yarn. This is very important to not break the project.
+
+=== Development
+
+To start the various development servers go to the individual packages and run their respective commands in their
+directories or use `pnpm run --filter @solardoc/<package> <command>`.
+
+- Frontend: `pnpm run dev` or `pnpm run --filter @solardoc/frontend dev`
+- Rest-API: `pnpm run start` or `pnpm run --filter @solardoc/rest-api start`
+
+The Redis DB is Docker-only and as such has to be started using the following command:
+
+[source,bash]
+----
+docker compose up -d redis-db
+----
+
+=== Define the ENV vars
+
+The project uses `.env` files to define the environment variables for the various packages. The `.env` files are
+located in the root directory of the project and in the individual packages.
+
+Please see for every package their `.env.template` file to see which variables are required. The `.env` files in the
+root directory are also used to define the variables for the Docker containers.
+
+=== Deployment
+
+To deploy the project and run a production build, run the following commands:
+
+[source,bash]
+----
+docker compose up -d
+----
+
+If you already had a build before, use `--build` to force a rebuild:
+
+[source,bash]
+----
+docker compose up -d --build
+----
+
+==== Deploying using the GHCR (GitHub Container Registry) images 🐳
+
+For every tag and release GitHub automatically builds a Docker image and pushes it to the GHCR. To use these images
+simply run the following command (This will use the `latest` tag):
+
+[source,bash]
+----
+docker compose -f ./docker-compose.yaml -f ./docker-compose-prod.yaml up
+----
+
+=== Testing
+
+At the moment, tests are only implemented for `@solardoc/asciidoc-renderer`. This is expected to change by v0.3.0, but
+at the moment only the renderer is tested.
+
+To run the tests, run the following command:
+
+[source,bash]
+----
+pnpm run test
+----

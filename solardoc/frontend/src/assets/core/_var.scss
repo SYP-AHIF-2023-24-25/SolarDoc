@@ -4,6 +4,8 @@
   --scheme-blue: var(--scheme-cs-1);
   --scheme-cs-2: #4d2db7;
   --scheme-purple: var(--scheme-cs-2);
+  --scheme-cs-2-subtle: rgba(112, 90, 183, 0.5);
+  --scheme-purple-subtle: var(--scheme-cs-2-subtle);
   --scheme-cs-3: #9d44c0;
   --scheme-lavender: var(--scheme-cs-3);
   --scheme-cs-4: #ec53b0;
@@ -16,6 +18,7 @@
   --scheme-background-black: #0f111a;
   --scheme-editor-black: var(--scheme-background-black);
   --scheme-editor-blue: #10355b;
+  --scheme-white-subtle: rgba(255, 255, 255, 0.2);
 
   // Font-size presets
   --home-button-font-size: 20px;
@@ -41,7 +44,7 @@
   // Editor body presets
   --editor-body-height: calc(100vh - var(--nav-bar-height));
   --editor-menu-height: 2rem;
-  --editor-menu-padding: 0 1rem 0 0;
+  --editor-menu-padding: 0;
   --editor-menu-margin: 0;
   --editor-menu-button-menu-padding: 0;
   --editor-menu-button-menu-margin: 0;
@@ -55,7 +58,9 @@
   --editor-border: 1px solid var(--text-color);
 
   // Editor preview presets (Has a ratio of 2:1)
-  --editor-preview-frame-width: calc(100vw - var(--editor-monaco-width) - var(--editor-border-width));
+  --editor-preview-frame-width: calc(
+    100vw - var(--editor-monaco-width) - var(--editor-border-width)
+  );
   --editor-preview-frame-height: calc(var(--editor-preview-frame-width) * 0.5);
   --editor-preview-frame-padding: 0;
   --editor-preview-frame-margin: 0;
@@ -145,16 +150,25 @@ $editor-preview-sub-slides-navigator-height: var(--editor-preview-sub-slides-nav
 html,
 html[data-theme='light'] {
   --text-color: black;
+  --text-color-inverted: white;
   --home-button-transparent-background-color: var(--scheme-cs-2);
   --home-button-transparent-hover-text-color: white;
+  --dot-dot-dot-color: var(--scheme-cs-2);
+  --dot-dot-dot-color-subtle: var(--scheme-cs-2-subtle);
 }
 
 html[data-theme='dark'] {
   --text-color: white;
+  --text-color-inverted: black;
   --home-button-transparent-background-color: white;
   --home-button-transparent-hover-text-color: black;
+  --dot-dot-dot-color: white;
+  --dot-dot-dot-color-subtle: var(--scheme-white-subtle);
 }
 
 $text-color: var(--text-color);
+$text-color-inverted: var(--text-color-inverted);
 $home-button-transparent-text-color: var(--home-button-transparent-background-color);
 $home-button-transparent-hover-text-color: var(--home-button-transparent-hover-text-color);
+$dot-dot-dot-color: var(--dot-dot-dot-color);
+$dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);

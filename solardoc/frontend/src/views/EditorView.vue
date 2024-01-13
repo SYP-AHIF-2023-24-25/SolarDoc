@@ -1,36 +1,43 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import Editor from '@/components/editor/Editor.vue'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import {useEditorContentStore} from "@/stores/editor-content";
-import type { SubscriptionCallbackMutation} from "pinia";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import * as backendAPI from '@/services/backend/api-service';
-import type {
-  RenderedPresentationRjsHtmlDtoModel,
-  RenderPresentationRjsHtmlDtoModel
-} from "@/services/backend/api-service";
+import { useEditorContentStore } from '@/stores/editor-content'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import * as backendAPI from '@/services/backend/api-service'
+import { useInitStateStore } from '@/stores/init-state'
+import FullScreenPreview from '@/components/FullScreenPreview.vue'
+import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
+import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import { handleRender } from '@/scripts/handle-render'
+import { useFileNameStore } from '@/stores/file-name'
+import { useRenderDataStore } from '@/stores/render-data'
+import { useLastModifiedStore } from '@/stores/last-modified'
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import SlidesNavigator from "@/components/slides-navigator/SlidesNavigator.vue";
 import SubSlidesNavigator from "@/components/sub-slides-navigator/SubSlidesNavigator.vue";
+import { ref } from 'vue'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
+const initStateStore = useInitStateStore()
+const fullScreenPreviewStore = useFullScreenPreviewStore()
+const renderData = useRenderDataStore()
+const fileNameStore = useFileNameStore()
+const lastModifiedStore = useLastModifiedStore()
+
+const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderData)
 
 // Default filename is sample-presentation.adoc
-const fileName = ref('sample-presentation.adoc')
-
-// The download URL where the preview is available
-const previewUrl = ref('')
-
-// The reveal.js CDN URL which provides the reveal.js assets
-const REVEAL_JS_CDN_URL = 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/'
+fileNameStore.setFileName('sample-presentation.adoc')
 
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
-backendAPI.checkIfBackendIsReachable()
+backendAPI
+  .checkIfBackendIsReachable()
   .then(void 0)
   .catch((error: Error) => {
     if (error) {
@@ -40,34 +47,35 @@ backendAPI.checkIfBackendIsReachable()
   })
 
 // Ensure the render preview is updated whenever the editor content changes
-editorContentStore.$subscribe(async (
-  mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
-  state: { editorContent: string },
-) => {
-  const { editorContent } = state
-  const renderPresentationDtoModel: RenderPresentationRjsHtmlDtoModel = {
-    fileName: fileName.value,
-    fileContent: editorContent,
-    revealJSAssetsPath: REVEAL_JS_CDN_URL,
-  }
+editorContentStore.$subscribe(
+  async (
+    mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
+    state: { editorContent: string },
+  ) => {
+    const { editorContent } = state
+    const renderResp = await handleRender(fileNameStore.fileName, editorContent)
+    renderData.setRenderData(renderResp)
+  },
+)
 
-  // Send a render request to the backend
-  let renderRespObj: RenderedPresentationRjsHtmlDtoModel;
-  const renderResp = await backendAPI.postV1RenderPresentationRjsHtml(renderPresentationDtoModel)
-  if (renderResp.status === 200) {
-    renderRespObj = renderResp.data
-  } else {
-    throw new Error(`[EditorView] Failed to execute render presentation request:\n${renderResp}`)
-  }
+// Enable loading spinner for preview if the button is clicked
+function handlePreviewButtonPress() {
+  fullScreenPreviewStore.setFullScreenPreview(true)
+  console.log('Preview button clicked')
+}
 
-  // Update the preview URL
-  previewUrl.value = renderRespObj.download.downloadURL
+// Last modified is a ref which is updated every second to show the last modified time
+let lastModified = ref(getLastModified())
+function getLastModified(): string {
+  return getHumanReadableTimeInfo(lastModifiedStore.lastModified)
+}
 
-  previewLoadingStore.setPreviewLoading(false)
-})
+const updateLastModified = () => (lastModified.value = getLastModified())
+setInterval(updateLastModified, 500)
 </script>
 
 <template>
+  <FullScreenPreview />
   <div id="editor-page">
     <div id="menu">
       <div id="menu-left-side">
@@ -84,12 +92,28 @@ editorContentStore.$subscribe(async (
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
-          <input id="file-name-input" v-model="fileName"/>
+          <input id="file-name-input" v-model="fileNameStore.fileName" />
         </div>
       </div>
       <div id="menu-right-side">
         <div>
-          <p>Last edited: 20:08 14-10-2023 CET</p>
+          <p>
+            Last edited:
+            {{
+              previewLoadingStore.previewLoading
+                ? (updateLastModified() && false) || 'now'
+                : lastModified
+            }}
+          </p>
+        </div>
+        <div>
+          <button
+            class="editor-button"
+            id="fullscreen-preview-button"
+            @click="handlePreviewButtonPress()"
+          >
+            Fullscreen
+          </button>
         </div>
       </div>
     </div>
@@ -99,12 +123,41 @@ editorContentStore.$subscribe(async (
       </div>
       <div id="preview-wrapper">
         <div id="preview">
-          <h2 v-if="previewLoadingStore.previewLoading">Preview loading...</h2>
-          <iframe v-else :src="previewUrl"></iframe>
+          <div id="init-msg-wrapper" v-if="initStateStore.init">
+            <p id="init-msg">Start typing and see preview!</p>
+            <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
+          </div>
+          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
+            <span class="dot-dot-dot-flashing"></span>
+          </h2>
+          <iframe v-else :src="previewURL"></iframe>
         </div>
-        <div id="preview-meta-info">
-          <p>3 slides</p>
-          <p>1.2 MB Raw Size</p>
+        <div
+          id="preview-meta-info"
+          class="loading"
+          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
+        >
+          <div>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>slides (</p>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>Subslides)</p>
+          </div>
+          <div>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>KB Raw Size</p>
+          </div>
+        </div>
+        <div id="preview-meta-info" v-else>
+          <p>
+            {{ slideCount ? slideCount! : '?' }} {{ slideCount == 1 ? 'slide' : 'slides' }} ({{
+              slideCount && slideCountInclSubslides ? slideCountInclSubslides - slideCount : '?'
+            }}
+            {{
+              (slideCountInclSubslides ?? 0) - (slideCount ?? 0) == 1 ? 'subslide' : 'subslides'
+            }})
+          </p>
+          <p>{{ rawSize ? Math.round(rawSize! * 100) / 100 : '?' }} KB Raw Size</p>
         </div>
         <div id="slides-navigator-wrapper">
           <SlidesNavigator></SlidesNavigator>
@@ -143,6 +196,10 @@ div#editor-page {
     padding: var.$editor-menu-padding;
     margin: var.$editor-menu-margin;
     height: 2rem;
+
+    p {
+      height: 1rem;
+    }
 
     #menu-left-side {
       @include menu-child-presets;
@@ -194,6 +251,18 @@ div#editor-page {
       div {
         @include align-center;
       }
+
+      #fullscreen-preview-button {
+        border: none;
+        text-align: center;
+        width: 100%;
+        height: calc(100% - 2px);
+        margin: 0 0 0 0.25rem;
+
+        &:focus {
+          outline: var.$scheme-cs-1 solid 2px;
+        }
+      }
     }
   }
 
@@ -223,6 +292,16 @@ div#editor-page {
         @include align-center();
         margin: 0;
         padding: 0;
+
+        #init-msg-wrapper {
+          @include align-center();
+          flex-direction: column;
+
+          #init-msg {
+            font-size: 2rem;
+            margin: 0 0 2rem 0;
+          }
+        }
       }
 
       #preview-meta-info {
@@ -232,6 +311,20 @@ div#editor-page {
         padding: var.$editor-preview-meta-info-padding;
         border-bottom: var.$editor-border;
         justify-content: space-between;
+
+        &.loading div {
+          @include align-center();
+          display: flex;
+          flex-flow: row nowrap;
+
+          .dot-dot-dot-flashing-mini {
+            margin-right: 0.75rem;
+
+            &:nth-of-type(2) {
+              margin: 0 0.75rem 0 0.75rem;
+            }
+          }
+        }
       }
 
       #slides-navigator-wrapper {

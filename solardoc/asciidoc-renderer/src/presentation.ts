@@ -1,7 +1,7 @@
-import {TargetRenderer, AsciidocCompiler, AsciidocFile} from './renderer'
-import { RenderOutput } from './renderer'
-import { Asciidoctor } from '@asciidoctor/core'
-import { PresentationMetadata } from './presentation-metadata'
+import {AsciidocCompiler, AsciidocFile, RenderOutput, TargetRenderer} from './renderer'
+import {Asciidoctor} from '@asciidoctor/core'
+import {PresentationMetadata} from './presentation-metadata'
+import AbstractBlock = Asciidoctor.AbstractBlock;
 
 /**
  * A presentation is a collection of slides, which internally are reveal.js slides. These can be converted to HTML,
@@ -87,23 +87,21 @@ export class Presentation {
    * @since 0.2.0
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
-    const metadata: PresentationMetadata = {
+    let slides = <Array<AbstractBlock>>document.getBlocks();
+    let slideCount = slides.length;
+    let slideCountInclSubslides = slideCount;
+    for (let slide of slides) {
+      let subBlocks = <Array<AbstractBlock>>slide.getBlocks();
+      let subSlideCount = subBlocks.filter((block: AbstractBlock) => block.getContext() === 'section').length;
+      slideCountInclSubslides += subSlideCount;
+    }
+
+    return {
       title: document.getDocumentTitle(),
       author: document.getAuthor(),
-      slideCount: 0,
-      mainSlideCount: 0,
+      slideCount: slideCount,
+      slideCountInclSubslides: slideCountInclSubslides,
       originalDocument: document
-    }
-
-    let slides = document.getBlocks();
-    metadata.mainSlideCount = slides.length;
-    metadata.slideCount = slides.length;
-    for(let slide in slides) {
-      let subBlocks = slides[slide].getBlocks();
-      let subSlideCount = subBlocks.filter((block: { getContext: () => string }) => block.getContext() === 'section').length;
-      metadata.slideCount += subSlideCount;
-    }
-
-    return metadata
+    } satisfies PresentationMetadata
   }
 }

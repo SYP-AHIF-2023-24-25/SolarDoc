@@ -5,3 +5,4 @@ tsconfig.tsbuildinfo
 coverage
 .nyc_output
 .env
+openapi.json
