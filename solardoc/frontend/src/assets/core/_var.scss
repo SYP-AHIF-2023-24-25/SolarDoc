@@ -19,6 +19,7 @@
   --scheme-editor-black: var(--scheme-background-black);
   --scheme-editor-blue: #10355b;
   --scheme-white-subtle: rgba(255, 255, 255, 0.2);
+  --scheme-link-hover-color: var(--scheme-cs-2);
 
   // Font-size presets
   --home-button-font-size: 20px;
@@ -97,6 +98,8 @@ $scheme-neutral-gray: var(--scheme-neutral-gray);
 $scheme-background-black: var(--scheme-background-black);
 $scheme-editor-black: var(--scheme-background-black);
 $scheme-editor-blue: var(--scheme-editor-blue);
+$scheme-white-subtle: var(--scheme-white-subtle);
+$scheme-link-hover-color: var(--scheme-cs-2);
 
 // Font-size presets
 $home-button-font-size: var(--home-button-font-size);
