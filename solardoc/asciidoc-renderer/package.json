@@ -52,6 +52,7 @@
     "build": "pnpm run browserify",
     "prebuild": "pnpm run tsc-build",
     "tsc-build": "tsc",
+    "web-dep-build": "tsc ./web/solardoc.ts --outDir ./dist/web --target es2015 --lib es2015,dom",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "eslint": "pnpm run lint",
     "format": "prettier --write src/",
