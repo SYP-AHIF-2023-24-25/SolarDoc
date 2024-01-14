@@ -130,7 +130,7 @@ setInterval(updateLastModified, 500)
           <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
             <span class="dot-dot-dot-flashing"></span>
           </h2>
-          <iframe v-else :src="previewURL"></iframe>
+          <iframe v-else :src="`${previewURL}?disable-scrollbar=true`"></iframe>
         </div>
         <div
           id="preview-meta-info"

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import {storeToRefs} from "pinia";
 import {useRenderDataStore} from "@/stores/render-data";
+import {usePreviewLoadingStore} from "@/stores/preview-loading";
+import {ref} from "vue";
 
-const props = defineProps({
+defineProps({
   slideIndex: {
     type: Number,
     required: true
@@ -10,20 +12,28 @@ const props = defineProps({
 })
 
 const renderDataStore = useRenderDataStore()
+const previewLoadingStore = usePreviewLoadingStore()
 
 const { previewURL } = storeToRefs(renderDataStore)
 </script>
 
 <template>
-<div class="slide-preview">
-  <iframe
-    :src="`${previewURL}/#${slideIndex}`"
-  ></iframe>
+<div :class="`slide-preview ${previewLoadingStore.previewLoading ? 'loading' : ''}`">
+  <h2 id="loading-wrapper" v-if="previewLoadingStore.previewLoading">
+    <span class="dot-dot-dot-flashing"></span>
+  </h2>
+  <template v-else>
+    <p id="slide-index">{{ slideIndex + 1 }}</p>
+    <iframe
+        :src="`${previewURL}?disable-scrollbar=true&slide=${slideIndex}#/${slideIndex}`"
+    ></iframe>
+  </template>
 </div>
 </template>
 
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
+@use '@/assets/core/mixins/align-center' as *;
 
 .slide-preview {
   flex: 0 0 auto;
@@ -32,6 +42,7 @@ const { previewURL } = storeToRefs(renderDataStore)
   margin: 0 var.$editor-preview-slides-navigator-element-margin 0 0;
   padding: 0;
   border-radius: 0.5rem;
+  position: relative;
   overflow: hidden;
 
   // First slide should have a margin on the left
@@ -48,11 +59,29 @@ const { previewURL } = storeToRefs(renderDataStore)
     transform: scale(0.99);
   }
 
+  #slide-index {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 1;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  &.loading {
+    @include align-center;
+    border: 2px solid var.$scheme-cs-2;
+  }
+
   iframe {
     width: 100%;
     height: 100%;
     border: none;
-    pointer-events: none;
+
+    &,
+    & * {
+      overflow: hidden !important;
+      pointer-events: none !important;
+    }
 
     .scrollbar {
       display: none;

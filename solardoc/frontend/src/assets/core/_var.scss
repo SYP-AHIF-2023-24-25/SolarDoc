@@ -79,6 +79,7 @@
     - var(--editor-preview-frame-height)
     - var(--editor-preview-meta-info-height)
     - var(--editor-preview-slides-navigator-height)
+    - var(--editor-border-width)
   );
   --editor-preview-slides-navigator-element-height: 10rem;
   --editor-preview-slides-navigator-element-width: calc(var(--editor-preview-slides-navigator-element-height) * 2);

@@ -99,7 +99,7 @@ if (require.main === module) {
     },
   }
   main(config).catch(err => {
-    console.error(`Cannot start the application. \n\n${err}`)
+    console.error(`Cannot start the application. \n\n${(<Error>err).stack ?? err}`)
     process.exit(1)
   })
 }

@@ -9,19 +9,15 @@ const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()
 
 const { slideCount } = storeToRefs(renderDataStore)
-
-// Per default, we show the first two slides
-const visibleSlides = ref<number[]>([0, 1])
 </script>
 
 <template>
 <div id="slides-navigator" v-if="!initStateStore.init">
   <!-- For every *main* slide, create a slide preview -->
   <SlidePreview
-    v-for="i in <Array<number>>Array(slideCount).fill(null).map((_, i) => i)"
+    v-for="i in <Array<number>>Array(slideCount || 2).fill(null).map((_, i) => i)"
     :key="i"
     :slide-index="i"
-    v-show="visibleSlides.includes(i)"
   />
 </div>
 </template>
