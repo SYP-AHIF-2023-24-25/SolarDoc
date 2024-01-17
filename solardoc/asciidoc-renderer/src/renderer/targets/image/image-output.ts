@@ -6,12 +6,8 @@ import {Presentation} from "../../../presentation";
  * @since 0.2.0
  */
 export class ImageOutput extends RenderOutput<unknown, unknown> {
-  // TODO! Properly type the generics
   public constructor(internalData: unknown, source: Presentation) {
     super(internalData, source)
-
-    // TODO!
-    throw new Error('Not implemented yet!')
   }
 
   public get extension(): string {
@@ -23,7 +19,6 @@ export class ImageOutput extends RenderOutput<unknown, unknown> {
    * @since 0.2.0
    */
   public async write(): Promise<unknown> {
-    // TODO!
-    throw new Error('Not implemented yet!')
+    return this.internalData;
   }
 }

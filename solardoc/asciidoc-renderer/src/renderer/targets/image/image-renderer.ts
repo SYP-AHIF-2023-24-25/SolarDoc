@@ -2,6 +2,10 @@ import { ImageOutput } from './image-output'
 import { TargetRenderer } from '../target-renderer'
 import { Presentation } from '../../../presentation'
 import { Slide } from '../../../slide'
+import {HTMLRenderer} from "../html";
+import {DecktapeSlim} from "../../simulator";
+import {PDFDocument} from "pdf-lib";
+import {PDFOutput} from "../pdf";
 
 /**
  * Renders a presentation or slide to an image file.
@@ -20,8 +24,10 @@ export class ImageRenderer extends TargetRenderer<unknown, unknown> {
    * @param config The configuration for the image renderer.
    */
   public async render(presentation: Presentation, config?: { [key: string]: any }): Promise<ImageOutput> {
-    // TODO!
-    throw new Error('Not implemented yet!')
+    const revealJsHtml  = await presentation.render(new HTMLRenderer(), config);
+    const decktapeSimulator = new DecktapeSlim();
+    const img :Buffer = await decktapeSimulator.renderRJSHTMLToImage(await revealJsHtml.write(), 'png');
+    return new ImageOutput(img, presentation);
   }
 
   /**
