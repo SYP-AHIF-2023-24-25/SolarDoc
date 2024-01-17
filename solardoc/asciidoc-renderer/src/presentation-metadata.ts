@@ -1,4 +1,5 @@
 import { Asciidoctor } from '@asciidoctor/core'
+
 export interface PresentationMetadata {
   /**
    * The original document that was used to create the presentation.
@@ -26,7 +27,7 @@ export interface PresentationMetadata {
 
   /**
    * The amount of main slides that are in the presentation.
-   * @since 0.2.0
+   * @since 0.3.0
    */
-  mainSlideCount: number
+  slideCountInclSubslides: number
 }

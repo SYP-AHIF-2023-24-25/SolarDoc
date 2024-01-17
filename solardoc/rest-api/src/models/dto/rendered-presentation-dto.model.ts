@@ -12,6 +12,24 @@ export class RenderedPresentationDtoModel extends DtoModel<RenderedPresentationD
 
   @property({
     required: true,
+    description: 'The size of the presentation (original file size in KB)',
+  })
+  rawSize: number;
+
+  @property({
+    required: true,
+    description: 'The number of slides in the presentation'
+  })
+  slideCount: number;
+
+  @property({
+    required: true,
+    description: 'The number of sub slides in the presentation'
+  })
+  slideCountInclSubslides: number;
+
+  @property({
+    required: true,
     description: 'The cache metadata',
   })
   cache: CacheDtoModel

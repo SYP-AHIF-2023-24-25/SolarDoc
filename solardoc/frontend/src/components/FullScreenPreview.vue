@@ -3,14 +3,14 @@ import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import { useInitStateStore } from '@/stores/init-state'
-import { usePreviewURLStore } from '@/stores/preview-url'
 import OpenFullscreenSVG from '@/components/icons/OpenFullscreenSVG.vue'
 import { ref } from 'vue'
 import CloseFullscreenSVG from '@/components/icons/CloseFullscreenSVG.vue'
+import { useRenderDataStore } from '@/stores/render-data'
 
 const fullScreenPreviewStore = useFullScreenPreviewStore()
 const initStateStore = useInitStateStore()
-const previewURLStore = usePreviewURLStore()
+const renderData = useRenderDataStore()
 
 let fillWholeScreen = ref(false)
 function toggleFillWholeScreen() {
@@ -37,7 +37,7 @@ function toggleFillWholeScreen() {
         </p>
         <LoadAnywayButton color-mode="dark" />
       </div>
-      <iframe v-else :src="previewURLStore.previewURL"></iframe>
+      <iframe v-else :src="renderData.previewURL"></iframe>
     </div>
   </div>
 </template>

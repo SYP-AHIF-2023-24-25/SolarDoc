@@ -4,9 +4,8 @@
 
 <script setup lang="ts">
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
-import type { MutationType, SubscriptionCallbackMutation } from 'pinia'
+import type { SubscriptionCallbackMutation } from 'pinia'
 import type { Ref } from 'vue'
-import constants from '@/plugins/constants'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
@@ -17,11 +16,13 @@ import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
 import { KeyCode } from 'monaco-editor'
+import { useLastModifiedStore } from '@/stores/last-modified'
 import { performErrorChecking } from '@/components/editor/error-checking'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
+const lastModifiedStore = useLastModifiedStore()
 const initStateStore = useInitStateStore()
 
 /**
@@ -71,9 +72,11 @@ onMounted(() => {
     // Ensure it was an actual input (printable character)
     if (
       event.keyCode > 0 &&
-      ![KeyCode.Backspace, KeyCode.Tab, KeyCode.Enter, KeyCode.Delete, KeyCode.Space].includes(event.keyCode) &&
+      ![KeyCode.Backspace, KeyCode.Tab, KeyCode.Enter, KeyCode.Delete, KeyCode.Space].includes(
+        event.keyCode,
+      ) &&
       (event.keyCode <= KeyCode.DownArrow ||
-      (event.keyCode >= KeyCode.Meta && event.keyCode <= KeyCode.ScrollLock))
+        (event.keyCode >= KeyCode.Meta && event.keyCode <= KeyCode.ScrollLock))
     ) {
       return
     }
@@ -85,18 +88,16 @@ onMounted(() => {
     if (activeTimeout) clearTimeout(activeTimeout)
 
     activeTimeout = setTimeout(() => {
-      console.log('[Editor] Saving editor content to local storage')
-      localStorage.setItem(constants.localStorageTextKey, editorInstance!.getValue())
-
       console.log('[Editor] Broadcasting update')
       editorContentStore.setEditorContent(editorInstance!.getValue())
+      lastModifiedStore.setLastModified(new Date())
     }, EDITOR_UPDATE_TIMEOUT)
   })
 
   // Checking for errors when the editor content changes
   editorInstance.onDidChangeModelContent(() => {
-    performErrorChecking(editorInstance!);
-  });
+    performErrorChecking(editorInstance!)
+  })
 
   // Register an event listener to the darkModeStore to change the theme of the editor
   darkModeStore.$subscribe(

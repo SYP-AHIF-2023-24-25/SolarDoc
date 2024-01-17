@@ -15,7 +15,6 @@ export function listInconsistentError(lines: Array<string>): Array<IMarkerData> 
 
       // Check if the list symbol changes
       if (currentListSymbol && currentListSymbol !== listSymbol) {
-        console.log('list symbol changed' + currentListSymbol + ' ' + listSymbol)
         const startColumn = line.indexOf(listSymbol) + 1
         const endColumn = startColumn + 1
         const message = constants.errorMessages['list-inconsistent-error']

@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { handleRender } from '@/scripts/handle-render'
-import { usePreviewURLStore } from '@/stores/preview-url'
 import { useEditorContentStore } from '@/stores/editor-content'
 import { useFileNameStore } from '@/stores/file-name'
+import { useRenderDataStore } from '@/stores/render-data'
 
 const props = defineProps(['colorMode'])
 
-const previewURLStore = usePreviewURLStore()
+const renderData = useRenderDataStore()
 const editorContentStore = useEditorContentStore()
 const fileNameStore = useFileNameStore()
 
 async function loadAnyway(): Promise<void> {
-  const previewURL = await handleRender(fileNameStore.fileName, editorContentStore.editorContent)
-  previewURLStore.setPreviewURL(previewURL)
+  const renderResp = await handleRender(fileNameStore.fileName, editorContentStore.editorContent)
+  renderData.setRenderData(renderResp)
 }
 
 function getColorModeClass(): string {

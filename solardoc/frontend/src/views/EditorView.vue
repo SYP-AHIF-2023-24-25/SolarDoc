@@ -1,32 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import Editor from '@/components/editor/Editor.vue'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useEditorContentStore } from '@/stores/editor-content'
-import type { SubscriptionCallbackMutation } from 'pinia'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import * as backendAPI from '@/services/backend/api-service'
-import type {
-  RenderedPresentationRjsHtmlDtoModel,
-  RenderPresentationRjsHtmlDtoModel,
-} from '@/services/backend/api-service'
 import { useInitStateStore } from '@/stores/init-state'
 import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import { handleRender } from '@/scripts/handle-render'
-import { usePreviewURLStore } from '@/stores/preview-url'
 import { useFileNameStore } from '@/stores/file-name'
+import { useRenderDataStore } from '@/stores/render-data'
+import { useLastModifiedStore } from '@/stores/last-modified'
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import { ref } from 'vue'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const fullScreenPreviewStore = useFullScreenPreviewStore()
-const previewURLStore = usePreviewURLStore()
+const renderData = useRenderDataStore()
 const fileNameStore = useFileNameStore()
+const lastModifiedStore = useLastModifiedStore()
+
+const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderData)
 
 // Default filename is sample-presentation.adoc
 fileNameStore.setFileName('sample-presentation.adoc')
@@ -50,8 +51,8 @@ editorContentStore.$subscribe(
     state: { editorContent: string },
   ) => {
     const { editorContent } = state
-    const previewURL = await handleRender(fileNameStore.fileName, editorContent)
-    previewURLStore.setPreviewURL(previewURL)
+    const renderResp = await handleRender(fileNameStore.fileName, editorContent)
+    renderData.setRenderData(renderResp)
   },
 )
 
@@ -60,6 +61,7 @@ function handlePreviewButtonPress() {
   fullScreenPreviewStore.setFullScreenPreview(true)
   console.log('Preview button clicked')
 }
+
 
 function handleCopyButtonClick() {
   navigator.clipboard.writeText(editorContentStore.editorContent);
@@ -81,6 +83,16 @@ function handleDownloadButtonClick() {
   document.body.removeChild(a);
   setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
 }
+
+// Last modified is a ref which is updated every second to show the last modified time
+let lastModified = ref(getLastModified())
+function getLastModified(): string {
+  return getHumanReadableTimeInfo(lastModifiedStore.lastModified)
+}
+
+const updateLastModified = () => (lastModified.value = getLastModified())
+setInterval(updateLastModified, 500)
+
 </script>
 
 <template>
@@ -106,7 +118,14 @@ function handleDownloadButtonClick() {
       </div>
       <div id="menu-right-side">
         <div>
-          <p>Last edited: 20:08 14-10-2023 CET</p>
+          <p>
+            Last edited:
+            {{
+              previewLoadingStore.previewLoading
+                ? (updateLastModified() && false) || 'now'
+                : lastModified
+            }}
+          </p>
         </div>
         <div>
           <button
@@ -130,13 +149,36 @@ function handleDownloadButtonClick() {
             <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
           </div>
           <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
-            <span class="dot-flashing"></span>
+            <span class="dot-dot-dot-flashing"></span>
           </h2>
-          <iframe v-else :src="previewURLStore.previewURL"></iframe>
+          <iframe v-else :src="previewURL"></iframe>
         </div>
-        <div id="preview-meta-info">
-          <p>3 slides</p>
-          <p>1.2 MB Raw Size</p>
+        <div
+          id="preview-meta-info"
+          class="loading"
+          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
+        >
+          <div>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>slides (</p>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>Subslides)</p>
+          </div>
+          <div>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>KB Raw Size</p>
+          </div>
+        </div>
+        <div id="preview-meta-info" v-else>
+          <p>
+            {{ slideCount ? slideCount! : '?' }} {{ slideCount == 1 ? 'slide' : 'slides' }} ({{
+              slideCount && slideCountInclSubslides ? slideCountInclSubslides - slideCount : '?'
+            }}
+            {{
+              (slideCountInclSubslides ?? 0) - (slideCount ?? 0) == 1 ? 'subslide' : 'subslides'
+            }})
+          </p>
+          <p>{{ rawSize ? Math.round(rawSize! * 100) / 100 : '?' }} KB Raw Size</p>
         </div>
         <div id="slides-navigator">
           <p>Slides Navigator</p>
@@ -236,7 +278,7 @@ div#editor-page {
         text-align: center;
         width: 100%;
         height: calc(100% - 2px);
-        margin-left: 1rem;
+        margin: 0 0 0 0.25rem;
 
         &:focus {
           outline: var.$scheme-cs-1 solid 2px;
@@ -290,6 +332,20 @@ div#editor-page {
         padding: var.$editor-preview-meta-info-padding;
         border-bottom: var.$editor-border;
         justify-content: space-between;
+
+        &.loading div {
+          @include align-center();
+          display: flex;
+          flex-flow: row nowrap;
+
+          .dot-dot-dot-flashing-mini {
+            margin-right: 0.75rem;
+
+            &:nth-of-type(2) {
+              margin: 0 0.75rem 0 0.75rem;
+            }
+          }
+        }
       }
 
       #slides-navigator {
