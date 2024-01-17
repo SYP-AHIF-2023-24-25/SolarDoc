@@ -1,36 +1,38 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
-import Editor from '@/components/editor/Editor.vue'
-import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
-import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
-import * as backendAPI from '@/services/backend/api-service'
+import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
 import { useInitStateStore } from '@/stores/init-state'
-import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
-import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import { handleRender } from '@/scripts/handle-render'
 import { useFileNameStore } from '@/stores/file-name'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
-import { ref } from 'vue'
+import Editor from '@/components/editor/Editor.vue'
+import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
+import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
+import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
+import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavigator.vue'
+import FullScreenPreview from '@/components/FullScreenPreview.vue'
+import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import * as backendAPI from '@/services/backend/api-service'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const fullScreenPreviewStore = useFullScreenPreviewStore()
-const renderData = useRenderDataStore()
+const renderDataStore = useRenderDataStore()
 const fileNameStore = useFileNameStore()
 const lastModifiedStore = useLastModifiedStore()
+const previewSelectedSlide = usePreviewSelectedSlideStore()
 
-const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderData)
-
-// Default filename is sample-presentation.adoc
-fileNameStore.setFileName('sample-presentation.adoc')
+const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
+const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlide)
 
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
@@ -52,7 +54,7 @@ editorContentStore.$subscribe(
   ) => {
     const { editorContent } = state
     const renderResp = await handleRender(fileNameStore.fileName, editorContent)
-    renderData.setRenderData(renderResp)
+    renderDataStore.setRenderData(renderResp)
   },
 )
 
@@ -113,7 +115,11 @@ setInterval(updateLastModified, 500)
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
-          <input id="file-name-input" v-model="fileNameStore.fileName" />
+          <input
+            id="file-name-input"
+            v-model="fileNameStore.fileName"
+            @input="fileNameStore.storeLocally()"
+          />
         </div>
       </div>
       <div id="menu-right-side">
@@ -151,7 +157,7 @@ setInterval(updateLastModified, 500)
           <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
             <span class="dot-dot-dot-flashing"></span>
           </h2>
-          <iframe v-else :src="previewURL"></iframe>
+          <iframe v-else :src="`${previewURL}?static=true#${slideIndex}/${(subSlideIndex ?? -1) + 1}`"></iframe>
         </div>
         <div
           id="preview-meta-info"
@@ -180,11 +186,11 @@ setInterval(updateLastModified, 500)
           </p>
           <p>{{ rawSize ? Math.round(rawSize! * 100) / 100 : '?' }} KB Raw Size</p>
         </div>
-        <div id="slides-navigator">
-          <p>Slides Navigator</p>
+        <div id="slides-navigator-wrapper">
+          <SlidesNavigator></SlidesNavigator>
         </div>
-        <div id="sub-slides-navigator">
-          <p>Sub Slides Navigator</p>
+        <div id="sub-slides-navigator-wrapper">
+          <SubSlidesNavigator></SubSlidesNavigator>
         </div>
       </div>
     </div>
@@ -257,7 +263,7 @@ div#editor-page {
           margin: 0;
 
           &:focus {
-            outline: var.$scheme-cs-1 solid 2px;
+            outline: var.$scheme-link-hover-color solid 2px;
             border-radius: 2px;
           }
         }
@@ -308,28 +314,17 @@ div#editor-page {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      height: var.$editor-preview-menu-height;
 
-      #preview {
-        @include align-center();
-        margin: 0;
-        padding: 0;
-
-        #init-msg-wrapper {
-          @include align-center();
-          flex-direction: column;
-
-          #init-msg {
-            font-size: 2rem;
-            margin: 0 0 2rem 0;
-          }
-        }
-      }
+      // Overflow if the content is too large on the y-axis
+      overflow: hidden scroll;
 
       #preview-meta-info {
         @include align-center();
         flex-flow: row nowrap;
         height: var.$editor-preview-meta-info-height;
         padding: var.$editor-preview-meta-info-padding;
+        min-height: var.$editor-preview-meta-info-height;
         border-bottom: var.$editor-border;
         justify-content: space-between;
 
@@ -348,23 +343,36 @@ div#editor-page {
         }
       }
 
-      #slides-navigator {
-        @include align-center();
+      #slides-navigator-wrapper {
+        padding: 0;
+        margin: 0;
         height: var.$editor-preview-slides-navigator-height;
-        padding: var.$editor-preview-slides-navigator-padding;
         border-bottom: var.$editor-border;
       }
 
-      #sub-slides-navigator {
-        @include align-center();
+      #sub-slides-navigator-wrapper {
         flex-grow: 1;
       }
 
       #preview {
         @include align-center();
+        margin: 0;
+        padding: 0;
         border-bottom: var.$editor-border;
         width: var.$editor-preview-frame-width;
         height: var.$editor-preview-frame-height;
+        min-width: var.$editor-preview-frame-width;
+        min-height: var.$editor-preview-frame-height;
+
+        #init-msg-wrapper {
+          @include align-center();
+          flex-direction: column;
+
+          #init-msg {
+            font-size: 2rem;
+            margin: 0 0 2rem 0;
+          }
+        }
 
         iframe {
           border: none;

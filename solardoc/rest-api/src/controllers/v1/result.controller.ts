@@ -9,6 +9,27 @@ export class ResultController {
 
   constructor(@inject('services.CacheService') public cacheService: CacheService) {}
 
+  /**
+   * Transforms the given file content to a static presentation.
+   * @param fileContent The file content to transform
+   * @private
+   */
+  private transformToStaticPresentation(fileContent: string): string {
+    // Inject into 'Reveal.initialize' the required options
+    return fileContent.replace(
+      /(, callback: function \(\) { Reveal.registerPlugin\(RevealNotes\) } }\n {2}],)/g,
+      `$1\n
+        autoSlide: 0,\n
+        controls: false,\n
+        keyboard: false,\n
+        progress: false,\n
+        touch: false,\n
+        scrollActivationWidth: null,\n
+        slideNumber: false,\n
+        history: false,\n`,
+    )
+  }
+
   @get(`/${ResultController.BASE_PATH}/{uuid}`, {
     responses: {
       '200': {
@@ -30,13 +51,21 @@ export class ResultController {
   })
   async getCachedResult(
     @param.path.string('uuid') uuid: string,
+    @param.query.string('static') _static: string,
     @inject(RestBindings.Http.RESPONSE) res: Response,
   ) {
     try {
       const { mimeType, fileContent, originalFilename } = await this.cacheService.getFile(uuid)
+
+      // If the static query parameter is set, transform the file content to a static presentation
+      let finalFileContent = fileContent
+      if (_static !== undefined) {
+        finalFileContent = this.transformToStaticPresentation(fileContent)
+      }
+
       res.setHeader('Content-Type', mimeType)
       res.setHeader('Content-Disposition', `inline; filename="${originalFilename}"`)
-      res.status(200).send(fileContent)
+      res.status(200).send(finalFileContent)
     } catch (e) {
       if (e instanceof CacheError) {
         res.status(404).send({
