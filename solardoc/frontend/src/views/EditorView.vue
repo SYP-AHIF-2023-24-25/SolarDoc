@@ -34,9 +34,6 @@ const previewSelectedSlide = usePreviewSelectedSlideStore()
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlide)
 
-// Default filename is sample-presentation.adoc
-fileNameStore.setFileName('sample-presentation.adoc')
-
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
 backendAPI
@@ -95,7 +92,11 @@ setInterval(updateLastModified, 500)
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
-          <input id="file-name-input" v-model="fileNameStore.fileName" />
+          <input
+            id="file-name-input"
+            v-model="fileNameStore.fileName"
+            @input="fileNameStore.storeLocally()"
+          />
         </div>
       </div>
       <div id="menu-right-side">
