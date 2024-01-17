@@ -87,20 +87,20 @@ export class Presentation {
    * @since 0.2.0
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
-    let slides = <Array<AbstractBlock>>document.getBlocks();
-    let slideCount = slides.length;
-    let slideCountInclSubslides = slideCount;
-    for (let slide of slides) {
+    const slides = <Array<AbstractBlock>>document.getBlocks();
+    const subslideCountPerSlide = slides.map((slide: AbstractBlock) => {
       let subBlocks = <Array<AbstractBlock>>slide.getBlocks();
-      let subSlideCount = subBlocks.filter((block: AbstractBlock) => block.getContext() === 'section').length;
-      slideCountInclSubslides += subSlideCount;
-    }
+      return subBlocks.filter((block: AbstractBlock) => block.getContext() === 'section').length;
+    })
+    const slideCount = slides.length;
+    const slideCountInclSubslides = subslideCountPerSlide.reduce((a, b) => a + b, slideCount);
 
     return {
       title: document.getDocumentTitle(),
       author: document.getAuthor(),
       slideCount: slideCount,
       slideCountInclSubslides: slideCountInclSubslides,
+      subslideCountPerSlide: subslideCountPerSlide,
       originalDocument: document
     } satisfies PresentationMetadata
   }

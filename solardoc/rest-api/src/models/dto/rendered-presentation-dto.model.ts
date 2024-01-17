@@ -28,6 +28,12 @@ export class RenderedPresentationDtoModel extends DtoModel<RenderedPresentationD
   })
   slideCountInclSubslides: number;
 
+  @property.array(Number,{
+    required: true,
+    description: 'The number of sub slides per slide in the presentation. The index in the array represents the slide index.'
+  })
+  subslideCountPerSlide: number[];
+
   @property({
     required: true,
     description: 'The cache metadata',

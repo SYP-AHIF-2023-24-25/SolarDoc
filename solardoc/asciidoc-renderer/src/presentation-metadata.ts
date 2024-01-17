@@ -30,4 +30,12 @@ export interface PresentationMetadata {
    * @since 0.3.0
    */
   slideCountInclSubslides: number
+
+  /**
+   * Array displaying the amount of sub slides per slide.
+   *
+   * The index in the array represents the slide index.
+   * @since 0.3.0
+   */
+  subslideCountPerSlide: number[];
 }
