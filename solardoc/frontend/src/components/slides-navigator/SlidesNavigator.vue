@@ -33,7 +33,7 @@ watch(globalY, () => {
   <div id="slides-navigator" v-if="!initStateStore.init" ref="slidesNavigatorEl">
     <!-- For every *main* slide, create a slide preview -->
     <SlidePreview
-      v-for="i in <Array<number>>Array(slideCount || 2).fill(null).map((_, i) => i)"
+      v-for="i in Array(slideCount || 2).fill(null).map((_, i) => i)"
       :key="i"
       :slide-index="i"
     />

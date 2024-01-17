@@ -23,7 +23,7 @@ const { subslideCountPerSlide } = storeToRefs(renderDataStore)
     <template v-if="subslideCountPerSlide">
       <div class="slide-sub-slides-navigator-list">
         <SlideSubSlidePreview
-          v-for="i in <Array<number>>Array(subslideCountPerSlide[slideIndex]).fill(null).map((_, i) => i)"
+          v-for="i in Array(subslideCountPerSlide[slideIndex]).fill(null).map((_, i) => i)"
           :key="i"
           :slide-index="slideIndex"
           :sub-slide-index="i">
