@@ -1,24 +1,25 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
-import Editor from '@/components/editor/Editor.vue'
-import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
-import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
-import * as backendAPI from '@/services/backend/api-service'
+import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
 import { useInitStateStore } from '@/stores/init-state'
-import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
-import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import { handleRender } from '@/scripts/handle-render'
 import { useFileNameStore } from '@/stores/file-name'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
-import SlidesNavigator from "@/components/slides-navigator/SlidesNavigator.vue";
-import SubSlidesNavigator from "@/components/sub-slides-navigator/SubSlidesNavigator.vue";
-import { ref } from 'vue'
+import Editor from '@/components/editor/Editor.vue'
+import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
+import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
+import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
+import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavigator.vue'
+import FullScreenPreview from '@/components/FullScreenPreview.vue'
+import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import * as backendAPI from '@/services/backend/api-service'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -28,8 +29,10 @@ const fullScreenPreviewStore = useFullScreenPreviewStore()
 const renderDataStore = useRenderDataStore()
 const fileNameStore = useFileNameStore()
 const lastModifiedStore = useLastModifiedStore()
+const previewSelectedSlide = usePreviewSelectedSlideStore()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
+const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlide)
 
 // Default filename is sample-presentation.adoc
 fileNameStore.setFileName('sample-presentation.adoc')
@@ -130,7 +133,7 @@ setInterval(updateLastModified, 500)
           <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
             <span class="dot-dot-dot-flashing"></span>
           </h2>
-          <iframe v-else :src="`${previewURL}?disable-scrollbar=true`"></iframe>
+          <iframe v-else :src="`${previewURL}?static=true#${slideIndex}/${(subSlideIndex ?? -1) + 1}`"></iframe>
         </div>
         <div
           id="preview-meta-info"
@@ -287,28 +290,17 @@ div#editor-page {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      height: var.$editor-preview-menu-height;
 
-      #preview {
-        @include align-center();
-        margin: 0;
-        padding: 0;
-
-        #init-msg-wrapper {
-          @include align-center();
-          flex-direction: column;
-
-          #init-msg {
-            font-size: 2rem;
-            margin: 0 0 2rem 0;
-          }
-        }
-      }
+      // Overflow if the content is too large on the y-axis
+      overflow: hidden scroll;
 
       #preview-meta-info {
         @include align-center();
         flex-flow: row nowrap;
         height: var.$editor-preview-meta-info-height;
         padding: var.$editor-preview-meta-info-padding;
+        min-height: var.$editor-preview-meta-info-height;
         border-bottom: var.$editor-border;
         justify-content: space-between;
 
@@ -340,9 +332,23 @@ div#editor-page {
 
       #preview {
         @include align-center();
+        margin: 0;
+        padding: 0;
         border-bottom: var.$editor-border;
         width: var.$editor-preview-frame-width;
         height: var.$editor-preview-frame-height;
+        min-width: var.$editor-preview-frame-width;
+        min-height: var.$editor-preview-frame-height;
+
+        #init-msg-wrapper {
+          @include align-center();
+          flex-direction: column;
+
+          #init-msg {
+            font-size: 2rem;
+            margin: 0 0 2rem 0;
+          }
+        }
 
         iframe {
           border: none;

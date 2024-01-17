@@ -20,6 +20,7 @@ const REVEAL_JS_CDN_URL = 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/'
  */
 export interface RenderedPresentation {
   rawSize: number
+  subslideCountPerSlide: number[]
   slideCountInclSubslides: number
   slideCount: number
   previewURL: string
@@ -60,5 +61,6 @@ export async function handleRender(
     slideCountInclSubslides: renderRespObj.slideCountInclSubslides,
     slideCount: renderRespObj.slideCount,
     previewURL: renderRespObj.download.downloadURL,
+    subslideCountPerSlide: renderRespObj.subslideCountPerSlide,
   } satisfies RenderedPresentation
 }

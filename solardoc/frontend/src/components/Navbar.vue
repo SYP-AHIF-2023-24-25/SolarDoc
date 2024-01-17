@@ -26,7 +26,9 @@ function setLoading(state: boolean): void {
       </div>
       <div id="title">
         <RouterLink to="/" @click="setLoading(true)">SolarDoc</RouterLink>
-        <a id="version-tag" :href="`${constants.githubVersionURL}/${constants.version}`">{{ constants.version }}</a>
+        <a id="version-tag" :href="`${constants.githubVersionURL}/${constants.version}`">{{
+          constants.version
+        }}</a>
       </div>
     </div>
     <div id="right-components">

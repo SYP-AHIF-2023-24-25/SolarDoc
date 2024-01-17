@@ -20,42 +20,5 @@ function navigateToSpecifiedSlideIfSpecified() {
   }
 }
 
-function disableInteractionIfDisabled() {
-  if (params.get('disable-interaction') === 'true') {
-    const body = document.getElementByTagName('body');
-    if (!body) {
-      return;
-    }
-    body.style.pointerEvents = 'none !important';
-    console.log("[SolarDoc] Interaction disabled.");
-  }
-}
-
-/**
- * Disables the scrollbar if the "disable-scrollbar" parameter is set to true.
- * @since 0.3.0
- */
-function disableScrollbarIfDisabled() {
-  if (params.get('disable-scrollbar') === 'true') {
-    function disableScrollbar() {
-      const scrollbars = document.getElementsByClassName('scrollbar');
-      if (scrollbars.length === 0) {
-        return;
-      }
-      
-      for (let scrollbar of scrollbars) {
-        // Delete the scrollbar
-        scrollbar.remove();
-      }
-      console.log("[SolarDoc] Scrollbar disabled.");
-    }
-    disableScrollbar();
-    
-    // Ensure that the scrollbar is disabled when the window is resized
-    document.addEventListener('resize', disableScrollbar);
-  }
-}
-
 navigateToSpecifiedSlideIfSpecified();
-disableScrollbarIfDisabled();
 `;
