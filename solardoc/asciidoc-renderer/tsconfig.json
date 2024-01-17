@@ -12,7 +12,8 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "lib": [
-      "ES2015"
+      "ES2015",
+      "DOM"
     ],
     "types": [
       "./src/types/asciidoctor-reveal-js.d.ts"

@@ -4,6 +4,11 @@
  * It is based on the decktape module version 3.10.0.
  */
 import { PDFDocument } from 'pdf-lib'
+import puppeteer from 'puppeteer'
+import {registerErrorHandler} from "./decktape-utils";
+import {renderHTML} from "./decktape-utils";
+import path from "path";
+import {loadAvailablePlugins} from "./decktape-utils";
 
 /**
  * This is a slimmed down version of the decktape module, which is not CLI-bound.
@@ -24,7 +29,18 @@ export class DecktapeSlim {
    */
   // eslint-disable-next-line no-unused-vars
   public async renderRJSHTMLToPDF(rjsHTML: string): Promise<PDFDocument> {
-    throw new Error('Not implemented yet!')
+    const plugins = await loadAvailablePlugins(path.join(__dirname, 'plugins'));
+    const browser = await puppeteer.launch({
+      headless: true,
+    });
+
+    const page = await browser.newPage();
+    await page.emulateMediaType('screen');
+    await registerErrorHandler(page);
+    const pdfDocument = await PDFDocument.create();
+    await renderHTML(page,rjsHTML,pdfDocument,plugins);
+    await browser.close();
+    return PDFDocument.load(await pdfDocument.save());
   }
 
   /**

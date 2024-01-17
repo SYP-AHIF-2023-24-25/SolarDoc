@@ -2,6 +2,9 @@ import type { Presentation } from '../../../../presentation'
 import { PDFOutput } from '../pdf-output'
 import { TargetRenderer } from '../../target-renderer'
 import { Slide } from '../../../../slide'
+import { HTMLRenderer } from '../../html'
+import { PDFDocument } from 'pdf-lib'
+import {DecktapeSlim} from "../../../simulator";
 
 /**
  * Renders a presentation or slide to a PDF file.
@@ -20,8 +23,10 @@ export class NodePDFRenderer extends TargetRenderer<unknown, unknown> {
    */
   // eslint-disable-next-line no-unused-vars
   public async render(presentation: Presentation, config?: { [key: string]: any }): Promise<PDFOutput> {
-    // TODO!
-    throw new Error('Not implemented yet!')
+    const revealJsHtml  = await presentation.render(new HTMLRenderer(), config);
+    const decktapeSimulator = new DecktapeSlim();
+    const pdf :PDFDocument = await decktapeSimulator.renderRJSHTMLToPDF(await revealJsHtml.write());
+    return new PDFOutput(pdf, presentation);
   }
 
   /**

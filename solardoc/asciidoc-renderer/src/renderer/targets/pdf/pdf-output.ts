@@ -1,17 +1,15 @@
 import { RenderOutput } from '../../render-output'
 import {Presentation} from "../../../presentation";
+import {PDFDocument} from "pdf-lib";
 
 /**
  * Wrapper class for a PDF output.
  * @since 0.2.0
  */
-export class PDFOutput extends RenderOutput<unknown, unknown> {
-  // TODO! Properly type the generics
-  public constructor(internalData: unknown, source: Presentation) {
+export class PDFOutput extends RenderOutput<PDFDocument, PDFDocument> {
+  public constructor(internalData: PDFDocument, source: Presentation) {
     super(internalData, source)
 
-    // TODO!
-    throw new Error('Not implemented yet!')
   }
 
   public get extension(): string {
@@ -22,8 +20,7 @@ export class PDFOutput extends RenderOutput<unknown, unknown> {
    * Converts the content to a file-writable PDF format.
    * @since 0.2.0
    */
-  public async write(): Promise<unknown> {
-    // TODO!
-    throw new Error('Not implemented yet!')
+  public async write(): Promise<PDFDocument> {
+    return this.internalData
   }
 }
