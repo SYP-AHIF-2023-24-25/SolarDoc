@@ -87,13 +87,26 @@ export class Presentation {
    * @since 0.2.0
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
-    const slides = <Array<AbstractBlock>>document.getBlocks();
-    const subslideCountPerSlide = slides.map((slide: AbstractBlock) => {
-      let subBlocks = <Array<AbstractBlock>>slide.getBlocks();
-      return subBlocks.filter((block: AbstractBlock) => block.getContext() === 'section').length;
+    type MinReqAbstractBlock = Pick<AbstractBlock, 'getContext' | 'getBlocks'>
+
+    let slides = <Array<MinReqAbstractBlock>>document.getBlocks();
+    const preambleExists = slides[0]?.getContext() === 'preamble';
+    if (!preambleExists) {
+      slides = [
+        {
+          getContext: () => 'preamble',
+          getBlocks: () => []
+        },
+        ...slides
+      ]
+    }
+
+    const subslideCountPerSlide = slides.map((slide: MinReqAbstractBlock) => {
+      let subBlocks = <Array<AbstractBlock>>slide.getBlocks()
+      return subBlocks.filter((block: AbstractBlock) => block.getContext() === 'section').length
     })
-    const slideCount = slides.length;
-    const slideCountInclSubslides = subslideCountPerSlide.reduce((a, b) => a + b, slideCount);
+    const slideCount = subslideCountPerSlide.length
+    const slideCountInclSubslides = subslideCountPerSlide.reduce((a, b) => a + b, slideCount)
 
     return {
       title: document.getDocumentTitle(),
