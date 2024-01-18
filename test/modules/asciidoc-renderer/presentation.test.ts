@@ -97,5 +97,21 @@ describe("Presentation", () => {
       assert.equal(presentation.metadata.slideCount,4);
       assert.deepEqual(presentation.metadata.subslideCountPerSlide, [0, 2, 2, 0]);
     });
+
+    it("should return proper metadata when the first slide is empty and there are multiple slides & sub-slides", async () => {
+      const adocString =
+        `= Test\n\n== Still testing\n\nMain-Slide 2\n\n=== Still testing\n\nSub-Slide 2.1\n\n=== Still testing Sub-Slide 2.2\n\n== Still testing\n\nMain Slide-3\n\n=== Still testing Sub-Slide 3.1\n\nx\n\n=== Still testing Sub-Slide 3.2\n\nx\n\n== Still testing\n\n Main Slide-4\n\n`;
+      const adocFilename = "test.adoc";
+      const adocFile = await AsciidocFile.fromString(
+        adocFilename,
+        adocString,
+      );
+      const asciidocCompiler = new AsciidocCompiler();
+      const presentation = await asciidocCompiler.parse(adocFile);
+      assert.equal(presentation.metadata.title, "Test");
+      assert.equal(presentation.metadata.slideCountInclSubslides,8 );
+      assert.equal(presentation.metadata.slideCount,4);
+      assert.deepEqual(presentation.metadata.subslideCountPerSlide, [0, 2, 2, 0]);
+    });
   });
 });
