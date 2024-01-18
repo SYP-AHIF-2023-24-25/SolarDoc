@@ -1,7 +1,7 @@
-import {TargetRenderer, AsciidocCompiler, AsciidocFile} from './renderer'
-import { RenderOutput } from './renderer'
-import { Asciidoctor } from '@asciidoctor/core'
-import { PresentationMetadata } from './presentation-metadata'
+import {AsciidocCompiler, AsciidocFile, RenderOutput, TargetRenderer} from './renderer'
+import {Asciidoctor} from '@asciidoctor/core'
+import {PresentationMetadata} from './presentation-metadata'
+import AbstractBlock = Asciidoctor.AbstractBlock;
 
 /**
  * A presentation is a collection of slides, which internally are reveal.js slides. These can be converted to HTML,
@@ -87,23 +87,34 @@ export class Presentation {
    * @since 0.2.0
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
-    const metadata: PresentationMetadata = {
+    type MinReqAbstractBlock = Pick<AbstractBlock, 'getContext' | 'getBlocks'>
+
+    let slides = <Array<MinReqAbstractBlock>>document.getBlocks();
+    const preambleExists = slides[0]?.getContext() === 'preamble';
+    if (!preambleExists) {
+      slides = [
+        {
+          getContext: () => 'preamble',
+          getBlocks: () => []
+        },
+        ...slides
+      ]
+    }
+
+    const subslideCountPerSlide = slides.map((slide: MinReqAbstractBlock) => {
+      let subBlocks = <Array<AbstractBlock>>slide.getBlocks()
+      return subBlocks.filter((block: AbstractBlock) => block.getContext() === 'section').length
+    })
+    const slideCount = subslideCountPerSlide.length
+    const slideCountInclSubslides = subslideCountPerSlide.reduce((a, b) => a + b, slideCount)
+
+    return {
       title: document.getDocumentTitle(),
       author: document.getAuthor(),
-      slideCount: 0,
-      mainSlideCount: 0,
+      slideCount: slideCount,
+      slideCountInclSubslides: slideCountInclSubslides,
+      subslideCountPerSlide: subslideCountPerSlide,
       originalDocument: document
-    }
-
-    let slides = document.getBlocks();
-    metadata.mainSlideCount = slides.length;
-    metadata.slideCount = slides.length;
-    for(let slide in slides) {
-      let subBlocks = slides[slide].getBlocks();
-      let subSlideCount = subBlocks.filter((block: { getContext: () => string }) => block.getContext() === 'section').length;
-      metadata.slideCount += subSlideCount;
-    }
-
-    return metadata
+    } satisfies PresentationMetadata
   }
 }

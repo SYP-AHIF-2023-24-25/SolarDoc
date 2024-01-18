@@ -1,36 +1,43 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from 'vue'
+import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
+import { useDarkModeStore } from '@/stores/dark-mode'
+import { useEditorContentStore } from '@/stores/editor-content'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
+import { useInitStateStore } from '@/stores/init-state'
+import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
+import { handleRender } from '@/scripts/handle-render'
+import { useFileNameStore } from '@/stores/file-name'
+import { useRenderDataStore } from '@/stores/render-data'
+import { useLastModifiedStore } from '@/stores/last-modified'
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
-import { useDarkModeStore } from '@/stores/dark-mode'
-import {useEditorContentStore} from "@/stores/editor-content";
-import type { SubscriptionCallbackMutation} from "pinia";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import * as backendAPI from '@/services/backend/api-service';
-import type {
-  RenderedPresentationRjsHtmlDtoModel,
-  RenderPresentationRjsHtmlDtoModel
-} from "@/services/backend/api-service";
-import {useInitStateStore} from "@/stores/init-state";
+import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
+import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavigator.vue'
+import FullScreenPreview from '@/components/FullScreenPreview.vue'
+import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import * as backendAPI from '@/services/backend/api-service'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
+const fullScreenPreviewStore = useFullScreenPreviewStore()
+const renderDataStore = useRenderDataStore()
+const fileNameStore = useFileNameStore()
+const lastModifiedStore = useLastModifiedStore()
+const previewSelectedSlide = usePreviewSelectedSlideStore()
 
-// Default filename is sample-presentation.adoc
-const fileName = ref('sample-presentation.adoc')
-
-// The download URL where the preview is available
-const previewUrl = ref('')
-
-// The reveal.js CDN URL which provides the reveal.js assets
-const REVEAL_JS_CDN_URL = 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/'
+const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
+const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlide)
 
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
-backendAPI.checkIfBackendIsReachable()
+backendAPI
+  .checkIfBackendIsReachable()
   .then(void 0)
   .catch((error: Error) => {
     if (error) {
@@ -40,34 +47,58 @@ backendAPI.checkIfBackendIsReachable()
   })
 
 // Ensure the render preview is updated whenever the editor content changes
-editorContentStore.$subscribe(async (
-  mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
-  state: { editorContent: string },
-) => {
-  const { editorContent } = state
-  const renderPresentationDtoModel: RenderPresentationRjsHtmlDtoModel = {
-    fileName: fileName.value,
-    fileContent: editorContent,
-    revealJSAssetsPath: REVEAL_JS_CDN_URL,
-  }
+editorContentStore.$subscribe(
+  async (
+    mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
+    state: { editorContent: string },
+  ) => {
+    const { editorContent } = state
+    const renderResp = await handleRender(fileNameStore.fileName, editorContent)
+    renderDataStore.setRenderData(renderResp)
+  },
+)
 
-  // Send a render request to the backend
-  let renderRespObj: RenderedPresentationRjsHtmlDtoModel;
-  const renderResp = await backendAPI.postV1RenderPresentationRjsHtml(renderPresentationDtoModel)
-  if (renderResp.status === 200) {
-    renderRespObj = renderResp.data
-  } else {
-    throw new Error(`[EditorView] Failed to execute render presentation request:\n${renderResp}`)
-  }
+// Enable loading spinner for preview if the button is clicked
+function handlePreviewButtonPress() {
+  fullScreenPreviewStore.setFullScreenPreview(true)
+  console.log('Preview button clicked')
+}
 
-  // Update the preview URL
-  previewUrl.value = renderRespObj.download.downloadURL
 
-  previewLoadingStore.setPreviewLoading(false)
-})
+function handleCopyButtonClick() {
+  navigator.clipboard.writeText(editorContentStore.editorContent);
+}
+
+function handleDownloadButtonClick() {
+  let text: string = editorContentStore.editorContent;
+  let fileName: string = fileNameStore.fileName;
+  let fileType: string = "text/asciidoc";
+  let bloby:Blob = new Blob([text], { type: fileType });
+
+  let a = document.createElement('a');
+  a.download = fileName;
+  a.href = URL.createObjectURL(bloby);
+  a.dataset.downloadurl = [fileType, a.download, a.href].join(':');
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
+}
+
+// Last modified is a ref which is updated every second to show the last modified time
+let lastModified = ref(getLastModified())
+function getLastModified(): string {
+  return getHumanReadableTimeInfo(lastModifiedStore.lastModified)
+}
+
+const updateLastModified = () => (lastModified.value = getLastModified())
+setInterval(updateLastModified, 500)
+
 </script>
 
 <template>
+  <FullScreenPreview />
   <div id="editor-page">
     <div id="menu">
       <div id="menu-left-side">
@@ -76,20 +107,40 @@ editorContentStore.$subscribe(async (
           <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
         </button>
         <div id="button-menu">
-          <button class="editor-button">Copy</button>
+          <button class="editor-button" @click="handleCopyButtonClick()">Copy</button>
           <button class="editor-button">Share</button>
-          <button class="editor-button">Download</button>
+          <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
       </div>
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
-          <input id="file-name-input" v-model="fileName"/>
+          <input
+            id="file-name-input"
+            v-model="fileNameStore.fileName"
+            @input="fileNameStore.storeLocally()"
+          />
         </div>
       </div>
       <div id="menu-right-side">
         <div>
-          <p>Last edited: 20:08 14-10-2023 CET</p>
+          <p>
+            Last edited:
+            {{
+              previewLoadingStore.previewLoading
+                ? (updateLastModified() && false) || 'now'
+                : lastModified
+            }}
+          </p>
+        </div>
+        <div>
+          <button
+            class="editor-button"
+            id="fullscreen-preview-button"
+            @click="handlePreviewButtonPress()"
+          >
+            Fullscreen
+          </button>
         </div>
       </div>
     </div>
@@ -99,19 +150,47 @@ editorContentStore.$subscribe(async (
       </div>
       <div id="preview-wrapper">
         <div id="preview">
-          <h2 v-if="initStateStore.init">Start typing and see preview!</h2>
-          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init"><span class="dot-flashing"></span></h2>
-          <iframe v-else :src="previewUrl"></iframe>
+          <div id="init-msg-wrapper" v-if="initStateStore.init">
+            <p id="init-msg">Start typing and see preview!</p>
+            <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
+          </div>
+          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
+            <span class="dot-dot-dot-flashing"></span>
+          </h2>
+          <iframe v-else :src="`${previewURL}?static=true#${slideIndex}/${(subSlideIndex ?? -1) + 1}`"></iframe>
         </div>
-        <div id="preview-meta-info">
-          <p>3 slides</p>
-          <p>1.2 MB Raw Size</p>
+        <div
+          id="preview-meta-info"
+          class="loading"
+          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
+        >
+          <div>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>slides (</p>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>Subslides)</p>
+          </div>
+          <div>
+            <div class="dot-dot-dot-flashing-mini"></div>
+            <p>KB Raw Size</p>
+          </div>
         </div>
-        <div id="slides-navigator">
-          <p>Slides Navigator</p>
+        <div id="preview-meta-info" v-else>
+          <p>
+            {{ slideCount ? slideCount! : '?' }} {{ slideCount == 1 ? 'slide' : 'slides' }} ({{
+              slideCount && slideCountInclSubslides ? slideCountInclSubslides - slideCount : '?'
+            }}
+            {{
+              (slideCountInclSubslides ?? 0) - (slideCount ?? 0) == 1 ? 'subslide' : 'subslides'
+            }})
+          </p>
+          <p>{{ rawSize ? Math.round(rawSize! * 100) / 100 : '?' }} KB Raw Size</p>
         </div>
-        <div id="sub-slides-navigator">
-          <p>Sub Slides Navigator</p>
+        <div id="slides-navigator-wrapper">
+          <SlidesNavigator></SlidesNavigator>
+        </div>
+        <div id="sub-slides-navigator-wrapper">
+          <SubSlidesNavigator></SubSlidesNavigator>
         </div>
       </div>
     </div>
@@ -144,6 +223,10 @@ div#editor-page {
     padding: var.$editor-menu-padding;
     margin: var.$editor-menu-margin;
     height: 2rem;
+
+    p {
+      height: 1rem;
+    }
 
     #menu-left-side {
       @include menu-child-presets;
@@ -180,7 +263,7 @@ div#editor-page {
           margin: 0;
 
           &:focus {
-            outline: var.$scheme-cs-1 solid 2px;
+            outline: var.$scheme-link-hover-color solid 2px;
             border-radius: 2px;
           }
         }
@@ -194,6 +277,18 @@ div#editor-page {
 
       div {
         @include align-center;
+      }
+
+      #fullscreen-preview-button {
+        border: none;
+        text-align: center;
+        width: 100%;
+        height: calc(100% - 2px);
+        margin: 0 0 0 0.25rem;
+
+        &:focus {
+          outline: var.$scheme-cs-1 solid 2px;
+        }
       }
     }
   }
@@ -219,39 +314,65 @@ div#editor-page {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      height: var.$editor-preview-menu-height;
 
-      #preview {
-        @include align-center();
-        margin: 0;
-        padding: 0;
-      }
+      // Overflow if the content is too large on the y-axis
+      overflow: hidden scroll;
 
       #preview-meta-info {
         @include align-center();
         flex-flow: row nowrap;
         height: var.$editor-preview-meta-info-height;
         padding: var.$editor-preview-meta-info-padding;
+        min-height: var.$editor-preview-meta-info-height;
         border-bottom: var.$editor-border;
         justify-content: space-between;
+
+        &.loading div {
+          @include align-center();
+          display: flex;
+          flex-flow: row nowrap;
+
+          .dot-dot-dot-flashing-mini {
+            margin-right: 0.75rem;
+
+            &:nth-of-type(2) {
+              margin: 0 0.75rem 0 0.75rem;
+            }
+          }
+        }
       }
 
-      #slides-navigator {
-        @include align-center();
+      #slides-navigator-wrapper {
+        padding: 0;
+        margin: 0;
         height: var.$editor-preview-slides-navigator-height;
-        padding: var.$editor-preview-slides-navigator-padding;
         border-bottom: var.$editor-border;
       }
 
-      #sub-slides-navigator {
-        @include align-center();
+      #sub-slides-navigator-wrapper {
         flex-grow: 1;
       }
 
       #preview {
         @include align-center();
+        margin: 0;
+        padding: 0;
         border-bottom: var.$editor-border;
         width: var.$editor-preview-frame-width;
         height: var.$editor-preview-frame-height;
+        min-width: var.$editor-preview-frame-width;
+        min-height: var.$editor-preview-frame-height;
+
+        #init-msg-wrapper {
+          @include align-center();
+          flex-direction: column;
+
+          #init-msg {
+            font-size: 2rem;
+            margin: 0 0 2rem 0;
+          }
+        }
 
         iframe {
           border: none;

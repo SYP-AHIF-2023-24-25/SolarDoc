@@ -79,3 +79,39 @@ button.sandwich-button {
     background-color: rgba(0, 0, 0, 0.1);
   }
 }
+
+button.block-button {
+  font-size: $editor-button-font-size;
+  text-decoration: none;
+  background: transparent;
+  padding: 0.5rem 1.5rem;
+  margin: 0;
+  border: 2px solid $text-color;
+  color: $text-color;
+
+  @include link-hover-presets;
+  &:hover {
+    background-color: $text-color-inverted;
+    color: $text-color !important;
+  }
+
+  &.dark-mode-overwrite {
+    border: 2px solid white;
+    color: white;
+
+    &:hover {
+      background-color: white;
+      color: black !important;
+    }
+  }
+
+  &.light-mode-overwrite {
+    border: 2px solid black;
+    color: black;
+
+    &:hover {
+      background-color: black;
+      color: white !important;
+    }
+  }
+}

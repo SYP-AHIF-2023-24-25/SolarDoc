@@ -3,3 +3,9 @@
     <path d="M0 3V4.8H18V3H0ZM0 8.4V10.2H18V8.4H0ZM0 13.8V15.6H18V13.8H0Z" fill="white" />
   </svg>
 </template>
+
+<style scoped lang="scss">
+svg {
+  fill: #fff;
+}
+</style>
