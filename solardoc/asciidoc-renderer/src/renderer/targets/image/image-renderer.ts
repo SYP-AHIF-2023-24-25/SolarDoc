@@ -2,10 +2,10 @@ import { ImageOutput } from './image-output'
 import { TargetRenderer } from '../target-renderer'
 import { Presentation } from '../../../presentation'
 import { Slide } from '../../../slide'
-import {HTMLRenderer} from "../html";
-import {DecktapeSlim} from "../../simulator";
-import {PDFDocument} from "pdf-lib";
-import {PDFOutput} from "../pdf";
+import { HTMLRenderer } from '../html'
+import { DecktapeSlim } from '../../simulator'
+import { PDFDocument } from 'pdf-lib'
+import { PDFOutput } from '../pdf'
 
 /**
  * Renders a presentation or slide to an image file.
@@ -23,11 +23,17 @@ export class ImageRenderer extends TargetRenderer<unknown, unknown> {
    * @param presentation The presentation that should be rendered.
    * @param config The configuration for the image renderer.
    */
-  public async render(presentation: Presentation, config?: { [key: string]: any }): Promise<ImageOutput> {
-    const revealJsHtml  = await presentation.render(new HTMLRenderer(), config);
-    const decktapeSimulator = new DecktapeSlim();
-    const img :Buffer = await decktapeSimulator.renderRJSHTMLToImage(await revealJsHtml.write(), 'png');
-    return new ImageOutput(img, presentation);
+  public async render(
+    presentation: Presentation,
+    config?: { [key: string]: any },
+  ): Promise<ImageOutput> {
+    const revealJsHtml = await presentation.render(new HTMLRenderer(), config)
+    const decktapeSimulator = new DecktapeSlim()
+    const img: Buffer = await decktapeSimulator.renderRJSHTMLToImage(
+      await revealJsHtml.write(),
+      'png',
+    )
+    return new ImageOutput(img, presentation)
   }
 
   /**
@@ -37,7 +43,11 @@ export class ImageRenderer extends TargetRenderer<unknown, unknown> {
    * @param config The configuration for the image renderer.
    * @since 0.2.0
    */
-  public renderSlide(presentation: Presentation, slide: number | Slide, config?: { [key: string]: any }): Promise<ImageOutput> {
+  public renderSlide(
+    presentation: Presentation,
+    slide: number | Slide,
+    config?: { [key: string]: any },
+  ): Promise<ImageOutput> {
     // TODO!
     throw new Error('Not implemented yet!')
   }

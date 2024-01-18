@@ -16,7 +16,10 @@
     "@asciidoctor/reveal.js": "5.0.1",
     "tslib": "2.6.2",
     "decktape": "3.10.0",
-    "pdf-lib": "1.17.1"
+    "pdf-lib": "1.17.1",
+    "puppeteer": "21.6.1",
+    "puppeteer-core": "21.6.1",
+    "fonteditor-core": "2.1.11"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "6.12.0",
@@ -26,13 +29,9 @@
     "@types/babelify": "7.3.10",
     "@babel/preset-env": "7.23.3",
     "eslint": "8.48.0",
-    "puppeteer": "21.6.1",
-    "puppeteer-core": "21.6.1",
-    "fonteditor-core": "2.1.11",
     "urijs": "1.19.11",
     "typescript": "5.2.2",
     "tsify": "4.0.2",
-    "browserify": "17.0.0",
     "ts-node": "10.9.1",
     "uglify-js": "3.17.4",
     "prettier": "^3.0.3",
@@ -53,15 +52,12 @@
   "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
   "license": "GPL-3.0",
   "scripts": {
-    "build": "pnpm run browserify",
-    "prebuild": "pnpm run tsc-build",
+    "build": "pnpm run tsc-build",
     "tsc-build": "tsc",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "eslint": "pnpm run lint",
     "format": "prettier --write src/",
-    "prettier": "pnpm run format",
-    "browserify": "ts-node ./compile/web-target.ts",
-    "postbrowserify": "uglifyjs ./dist/web/solardoc-ascii-renderer.js -o ./dist/web/solardoc-ascii-renderer.min.js"
+    "prettier": "pnpm run format"
   },
   "browserify-shim": {
     "decktape": "global:decktape"

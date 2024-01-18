@@ -1,4 +1,4 @@
-import {TargetRenderer, AsciidocCompiler, AsciidocFile} from './renderer'
+import { TargetRenderer, AsciidocCompiler, AsciidocFile } from './renderer'
 import { RenderOutput } from './renderer'
 import { Asciidoctor } from '@asciidoctor/core'
 import { PresentationMetadata } from './presentation-metadata'
@@ -17,7 +17,7 @@ export class Presentation {
   public constructor(
     compiler: AsciidocCompiler,
     sourceFile: AsciidocFile,
-    parsedFile: Asciidoctor.Document
+    parsedFile: Asciidoctor.Document,
   ) {
     this._compiler = compiler
     this._sourceFile = sourceFile
@@ -76,7 +76,7 @@ export class Presentation {
    */
   public async render<RawT, OutT>(
     target: TargetRenderer<RawT, OutT>,
-    config?: { [key: string]: any }
+    config?: { [key: string]: any },
   ): Promise<RenderOutput<RawT, OutT>> {
     return await target.render(this, config)
   }
@@ -92,16 +92,18 @@ export class Presentation {
       author: document.getAuthor(),
       slideCount: 0,
       mainSlideCount: 0,
-      originalDocument: document
+      originalDocument: document,
     }
 
-    let slides = document.getBlocks();
-    metadata.mainSlideCount = slides.length;
-    metadata.slideCount = slides.length;
-    for(let slide in slides) {
-      let subBlocks = slides[slide].getBlocks();
-      let subSlideCount = subBlocks.filter((block: { getContext: () => string }) => block.getContext() === 'section').length;
-      metadata.slideCount += subSlideCount;
+    let slides = document.getBlocks()
+    metadata.mainSlideCount = slides.length
+    metadata.slideCount = slides.length
+    for (let slide in slides) {
+      let subBlocks = slides[slide].getBlocks()
+      let subSlideCount = subBlocks.filter(
+        (block: { getContext: () => string }) => block.getContext() === 'section',
+      ).length
+      metadata.slideCount += subSlideCount
     }
 
     return metadata

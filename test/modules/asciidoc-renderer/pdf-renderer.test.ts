@@ -27,7 +27,6 @@ describe("PdfRenderer", () => {
         fs.mkdirSync(pdfDir, { recursive: true });
       }
       fs.writeFileSync("test.pdf", await pdf.internalData.save({ addDefaultPage: false }));
-
     });
   });
 });

@@ -1,5 +1,5 @@
 import { RenderOutput } from '../../render-output'
-import {Presentation} from "../../../presentation";
+import { Presentation } from '../../../presentation'
 
 /**
  * Wrapper class for an image output.
@@ -19,6 +19,6 @@ export class ImageOutput extends RenderOutput<unknown, unknown> {
    * @since 0.2.0
    */
   public async write(): Promise<unknown> {
-    return this.internalData;
+    return this.internalData
   }
 }
