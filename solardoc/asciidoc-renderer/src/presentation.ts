@@ -90,7 +90,7 @@ export class Presentation {
     type MinReqAbstractBlock = Pick<AbstractBlock, 'getContext' | 'getBlocks'>
 
     let slides = <Array<MinReqAbstractBlock>>document.getBlocks();
-    const preambleExists = slides[0].getContext() === 'preamble';
+    const preambleExists = slides[0]?.getContext() === 'preamble';
     if (!preambleExists) {
       slides = [
         {
