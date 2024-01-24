@@ -77,27 +77,14 @@ async function exportSlides(pdf: PDFDocument, page: Page, plugin: any, metadata:
     exportedSlides: 0,
     pdfFonts: {},
     pdfXObjects: {},
-    totalSlides: metadata.slideCount,
+    totalSlides: metadata.slideCountInclSubslides,
   }
-  /*if (options.slides && !options.slides[context.currentSlide]) {
-    process.stdout.write('\r no progress bar anymore');
-  } else {
-    //await pause(options.pause);
-
-  }*/
   await exportSlide(page, pdf, context)
 
-  //const maxSlide = options.slides ? Math.max(...Object.keys(options.slides)) : Infinity;
   while (context.currentSlide < context.totalSlides) {
-    context.currentSlide++;
-    //await pause(options.pause);
-    /*if (options.slides && !options.slides[context.currentSlide]) {
-      process.stdout.write('\r progress bar supposed to be here');
-    } else {
-
-    }*/
+    await nextSlide(plugin, context);
     await exportSlide(page, pdf, context)
-    //hasNext = await hasNextSlide(plugin, context)
+
   }
   // Flush consolidated fonts
   Object.values(context.pdfFonts).forEach(({ ref, font }) => {
@@ -274,6 +261,11 @@ async function printSlide(pdf: PDFDocument, slide: any, context: any) {
         .reduce((r, [k, v], i) => r + (i > 0 ? ',' : '') + k + '=' + v, '')
     )
   }
+}
+
+async function nextSlide(plugin, context) {
+  context.currentSlide++;
+  return plugin.nextSlide();
 }
 
 

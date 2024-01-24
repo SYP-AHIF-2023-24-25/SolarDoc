@@ -102,8 +102,8 @@ export class Presentation {
     }
 
     const subslideCountPerSlide = slides.map((slide: MinReqAbstractBlock) => {
-      let subBlocks = <Array<AbstractBlock>>slide.getBlocks()
-      return subBlocks.filter((block: AbstractBlock) => block.getContext() === 'section').length
+      let subBlocks = <Array<Asciidoctor.AbstractBlock>>slide.getBlocks()
+      return subBlocks.filter((block: Asciidoctor.AbstractBlock) => block.getContext() === 'section').length
     })
     const slideCount = subslideCountPerSlide.length
     const slideCountInclSubslides = subslideCountPerSlide.reduce((a, b) => a + b, slideCount)
