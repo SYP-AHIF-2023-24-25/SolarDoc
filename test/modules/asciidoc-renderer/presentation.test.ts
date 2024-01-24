@@ -1,4 +1,4 @@
-import {AsciidocCompiler, AsciidocFile} from "@solardoc/asciidoc-renderer";
+import {AsciidocCompiler, AsciidocFile, DEFAULT_PRESENTATION_TITLE} from "@solardoc/asciidoc-renderer";
 import {assert} from "chai";
 
 
@@ -42,6 +42,7 @@ describe("Presentation", () => {
       );
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
+      assert.isFalse(presentation.metadata.defaultTitle);
       assert.equal(presentation.metadata.title, "Test");
       assert.equal(presentation.metadata.slideCountInclSubslides, 4);
       assert.equal(presentation.metadata.slideCount, 4);
@@ -59,6 +60,7 @@ describe("Presentation", () => {
       );
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
+      assert.isFalse(presentation.metadata.defaultTitle);
       assert.equal(presentation.metadata.title, "Test");
       assert.equal(presentation.metadata.slideCountInclSubslides, 5);
       assert.equal(presentation.metadata.slideCount, 4);
@@ -76,6 +78,7 @@ describe("Presentation", () => {
       );
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
+      assert.isFalse(presentation.metadata.defaultTitle);
       assert.equal(presentation.metadata.title, "Test");
       assert.equal(presentation.metadata.slideCountInclSubslides, 6);
       assert.equal(presentation.metadata.slideCount, 4);
@@ -92,6 +95,7 @@ describe("Presentation", () => {
       );
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
+      assert.isFalse(presentation.metadata.defaultTitle);
       assert.equal(presentation.metadata.title, "Test");
       assert.equal(presentation.metadata.slideCountInclSubslides, 8);
       assert.equal(presentation.metadata.slideCount, 4);
@@ -108,6 +112,7 @@ describe("Presentation", () => {
       );
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
+      assert.isFalse(presentation.metadata.defaultTitle);
       assert.equal(presentation.metadata.title, "Test");
       assert.equal(presentation.metadata.slideCountInclSubslides, 8);
       assert.equal(presentation.metadata.slideCount, 4);
@@ -123,7 +128,24 @@ describe("Presentation", () => {
       );
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
+      assert.isFalse(presentation.metadata.defaultTitle);
       assert.equal(presentation.metadata.title, "Test");
+      assert.equal(presentation.metadata.slideCountInclSubslides, 2);
+      assert.equal(presentation.metadata.slideCount, 2);
+      assert.deepEqual(presentation.metadata.subslideCountPerSlide, [0, 0]);
+    });
+
+    it("should return proper metadata when there is only text with no headers to indicate slides", async () => {
+      const adocString = `Test`;
+      const adocFilename = "test.adoc";
+      const adocFile = await AsciidocFile.fromString(
+        adocFilename,
+        adocString,
+      );
+      const asciidocCompiler = new AsciidocCompiler();
+      const presentation = await asciidocCompiler.parse(adocFile);
+      assert.isTrue(presentation.metadata.defaultTitle);
+      assert.equal(presentation.metadata.title, DEFAULT_PRESENTATION_TITLE);
       assert.equal(presentation.metadata.slideCountInclSubslides, 1);
       assert.equal(presentation.metadata.slideCount, 1);
       assert.deepEqual(presentation.metadata.subslideCountPerSlide, [0]);

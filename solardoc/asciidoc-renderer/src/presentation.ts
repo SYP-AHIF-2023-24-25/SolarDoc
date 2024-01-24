@@ -4,6 +4,12 @@ import {PresentationMetadata} from './presentation-metadata'
 import AbstractBlock = Asciidoctor.AbstractBlock;
 
 /**
+ * The default title that is used if no title is specified in the asciidoc file.
+ * @since 0.3.1
+ */
+export const DEFAULT_PRESENTATION_TITLE: string = "Unnamed Presentation"
+
+/**
  * A presentation is a collection of slides, which internally are reveal.js slides. These can be converted to HTML,
  * PDFs or images.
  * @since 0.2.0
@@ -113,8 +119,10 @@ export class Presentation {
     const slideCount = subslideCountPerSlide.length
     const slideCountInclSubslides = subslideCountPerSlide.reduce((a, b) => a + b, slideCount)
 
+    const title = document.getDocumentTitle() || DEFAULT_PRESENTATION_TITLE
     return {
-      title: document.getDocumentTitle(),
+      defaultTitle: title === DEFAULT_PRESENTATION_TITLE,
+      title: title,
       author: document.getAuthor(),
       slideCount: slideCount,
       slideCountInclSubslides: slideCountInclSubslides,
