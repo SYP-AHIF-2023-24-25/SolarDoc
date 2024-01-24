@@ -77,6 +77,10 @@ export class RenderController {
       fileName: presentationModel.fileName, // Original filename
       cache: cachedElement.toCacheDtoModel(),
       download: cachedElement.toDownloadDtoModel(downloadURL),
+      rawSize: htmlOutput.presentation.sourceFile.getFileSize('KB'),
+      slideCount: htmlOutput.presentation.metadata.slideCount,
+      slideCountInclSubslides: htmlOutput.presentation.metadata.slideCountInclSubslides,
+      subslideCountPerSlide: htmlOutput.presentation.metadata.subslideCountPerSlide,
     }
   }
 

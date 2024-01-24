@@ -1,11 +1,12 @@
-import { TargetRenderer } from '../target-renderer'
-import { HTMLOutput } from './html-output'
-import { Presentation } from '../../../presentation'
-import { Slide } from '../../../slide'
-import { Asciidoctor } from '@asciidoctor/core'
-import { InternalError } from '../../../errors'
-import { AsciidocCompiler } from '../../asciidoc-compiler'
-import { HTMLRendererConfig } from './html-renderer-config'
+import {TargetRenderer} from '../target-renderer'
+import {HTMLOutput} from './html-output'
+import {Presentation} from '../../../presentation'
+import {Slide} from '../../../slide'
+import {Asciidoctor} from '@asciidoctor/core'
+import {InternalError} from '../../../errors'
+import {AsciidocCompiler} from "../../asciidoc-compiler";
+import {HTMLRendererConfig} from "./html-renderer-config";
+import {solardocJS} from "./include/solardoc-web-script";
 
 export type HTMLString = string
 
@@ -29,6 +30,18 @@ export class HTMLRenderer extends TargetRenderer<HTMLString, HTMLString> {
 
   public constructor() {
     super()
+  }
+
+  /**
+   * Inject the solardoc.js file into the HTML code.
+   * @param htmlCode The HTML code that should be injected.
+   * @private
+   */
+  private async injectSolardocJS(htmlCode: string): Promise<string> {
+    const solardocJSInject: string = `<script defer>${solardocJS}</script>`
+
+    // Inject the solardoc.js file into the HTML code (Should be ejected after reveal.js, which is right before '</body>')
+    return htmlCode.replace('</body>', `${solardocJSInject}</body>`)
   }
 
   /**
@@ -68,7 +81,10 @@ export class HTMLRenderer extends TargetRenderer<HTMLString, HTMLString> {
       )
     }
 
-    return new HTMLOutput(htmlOutput, presentation)
+    // Inject the solardoc.js file into the HTML code
+    const modifiedHTML = await this.injectSolardocJS(htmlOutput)
+
+    return new HTMLOutput(modifiedHTML, presentation)
   }
 
   /**

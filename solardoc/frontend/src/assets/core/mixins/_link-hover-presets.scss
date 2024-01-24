@@ -5,27 +5,27 @@
     cursor: pointer;
   }
 
-  html &,
+  html &:hover,
   html[data-theme='light'] &:hover {
-    color: $scheme-cs-2;
+    color: $scheme-link-hover-color;
 
     /* For SVGs we have to use fill instead of color */
     svg {
       &,
       * {
-        fill: $scheme-cs-2;
+        fill: $scheme-link-hover-color;
       }
     }
   }
 
   html[data-theme='dark'] &:hover {
-    color: $scheme-cs-1;
+    color: $scheme-link-hover-color;
 
     /* For SVGs we have to use fill instead of color */
     svg {
       &,
       * {
-        fill: $scheme-cs-1;
+        fill: $scheme-link-hover-color;
       }
     }
   }

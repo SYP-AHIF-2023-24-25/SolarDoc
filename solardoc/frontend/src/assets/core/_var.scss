@@ -19,6 +19,7 @@
   --scheme-editor-black: var(--scheme-background-black);
   --scheme-editor-blue: #10355b;
   --scheme-white-subtle: rgba(255, 255, 255, 0.2);
+  --scheme-link-hover-color: var(--scheme-cs-2);
 
   // Font-size presets
   --home-button-font-size: 20px;
@@ -42,15 +43,17 @@
   --main-body-margin: 0;
 
   // Editor body presets
-  --editor-body-height: calc(100vh - var(--nav-bar-height));
+  --editor-body-height: var(--main-body-height);
   --editor-menu-height: 2rem;
-  --editor-menu-padding: 0 1rem 0 0;
+  --editor-menu-padding: 0;
   --editor-menu-margin: 0;
   --editor-menu-button-menu-padding: 0;
   --editor-menu-button-menu-margin: 0;
-  --editor-monaco-height: calc(
+  --editor-monaco-and-preview-menu-height: calc(
     var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
   );
+  --editor-preview-menu-height: var(--editor-monaco-and-preview-menu-height);
+  --editor-monaco-height: var(--editor-monaco-and-preview-menu-height);
   --editor-monaco-width: 65vw;
   --editor-monaco-padding-top: 1rem;
   --editor-monaco-margin: 0;
@@ -58,7 +61,9 @@
   --editor-border: 1px solid var(--text-color);
 
   // Editor preview presets (Has a ratio of 2:1)
-  --editor-preview-frame-width: calc(100vw - var(--editor-monaco-width) - var(--editor-border-width));
+  --editor-preview-frame-width: calc(
+    100vw - var(--editor-monaco-width) - var(--editor-border-width)
+  );
   --editor-preview-frame-height: calc(var(--editor-preview-frame-width) * 0.5);
   --editor-preview-frame-padding: 0;
   --editor-preview-frame-margin: 0;
@@ -66,8 +71,40 @@
   // Editor preview remaining presets
   --editor-preview-meta-info-height: 3rem;
   --editor-preview-meta-info-padding: 0 1rem;
-  --editor-preview-slides-navigator-height: 25vh;
-  --editor-preview-slides-navigator-padding: 1rem;
+  --editor-preview-slides-navigator-padding: 0.5rem 0;
+  --editor-preview-slides-navigator-height: 11rem;
+  --editor-preview-slides-navigator-width: var(--editor-preview-frame-width);
+  --editor-preview-slides-navigator-element-height: 10rem;
+  --editor-preview-slides-navigator-element-width: calc(
+    var(--editor-preview-slides-navigator-element-height) * 2
+  );
+  --editor-preview-slides-navigator-element-margin: 0.5rem;
+  --editor-preview-sub-slides-navigator-height: max(
+    calc(
+      100vh
+      - var(--nav-bar-height)
+      - var(--editor-menu-height)
+      - var(--editor-preview-frame-height)
+      - var(--editor-preview-meta-info-height)
+      - var(--editor-preview-slides-navigator-height)
+      - var(--editor-border-width)
+    ),
+    15rem
+  );
+  --editor-preview-sub-slides-navigator-list-height: var(
+    --editor-preview-sub-slides-navigator-height
+  );
+  --editor-preview-sub-slides-navigator-list-width: calc(
+    var(--editor-preview-slides-navigator-element-width) +
+    var(--editor-preview-slides-navigator-element-margin) * 2
+  );
+  --editor-preview-sub-slides-navigator-list-element-height: calc(
+    var(--editor-preview-slides-navigator-element-height) - 1rem
+  );
+  --editor-preview-sub-slides-navigator-list-element-width: calc(
+    var(--editor-preview-sub-slides-navigator-list-element-height) * 2
+  );
+  --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
 }
 
 // Color-scheme presets
@@ -87,6 +124,8 @@ $scheme-neutral-gray: var(--scheme-neutral-gray);
 $scheme-background-black: var(--scheme-background-black);
 $scheme-editor-black: var(--scheme-background-black);
 $scheme-editor-blue: var(--scheme-editor-blue);
+$scheme-white-subtle: var(--scheme-white-subtle);
+$scheme-link-hover-color: var(--scheme-cs-2);
 
 // Font-size presets
 $home-button-font-size: var(--home-button-font-size);
@@ -116,6 +155,8 @@ $editor-menu-padding: var(--editor-menu-padding);
 $editor-menu-margin: var(--editor-menu-margin);
 $editor-menu-button-menu-padding: var(--editor-menu-button-menu-padding);
 $editor-menu-button-menu-margin: var(--editor-menu-button-menu-margin);
+$editor-monaco-and-preview-menu-height: var(--editor-monaco-and-preview-menu-height);
+$editor-preview-menu-height: var(--editor-preview-menu-height);
 $editor-monaco-height: var(--editor-monaco-height);
 $editor-monaco-width: var(--editor-monaco-width);
 $editor-monaco-padding-top: var(--editor-monaco-padding-top);
@@ -132,8 +173,34 @@ $editor-preview-frame-margin: var(--editor-preview-frame-margin);
 // Editor preview remaining presets
 $editor-preview-meta-info-height: var(--editor-preview-meta-info-height);
 $editor-preview-meta-info-padding: var(--editor-preview-meta-info-padding);
-$editor-preview-slides-navigator-height: var(--editor-preview-slides-navigator-height);
 $editor-preview-slides-navigator-padding: var(--editor-preview-slides-navigator-padding);
+$editor-preview-slides-navigator-height: var(--editor-preview-slides-navigator-height);
+$editor-preview-slides-navigator-width: var(--editor-preview-slides-navigator-width);
+$editor-preview-slides-navigator-element-height: var(
+  --editor-preview-slides-navigator-element-height
+);
+$editor-preview-slides-navigator-element-width: var(
+  --editor-preview-slides-navigator-element-width
+);
+$editor-preview-slides-navigator-element-margin: var(
+  --editor-preview-slides-navigator-element-margin
+);
+$editor-preview-sub-slides-navigator-height: var(--editor-preview-sub-slides-navigator-height);
+$editor-preview-sub-slides-navigator-list-height: var(
+  --editor-preview-sub-slides-navigator-list-height
+);
+$editor-preview-sub-slides-navigator-list-width: var(
+  --editor-preview-sub-slides-navigator-list-width
+);
+$editor-preview-sub-slides-navigator-list-element-height: var(
+  --editor-preview-sub-slides-navigator-list-element-height
+);
+$editor-preview-sub-slides-navigator-list-element-width: var(
+  --editor-preview-sub-slides-navigator-list-element-width
+);
+$editor-preview-sub-slides-navigator-list-element-margin: var(
+  --editor-preview-sub-slides-navigator-list-element-margin
+);
 
 // Light & Dark Theme
 html,
