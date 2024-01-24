@@ -87,15 +87,20 @@ export class Presentation {
    * @since 0.2.0
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
-    type MinReqAbstractBlock = Pick<AbstractBlock, 'getContext' | 'getBlocks'>
+    type MinReqAbstractBlock = Pick<AbstractBlock, 'getContext' | 'getBlocks' | 'getLevel'>
 
     let slides = <Array<MinReqAbstractBlock>>document.getBlocks();
     const preambleExists = slides[0]?.getContext() === 'preamble';
-    if (!preambleExists) {
+    const nonPreambleFirstSlideExists = !preambleExists && slides[0]?.getLevel() === 0;
+
+    // We have to also check for 'nonPreambleFirstSlideExists' because if the first slide is the only slide and it is
+    // also not a preamble slide but a standard slide (paragraphs in asciidoc).
+    if (!preambleExists && !nonPreambleFirstSlideExists) {
       slides = [
         {
           getContext: () => 'preamble',
-          getBlocks: () => []
+          getBlocks: () => [],
+          getLevel: () => 0
         },
         ...slides
       ]

@@ -60,8 +60,8 @@ describe("Presentation", () => {
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
       assert.equal(presentation.metadata.title, "Test");
-      assert.equal(presentation.metadata.slideCountInclSubslides,5 );
-      assert.equal(presentation.metadata.slideCount,4);
+      assert.equal(presentation.metadata.slideCountInclSubslides, 5);
+      assert.equal(presentation.metadata.slideCount, 4);
       assert.deepEqual(presentation.metadata.subslideCountPerSlide, [0, 1, 0, 0]);
     });
 
@@ -77,8 +77,8 @@ describe("Presentation", () => {
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
       assert.equal(presentation.metadata.title, "Test");
-      assert.equal(presentation.metadata.slideCountInclSubslides,6 );
-      assert.equal(presentation.metadata.slideCount,4);
+      assert.equal(presentation.metadata.slideCountInclSubslides, 6);
+      assert.equal(presentation.metadata.slideCount, 4);
       assert.deepEqual(presentation.metadata.subslideCountPerSlide, [0, 2, 0, 0]);
     });
 
@@ -93,8 +93,8 @@ describe("Presentation", () => {
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
       assert.equal(presentation.metadata.title, "Test");
-      assert.equal(presentation.metadata.slideCountInclSubslides,8 );
-      assert.equal(presentation.metadata.slideCount,4);
+      assert.equal(presentation.metadata.slideCountInclSubslides, 8);
+      assert.equal(presentation.metadata.slideCount, 4);
       assert.deepEqual(presentation.metadata.subslideCountPerSlide, [0, 2, 2, 0]);
     });
 
@@ -109,9 +109,24 @@ describe("Presentation", () => {
       const asciidocCompiler = new AsciidocCompiler();
       const presentation = await asciidocCompiler.parse(adocFile);
       assert.equal(presentation.metadata.title, "Test");
-      assert.equal(presentation.metadata.slideCountInclSubslides,8 );
-      assert.equal(presentation.metadata.slideCount,4);
+      assert.equal(presentation.metadata.slideCountInclSubslides, 8);
+      assert.equal(presentation.metadata.slideCount, 4);
       assert.deepEqual(presentation.metadata.subslideCountPerSlide, [0, 2, 2, 0]);
+    });
+
+    it("should return proper metadata when the first slide is present but is the only slide", async () => {
+      const adocString = `= Test\n\n== Test\nx\n`;
+      const adocFilename = "test.adoc";
+      const adocFile = await AsciidocFile.fromString(
+        adocFilename,
+        adocString,
+      );
+      const asciidocCompiler = new AsciidocCompiler();
+      const presentation = await asciidocCompiler.parse(adocFile);
+      assert.equal(presentation.metadata.title, "Test");
+      assert.equal(presentation.metadata.slideCountInclSubslides, 1);
+      assert.equal(presentation.metadata.slideCount, 1);
+      assert.deepEqual(presentation.metadata.subslideCountPerSlide, [0]);
     });
   });
 });
