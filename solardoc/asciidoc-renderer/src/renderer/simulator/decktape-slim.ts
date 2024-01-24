@@ -9,6 +9,7 @@ import { registerErrorHandler } from './decktape-utils'
 import { renderHTML } from './decktape-utils'
 import path from 'path'
 import { loadAvailablePlugins } from './decktape-utils'
+import {PresentationMetadata} from "../../presentation-metadata";
 
 /**
  * This is a slimmed down version of the decktape module, which is not CLI-bound.
@@ -28,7 +29,7 @@ export class DecktapeSlim {
    * @since 0.2.0
    */
   // eslint-disable-next-line no-unused-vars
-  public async renderRJSHTMLToPDF(rjsHTML: string): Promise<PDFDocument> {
+  public async renderRJSHTMLToPDF(rjsHTML: string, presentationMetadata: PresentationMetadata): Promise<PDFDocument> {
     const plugins = await loadAvailablePlugins(path.join(__dirname, 'plugins'))
     const browser = await puppeteer.launch({
       headless: true,
@@ -38,7 +39,7 @@ export class DecktapeSlim {
     await page.emulateMediaType('screen')
     await registerErrorHandler(page)
     const pdfDocument = await PDFDocument.create()
-    await renderHTML(page, rjsHTML, pdfDocument, plugins)
+    await renderHTML(page, rjsHTML, pdfDocument, plugins, presentationMetadata)
     await browser.close()
     return PDFDocument.load(await pdfDocument.save())
   }

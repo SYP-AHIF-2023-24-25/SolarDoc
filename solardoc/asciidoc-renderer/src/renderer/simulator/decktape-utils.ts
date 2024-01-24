@@ -4,6 +4,7 @@ import { Font } from 'fonteditor-core'
 import { Page } from 'puppeteer'
 import fs from 'fs'
 import path from 'path'
+import {PresentationMetadata} from "../../presentation-metadata";
 
 export async function registerErrorHandler(page: Page) {
   page
@@ -33,12 +34,13 @@ export async function renderHTML(
   rjsHTML: string,
   pdfDocument: PDFDocument,
   plugins: string[],
+  presentationMetadata: PresentationMetadata,
 ) {
   await page.setContent(rjsHTML)
   let plugin = await createPlugin(page, plugins)
   await configurePlugin(plugin)
   await page.setViewport({ width: 1280, height: 720 })
-  await exportSlides(pdfDocument, page, plugin)
+  await exportSlides(pdfDocument, page, plugin, presentationMetadata)
 }
 
 async function configurePlugin(plugin) {
@@ -68,14 +70,14 @@ async function createActivePlugin(page: Page, plugins: any) {
   }
 }
 
-async function exportSlides(pdf: PDFDocument, page: Page, plugin: any): Promise<void> {
+async function exportSlides(pdf: PDFDocument, page: Page, plugin: any, metadata: PresentationMetadata): Promise<void> {
   const context: any = {
     progressBarOverflow: 0,
     currentSlide: 1,
     exportedSlides: 0,
     pdfFonts: {},
     pdfXObjects: {},
-    totalSlides: await plugin.slideCount(),
+    totalSlides: metadata.slideCount,
   }
   /*if (options.slides && !options.slides[context.currentSlide]) {
     process.stdout.write('\r no progress bar anymore');
@@ -86,17 +88,16 @@ async function exportSlides(pdf: PDFDocument, page: Page, plugin: any): Promise<
   await exportSlide(page, pdf, context)
 
   //const maxSlide = options.slides ? Math.max(...Object.keys(options.slides)) : Infinity;
-  let hasNext = await hasNextSlide(plugin, context)
-  while (hasNext && context.currentSlide < plugin.slideCount) {
-    await nextSlide(plugin, context)
+  while (context.currentSlide < context.totalSlides) {
+    context.currentSlide++;
     //await pause(options.pause);
     /*if (options.slides && !options.slides[context.currentSlide]) {
-      process.stdout.write('\r No progress bar anymore');
+      process.stdout.write('\r progress bar supposed to be here');
     } else {
 
     }*/
     await exportSlide(page, pdf, context)
-    hasNext = await hasNextSlide(plugin, context)
+    //hasNext = await hasNextSlide(plugin, context)
   }
   // Flush consolidated fonts
   Object.values(context.pdfFonts).forEach(({ ref, font }) => {
@@ -106,7 +107,7 @@ async function exportSlides(pdf: PDFDocument, page: Page, plugin: any): Promise<
 }
 
 async function exportSlide(page: Page, pdf: PDFDocument, context: any) {
-  process.stdout.write('\r no progress bar anymore')
+  process.stdout.write('\r Progress bar supposed to be here');
 
   const buffer = await page.pdf({
     width: 1280,
@@ -275,15 +276,4 @@ async function printSlide(pdf: PDFDocument, slide: any, context: any) {
   }
 }
 
-async function hasNextSlide(plugin, context) {
-  if (typeof plugin.hasNextSlide === 'function') {
-    return await plugin.hasNextSlide()
-  } else {
-    return context.currentSlide < context.totalSlides
-  }
-}
 
-async function nextSlide(plugin, context: any) {
-  context.currentSlide++
-  return plugin.nextSlide()
-}

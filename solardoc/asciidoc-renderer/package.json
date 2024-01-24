@@ -36,7 +36,7 @@
     "uglify-js": "3.17.4",
     "prettier": "^3.0.3",
     "babelify": "10.0.0",
-    "browserify-shim": "3.8.16"
+    "copyfiles": "2.4.1"
   },
   "engines": {
     "node": "16 || 18 || 20",
@@ -54,12 +54,10 @@
   "scripts": {
     "build": "pnpm run tsc-build",
     "tsc-build": "tsc",
+    "posttsc-build": "copyfiles -f src/renderer/simulator/plugins/*.js dist/renderer/simulator/plugins",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "eslint": "pnpm run lint",
     "format": "prettier --write src/",
     "prettier": "pnpm run format"
-  },
-  "browserify-shim": {
-    "decktape": "global:decktape"
   }
 }

@@ -34,7 +34,7 @@ export class PDFRenderer extends TargetRenderer<PDFDocument, PDFByteArray> {
   ): Promise<PDFOutput> {
     const revealJsHtml = await presentation.render(new HTMLRenderer(), config)
     const decktapeSimulator = new DecktapeSlim()
-    const pdf: PDFDocument = await decktapeSimulator.renderRJSHTMLToPDF(await revealJsHtml.write())
+    const pdf: PDFDocument = await decktapeSimulator.renderRJSHTMLToPDF(await revealJsHtml.write(),presentation.metadata)
     return new PDFOutput(pdf, presentation)
   }
 
