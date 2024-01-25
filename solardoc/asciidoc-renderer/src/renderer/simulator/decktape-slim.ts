@@ -3,12 +3,10 @@
  *
  * It is based on the decktape module version 3.10.0.
  */
-import { PDFDocument } from 'pdf-lib'
+import {PDFDocument} from 'pdf-lib'
 import puppeteer from 'puppeteer'
-import { registerErrorHandler } from './decktape-utils'
-import { renderHTML } from './decktape-utils'
+import {getScreenshots, loadAvailablePlugins, registerErrorHandler, renderHTML} from './decktape-utils'
 import path from 'path'
-import { loadAvailablePlugins } from './decktape-utils'
 import {PresentationMetadata} from "../../presentation-metadata";
 
 /**
@@ -56,7 +54,18 @@ export class DecktapeSlim {
    * @since 0.2.0
    */
   // eslint-disable-next-line no-unused-vars
-  public async renderRJSHTMLToImage(rjsHTML: string, format: 'png' | 'jpg'): Promise<Buffer> {
-    throw new Error('Not implemented yet!')
+  public async renderRJSHTMLToImage(rjsHTML: string, format: 'png' | 'jpeg'): Promise<Buffer> {
+    const plugins = await loadAvailablePlugins(path.join(__dirname, 'plugins'))
+    const browser = await puppeteer.launch({
+      headless: true,
+    })
+
+    const page = await browser.newPage()
+    await page.emulateMediaType('screen')
+    await registerErrorHandler(page)
+    const pdfDocument = await PDFDocument.create()
+    await page.setContent(rjsHTML);
+    return await getScreenshots(page, pdfDocument, plugins, format);
+
   }
 }

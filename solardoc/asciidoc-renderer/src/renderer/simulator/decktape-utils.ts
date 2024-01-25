@@ -9,7 +9,6 @@ import {PresentationMetadata} from "../../presentation-metadata";
 export async function registerErrorHandler(page: Page) {
   page
     .on('requestfailed', request => {
-      // do not output warning for cancelled requests
       if (request.failure() && request.failure().errorText === 'net::ERR_ABORTED') return
       console.log('\nUnable to load resource from URL: %s', request.url())
     })
@@ -51,11 +50,6 @@ async function configurePlugin(plugin) {
 
 async function createPlugin(page: Page, plugins: string[]) {
   let plugin = await createActivePlugin(page, plugins)
-  /* if (!plugin) {
-      console.log('No supported DeckTape plugin detected, falling back to generic plugin');
-      plugin = plugins['generic'].create(page, options);
-    }
-    plugin = plugins[options.command].create(page, options);*/
   if (!(await plugin.isActive())) {
     throw Error(`Unable to activate the ${plugin.getName()} DeckTape plugin`)
   }
@@ -94,7 +88,6 @@ async function exportSlides(pdf: PDFDocument, page: Page, plugin: any, metadata:
 }
 
 async function exportSlide(page: Page, pdf: PDFDocument, context: any) {
-  process.stdout.write('\r Progress bar supposed to be here');
 
   const buffer = await page.pdf({
     width: 1280,
@@ -111,22 +104,6 @@ async function exportSlide(page: Page, pdf: PDFDocument, context: any) {
   )
   context.exportedSlides++
 
-  /*if (options.screenshots) {
-    for (let resolution of options.screenshotSizes || [options.size]) {
-      await page.setViewport(resolution);
-      // Delay page rendering to wait for the resize event to complete,
-      // e.g. for impress.js (may be needed to be configurable)
-      //await pause(1000);
-      await page.screenshot({
-        path: path.join(options.screenshotDirectory, options.filename
-          .replace('.pdf', `_${context.currentSlide}_${resolution.width}x${resolution.height}.${options.screenshotFormat}`)),
-        fullPage: false,
-        omitBackground: true,
-      });
-      await page.setViewport(options.size);
-      //await pause(1000);
-    }
-  }*/
 }
 
 async function printSlide(pdf: PDFDocument, slide: any, context: any) {
@@ -261,6 +238,35 @@ async function printSlide(pdf: PDFDocument, slide: any, context: any) {
         .reduce((r, [k, v], i) => r + (i > 0 ? ',' : '') + k + '=' + v, '')
     )
   }
+}
+
+export async function getScreenshots(page: Page, pdf: PDFDocument, plugins: any, format: 'png' | 'jpeg'): Promise<Buffer> {
+  let plugin = await createPlugin(page, plugins)
+  await configurePlugin(plugin)
+  const context: any = {
+    progressBarOverflow: 0,
+    currentSlide: 1,
+    exportedSlides: 0,
+    pdfFonts: {},
+    pdfXObjects: {},
+    totalSlides: 5,
+  }
+  await exportSlide(page, pdf, context)
+
+  await page.setViewport({ width: 1280, height: 720 });
+  await pause(1000);
+  console.log(format)
+    return page.screenshot({
+      fullPage: false,
+      omitBackground: true,
+      encoding: "binary",
+      type: format,
+    });
+
+}
+
+async function pause(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function nextSlide(plugin, context) {

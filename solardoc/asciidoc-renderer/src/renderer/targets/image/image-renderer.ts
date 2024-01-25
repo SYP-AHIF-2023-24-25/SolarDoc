@@ -14,8 +14,6 @@ import { PDFOutput } from '../pdf'
 export class ImageRenderer extends TargetRenderer<unknown, unknown> {
   public constructor() {
     super()
-    // TODO!
-    throw new Error('Not implemented yet!')
   }
 
   /**

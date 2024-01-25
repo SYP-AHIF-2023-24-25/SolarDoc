@@ -31,7 +31,7 @@ describe("PdfRenderer", () => {
     it("should return PDF document with multiple pages", async () => {
       const adocString =
         `= Test\n\nx\n\n== Still testing\n\nMain-Slide 2\n\n=== Still testing\n\nSub-Slide 2.1\n\n== Still testing
-\n\nx\n\n== Still testing\n\nx"`;
+\n\nMain-Slide 3\n\n== Still testing\n\nMain-Slide 4`;
       const adocFilename = "test.adoc";
       const adocFile = await AsciidocFile.fromString(
         adocFilename,
