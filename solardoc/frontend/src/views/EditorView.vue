@@ -64,7 +64,7 @@ function handlePreviewButtonPress() {
   console.log('Preview button clicked')
 }
 
-let copyButtonTimeout: number | null = null
+let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
 const copyButtonContent = ref('Copy')
 
 function handleCopyButtonClick() {
