@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {storeToRefs} from "pinia";
-import {useRenderDataStore} from "@/stores/render-data";
-import SlideSubSlidePreview from "@/components/sub-slides-navigator/SlideSubSlidePreview.vue";
+import { storeToRefs } from 'pinia'
+import { useRenderDataStore } from '@/stores/render-data'
+import SlideSubSlidePreview from '@/components/sub-slides-navigator/SlideSubSlidePreview.vue'
 
 defineProps({
   slideIndex: {
@@ -16,17 +16,17 @@ const { subslideCountPerSlide } = storeToRefs(renderDataStore)
 </script>
 
 <template>
-  <div
-    :id="'slide-sub-slides-navigator-' + slideIndex"
-    class="slide-sub-slides-navigator"
-  >
+  <div :id="'slide-sub-slides-navigator-' + slideIndex" class="slide-sub-slides-navigator">
     <template v-if="subslideCountPerSlide">
       <div class="slide-sub-slides-navigator-list">
         <SlideSubSlidePreview
-          v-for="i in Array(subslideCountPerSlide[slideIndex]).fill(null).map((_, i) => i)"
+          v-for="i in Array(subslideCountPerSlide[slideIndex])
+            .fill(null)
+            .map((_, i) => i)"
           :key="i"
           :slide-index="slideIndex"
-          :sub-slide-index="i">
+          :sub-slide-index="i"
+        >
         </SlideSubSlidePreview>
       </div>
     </template>
