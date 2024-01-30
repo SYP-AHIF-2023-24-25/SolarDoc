@@ -65,8 +65,27 @@ function handlePreviewButtonPress() {
 }
 
 
+function unsecuredCopyToClipboard(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    // Deprecated, but there is not alternative for HTTP-only contexts
+    document.execCommand('copy');
+  } catch (err) {
+    console.error('Unable to copy to clipboard', err);
+  }
+  document.body.removeChild(textArea);
+}
+
 function handleCopyButtonClick() {
-  navigator.clipboard.writeText(editorContentStore.editorContent);
+  if (navigator.clipboard) { // If normal copy method available, use it
+    navigator.clipboard.writeText(editorContentStore.editorContent);
+  } else { // Otherwise fallback to the above function
+    unsecuredCopyToClipboard(editorContentStore.editorContent);
+  }
 }
 
 function handleDownloadButtonClick() {
