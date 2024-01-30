@@ -4,6 +4,12 @@ import {PresentationMetadata} from './presentation-metadata'
 import AbstractBlock = Asciidoctor.AbstractBlock;
 
 /**
+ * The default title that is used if no title is specified in the asciidoc file.
+ * @since 0.3.1
+ */
+export const DEFAULT_PRESENTATION_TITLE: string = "Unnamed Presentation"
+
+/**
  * A presentation is a collection of slides, which internally are reveal.js slides. These can be converted to HTML,
  * PDFs or images.
  * @since 0.2.0
@@ -87,15 +93,20 @@ export class Presentation {
    * @since 0.2.0
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
-    type MinReqAbstractBlock = Pick<AbstractBlock, 'getContext' | 'getBlocks'>
+    type MinReqAbstractBlock = Pick<AbstractBlock, 'getContext' | 'getBlocks' | 'getLevel'>
 
     let slides = <Array<MinReqAbstractBlock>>document.getBlocks();
     const preambleExists = slides[0]?.getContext() === 'preamble';
-    if (!preambleExists) {
+    const nonPreambleFirstSlideExists = !preambleExists && slides[0]?.getLevel() === 0;
+
+    // We have to also check for 'nonPreambleFirstSlideExists' because if the first slide is the only slide and it is
+    // also not a preamble slide but a standard slide (paragraphs in asciidoc).
+    if (!preambleExists && !nonPreambleFirstSlideExists) {
       slides = [
         {
           getContext: () => 'preamble',
-          getBlocks: () => []
+          getBlocks: () => [],
+          getLevel: () => 0
         },
         ...slides
       ]
@@ -108,8 +119,10 @@ export class Presentation {
     const slideCount = subslideCountPerSlide.length
     const slideCountInclSubslides = subslideCountPerSlide.reduce((a, b) => a + b, slideCount)
 
+    const title = document.getDocumentTitle() || DEFAULT_PRESENTATION_TITLE
     return {
-      title: document.getDocumentTitle(),
+      defaultTitle: title === DEFAULT_PRESENTATION_TITLE,
+      title: title,
       author: document.getAuthor(),
       slideCount: slideCount,
       slideCountInclSubslides: slideCountInclSubslides,
