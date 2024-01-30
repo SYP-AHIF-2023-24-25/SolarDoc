@@ -64,11 +64,14 @@ function handlePreviewButtonPress() {
   console.log('Preview button clicked')
 }
 
+let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
+const copyButtonContent = ref('Copy')
+
 let unsecureWarningShown: boolean = false
 function unsecuredCopyToClipboard(text: string) {
   if (!unsecureWarningShown) {
     console.warn(
-      "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
+        "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
     )
     unsecureWarningShown = true
   }
@@ -95,6 +98,14 @@ function handleCopyButtonClick() {
     // Otherwise fallback to the above function
     unsecuredCopyToClipboard(editorContentStore.editorContent)
   }
+
+  copyButtonContent.value = 'Copied!';
+  if (copyButtonTimeout) {
+    clearTimeout(copyButtonTimeout);
+  }
+  copyButtonTimeout = setTimeout(() => {
+    copyButtonContent.value = 'Copy';
+  }, 1000);
 }
 
 function handleDownloadButtonClick() {
@@ -136,7 +147,7 @@ setInterval(updateLastModified, 500)
           <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
         </button>
         <div id="button-menu">
-          <button class="editor-button" @click="handleCopyButtonClick()">Copy</button>
+          <button class="editor-button" @click="handleCopyButtonClick()">{{ copyButtonContent }}</button>
           <button class="editor-button">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
