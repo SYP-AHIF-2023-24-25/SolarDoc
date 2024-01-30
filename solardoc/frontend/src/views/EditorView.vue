@@ -64,9 +64,19 @@ function handlePreviewButtonPress() {
   console.log('Preview button clicked')
 }
 
+let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
+const copyButtonContent = ref('Copy')
 
 function handleCopyButtonClick() {
   navigator.clipboard.writeText(editorContentStore.editorContent);
+  copyButtonContent.value = 'Copied!';
+
+  if (copyButtonTimeout) {
+    clearTimeout(copyButtonTimeout);
+  }
+  copyButtonTimeout = setTimeout(() => {
+    copyButtonContent.value = 'Copy';
+  }, 1000);
 }
 
 function handleDownloadButtonClick() {
@@ -107,7 +117,7 @@ setInterval(updateLastModified, 500)
           <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
         </button>
         <div id="button-menu">
-          <button class="editor-button" @click="handleCopyButtonClick()">Copy</button>
+          <button class="editor-button" @click="handleCopyButtonClick()">{{ copyButtonContent }}</button>
           <button class="editor-button">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
