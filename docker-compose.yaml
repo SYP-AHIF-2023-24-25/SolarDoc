@@ -45,6 +45,24 @@ services:
     links:
       - redis-db
     restart: always
+  ws-server:
+    build: ./solardoc/ws-server
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgresql-db:5432/${POSTGRES_DB}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      PHX_HOST: ${PROD_PHX_HOST}
+      PORT: 4000
+    depends_on:
+      postgresql-db:
+        condition: service_healthy
+      redis-db:
+        condition: service_healthy
+    links:
+      - postgresql-db
+      - rest-api
+      - redis-db
   redis-db:
     build: ./solardoc/redis-db
     ports:
@@ -83,7 +101,7 @@ services:
   postgres-adminer:
     build: ./solardoc/postgres-adminer
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       ADMINER_DESIGN: 'hydra'
     restart: always
