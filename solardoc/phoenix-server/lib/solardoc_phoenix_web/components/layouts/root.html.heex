@@ -4,10 +4,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Phoenix Framework">
-      <%= assigns[:page_title] || "SolardocPhoenix" %>
+    <.live_title>
+      <%= assigns[:page_title] || "Solardoc" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+
+    <!-- Solardoc meta properties -->
+    <meta property="og:site_name" content="SolarDoc">
+    <meta property="og:title" content="SolarDoc">
+    <meta property="og:description" content="Create and share beautiful presentations with anyone">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="https://raw.githubusercontent.com/SYP-AHIF-2023-24-25/SolarDoc/main/images/500x1500-banner-with-desc.png">
+    <meta property="og:locale" content="en_GB">
+
+    <!-- Set the icon -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/SYP-AHIF-2023-24-25/SolarDoc/main/images/favicon.ico">
+
+    <!-- Assign the user token for authenticating with the WebSocket & API -->
+    <script>window.userToken = "<%= assigns[:user_token] %>";</script>
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
