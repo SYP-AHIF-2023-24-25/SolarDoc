@@ -45,8 +45,8 @@ services:
     links:
       - redis-db
     restart: always
-  ws-server:
-    build: ./solardoc/ws-server
+  phoenix-server:
+    build: solardoc/phoenix-server
     ports:
       - "4000:4000"
     environment:
