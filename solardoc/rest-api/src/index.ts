@@ -22,7 +22,7 @@ export const API_PREFIXED_VERSION = `v${API_VERSION}`
  * The base path to the API, not versioned.
  * @since 0.2.0
  */
-export const API_BASE_PATH = '/api'
+export const API_BASE_PATH = getEnv('API_BASE_PATH', false) ?? '/api'
 
 /**
  * The base path to the API, versioned.
@@ -84,8 +84,8 @@ if (require.main === module) {
   // Run the application
   const config = {
     rest: {
-      port: +(process.env.PORT ?? 3000),
-      host: process.env.HOST,
+      port: (+process.env.PORT! || 3000),
+      host: process.env.HOST || '0.0.0.0',
       // The `gracePeriodForClose` provides a graceful close for http/https
       // servers with keep-alive clients. The default value is `Infinity`
       // (don't force-close). If you want to immediately destroy all sockets

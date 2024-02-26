@@ -3,9 +3,9 @@ import { isDev } from '@/config/env'
 
 // Overwrite the default configuration depending on the environment
 api.defaults.baseUrl = isDev
-  ? `${import.meta.env.DEV_BACKEND_HOST}:${import.meta.env.DEV_BACKEND_PORT}` // Development Default
-  : `${import.meta.env.PROD_BACKEND_HOST}:${import.meta.env.PROD_BACKEND_PORT}` // Production Default
-api.defaults.baseUrl += '/api' // Append the API prefix (always present)
+  ? `${import.meta.env.DEV_BACKEND_HOST}${import.meta.env.DEV_BACKEND_PORT ? `:${import.meta.env.DEV_BACKEND_PORT}` : ""}` // Development Default
+  : `${import.meta.env.PROD_BACKEND_HOST}${import.meta.env.PROD_BACKEND_PORT ? `:${import.meta.env.PROD_BACKEND_PORT}` : ""}` // Production Default
+api.defaults.baseUrl += import.meta.env.API_BASE_PATH ?? '/api'
 
 // Log the base URL in case there is a problem
 console.log(`[api-service.ts] Using backend at '${api.defaults.baseUrl}'`)
