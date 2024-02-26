@@ -4,10 +4,6 @@ defmodule SolardocPhoenixWeb.UserSessionController do
   alias SolardocPhoenix.Accounts
   alias SolardocPhoenixWeb.UserAuth
 
-  def new(conn, _params) do
-    render(conn, :new, error_message: nil)
-  end
-
   def create(conn, %{"user" => user_params}) do
     %{"email" => email, "password" => password} = user_params
 

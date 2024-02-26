@@ -5,10 +5,6 @@ defmodule SolardocPhoenixWeb.UserResetPasswordController do
 
   plug :get_user_by_reset_password_token when action in [:edit, :update]
 
-  def new(conn, _params) do
-    render(conn, :new)
-  end
-
   def create(conn, %{"user" => %{"email" => email}}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_reset_password_instructions(
@@ -23,10 +19,6 @@ defmodule SolardocPhoenixWeb.UserResetPasswordController do
       "If your email is in our system, you will receive instructions to reset your password shortly."
     )
     |> redirect(to: ~p"/")
-  end
-
-  def edit(conn, _params) do
-    render(conn, :edit, changeset: Accounts.change_user_password(conn.assigns.user))
   end
 
   # Do not log in the user after reset password to avoid a

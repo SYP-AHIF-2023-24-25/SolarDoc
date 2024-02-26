@@ -3,10 +3,6 @@ defmodule SolardocPhoenixWeb.UserConfirmationController do
 
   alias SolardocPhoenix.Accounts
 
-  def new(conn, _params) do
-    render(conn, :new)
-  end
-
   def create(conn, %{"user" => %{"email" => email}}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_confirmation_instructions(
@@ -22,10 +18,6 @@ defmodule SolardocPhoenixWeb.UserConfirmationController do
         "you will receive an email with instructions shortly."
     )
     |> redirect(to: ~p"/")
-  end
-
-  def edit(conn, %{"token" => token}) do
-    render(conn, :edit, token: token)
   end
 
   # Do not log in the user after confirmation to avoid a
