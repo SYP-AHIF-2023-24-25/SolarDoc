@@ -12,8 +12,8 @@ services:
       - "80:80"
     environment:
       PUPPETEER_SKIP_DOWNLOAD: true
-      PROD_BACKEND_PORT: ${PROD_BACKEND_PORT}
-      PROD_BACKEND_HOST: ${PROD_BACKEND_HOST}
+      PROD_BACKEND_PORT: ${BACKEND_PORT}
+      PROD_BACKEND_HOST: ${BACKEND_HOST}
       API_BASE_PATH: ${API_BASE_PATH}
       NODE_ENV: production
     depends_on:
