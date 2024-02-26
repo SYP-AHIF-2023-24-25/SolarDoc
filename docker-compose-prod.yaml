@@ -27,7 +27,6 @@ services:
       - "traefik.http.routers.rest-api.tls.certresolver=solardocresolver"
   redis-db:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-redis-db:latest
-    ports: !reset []
     networks:
       - solardocnet
 
