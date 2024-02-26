@@ -6,8 +6,12 @@
   "keywords": [
     "solardoc",
     "solardoc-api",
-    "loopback-application",
-    "loopback"
+    "solardoc-frontend",
+    "vue3",
+    "vite",
+    "typescript",
+    "pinia",
+    "monaco-editor"
   ],
   "engines": {
     "node": "16 || 18 || 20",

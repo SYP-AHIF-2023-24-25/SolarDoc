@@ -38,4 +38,12 @@ export interface PresentationMetadata {
    * @since 0.3.0
    */
   subslideCountPerSlide: number[];
+
+  /**
+   * Returns true if the {@link title} is "Untitled Presentation".
+   *
+   * This is the default title that is used by SolarDoc if no title is specified in the asciidoc file.
+   * @since 0.3.1
+   */
+  defaultTitle: boolean;
 }

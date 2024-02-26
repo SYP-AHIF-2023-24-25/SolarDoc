@@ -1,4 +1,4 @@
-import {defineStore} from "pinia";
+import { defineStore } from 'pinia'
 
 export const usePreviewSelectedSlideStore = defineStore('previewSelectedSlide', {
   state: () => {
@@ -8,6 +8,6 @@ export const usePreviewSelectedSlideStore = defineStore('previewSelectedSlide', 
     setSlide(slideIndex: number, subSlideIndex?: number) {
       this.slideIndex = slideIndex
       this.subSlideIndex = subSlideIndex
-    }
+    },
   },
-});
+})
