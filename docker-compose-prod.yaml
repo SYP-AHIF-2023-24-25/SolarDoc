@@ -1,7 +1,41 @@
+version: '3'
 services:
   frontend:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-frontend:latest
+    ports: !override
+      - "8081:80"
+    volumes:
+      - frontend:/usr/share/nginx/html
+      - ./solardoc/frontend/nginx/nginx-dev.conf:/etc/nginx/conf.d/nginx.conf
+    networks:
+      - solardocnet
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`$DOMAIN`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=solardocresolver"
   rest-api:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-rest-api:latest
+    ports: !override
+      - "3000:3000"
+    networks:
+      - solardocnet
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rest-api.rule=Host(`$DOMAIN`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.rest-api.entrypoints=websecure"
+      - "traefik.http.routers.rest-api.tls.certresolver=solardocresolver"
   redis-db:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-redis-db:latest
+    ports: !reset []
+    networks:
+      - solardocnet
+
+volumes:
+  frontend:
+  certbot-etc:
+
+networks:
+  solardocnet:
+    external: true
+    name: solardocnet

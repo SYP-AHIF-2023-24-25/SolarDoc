@@ -4,15 +4,16 @@ services:
       context: .
       dockerfile: ./solardoc/frontend/Dockerfile
       args:
-        PUPPETEER_SKIP_DOWNLOAD: true
+        PUPPETEER_SKIP_DOWNLOAD: "true"
     volumes:
       - ./solardoc/frontend:/home/node/app
+      - ./solardoc/frontend/nginx/nginx-dev.conf:/etc/nginx/conf.d/nginx.conf
     ports:
       - "80:80"
     environment:
-      PUPPETEER_SKIP_DOWNLOAD: true
-      PROD_BACKEND_PORT: ${PROD_BACKEND_PORT}
-      PROD_BACKEND_HOST: ${PROD_BACKEND_HOST}
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+      PROD_BACKEND_PORT: ${BACKEND_PORT}
+      PROD_BACKEND_HOST: ${BACKEND_HOST}
       NODE_ENV: production
     depends_on:
       - rest-api
@@ -24,7 +25,7 @@ services:
       context: .
       dockerfile: ./solardoc/rest-api/Dockerfile
       args:
-        PUPPETEER_SKIP_DOWNLOAD: true
+        PUPPETEER_SKIP_DOWNLOAD: "true"
         PERSISTENT_STORAGE_PATH: ${PERSISTENT_STORAGE_PATH}
     ports:
       - "3000:3000"
@@ -35,7 +36,7 @@ services:
       REDIS_HOST: redis-db
       REDIS_PORT: 6379
       PERSISTENT_STORAGE_PATH: ${PERSISTENT_STORAGE_PATH}
-      PUPPETEER_SKIP_DOWNLOAD: true
+      PUPPETEER_SKIP_DOWNLOAD: "true"
       NODE_ENV: production
     volumes:
       - rest-api-persistent-storage:${PERSISTENT_STORAGE_PATH}
@@ -65,4 +66,6 @@ services:
     restart: always
 
 volumes:
+  frontend:
   rest-api-persistent-storage:
+

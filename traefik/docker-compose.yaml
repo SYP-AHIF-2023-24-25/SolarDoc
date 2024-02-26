@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  traefik_reverse_proxy:
+    image: traefik:v2.10
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      # traefik static configuration
+      - ./traefik.yaml:/etc/traefik/traefik.yaml:ro
+      # custom folder with dynamic configuration
+      - ./custom:/etc/traefik/custom:ro
+      # ssl volumes to store acme.json
+      - ./certs:/letsencrypt
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    networks:
+      - solardocnet
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    expose:
+      - "8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-api.rule=Host(`$DOMAIN`)"
+      - "traefik.http.routers.traefik-api.service=api@internal"
+networks:
+  solardocnet:
+    external: false
+    name: solardocnet
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.2.0.0/24
