@@ -81,13 +81,9 @@
   --editor-preview-slides-navigator-element-margin: 0.5rem;
   --editor-preview-sub-slides-navigator-height: max(
     calc(
-      100vh
-      - var(--nav-bar-height)
-      - var(--editor-menu-height)
-      - var(--editor-preview-frame-height)
-      - var(--editor-preview-meta-info-height)
-      - var(--editor-preview-slides-navigator-height)
-      - var(--editor-border-width)
+      100vh - var(--nav-bar-height) - var(--editor-menu-height) - var(--editor-preview-frame-height) - var(
+          --editor-preview-meta-info-height
+        ) - var(--editor-preview-slides-navigator-height) - var(--editor-border-width)
     ),
     15rem
   );
@@ -96,7 +92,7 @@
   );
   --editor-preview-sub-slides-navigator-list-width: calc(
     var(--editor-preview-slides-navigator-element-width) +
-    var(--editor-preview-slides-navigator-element-margin) * 2
+      var(--editor-preview-slides-navigator-element-margin) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-height: calc(
     var(--editor-preview-slides-navigator-element-height) - 1rem

@@ -13,6 +13,7 @@ services:
       PUPPETEER_SKIP_DOWNLOAD: true
       PROD_BACKEND_PORT: ${PROD_BACKEND_PORT}
       PROD_BACKEND_HOST: ${PROD_BACKEND_HOST}
+      API_BASE_PATH: ${API_BASE_PATH}
       NODE_ENV: production
     depends_on:
       - rest-api
@@ -29,6 +30,7 @@ services:
     ports:
       - "3000:3000"
     environment:
+      API_BASE_PATH: ${API_BASE_PATH}
       REDIS_ROOT_PASSWORD: ${REDIS_ROOT_PASSWORD}
       REDIS_USERNAME: ${REDIS_USERNAME}
       REDIS_PASSWORD: ${REDIS_PASSWORD}

@@ -4,7 +4,7 @@ import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
-import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
+import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
 import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
 import { handleRender } from '@/scripts/handle-render'
@@ -64,26 +64,67 @@ function handlePreviewButtonPress() {
   console.log('Preview button clicked')
 }
 
+let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
+const copyButtonContent = ref('Copy')
+
+let unsecureWarningShown: boolean = false
+function unsecuredCopyToClipboard(text: string) {
+  if (!unsecureWarningShown) {
+    console.warn(
+        "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
+    )
+    unsecureWarningShown = true
+  }
+
+  const textArea = document.createElement('textarea')
+  textArea.value = text
+  document.body.appendChild(textArea)
+  textArea.focus()
+  textArea.select()
+  try {
+    // Deprecated, but there is not alternative for HTTP-only contexts
+    document.execCommand('copy')
+  } catch (err) {
+    console.error('Unable to copy to clipboard', err)
+  }
+  document.body.removeChild(textArea)
+}
 
 function handleCopyButtonClick() {
-  navigator.clipboard.writeText(editorContentStore.editorContent);
+  if (navigator.clipboard) {
+    // If normal copy method available, use it
+    navigator.clipboard.writeText(editorContentStore.editorContent)
+  } else {
+    // Otherwise fallback to the above function
+    unsecuredCopyToClipboard(editorContentStore.editorContent)
+  }
+
+  copyButtonContent.value = 'Copied!';
+  if (copyButtonTimeout) {
+    clearTimeout(copyButtonTimeout);
+  }
+  copyButtonTimeout = setTimeout(() => {
+    copyButtonContent.value = 'Copy';
+  }, 1000);
 }
 
 function handleDownloadButtonClick() {
-  let text: string = editorContentStore.editorContent;
-  let fileName: string = fileNameStore.fileName;
-  let fileType: string = "text/asciidoc";
-  let bloby:Blob = new Blob([text], { type: fileType });
+  let text: string = editorContentStore.editorContent
+  let fileName: string = fileNameStore.fileName
+  let fileType: string = 'text/asciidoc'
+  let bloby: Blob = new Blob([text], { type: fileType })
 
-  let a = document.createElement('a');
-  a.download = fileName;
-  a.href = URL.createObjectURL(bloby);
-  a.dataset.downloadurl = [fileType, a.download, a.href].join(':');
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
+  let a = document.createElement('a')
+  a.download = fileName
+  a.href = URL.createObjectURL(bloby)
+  a.dataset.downloadurl = [fileType, a.download, a.href].join(':')
+  a.style.display = 'none'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  setTimeout(function () {
+    URL.revokeObjectURL(a.href)
+  }, 1500)
 }
 
 // Last modified is a ref which is updated every second to show the last modified time
@@ -94,7 +135,6 @@ function getLastModified(): string {
 
 const updateLastModified = () => (lastModified.value = getLastModified())
 setInterval(updateLastModified, 500)
-
 </script>
 
 <template>
@@ -107,7 +147,7 @@ setInterval(updateLastModified, 500)
           <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
         </button>
         <div id="button-menu">
-          <button class="editor-button" @click="handleCopyButtonClick()">Copy</button>
+          <button class="editor-button" @click="handleCopyButtonClick()">{{ copyButtonContent }}</button>
           <button class="editor-button">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
@@ -157,7 +197,10 @@ setInterval(updateLastModified, 500)
           <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
             <span class="dot-dot-dot-flashing"></span>
           </h2>
-          <iframe v-else :src="`${previewURL}?static=true#${slideIndex}/${(subSlideIndex ?? -1) + 1}`"></iframe>
+          <iframe
+            v-else
+            :src="`${previewURL}?static=true#${slideIndex}/${(subSlideIndex ?? -1) + 1}`"
+          ></iframe>
         </div>
         <div
           id="preview-meta-info"
