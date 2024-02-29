@@ -1,11 +1,19 @@
 {
   "name": "solardoc",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "description": "The SolarDoc project containing all the project code and documentation",
   "engines": {
     "node": "16 || 18 || 20",
     "pnpm": "8"
   },
+  "keywords": [
+    "solardoc",
+    "presentation",
+    "documentation",
+    "fullstack",
+    "asciidoc",
+    "asciidoctor"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc"
