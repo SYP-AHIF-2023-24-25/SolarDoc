@@ -1,6 +1,6 @@
 @use './core/var' as var;
 
-.login-signup-wrapper {
+.page-form-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,7 +8,7 @@
   width: var.$login-signup-wrapper-width;
 }
 
-.login-signup-container {
+.page-form-container {
   width: 80vw;
   min-width: min(30vw, 100px);
   max-width: min(80vw, 500px);

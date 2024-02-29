@@ -45,6 +45,16 @@ const router = createRouter({
       component: () => import('@/views/SignupView.vue'),
     },
     {
+      path: '/reset-password' + htmlExtMatcher,
+      name: 'reset-password',
+      component: () => import('@/views/ResetPasswordView.vue'),
+    },
+    {
+      path: '/profile' + htmlExtMatcher,
+      name: 'profile',
+        component: () => import('@/views/ProfileView.vue'),
+    },
+    {
       path: '/test-editor' + htmlExtMatcher,
       name: 'test-editor',
       component: () => import('@/views/TestEditorView.vue'),

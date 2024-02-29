@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import {useDarkModeStore} from "@/stores/dark-mode";
-
-const darkModeStore = useDarkModeStore()
 </script>
 
 <template>
-  <div id="wrapper" class="login-signup-wrapper">
-    <div id="container" class="login-signup-container">
+  <div id="wrapper" class="page-form-wrapper">
+    <div id="container" class="page-form-container">
       <div id="already-have-an-account">
         <p>Already have an account?</p>
-        <a @click="$router.push('login')">→ Log in</a>
+        <a class="emphasised-link" @click="$router.push('login')">→ Log in</a>
       </div>
-      <h1 id="login-signup-title">Sign Up</h1>
+      <h1 id="login-signup-title">Sign up</h1>
       <Vueform add-class="solardoc-style-form" :display-errors="false">
         <TextElement
             name="username"
@@ -107,7 +104,7 @@ const darkModeStore = useDarkModeStore()
 
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
-@use '@/assets/login-signup' as *;
+@use '@/assets/page-form' as *;
 
 #wrapper {
   #login-signup-title {
@@ -128,17 +125,6 @@ const darkModeStore = useDarkModeStore()
 
     p {
       margin: 0;
-    }
-
-    a {
-      text-decoration: none;
-      color: var.$scheme-cs-2;
-      font-weight: bold;
-      cursor: pointer;
-
-      &:hover {
-        color: var.$scheme-cs-2-intense;
-      }
     }
   }
 }
