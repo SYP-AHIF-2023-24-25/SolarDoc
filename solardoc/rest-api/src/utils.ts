@@ -17,7 +17,7 @@ export function getDateNowInSeconds(): number {
  * @since 0.2.0
  */
 export function getHostURL(req: Request): string {
-  return `${req.protocol}://${req.headers.host}`
+  return req.headers.origin ?? (new URL(req.url)).origin
 }
 
 /**

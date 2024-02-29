@@ -4,6 +4,11 @@ import * as fs from 'fs/promises'
 
 export * from './application'
 
+// Ensure that the environment variables are loaded (only relevant for development mode, as in production mode the .env
+// files are not used but rather global environment variables are used instead. This simplifies the deployment process
+// using Docker.)
+ensureEnvLoaded()
+
 /**
  * The latest version of the API.
  *
@@ -31,11 +36,6 @@ export const API_BASE_PATH = getEnv('API_BASE_PATH', false) ?? '/api'
  * @since 0.2.0
  */
 export const API_VERSIONED_FULL_BASE_PATH = `/${API_BASE_PATH}/v${API_VERSION}`
-
-// Ensure that the environment variables are loaded (only relevant for development mode, as in production mode the .env
-// files are not used but rather global environment variables are used instead. This simplifies the deployment process
-// using Docker.)
-ensureEnvLoaded()
 
 /**
  * The path to the persistent storage directory.
