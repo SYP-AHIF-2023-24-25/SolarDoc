@@ -8,6 +8,8 @@ import SolardocLogoDarkModeSVG from '@/components/icons/SolardocLogoDarkModeSVG.
 import SunDarkModeSVG from '@/components/icons/SunDarkModeSVG.vue'
 import constants from '@/plugins/constants'
 import { useDarkModeStore } from '@/stores/dark-mode'
+import UserIconDarkModeSVG from "@/components/icons/UserIconDarkModeSVG.vue";
+import UserIconSVG from "@/components/icons/UserIconSVG.vue";
 
 const loadingStore = useLoadingStore()
 const darkModeStore = useDarkModeStore()
@@ -40,7 +42,11 @@ function setLoading(state: boolean): void {
         </div>
       </div>
       <div id="clickable-icons">
-        <a :href="constants.githubURL" target="_blank" rel="noopener noreferrer">
+        <a href="./login" @click="setLoading(true)">
+          <UserIconDarkModeSVG v-show="darkModeStore.darkMode" />
+          <UserIconSVG v-show="!darkModeStore.darkMode" />
+        </a>
+        <a @click="$router.push('signup')" target="_blank" rel="noopener noreferrer">
           <GithubLogoDarkModeSVG v-show="darkModeStore.darkMode" />
           <GithubLogoSVG v-show="!darkModeStore.darkMode" />
         </a>
@@ -143,7 +149,8 @@ function setLoading(state: boolean): void {
       display: flex;
       gap: 2rem;
 
-      & > * {
+      & > *,
+      & > * > * {
         @include link-hover-presets;
 
         padding: 0;
