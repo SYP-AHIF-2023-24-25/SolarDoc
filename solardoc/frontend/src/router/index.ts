@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import { useLoadingStore } from '@/stores/loading'
+import HomeView from '../views/HomeView.vue'
 
 const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
@@ -33,6 +33,16 @@ const router = createRouter({
       path: '/editor' + htmlExtMatcher,
       name: 'editor',
       component: () => import('@/views/EditorView.vue'),
+    },
+    {
+      path: '/login' + htmlExtMatcher,
+      name: 'login',
+      component: () => import('@/views/LoginView.vue'),
+    },
+    {
+      path: '/signup' + htmlExtMatcher,
+      name: 'signup',
+      component: () => import('@/views/SignupView.vue'),
     },
     {
       path: '/test-editor' + htmlExtMatcher,

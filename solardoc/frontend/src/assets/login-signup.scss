@@ -1,0 +1,23 @@
+@use './core/var' as var;
+
+.login-signup-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: var.$login-signup-wrapper-height;
+  width: var.$login-signup-wrapper-width;
+}
+
+.login-signup-container {
+  width: 80vw;
+  min-width: min(30vw, 100px);
+  max-width: min(80vw, 500px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: var.$overlay-background-color;
+  box-shadow: 0 0 10px 0 var.$box-shadow-color;
+}

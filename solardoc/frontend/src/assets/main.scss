@@ -9,6 +9,9 @@
 @use './core/spinner' as *;
 @use './core/dotdotdot' as *;
 
+// Other dependencies
+@use './vueform' as *;
+
 // Make app take up whole screen
 body #app {
   height: 100vh;
