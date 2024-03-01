@@ -1,6 +1,6 @@
 /**
  * @solardoc/rest-api
- * 0.2.0
+ * 0.3.0
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
@@ -141,7 +141,15 @@ export function postV1RenderSlideByUuidImage(
     }),
   )
 }
-export function getV1ResultByUuid(uuid: string, opts?: Oazapfts.RequestOpts) {
+export function getV1ResultByUuid(
+  uuid: string,
+  {
+    $static,
+  }: {
+    $static?: string
+  } = {},
+  opts?: Oazapfts.RequestOpts,
+) {
   return oazapfts.fetchBlob<
     | {
         status: 200
@@ -150,7 +158,14 @@ export function getV1ResultByUuid(uuid: string, opts?: Oazapfts.RequestOpts) {
     | {
         status: 404
       }
-  >(`/v1/result/${encodeURIComponent(uuid)}`, {
-    ...opts,
-  })
+  >(
+    `/v1/result/${encodeURIComponent(uuid)}${QS.query(
+      QS.explode({
+        static: $static,
+      }),
+    )}`,
+    {
+      ...opts,
+    },
+  )
 }
