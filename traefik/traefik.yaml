@@ -1,0 +1,47 @@
+global:
+    checkNewVersion: true
+    sendAnonymousUsage: false
+
+entryPoints:
+  web:
+    address: ":80"
+    forwardedHeaders:
+      insecure: true
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ":443"
+    forwardedHeaders:
+      insecure: true
+    http:
+      tls:
+        certresolver: solardocresolver
+
+api:
+  insecure: false
+  dashboard: false
+
+log:
+  level: "DEBUG"
+
+providers:
+  docker:
+    exposedByDefault: false
+    watch: true
+    network: solardocnet
+
+  file:
+    directory: /etc/traefik/custom/
+    watch: true
+
+certificatesResolvers:
+  solardocresolver:
+    acme:
+      email: "dev@lk-at.mozmail.com"
+      storage: "/letsencrypt/acme.json"
+      httpChallenge:
+        entryPoint: web
