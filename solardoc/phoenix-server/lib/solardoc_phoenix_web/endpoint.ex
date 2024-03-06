@@ -10,10 +10,6 @@ defmodule SolardocPhoenixWeb.Endpoint do
     signing_salt: "Kn5OzD52",
     same_site: "Lax"
   ]
-
-  # Live socket at "/live"
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
-
   # Serve socket at "/sds" (can be then accessed by the client through "ws://<DOMAIN>:4000/sd/websocket")
   socket "/sds", SolardocPhoenixWeb.UserSocket,
     websocket: true,

@@ -1,7 +1,14 @@
 {
-  "name": "@solardoc/ws-server",
+  "name": "@solardoc/phoenix",
   "version": "0.3.0",
   "description": "Websocket server using Elixir for SolarDoc",
+  "main": "dist/index.js",
+  "dependencies": {
+    "phoenix": "~1.7.11"
+  },
+  "devDependencies": {
+    "@types/phoenix": "~1.6.4"
+  },
   "scripts": {
     "setup": "mix setup",
     "start": "mix phx.server",
@@ -10,7 +17,8 @@
     "rollback": "mix ecto.rollback",
     "test": "mix test",
     "format": "mix format",
-    "lint": "mix credo --strict"
+    "lint": "mix credo --strict",
+    "build": "tsc"
   },
   "keywords": [
     "solardoc",
@@ -18,6 +26,11 @@
     "server",
     "elixir",
     "phoenix"
+  ],
+  "files": [
+    "README.md",
+    "dist",
+    "client"
   ],
   "repository": {
     "type": "git",
