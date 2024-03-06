@@ -1,4 +1,9 @@
-export function getHumanReadableTimeInfo(date: Date): string {
+export function getHumanReadableTimeInfo(date: Date | number): string {
+  // If the date is a number, convert it to a Date object
+  if (typeof date === 'number') {
+    date = new Date(date)
+  }
+
   const now = new Date()
   const diff = now.getTime() - date.getTime()
   const diffSeconds = Math.round(diff / 1000)

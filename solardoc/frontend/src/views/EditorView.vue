@@ -6,7 +6,7 @@ import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
-import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
+import { useOverlayStateStore } from '@/stores/overlay-state'
 import { handleRender } from '@/scripts/handle-render'
 import { useFileNameStore } from '@/stores/file-name'
 import { useRenderDataStore } from '@/stores/render-data'
@@ -20,12 +20,14 @@ import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavig
 import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import * as backendAPI from '@/services/backend/api-service'
+import EditorSandwichDropdown from "@/components/editor/dropdown/EditorSandwichDropdown.vue";
+import ChannelView from "@/components/channel-view/ChannelView.vue";
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
-const fullScreenPreviewStore = useFullScreenPreviewStore()
+const overlayStateStore = useOverlayStateStore()
 const renderDataStore = useRenderDataStore()
 const fileNameStore = useFileNameStore()
 const lastModifiedStore = useLastModifiedStore()
@@ -60,7 +62,7 @@ editorContentStore.$subscribe(
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
-  fullScreenPreviewStore.setFullScreenPreview(true)
+  overlayStateStore.setFullScreenPreview(true)
   console.log('Preview button clicked')
 }
 
@@ -138,14 +140,12 @@ setInterval(updateLastModified, 500)
 </script>
 
 <template>
+  <ChannelView />
   <FullScreenPreview />
   <div id="editor-page">
     <div id="menu">
       <div id="menu-left-side">
-        <button id="sandwich-menu-button" class="sandwich-button">
-          <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
-          <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
-        </button>
+        <EditorSandwichDropdown />
         <div id="button-menu">
           <button class="editor-button" @click="handleCopyButtonClick()">{{ copyButtonContent }}</button>
           <button class="editor-button">Share</button>

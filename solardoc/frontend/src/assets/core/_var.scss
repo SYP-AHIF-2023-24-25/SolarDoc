@@ -4,6 +4,8 @@
   --scheme-blue: var(--scheme-cs-1);
   --scheme-cs-2: #4d2db7;
   --scheme-purple: var(--scheme-cs-2);
+  --scheme-cs-2-intense: rgba(112, 90, 183, 1);
+  --scheme-purple-intense: var(--scheme-cs-2-intense);
   --scheme-cs-2-subtle: rgba(112, 90, 183, 0.5);
   --scheme-purple-subtle: var(--scheme-cs-2-subtle);
   --scheme-cs-3: #9d44c0;
@@ -16,14 +18,33 @@
   --scheme-black: var(--scheme-space-black);
   --scheme-neutral-gray: #f6f8fa;
   --scheme-background-black: #0f111a;
+  --scheme-background-black-subtle: #242038;
+  --scheme-background-blue: #10355b;
+  --scheme-background-blue-subtle: #0F2555;
   --scheme-editor-black: var(--scheme-background-black);
-  --scheme-editor-blue: #10355b;
+  --scheme-editor-blue: var(--scheme-background-blue);
   --scheme-white-subtle: rgba(255, 255, 255, 0.2);
   --scheme-link-hover-color: var(--scheme-cs-2);
+
+  // Universal gray tones
+  --scheme-gray-100: #f3f4f6;
+  --scheme-gray-200: #e5e7eb;
+  --scheme-gray-300: #d1d5db;
+  --scheme-gray-400: #9ca3af;
+  --scheme-gray-500: #6b7280;
+  --scheme-gray-600: #4b5563;
+  --scheme-gray-700: #374151;
+  --scheme-gray-800: #1f2937;
+  --scheme-gray-900: #111827;
+
+  // Vueform config
+  --vueform-button-color: var(--scheme-cs-2);
+  --vueform-button-color-hover: var(--scheme-cs-1);
 
   // Font-size presets
   --home-button-font-size: 20px;
   --editor-button-font-size: 16px;
+  --highlighted-button-font-size: 16px;
 
   // Window size presets
   --window-large: 1200px;
@@ -42,6 +63,10 @@
   --main-body-padding: 0;
   --main-body-margin: 0;
 
+  // Login/Signup presets
+  --login-signup-wrapper-height: calc(100vh - var(--nav-bar-height));
+  --login-signup-wrapper-width: 100%;
+
   // Editor body presets
   --editor-body-height: var(--main-body-height);
   --editor-menu-height: 2rem;
@@ -50,7 +75,7 @@
   --editor-menu-button-menu-padding: 0;
   --editor-menu-button-menu-margin: 0;
   --editor-monaco-and-preview-menu-height: calc(
-    var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
+          var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
   );
   --editor-preview-menu-height: var(--editor-monaco-and-preview-menu-height);
   --editor-monaco-height: var(--editor-monaco-and-preview-menu-height);
@@ -62,7 +87,7 @@
 
   // Editor preview presets (Has a ratio of 2:1)
   --editor-preview-frame-width: calc(
-    100vw - var(--editor-monaco-width) - var(--editor-border-width)
+          100vw - var(--editor-monaco-width) - var(--editor-border-width)
   );
   --editor-preview-frame-height: calc(var(--editor-preview-frame-width) * 0.5);
   --editor-preview-frame-padding: 0;
@@ -76,29 +101,29 @@
   --editor-preview-slides-navigator-width: var(--editor-preview-frame-width);
   --editor-preview-slides-navigator-element-height: 10rem;
   --editor-preview-slides-navigator-element-width: calc(
-    var(--editor-preview-slides-navigator-element-height) * 2
+          var(--editor-preview-slides-navigator-element-height) * 2
   );
   --editor-preview-slides-navigator-element-margin: 0.5rem;
   --editor-preview-sub-slides-navigator-height: max(
-    calc(
-      100vh - var(--nav-bar-height) - var(--editor-menu-height) - var(--editor-preview-frame-height) - var(
-          --editor-preview-meta-info-height
-        ) - var(--editor-preview-slides-navigator-height) - var(--editor-border-width)
-    ),
-    15rem
+          calc(
+                  100vh - var(--nav-bar-height) - var(--editor-menu-height) - var(--editor-preview-frame-height) - var(
+                          --editor-preview-meta-info-height
+                  ) - var(--editor-preview-slides-navigator-height) - var(--editor-border-width)
+          ),
+          15rem
   );
   --editor-preview-sub-slides-navigator-list-height: var(
-    --editor-preview-sub-slides-navigator-height
+                  --editor-preview-sub-slides-navigator-height
   );
   --editor-preview-sub-slides-navigator-list-width: calc(
-    var(--editor-preview-slides-navigator-element-width) +
-      var(--editor-preview-slides-navigator-element-margin) * 2
+          var(--editor-preview-slides-navigator-element-width) +
+          var(--editor-preview-slides-navigator-element-margin) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-height: calc(
-    var(--editor-preview-slides-navigator-element-height) - 1rem
+          var(--editor-preview-slides-navigator-element-height) - 1rem
   );
   --editor-preview-sub-slides-navigator-list-element-width: calc(
-    var(--editor-preview-sub-slides-navigator-list-element-height) * 2
+          var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
 }
@@ -108,6 +133,10 @@ $scheme-cs-1: var(--scheme-cs-1);
 $scheme-blue: var(--scheme-cs-1);
 $scheme-cs-2: var(--scheme-cs-2);
 $scheme-purple: var(--scheme-cs-2);
+$scheme-cs-2-intense: var(--scheme-cs-2-intense);
+$scheme-purple-intense: var(--scheme-cs-2-intense);
+$scheme-cs-2-subtle: var(--scheme-cs-2-subtle);
+$scheme-purple-subtle: var(--scheme-cs-2-subtle);
 $scheme-cs-3: var(--scheme-cs-3);
 $scheme-lavender: var(--scheme-cs-3);
 $scheme-cs-4: var(--scheme-cs-4);
@@ -123,9 +152,25 @@ $scheme-editor-blue: var(--scheme-editor-blue);
 $scheme-white-subtle: var(--scheme-white-subtle);
 $scheme-link-hover-color: var(--scheme-cs-2);
 
+// Universal gray tones
+$scheme-gray-100: var(--scheme-gray-100);
+$scheme-gray-200: var(--scheme-gray-200);
+$scheme-gray-300: var(--scheme-gray-300);
+$scheme-gray-400: var(--scheme-gray-400);
+$scheme-gray-500: var(--scheme-gray-500);
+$scheme-gray-600: var(--scheme-gray-600);
+$scheme-gray-700: var(--scheme-gray-700);
+$scheme-gray-800: var(--scheme-gray-800);
+$scheme-gray-900: var(--scheme-gray-900);
+
+// Vueform config
+$vueform-button-color: var(--vueform-button-color);
+$vueform-button-color-hover: var(--vueform-button-color-hover);
+
 // Font-size presets
 $home-button-font-size: var(--home-button-font-size);
 $editor-button-font-size: var(--editor-button-font-size);
+$highlighted-button-font-size: var(--highlighted-button-font-size);
 
 // Window size presets
 $window-large: 1200px;
@@ -143,6 +188,10 @@ $main-body-height: var(--main-body-height);
 $main-body-width: var(--main-body-width);
 $main-body-padding: var(--main-body-padding);
 $main-body-margin: var(--main-body-margin);
+
+// Login/Signup presets
+$login-signup-wrapper-height: var(--login-signup-wrapper-height);
+$login-signup-wrapper-width: var(--login-signup-wrapper-width);
 
 // Editor body presets
 $editor-body-height: var(--editor-body-height);
@@ -173,29 +222,29 @@ $editor-preview-slides-navigator-padding: var(--editor-preview-slides-navigator-
 $editor-preview-slides-navigator-height: var(--editor-preview-slides-navigator-height);
 $editor-preview-slides-navigator-width: var(--editor-preview-slides-navigator-width);
 $editor-preview-slides-navigator-element-height: var(
-  --editor-preview-slides-navigator-element-height
+                --editor-preview-slides-navigator-element-height
 );
 $editor-preview-slides-navigator-element-width: var(
-  --editor-preview-slides-navigator-element-width
+                --editor-preview-slides-navigator-element-width
 );
 $editor-preview-slides-navigator-element-margin: var(
-  --editor-preview-slides-navigator-element-margin
+                --editor-preview-slides-navigator-element-margin
 );
 $editor-preview-sub-slides-navigator-height: var(--editor-preview-sub-slides-navigator-height);
 $editor-preview-sub-slides-navigator-list-height: var(
-  --editor-preview-sub-slides-navigator-list-height
+                --editor-preview-sub-slides-navigator-list-height
 );
 $editor-preview-sub-slides-navigator-list-width: var(
-  --editor-preview-sub-slides-navigator-list-width
+                --editor-preview-sub-slides-navigator-list-width
 );
 $editor-preview-sub-slides-navigator-list-element-height: var(
-  --editor-preview-sub-slides-navigator-list-element-height
+                --editor-preview-sub-slides-navigator-list-element-height
 );
 $editor-preview-sub-slides-navigator-list-element-width: var(
-  --editor-preview-sub-slides-navigator-list-element-width
+                --editor-preview-sub-slides-navigator-list-element-width
 );
 $editor-preview-sub-slides-navigator-list-element-margin: var(
-  --editor-preview-sub-slides-navigator-list-element-margin
+                --editor-preview-sub-slides-navigator-list-element-margin
 );
 
 // Light & Dark Theme
@@ -203,24 +252,42 @@ html,
 html[data-theme='light'] {
   --text-color: black;
   --text-color-inverted: white;
+  --overlay-background-color: white;
+  --overlay-background-color-subtle: var(--scheme-neutral-gray);
   --home-button-transparent-background-color: var(--scheme-cs-2);
   --home-button-transparent-hover-text-color: white;
+  --box-shadow-color: rgba(0, 0, 0, 0.1);
+  --vueform-background: white;
+  --vueform-background-hover: var(--scheme-gray-100);
   --dot-dot-dot-color: var(--scheme-cs-2);
   --dot-dot-dot-color-subtle: var(--scheme-cs-2-subtle);
+  --scheme-background: transparent;
 }
 
 html[data-theme='dark'] {
   --text-color: white;
   --text-color-inverted: black;
+  --overlay-background-color: var(--scheme-background-black-subtle);
+  --overlay-background-color-subtle: var(--scheme-background-blue-subtle);
+  --box-shadow-color: transparent;
+  --vueform-background: var(--scheme-gray-900);
+  --vueform-background-hover: var(--scheme-gray-700);
   --home-button-transparent-background-color: white;
   --home-button-transparent-hover-text-color: black;
   --dot-dot-dot-color: white;
   --dot-dot-dot-color-subtle: var(--scheme-white-subtle);
+  --scheme-background: var(--scheme-background-black);
 }
 
 $text-color: var(--text-color);
 $text-color-inverted: var(--text-color-inverted);
+$overlay-background-color: var(--overlay-background-color);
+$overlay-background-color-subtle: var(--overlay-background-color-subtle);
+$box-shadow-color: var(--box-shadow-color);
+$vueform-background: var(--vueform-background);
+$vueform-background-hover: var(--vueform-background-hover);
 $home-button-transparent-text-color: var(--home-button-transparent-background-color);
 $home-button-transparent-hover-text-color: var(--home-button-transparent-hover-text-color);
 $dot-dot-dot-color: var(--dot-dot-dot-color);
 $dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);
+$scheme-background: var(--scheme-background);
