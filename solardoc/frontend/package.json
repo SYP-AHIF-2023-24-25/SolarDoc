@@ -1,13 +1,17 @@
 {
   "name": "@solardoc/frontend",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "description": "SolarDoc frontend using Vue 3 and Vite",
   "private": true,
   "keywords": [
     "solardoc",
     "solardoc-api",
-    "loopback-application",
-    "loopback"
+    "solardoc-frontend",
+    "vue3",
+    "vite",
+    "typescript",
+    "pinia",
+    "monaco-editor"
   ],
   "engines": {
     "node": "16 || 18 || 20",
@@ -45,6 +49,7 @@
     "pinia": "2.1.7",
     "vue": "3.3.7",
     "vue-router": "4.2.5",
+    "@vueform/vueform": "1.8.0",
     "@import-meta-env/cli": "0.6.8",
     "dotenv": "16.3.1"
   },

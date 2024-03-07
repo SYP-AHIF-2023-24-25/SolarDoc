@@ -4,8 +4,8 @@ import { storeToRefs } from 'pinia'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useInitStateStore } from '@/stores/init-state'
 import { useScroll } from '@vueuse/core'
-import {ref, watch} from "vue";
-import {usePreviewMenuSlideStateStore} from "@/stores/preview-menu-slide-state";
+import { ref, watch } from 'vue'
+import { usePreviewMenuSlideStateStore } from '@/stores/preview-menu-slide-state'
 
 const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()
@@ -24,7 +24,7 @@ watch(x, () => {
 
 watch(globalY, () => {
   if (subSlidesNavigatorEl.value) {
-    x.value = globalY.value;
+    x.value = globalY.value
   }
 })
 </script>
@@ -33,9 +33,12 @@ watch(globalY, () => {
   <div id="sub-slides-navigator" v-if="!initStateStore.init" ref="subSlidesNavigatorEl">
     <!-- For every *main* slide, create a sub-slide preview -->
     <SlideSubSlidesPreview
-      v-for="i in Array(slideCount || 2).fill(null).map((_, i) => i)"
+      v-for="i in Array(slideCount || 2)
+        .fill(null)
+        .map((_, i) => i)"
       :key="i"
-      :slide-index="i" />
+      :slide-index="i"
+    />
   </div>
 </template>
 

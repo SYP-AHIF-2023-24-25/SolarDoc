@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useRenderDataStore } from '@/stores/render-data'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
-import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
+import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 
 defineProps({
   slideIndex: {
@@ -29,9 +29,7 @@ const { previewURL } = storeToRefs(renderDataStore)
     </h2>
     <template v-else>
       <p id="slide-index">{{ slideIndex + 1 }}</p>
-      <iframe
-        :src="`${previewURL}?static=true&slide=${slideIndex}#/${slideIndex}`"
-      ></iframe>
+      <iframe :src="`${previewURL}?static=true&slide=${slideIndex}#/${slideIndex}`"></iframe>
     </template>
   </div>
 </template>
