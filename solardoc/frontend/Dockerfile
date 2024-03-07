@@ -83,9 +83,8 @@ COPY --from=build-stage /home/node/app/solardoc/frontend/.env.prod.template /usr
 # Copy the import-meta-env binary
 COPY --from=build-stage /home/node/app/import-meta-env /etc/nginx/import-meta-env
 
-# Remove default nginx configs and replace with ours
+# Remove default nginx config (The conf will be mapped outside the image)
 RUN rm /etc/nginx/conf.d/default.conf
-COPY --from=build-stage /home/node/app/solardoc/frontend/nginx.conf /etc/nginx/conf.d/nginx.conf
 
 # Since we are running in Docker we can always say that we are in production
 ENV NODE_ENV=production
