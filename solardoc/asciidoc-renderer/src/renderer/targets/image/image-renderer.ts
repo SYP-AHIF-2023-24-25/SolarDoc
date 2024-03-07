@@ -1,11 +1,8 @@
 import { ImageOutput } from './image-output'
 import { TargetRenderer } from '../target-renderer'
 import { Presentation } from '../../../presentation'
-import { Slide } from '../../../slide'
 import { HTMLRenderer } from '../html'
 import { DecktapeSlim } from '../../simulator'
-import { PDFDocument } from 'pdf-lib'
-import { PDFOutput } from '../pdf'
 
 /**
  * Renders a presentation or slide to an image file.
@@ -27,9 +24,10 @@ export class ImageRenderer extends TargetRenderer<unknown, unknown> {
   ): Promise<ImageOutput> {
     const revealJsHtml = await presentation.render(new HTMLRenderer(), config)
     const decktapeSimulator = new DecktapeSlim()
-    const img: Buffer = await decktapeSimulator.renderRJSHTMLToImage(
+    const img: Buffer[] = await decktapeSimulator.renderRJSHTMLToImage(
       await revealJsHtml.write(),
       'png',
+      presentation.metadata
     )
     return new ImageOutput(img, presentation)
   }
@@ -41,12 +39,20 @@ export class ImageRenderer extends TargetRenderer<unknown, unknown> {
    * @param config The configuration for the image renderer.
    * @since 0.2.0
    */
-  public renderSlide(
+  public async renderSlide(
     presentation: Presentation,
-    slide: number | Slide,
+    slide: number,
     config?: { [key: string]: any },
   ): Promise<ImageOutput> {
-    // TODO!
-    throw new Error('Not implemented yet!')
+    let revealJsHtml = await presentation.renderSlide(new HTMLRenderer(), slide, config)
+    const decktapeSimulator = new DecktapeSlim()
+    const img: Buffer[] = await decktapeSimulator.renderRJSHTMLToImage(
+      await revealJsHtml.write(),
+      'png',
+      presentation.metadata,
+      slide
+    )
+    return new ImageOutput(img, presentation)
+
   }
 }

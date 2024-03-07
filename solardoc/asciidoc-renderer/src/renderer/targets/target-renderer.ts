@@ -32,7 +32,7 @@ export abstract class TargetRenderer<RawT, OutT> {
    */
   public abstract renderSlide(
     presentation: Presentation,
-    slide: Slide,
+    slide: number,
     config?: { [key: string]: any },
   ): Promise<RenderOutput<RawT, OutT>>
 

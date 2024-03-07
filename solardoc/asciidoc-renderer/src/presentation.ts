@@ -82,6 +82,18 @@ export class Presentation {
   }
 
   /**
+   * Renders a specific presentation slide to the given target.
+   * @param target The target that should be used to render the presentation.
+   * @param slide The value that specifies the slide.
+   * @param config The configuration that should be used to render the presentation.
+   * @since 0.3.0
+   */
+  public async renderSlide<RawT, OutT>(target: TargetRenderer<RawT, OutT>, slide: number,config?: { [key: string]: any },
+  ): Promise<RenderOutput<RawT, OutT>> {
+    return await target.renderSlide(this,slide, config)
+  }
+
+  /**
    * Determines the metadata of the given document.
    * @param document The document of which the metadata should be determined.
    * @since 0.2.0

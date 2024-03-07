@@ -5,6 +5,7 @@ import { PDFOutput } from './pdf-output'
 import { DecktapeSlim } from '../../simulator'
 import { HTMLRenderer } from '../html'
 import { Slide } from '../../../slide'
+import {ImageOutput} from "../image";
 
 /**
  * A byte array that represents a PDF file.
@@ -50,10 +51,15 @@ export class PDFRenderer extends TargetRenderer<PDFDocument, PDFByteArray> {
   // eslint-disable-next-line no-unused-vars
   public async renderSlide(
     presentation: Presentation,
-    slide: number | Slide,
+    slide: number,
     config?: { [key: string]: any },
   ): Promise<PDFOutput> {
-    // TODO!
-    throw new Error('Not implemented yet!')
+    let revealJsHtml = await presentation.renderSlide(new HTMLRenderer(), slide, config)
+    const decktapeSimulator = new DecktapeSlim()
+    const pdf: PDFDocument = await decktapeSimulator.renderRJSHTMLToPDF(
+      await revealJsHtml.write(),
+      presentation.metadata,slide
+    )
+    return new PDFOutput(pdf, presentation)
   }
 }

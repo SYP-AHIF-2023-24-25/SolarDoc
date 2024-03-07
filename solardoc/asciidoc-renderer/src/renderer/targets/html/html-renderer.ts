@@ -1,7 +1,6 @@
 import {TargetRenderer} from '../target-renderer'
 import {HTMLOutput} from './html-output'
 import {Presentation} from '../../../presentation'
-import {Slide} from '../../../slide'
 import {Asciidoctor} from '@asciidoctor/core'
 import {InternalError} from '../../../errors'
 import {AsciidocCompiler} from "../../asciidoc-compiler";
@@ -97,12 +96,42 @@ export class HTMLRenderer extends TargetRenderer<HTMLString, HTMLString> {
    * @param config The configuration for the HTML renderer.
    * @since 0.2.0
    */
-  public renderSlide(
+  public async renderSlide(
     presentation: Presentation,
-    slide: number | Slide,
+    slide: number,
     config?: { [key: string]: any },
   ): Promise<HTMLOutput> {
-    // TODO!
-    throw new Error('Not implemented yet!')
+    let htmlOutput = presentation.parsedFile.convert(HTMLRenderer.renderOptions)
+    if (typeof htmlOutput !== 'string') {
+      throw new InternalError(
+        `HTML output is not a string! Potential bug in asciidoctor.js! (Input: ${presentation.sourceCode})`,
+      )
+    }
+
+    // Replace the reveal.js dependency path if needed
+    if (config?.revealJSAssetsPath) {
+      config.revealJSAssetsPath = config.revealJSAssetsPath.replace(/\/$/, '')
+
+      // Replace the dependency path in the head for any resources that uses it i.e. style sheets and scripts
+      htmlOutput = htmlOutput.replace(
+        new RegExp(`(src|href)="(${HTMLRenderer.DEFAULT_REVEAL_JS_DEPENDENCY_PATH}/)([^"]+)"`, 'g'),
+        `$1="${config.revealJSAssetsPath}/$3"`,
+      )
+
+      // Replace all dependency paths within "src: '...'" code (Both ' and " are supported, must be inside a script tag)
+      htmlOutput = htmlOutput.replace(
+        new RegExp(
+          `src: (['"])(${HTMLRenderer.DEFAULT_REVEAL_JS_DEPENDENCY_PATH}/)([^'"]+)(['"])`,
+          'g',
+        ),
+        `src: $1${config.revealJSAssetsPath}/$3$4`,
+      )
+    }
+
+    // Inject the solardoc.js file into the HTML code
+    const modifiedHTML = await this.injectSolardocJS(htmlOutput)
+
+    return new HTMLOutput(modifiedHTML, presentation);
+
   }
 }
