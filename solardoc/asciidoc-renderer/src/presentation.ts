@@ -106,7 +106,7 @@ export class Presentation {
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
 
-    type MinReqAbstractBlock = Pick<AbstractBlock, 'getContext' | 'getBlocks' | 'getLevel'>
+    type MinReqAbstractBlock = Pick<Asciidoctor.AbstractBlock, 'getContext' | 'getBlocks' | 'getLevel'>
 
     let slides = <Array<MinReqAbstractBlock>>document.getBlocks();
     const preambleExists = slides[0]?.getContext() === 'preamble';
