@@ -1,9 +1,12 @@
+/* istanbul ignore file */
 import URI from 'urijs'
 
 export const create = page => new Reveal(page)
 
 class Reveal {
-  constructor(page) {
+  private page: any;
+
+  constructor(page: any) {
     this.page = page
   }
 
@@ -17,10 +20,7 @@ class Reveal {
       if (typeof Reveal === 'undefined') {
         return false
       }
-      if (typeof Jupyter !== 'undefined') {
-        // Let's delegate to the RISE plugin
-        return false
-      }
+      // @ts-ignore
       if (!(typeof Reveal.availableFragments === 'function')) {
         console.log("Reveal JS plugin isn't compatible with reveal.js version < 2.4.0")
         return false
@@ -32,6 +32,7 @@ class Reveal {
   configure() {
     return this.page.evaluate(
       fragments => {
+        // @ts-ignore
         Reveal.configure({
           controls: false,
           progress: false,
@@ -42,8 +43,9 @@ class Reveal {
         // This is a workaround to disable the open button of the RevealMenu plugin.
         // See the following issue for more details: https://github.com/denehyg/reveal.js-menu/issues/99
         // eslint-disable-next-line no-undef
-        var menuOpenButtons = document.getElementsByClassName('slide-menu-button')
-        for (var i = 0; i < menuOpenButtons.length; i++) {
+        const menuOpenButtons = document.getElementsByClassName('slide-menu-button');
+        for (let i = 0; i < menuOpenButtons.length; i++) {
+          // @ts-ignore
           menuOpenButtons[i].style.display = 'none'
         }
       },
@@ -58,27 +60,33 @@ class Reveal {
     // TODO: the getTotalSlides API does not report the number of slides accurately
     // as it does not take stacks and some index-less fragments into account
     // getTotalSlides API is only available starting reveal.js version 3.0.0
+    // @ts-ignore
     // eslint-disable-next-line no-unused-vars
-    return this.page.evaluate(_ =>
+    return this.page.evaluate((_: any) =>
+      // @ts-ignore
       typeof Reveal.getTotalSlides === 'function' ? Reveal.getTotalSlides() : undefined,
     )
   }
 
   hasNextSlide() {
     // check with fragments option?
+    // @ts-ignore
     // eslint-disable-next-line no-unused-vars
-    return this.page.evaluate(_ => !Reveal.isLastSlide() || Reveal.availableFragments().next)
+    return this.page.evaluate((_: any) => !Reveal.isLastSlide() || Reveal.availableFragments().next)
   }
 
   nextSlide() {
     // eslint-disable-next-line no-unused-vars
+    // @ts-ignore
     return this.page.evaluate(_ => Reveal.next())
   }
 
   currentSlideIndex() {
     // eslint-disable-next-line no-unused-vars
     return this.page.evaluate(_ => {
+      // @ts-ignore
       const indices = Reveal.getIndices()
+      // @ts-ignore
       const id = Reveal.getCurrentSlide().getAttribute('id')
       return typeof id === 'string' && id.length
         ? '/' + id

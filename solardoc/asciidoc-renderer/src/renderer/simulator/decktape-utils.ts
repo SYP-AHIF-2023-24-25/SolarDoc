@@ -16,11 +16,14 @@ export async function registerErrorHandler(page: Page) {
 }
 
 export async function loadAvailablePlugins(pluginsPath: string) {
-  const plugins = await fs.promises.readdir(pluginsPath)
+  const plugins = (await fs.promises
+    .readdir(pluginsPath))
+    .filter((pluginPath: string) => pluginPath.endsWith(".js"))
   const entries = await Promise.all(
     plugins.map(async pluginPath => {
       const [, plugin] = pluginPath.match(/^(.*)\.js$/)
       if (plugin && (await fs.promises.stat(path.join(pluginsPath, pluginPath))).isFile()) {
+        /* istanbul ignore next */
         return [plugin, await import(`./plugins/${pluginPath}`)]
       }
     }),

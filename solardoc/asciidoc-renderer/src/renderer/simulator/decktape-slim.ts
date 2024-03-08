@@ -33,7 +33,7 @@ export class DecktapeSlim {
   // eslint-disable-next-line no-unused-vars
   public async renderRJSHTMLToPDF(rjsHTML: string, metadata: PresentationMetadata,slideNum?: number): Promise<PDFDocument> {
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
     })
     const page = await preparePage(rjsHTML,browser);
     const plugin = await preparePlugin(page);
@@ -77,7 +77,7 @@ export class DecktapeSlim {
   // eslint-disable-next-line no-unused-vars
   public async renderRJSHTMLToImage(rjsHTML: string, format: 'png' | 'jpeg', metadata : PresentationMetadata,slideNum?: number ): Promise<Buffer[]> {
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
     })
 
     const page = await preparePage(rjsHTML,browser);
