@@ -68,29 +68,9 @@ class Reveal {
     )
   }
 
-  hasNextSlide() {
-    // check with fragments option?
-    // @ts-ignore
-    // eslint-disable-next-line no-unused-vars
-    return this.page.evaluate((_: any) => !Reveal.isLastSlide() || Reveal.availableFragments().next)
-  }
-
   nextSlide() {
-    // eslint-disable-next-line no-unused-vars
     // @ts-ignore
-    return this.page.evaluate(_ => Reveal.next())
-  }
-
-  currentSlideIndex() {
     // eslint-disable-next-line no-unused-vars
-    return this.page.evaluate(_ => {
-      // @ts-ignore
-      const indices = Reveal.getIndices()
-      // @ts-ignore
-      const id = Reveal.getCurrentSlide().getAttribute('id')
-      return typeof id === 'string' && id.length
-        ? '/' + id
-        : '/' + indices.h + (indices.v > 0 ? '/' + indices.v : '')
-    })
+    return this.page.evaluate(_ => Reveal.next())
   }
 }
