@@ -21,8 +21,6 @@ describe("PdfRenderer", () => {
       const pdf = await presentation.render(new PDFRenderer(),{revealJSAssetsPath: "https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/"});
       assert.notEqual(pdf.internalData, null, "internalData is empty");
       assert.equal(pdf.internalData.getPages().length, 5, "PDF document should have 5 pages");
-      const filepath = path.join(__dirname, "TestPDFMultipleSlides.pdf");
-      fs.writeFileSync(filepath, await pdf.write());
     });
   });
   describe("renderSlide()", ()=>{
@@ -41,8 +39,6 @@ describe("PdfRenderer", () => {
       const pdf = await presentation.renderSlide(new PDFRenderer(),3,{revealJSAssetsPath: "https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/"});
       assert.notEqual(pdf.internalData, null, "internalData is empty");
       assert.equal(pdf.internalData.getPages().length, 1, "PDF document should have 1 page");
-      const filepath = path.join(__dirname, "TestPDFSpecific.pdf");
-      fs.writeFileSync(filepath, await pdf.write());
     })
   })
 });
