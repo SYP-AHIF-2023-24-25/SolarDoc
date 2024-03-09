@@ -19,6 +19,7 @@ config :solardoc_phoenix, SolardocPhoenixWeb.Endpoint,
     formats: [html: SolardocPhoenixWeb.ErrorHTML, json: SolardocPhoenixWeb.ErrorJSON],
     layout: false
   ],
+  formats: [:json, :html],
   pubsub_server: SolardocPhoenix.PubSub,
   live_view: [signing_salt: "L9/sZ6PH"]
 

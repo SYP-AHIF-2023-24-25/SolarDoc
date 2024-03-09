@@ -14,6 +14,26 @@ defmodule SolardocPhoenixWeb.UserAuth do
   @remember_me_options [sign: true, max_age: @max_age, same_site: "Lax"]
 
   @doc """
+  Authenticates the user by looking into the request headers.
+  """
+  def fetch_api_user(conn, _opts) do
+    with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
+         {:ok, user} <- Accounts.fetch_user_by_api_token(token) do
+      assign(conn, :current_user, user)
+    else
+      _ ->
+        conn
+        |> put_status(401)
+        |> json(%{
+          errors: %{
+            detail: "Unauthorized access. You must log in to access this page."
+          }
+        })
+        |> halt()
+    end
+  end
+
+  @doc """
   Logs the user in.
 
   It renews the session ID and clears the whole session
@@ -27,13 +47,18 @@ defmodule SolardocPhoenixWeb.UserAuth do
   """
   def log_in_user(conn, user, params \\ %{}) do
     token = Accounts.generate_user_session_token(user)
-    user_return_to = get_session(conn, :user_return_to)
 
     conn
     |> renew_session()
     |> put_token_in_session(token)
     |> maybe_write_remember_me_cookie(token, params)
-    |> redirect(to: user_return_to || signed_in_path(conn))
+  end
+
+  @doc """
+  Creates an API token for the given user, which can be used to access the requested routes.
+  """
+  def create_user_token(user) do
+    Accounts.create_user_api_token(user)
   end
 
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
@@ -71,8 +96,7 @@ defmodule SolardocPhoenixWeb.UserAuth do
   It clears all session data for safety. See renew_session.
   """
   def log_out_user(conn) do
-    user_token = get_session(conn, :user_token)
-    user_token && Accounts.delete_user_session_token(user_token)
+    delete_user_token(conn)
 
     if live_socket_id = get_session(conn, :live_socket_id) do
       SolardocPhoenixWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
@@ -81,7 +105,16 @@ defmodule SolardocPhoenixWeb.UserAuth do
     conn
     |> renew_session()
     |> delete_resp_cookie(@remember_me_cookie)
-    |> redirect(to: ~p"/")
+  end
+
+  @doc """
+  Deletes the user token used for authorization i.e. logs the user out.
+
+  This does not account for any sessions or cookies.
+  """
+  def delete_user_token(conn) do
+    user_token = get_session(conn, :user_token)
+    user_token && Accounts.delete_user_session_token(user_token)
   end
 
   @doc """

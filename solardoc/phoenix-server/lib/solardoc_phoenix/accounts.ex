@@ -4,8 +4,8 @@ defmodule SolardocPhoenix.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias SolardocPhoenix.Repo
 
+  alias SolardocPhoenix.Repo
   alias SolardocPhoenix.Accounts.{User, UserToken, UserNotifier}
 
   ## Database getters
@@ -41,7 +41,11 @@ defmodule SolardocPhoenix.Accounts do
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
     user = Repo.get_by(User, email: email)
-    if User.valid_password?(user, password), do: user
+    if User.valid_password?(user, password) do
+      {:ok, user}
+    else
+      {:error, :unauthorized}
+    end
   end
 
   @doc """
@@ -242,6 +246,33 @@ defmodule SolardocPhoenix.Accounts do
     :ok
   end
 
+  ## API
+
+  @doc """
+  Creates a new api token for a user.
+
+  The token returned must be saved somewhere safe.
+  This token cannot be recovered from the database.
+  """
+  def create_user_api_token(user) do
+    {encoded_token, user_token} = UserToken.build_email_token(user, "api-token")
+    Repo.insert!(user_token)
+    encoded_token
+  end
+
+
+  @doc """
+  Fetches the user by API token.
+  """
+  def fetch_user_by_api_token(token) do
+    with {:ok, query} <- UserToken.verify_email_token_query(token, "api-token"),
+         %User{} = user <- Repo.one(query) do
+      {:ok, user}
+    else
+      _ -> {:error, :unauthorized}
+    end
+  end
+
   ## Confirmation
 
   @doc ~S"""
@@ -349,5 +380,18 @@ defmodule SolardocPhoenix.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  @doc """
+  Returns the list of accounts.
+
+  ## Examples
+
+      iex> list_accounts()
+      [%User{}, ...]
+
+  """
+  def list_accounts do
+    Repo.all(User)
   end
 end

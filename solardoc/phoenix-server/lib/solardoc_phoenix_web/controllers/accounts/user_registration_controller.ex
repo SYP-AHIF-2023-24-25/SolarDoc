@@ -3,7 +3,8 @@ defmodule SolardocPhoenixWeb.UserRegistrationController do
 
   alias SolardocPhoenix.Accounts
   alias SolardocPhoenix.Accounts.User
-  alias SolardocPhoenixWeb.UserAuth
+
+  action_fallback SolardocPhoenixWeb.FallbackController
 
   def new(conn, _params) do
     changeset = Accounts.change_user_registration(%User{})
@@ -11,20 +12,22 @@ defmodule SolardocPhoenixWeb.UserRegistrationController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    case Accounts.register_user(user_params) do
-      {:ok, user} ->
+    with {:ok, user} <- Accounts.register_user(user_params) do
         {:ok, _} =
           Accounts.deliver_user_confirmation_instructions(
             user,
             &url(~p"/users/confirm/#{&1}")
           )
 
+        # Return a success JSON response
         conn
-        |> put_flash(:info, "User created successfully.")
-        |> UserAuth.log_in_user(user)
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :new, changeset: changeset)
+        |> put_status(:created)
+        |> json(
+          Map.merge(
+            %{ message: "Successfully created a new user.", },
+            SolardocPhoenixWeb.UserAccountsJSON.new(%{user: user})
+          )
+        )
     end
   end
 end

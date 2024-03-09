@@ -9,6 +9,7 @@ defmodule SolardocPhoenixWeb.Router do
     plug :fetch_live_flash
     plug :put_root_layout, html: {SolardocPhoenixWeb.Layouts, :root}
     plug :put_secure_browser_headers
+    plug :protect_from_forgery
     plug :fetch_current_user
 
     # Auth with 'Phoenix.Token' for API requests and websocket connections
@@ -26,6 +27,10 @@ defmodule SolardocPhoenixWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :api_auth do
+    plug :fetch_api_user
   end
 
   # Other scopes may use custom stacks.
@@ -50,29 +55,43 @@ defmodule SolardocPhoenixWeb.Router do
     end
   end
 
-  ## Authentication routes
-
   scope "/", SolardocPhoenixWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through :api
 
-    post "/users/register", UserRegistrationController, :create
+    # Index page which returns a simple message
+    get "/", HomeController, :index
+
+    # User routes
+    get "/users", UserController, :index
+
+    # User registration, login, and password reset routes
+    post "/users/signup", UserRegistrationController, :create
     post "/users/login", UserSessionController, :create
     post "/users/reset_password", UserResetPasswordController, :create
     put "/users/reset_password/:token", UserResetPasswordController, :update
   end
 
   scope "/", SolardocPhoenixWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:api, :api_auth]
 
-    put "/users/settings", UserSettingsController, :update
-    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    # Get the current user
+    get "/users/current", UserController, :current
+
+    # User settings routes
+    # TODO! Finish the migration from the old user settings controller to the new API-only controller
+    # put "/users/settings", UserSettingsController, :update
+    # get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
   end
 
   scope "/", SolardocPhoenixWeb do
-    pipe_through [:browser]
+    pipe_through :api
 
+    # User routes requiring authentication
     delete "/users/logout", UserSessionController, :delete
-    post "/users/confirm", UserConfirmationController, :create
-    post "/users/confirm/:token", UserConfirmationController, :update
+
+    # User confirmation routes
+    # TODO! Finish the migration from the old user confirmation controller to the new API-only controller
+    # post "/users/confirm", UserConfirmationController, :create
+    # post "/users/confirm/:token", UserConfirmationController, :update
   end
 end

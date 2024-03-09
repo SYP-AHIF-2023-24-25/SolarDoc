@@ -2,13 +2,21 @@ defmodule SolardocPhoenix.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, Ecto.UUID, autogenerate: true}
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :role, :string, default: "user"
 
     timestamps(type: :utc_datetime)
+  end
+
+  @doc false
+  def changeset(user, attrs) do
+    user
+    |> cast(attrs, [:email, :password, :role])
   end
 
   @doc """
