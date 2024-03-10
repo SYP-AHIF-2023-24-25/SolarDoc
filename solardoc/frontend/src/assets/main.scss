@@ -8,6 +8,7 @@
 @use './core/button' as *;
 @use './core/spinner' as *;
 @use './core/dotdotdot' as *;
+@use './core/full-screen' as *;
 @use './core/emphasised-link' as *;
 
 // Other dependencies
@@ -22,15 +23,14 @@ body #app {
 }
 
 // Set background color based on the selected theme (dark/light)
-html,
-html[data-theme='light'] {
+html {
   body {
-    background-color: transparent;
+    background-color: $scheme-background;
   }
 }
 
-html[data-theme='dark'] {
-  body {
-    background-color: $scheme-background-black;
-  }
+// Ensure the dropdown has a margin to the left
+.v-dropdown-container {
+  margin-left: 0.25rem !important;
+  z-index: 50 !important;
 }

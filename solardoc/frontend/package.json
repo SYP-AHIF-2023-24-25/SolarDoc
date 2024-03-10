@@ -1,6 +1,6 @@
 {
   "name": "@solardoc/frontend",
-  "version": "0.3.3",
+  "version": "0.4.0-dev",
   "description": "SolarDoc frontend using Vue 3 and Vite",
   "private": true,
   "keywords": [
@@ -44,14 +44,16 @@
     "gen-env-types": "npx import-meta-env-typescript -x ./.env.template -o ./src/config"
   },
   "dependencies": {
+    "@solardoc/phoenix": "workspace:~",
     "@vueuse/core": "10.5.0",
     "monaco-editor": "0.44.0",
     "pinia": "2.1.7",
     "vue": "3.3.7",
     "vue-router": "4.2.5",
+    "dotenv": "16.3.1",
+    "v-dropdown": "3.0.0",
     "@vueform/vueform": "1.8.0",
-    "@import-meta-env/cli": "0.6.8",
-    "dotenv": "16.3.1"
+    "@import-meta-env/cli": "0.6.8"
   },
   "devDependencies": {
     "@import-meta-env/unplugin": "0.5.1",

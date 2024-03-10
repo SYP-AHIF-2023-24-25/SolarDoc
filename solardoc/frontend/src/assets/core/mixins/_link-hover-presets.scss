@@ -40,3 +40,11 @@
     }
   }
 }
+
+@mixin link-hover-presets-with-background {
+  @include link-hover-presets;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
