@@ -14,7 +14,7 @@ if (!api.defaults.baseUrl.startsWith('http')) {
 }
 
 // Log the base URL in case there is a problem
-console.log(`[api-service.ts] Using backend at '${api.defaults.baseUrl}'`)
+console.log(`[backend/api-service.ts] Using render backend at '${api.defaults.baseUrl}'`)
 
 export async function checkIfBackendIsReachable(): Promise<void> {
   const ping = await api.getV1Ping()

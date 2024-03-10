@@ -6,7 +6,7 @@ defmodule SolardocPhoenixWeb.HomeController do
   def index(conn, _params) do
     # Return static JSON for now
     json(conn, %{
-      version: "0.4.0-dev",
+      version: SolardocPhoenixWeb.version(),
       title: "SolarDoc",
       description: "Welcome to the Phoenix API for Solardoc!"
     })

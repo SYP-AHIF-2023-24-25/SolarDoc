@@ -4,7 +4,7 @@ defmodule SolardocPhoenix.MixProject do
   def project do
     [
       app: :solardoc_phoenix,
-      version: "0.3.0",
+      version: "0.4.0-dev",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -52,7 +52,9 @@ defmodule SolardocPhoenix.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:phoenix_swagger, "~> 0.8.3"},
+      {:ex_json_schema, "~> 0.7.1"}
     ]
   end
 

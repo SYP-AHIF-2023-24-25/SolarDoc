@@ -16,7 +16,7 @@ defmodule SolardocPhoenixWeb.UserSettingsControllerTest do
     test "redirects if user is not logged in" do
       conn = build_conn()
       conn = get(conn, ~p"/users/settings")
-      assert redirected_to(conn) == ~p"/users/login"
+      assert redirected_to(conn) == ~p"/users/auth"
     end
   end
 
@@ -139,7 +139,7 @@ defmodule SolardocPhoenixWeb.UserSettingsControllerTest do
     test "redirects if user is not logged in", %{token: token} do
       conn = build_conn()
       conn = get(conn, ~p"/users/settings/confirm_email/#{token}")
-      assert redirected_to(conn) == ~p"/users/login"
+      assert redirected_to(conn) == ~p"/users/auth"
     end
   end
 end
