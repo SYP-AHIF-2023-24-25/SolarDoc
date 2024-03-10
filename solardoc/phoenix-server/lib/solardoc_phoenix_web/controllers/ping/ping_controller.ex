@@ -12,7 +12,10 @@ defmodule SolardocPhoenixWeb.PingController do
         title "Ping"
         description "A simple ping response"
         properties do
-          message :string, "A simple message", required: true
+          greeting :string, "A friendly greeting", example: "Hello from Solardoc Phoenix!", required: true
+          date :integer, "The current date in milliseconds", example: :os.system_time(:millisecond), required: true
+          url :string, "The URL to ping", example: "#{@api_path}/ping", required: true
+          ip :string, "The IP address of the client", example: "123.98.21.101", required: true
         end
       end
     }
@@ -28,8 +31,12 @@ defmodule SolardocPhoenixWeb.PingController do
 
   def index(conn, _params) do
     # Return static JSON for now
+    {ip1, ip2, ip3, ip4} = conn.remote_ip
     json(conn, %{
-      message: "pong"
+      greeting: "Hello from Solardoc Phoenix!",
+      date: :os.system_time(:millisecond),
+      url: "#{@api_path}/ping",
+      ip: "#{ip1}.#{ip2}.#{ip3}.#{ip4}"
     })
   end
 end

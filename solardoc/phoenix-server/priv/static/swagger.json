@@ -16,13 +16,32 @@
     "Ping": {
       "description": "A simple ping response",
       "properties": {
-        "message": {
-          "description": "A simple message",
+        "date": {
+          "description": "The current date in milliseconds",
+          "example": 1710076194873,
+          "type": "integer"
+        },
+        "greeting": {
+          "description": "A friendly greeting",
+          "example": "Hello from Solardoc Phoenix!",
+          "type": "string"
+        },
+        "ip": {
+          "description": "The IP address of the client",
+          "example": "123.98.21.101",
+          "type": "string"
+        },
+        "url": {
+          "description": "The URL to ping",
+          "example": "/v1/ping",
           "type": "string"
         }
       },
       "required": [
-        "message"
+        "ip",
+        "url",
+        "date",
+        "greeting"
       ],
       "title": "Ping",
       "type": "object"
