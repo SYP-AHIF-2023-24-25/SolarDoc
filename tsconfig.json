@@ -13,6 +13,7 @@
     "moduleResolution": "node",
     "module": "commonjs",
     "outDir": "./lib",
+    "allowJs": true,
     "target": "es2015",
     "lib": [
       "ES2015"

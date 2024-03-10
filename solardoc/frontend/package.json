@@ -53,6 +53,8 @@
     "vue-router": "4.2.5",
     "dotenv": "16.3.1",
     "v-dropdown": "3.0.0"
+    "@vueform/vueform": "1.8.0",
+    "@import-meta-env/cli": "0.6.8"
   },
   "devDependencies": {
     "@import-meta-env/unplugin": "0.5.1",

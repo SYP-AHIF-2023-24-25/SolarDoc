@@ -7,6 +7,7 @@
   "extension": ["ts"],
   "exclude": [
     "**/frontend/**",
-    "**/node_modules/**"
+    "**/node_modules/**",
+    "**/renderer/simulator/plugins/**"
   ]
 }
