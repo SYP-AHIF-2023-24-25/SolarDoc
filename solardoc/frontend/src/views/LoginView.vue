@@ -1,22 +1,74 @@
 <script setup lang="ts">
+import {ref} from "vue"
+import * as phoenixBackend from "@/services/phoenix/api-service"
+import {useRouter} from "vue-router"
+import {useCurrentUserStore} from "@/stores/current-user"
 
+const $router = useRouter()
+const currentUserStore = useCurrentUserStore()
+
+// Ensure if the user is already logged in that he is redirected to the '/profile' page
+if (
+  currentUserStore.currentUser &&
+  currentUserStore.currentAuth
+) {
+  $router.push("/profile")
+}
+
+const form$ = ref<{
+  data: {
+    email: string,
+    password: string,
+  }
+} | null>(null)
+
+function submitForm() {
+  if (!form$.value) {
+    throw new Error("Form data is null");
+  }
+
+  const loginUser = {
+    email: form$.value.data.email,
+    password: form$.value.data.password,
+  } satisfies phoenixBackend.CreateUser;
+  phoenixBackend
+    .postV1UsersAuth(loginUser)
+    .then(async (resp) => {
+      if (resp.status === 200) {
+        console.log("Login successful")
+        currentUserStore.setCurrentAuth(resp.data)
+      } else if (resp.status === 401) {
+        throw new Error("Server rejected sign up. Cause: Unauthorized")
+      } else if (resp.status === 400) {
+        throw new Error("Server rejected sign up. Cause: Bad request")
+      } else {
+        throw new Error("Server rejected sign up. Cause: Unknown error (status: " + (resp as {status: never}).status + ")")
+      }
+
+      await currentUserStore.fetchCurrentUser()
+      await $router.push("/profile")
+    })
+    .catch((error) => {
+      throw new Error("Signup rejected by backend. Cause: " + error)
+    });
+}
 </script>
 
 <template>
-  <div id="wrapper" class="page-form-wrapper">
-    <div id="container" class="page-form-container">
+  <div id="profile-wrapper" class="page-form-wrapper">
+    <div id="profile-container" class="page-form-container">
       <div id="do-not-have-an-account">
         <p>Don't have an account yet?</p>
         <a class="emphasised-link" @click="$router.push('signup')">→ Sign up</a>
       </div>
       <h1 id="login-signup-title">Log in</h1>
-      <Vueform add-class="solardoc-style-form" :display-errors="false">
+      <Vueform ref="form$" add-class="solardoc-style-form" :display-errors="false">
         <TextElement
-            name="email-or-username"
-            label="Email or username"
+            name="email"
+            label="Email"
             :rules="[
               'required',
-              'min:6',
+              'email',
             ]"
         />
         <TextElement
@@ -31,7 +83,7 @@
         <ButtonElement
             name="login"
             button-label="Login"
-            :submits="true"
+            @click="submitForm()"
             :columns="{
               container: 3,
             }"
@@ -58,8 +110,8 @@
 @use '@/assets/page-form' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
 
-#wrapper {
-  #container {
+#profile-wrapper {
+  #profile-container {
     display: flex;
     align-items: normal;
     justify-content: left;

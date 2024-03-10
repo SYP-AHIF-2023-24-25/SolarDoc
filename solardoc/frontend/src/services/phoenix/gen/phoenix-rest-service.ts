@@ -16,6 +16,12 @@ export const servers = {
     server3: "ws://localhost:4000/api",
     server4: "wss://localhost:4000/api"
 };
+export type Ping = {
+    date: number;
+    greeting: string;
+    ip: string;
+    url: string;
+};
 export type UserPublic = {
     id: string;
 };
@@ -30,6 +36,13 @@ export type UserPrivate = {
     id: string;
     role: string;
 };
+export type Error = {
+    detail: string;
+};
+export type Errors = Error[];
+export type Message = {
+    message: string;
+};
 export type UserLogin = {
     email: string;
     password: string;
@@ -37,6 +50,17 @@ export type UserLogin = {
 export type UserToken = {
     token: string;
 };
+/**
+ * Ping the server
+ */
+export function getV1Ping(opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: Ping;
+    }>("/v1/ping", {
+        ...opts
+    });
+}
 /**
  * List all users
  */
@@ -55,6 +79,9 @@ export function postV1Users(createUser?: CreateUser, opts?: Oazapfts.RequestOpts
     return oazapfts.fetchJson<{
         status: 201;
         data: UserPrivate;
+    } | {
+        status: 400;
+        data: Errors;
     }>("/v1/users", oazapfts.json({
         ...opts,
         method: "POST",
@@ -64,10 +91,23 @@ export function postV1Users(createUser?: CreateUser, opts?: Oazapfts.RequestOpts
 /**
  * Log out a user
  */
-export function deleteV1UsersAuth(opts?: Oazapfts.RequestOpts) {
-    return oazapfts.fetchText("/v1/users/auth", {
+export function deleteV1UsersAuth(authorization: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: Message;
+    } | {
+        status: 400;
+        data: Errors;
+    } | {
+        status: 401;
+        data: Errors;
+    }>("/v1/users/auth", {
         ...opts,
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
     });
 }
 /**
@@ -77,6 +117,12 @@ export function postV1UsersAuth(userLogin?: UserLogin, opts?: Oazapfts.RequestOp
     return oazapfts.fetchJson<{
         status: 200;
         data: UserToken;
+    } | {
+        status: 400;
+        data: Errors;
+    } | {
+        status: 401;
+        data: Errors;
     }>("/v1/users/auth", oazapfts.json({
         ...opts,
         method: "POST",
@@ -90,6 +136,9 @@ export function getV1UsersCurrent(authorization: string, opts?: Oazapfts.Request
     return oazapfts.fetchJson<{
         status: 200;
         data: UserPrivate;
+    } | {
+        status: 401;
+        data: Errors;
     }>("/v1/users/current", {
         ...opts,
         headers: {

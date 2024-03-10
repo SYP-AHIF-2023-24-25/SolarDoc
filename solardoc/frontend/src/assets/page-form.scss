@@ -20,4 +20,12 @@
   border-radius: 10px;
   background-color: var.$overlay-background-color;
   box-shadow: 0 0 10px 0 var.$box-shadow-color;
+
+  &.small {
+    max-width: 30vw;
+  }
+
+  &.large {
+    max-width: 80vw;
+  }
 }

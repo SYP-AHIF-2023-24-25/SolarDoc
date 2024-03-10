@@ -3,8 +3,8 @@
 </script>
 
 <template>
-  <div id="wrapper" class="page-form-wrapper">
-    <div id="container" class="page-form-container">
+  <div id="profile-wrapper" class="page-form-wrapper">
+    <div id="profile-container" class="page-form-container">
       <h1>To be implemented~ °^°</h1>
     </div>
   </div>

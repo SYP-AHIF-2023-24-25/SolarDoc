@@ -14,5 +14,12 @@ if (!api.defaults.baseUrl.startsWith('http')) {
 // Log the base URL in case there is a problem
 console.log(`[phoenix/api-service.ts] Using phoenix backend at '${api.defaults.baseUrl}'`)
 
+export async function checkIfPhoenixBackendIsReachable(): Promise<void> {
+  const ping = await api.getV1Ping()
+  if (ping.status !== 200) {
+    throw new Error(`Phoenix Backend is not reachable. Response:\n${ping}`)
+  }
+}
+
 // Export all the generated API functions
 export * from './gen/phoenix-rest-service'

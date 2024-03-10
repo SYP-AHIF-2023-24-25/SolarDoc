@@ -13,15 +13,13 @@ import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
-import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
-import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
 import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavigator.vue'
 import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import EditorSandwichDropdown from "@/components/editor/dropdown/EditorSandwichDropdown.vue"
+import ChannelView from "@/components/channel-view/ChannelView.vue"
 import * as backendAPI from '@/services/backend/api-service'
-import EditorSandwichDropdown from "@/components/editor/dropdown/EditorSandwichDropdown.vue";
-import ChannelView from "@/components/channel-view/ChannelView.vue";
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -39,13 +37,13 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlide)
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
 backendAPI
-  .checkIfBackendIsReachable()
+  .checkIfRenderBackendIsReachable()
   .then(void 0)
   .catch((error: Error) => {
     if (error) {
       console.error(error)
     }
-    console.error('Backend is not reachable. Please copy the logs and contact the developers.')
+    throw new Error('Render Backend is not reachable. Please copy the logs and contact the developers.')
   })
 
 // Ensure the render preview is updated whenever the editor content changes
@@ -87,7 +85,8 @@ function unsecuredCopyToClipboard(text: string) {
     // Deprecated, but there is not alternative for HTTP-only contexts
     document.execCommand('copy')
   } catch (err) {
-    console.error('Unable to copy to clipboard', err)
+    document.body.removeChild(textArea)
+    throw new Error('Unable to copy to clipboard. Cause: ' + err)
   }
   document.body.removeChild(textArea)
 }

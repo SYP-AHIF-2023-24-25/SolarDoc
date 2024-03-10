@@ -16,10 +16,10 @@ if (!api.defaults.baseUrl.startsWith('http')) {
 // Log the base URL in case there is a problem
 console.log(`[backend/api-service.ts] Using render backend at '${api.defaults.baseUrl}'`)
 
-export async function checkIfBackendIsReachable(): Promise<void> {
+export async function checkIfRenderBackendIsReachable(): Promise<void> {
   const ping = await api.getV1Ping()
   if (ping.status !== 200) {
-    throw new Error(`Backend is not reachable. Response:\n${ping}`)
+    throw new Error(`Render Backend is not reachable. Response:\n${ping}`)
   }
 }
 

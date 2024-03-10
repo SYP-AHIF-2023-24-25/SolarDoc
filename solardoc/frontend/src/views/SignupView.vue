@@ -1,15 +1,61 @@
 <script setup lang="ts">
+import {ref} from "vue"
+import * as phoenixBackend from "@/services/phoenix/api-service"
+import {useCurrentUserStore} from "@/stores/current-user"
+import {useRouter} from "vue-router"
+
+const $router = useRouter()
+const currentUserStore = useCurrentUserStore()
+
+const form$ = ref<{
+  data: {
+    username: string,
+    email: string,
+    password: string,
+    organisation: string,
+    intendedUse: string,
+    acceptsConditions: boolean,
+  }
+} | null>(null)
+
+function submitForm() {
+  if (!form$.value) {
+    throw new Error("Form data is null")
+  }
+
+  const newUser = {
+    email: form$.value.data.email,
+    password: form$.value.data.password,
+  } satisfies phoenixBackend.CreateUser
+  phoenixBackend
+    .postV1Users(newUser)
+    .then((resp) => {
+      if (resp.status === 201) {
+        console.log("Signup successful")
+        currentUserStore.setCurrentUser(resp.data)
+      } else if (resp.status === 400) {
+        throw new Error("Server rejected sign up. Cause: Bad request")
+      } else {
+        throw new Error("Server rejected sign up. Cause: Unknown error (status: " + (resp as {status: never}).status + ")")
+      }
+
+      $router.push("login")
+    })
+    .catch((error) => {
+      throw new Error("Signup rejected by backend. Cause: " + error)
+    });
+}
 </script>
 
 <template>
-  <div id="wrapper" class="page-form-wrapper">
-    <div id="container" class="page-form-container">
+  <div id="profile-wrapper" class="page-form-wrapper">
+    <div id="profile-container" class="page-form-container">
       <div id="already-have-an-account">
         <p>Already have an account?</p>
         <a class="emphasised-link" @click="$router.push('login')">→ Log in</a>
       </div>
       <h1 id="login-signup-title">Sign up</h1>
-      <Vueform add-class="solardoc-style-form" :display-errors="false">
+      <Vueform ref="form$" add-class="solardoc-style-form" :display-errors="false">
         <TextElement
             name="username"
             label="Username"
@@ -34,10 +80,10 @@
             label="Password"
             :rules="[
               'required',
-              'min:8',
-              'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/',
+              'min:12',
+              'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/',
             ]"
-            info="Use at least 8 characters, at least one letter, one number and one special character."
+            info="Use at least 12 characters, at least one uppercase and lowercase letter, one number and one special character."
         />
         <TextElement
             name="organisation"
@@ -83,7 +129,7 @@
         <ButtonElement
             name="submit"
             button-label="Submit"
-            :submits="true"
+            @click="submitForm()"
             :columns="{
               container: 3,
             }"
@@ -106,7 +152,7 @@
 @use '@/assets/core/var' as var;
 @use '@/assets/page-form' as *;
 
-#wrapper {
+#profile-wrapper {
   #login-signup-title {
     width: 100%
   }
