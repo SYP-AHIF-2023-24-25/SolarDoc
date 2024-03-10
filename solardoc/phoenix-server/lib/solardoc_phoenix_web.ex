@@ -17,6 +17,9 @@ defmodule SolardocPhoenixWeb do
   those modules here.
   """
 
+  @version Mix.Project.config[:version]
+  def version(), do: @version
+
   def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
   def router do
