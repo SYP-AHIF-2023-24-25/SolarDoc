@@ -13,14 +13,23 @@ const dropdown = ref(null)
 
 function handleJoinChannel() {
   overlayStateStore.setChannelView(true);
-  dropdown.value?.close()
+  (dropdown.value as {
+    close: () => void
+  } | null)?.close()
 }
 </script>
 
 <template>
   <Dropdown ref="dropdown">
     <template #trigger="{ visible }">
-      <button id="sandwich-menu-button" class="sandwich-button" :class="{ 'highlighted': visible.value }">
+      <!-- @vue-expect-error The types from the library seem to be wrong. Property "visible" can only be used when
+      "value" is also used.
+      -->
+      <button
+          id="sandwich-menu-button"
+          class="sandwich-button"
+          :class="{ 'highlighted': visible.value }"
+      >
         <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
         <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
       </button>
