@@ -260,7 +260,6 @@ defmodule SolardocPhoenix.Accounts do
     encoded_token
   end
 
-
   @doc """
   Fetches the user by API token.
   """
@@ -271,6 +270,13 @@ defmodule SolardocPhoenix.Accounts do
     else
       _ -> {:error, :unauthorized}
     end
+  end
+
+  @doc """
+  Deletes the API token.
+  """
+  def delete_user_api_token(user) do
+    Repo.delete_all(UserToken.by_user_and_contexts_query(user, ["api-token"]))
   end
 
   ## Confirmation

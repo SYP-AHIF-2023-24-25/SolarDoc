@@ -57,8 +57,8 @@ defmodule SolardocPhoenixWeb.UserAuthController do
   end
 
   def delete(conn, _params) do
-    conn
-    |> UserAuth.delete_user_token() # API Logout
-    |> render(:delete, message: "Successfully logged out.")
+    user = conn.assigns.current_user
+    UserAuth.delete_user_api_token(conn, user) # API Logout
+    render(conn, :delete, message: "Successfully logged out.")
   end
 end

@@ -61,6 +61,13 @@ defmodule SolardocPhoenixWeb.UserAuth do
     Accounts.create_user_api_token(user)
   end
 
+  @doc """
+  Deletes the user API token used for authorization i.e. logs the user out.
+  """
+  def delete_user_api_token(conn, user) do
+    Accounts.delete_user_api_token(user)
+  end
+
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
     put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
   end
