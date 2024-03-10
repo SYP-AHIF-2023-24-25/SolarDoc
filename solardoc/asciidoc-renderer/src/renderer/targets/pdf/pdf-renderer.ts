@@ -4,8 +4,6 @@ import { PDFDocument } from 'pdf-lib'
 import { PDFOutput } from './pdf-output'
 import { DecktapeSlim } from '../../simulator'
 import { HTMLRenderer } from '../html'
-import { Slide } from '../../../slide'
-import {ImageOutput} from "../image";
 
 /**
  * A byte array that represents a PDF file.
