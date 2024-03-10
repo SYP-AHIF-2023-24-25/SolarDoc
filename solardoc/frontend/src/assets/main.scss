@@ -9,6 +9,10 @@
 @use './core/spinner' as *;
 @use './core/dotdotdot' as *;
 @use './core/full-screen' as *;
+@use './core/emphasised-link' as *;
+
+// Other dependencies
+@use './vueform' as *;
 
 // Make app take up whole screen
 body #app {

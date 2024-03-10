@@ -1,7 +1,7 @@
-import {AsciidocCompiler, AsciidocFile, RenderOutput, TargetRenderer} from './renderer'
-import {Asciidoctor} from '@asciidoctor/core'
-import {PresentationMetadata} from './presentation-metadata'
-import AbstractBlock = Asciidoctor.AbstractBlock;
+import { TargetRenderer, AsciidocCompiler, AsciidocFile } from './renderer'
+import { RenderOutput } from './renderer'
+import { Asciidoctor } from '@asciidoctor/core'
+import { PresentationMetadata } from './presentation-metadata'
 
 /**
  * The default title that is used if no title is specified in the asciidoc file.
@@ -23,7 +23,7 @@ export class Presentation {
   public constructor(
     compiler: AsciidocCompiler,
     sourceFile: AsciidocFile,
-    parsedFile: Asciidoctor.Document
+    parsedFile: Asciidoctor.Document,
   ) {
     this._compiler = compiler
     this._sourceFile = sourceFile
@@ -82,9 +82,21 @@ export class Presentation {
    */
   public async render<RawT, OutT>(
     target: TargetRenderer<RawT, OutT>,
-    config?: { [key: string]: any }
+    config?: { [key: string]: any },
   ): Promise<RenderOutput<RawT, OutT>> {
     return await target.render(this, config)
+  }
+
+  /**
+   * Renders a specific presentation slide to the given target.
+   * @param target The target that should be used to render the presentation.
+   * @param slide The value that specifies the slide.
+   * @param config The configuration that should be used to render the presentation.
+   * @since 0.3.0
+   */
+  public async renderSlide<RawT, OutT>(target: TargetRenderer<RawT, OutT>, slide: number,config?: { [key: string]: any },
+  ): Promise<RenderOutput<RawT, OutT>> {
+    return await target.renderSlide(this,slide, config)
   }
 
   /**
@@ -93,7 +105,8 @@ export class Presentation {
    * @since 0.2.0
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
-    type MinReqAbstractBlock = Pick<AbstractBlock, 'getContext' | 'getBlocks' | 'getLevel'>
+
+    type MinReqAbstractBlock = Pick<Asciidoctor.AbstractBlock, 'getContext' | 'getBlocks' | 'getLevel'>
 
     let slides = <Array<MinReqAbstractBlock>>document.getBlocks();
     const preambleExists = slides[0]?.getContext() === 'preamble';
@@ -113,8 +126,8 @@ export class Presentation {
     }
 
     const subslideCountPerSlide = slides.map((slide: MinReqAbstractBlock) => {
-      let subBlocks = <Array<AbstractBlock>>slide.getBlocks()
-      return subBlocks.filter((block: AbstractBlock) => block.getContext() === 'section').length
+      let subBlocks = <Array<Asciidoctor.AbstractBlock>>slide.getBlocks()
+      return subBlocks.filter((block: Asciidoctor.AbstractBlock) => block.getContext() === 'section').length
     })
     const slideCount = subslideCountPerSlide.length
     const slideCountInclSubslides = subslideCountPerSlide.reduce((a, b) => a + b, slideCount)

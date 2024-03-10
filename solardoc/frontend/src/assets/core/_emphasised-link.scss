@@ -1,0 +1,12 @@
+@use './var' as var;
+
+.emphasised-link {
+  text-decoration: none;
+  color: var.$scheme-cs-2;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover {
+    color: var.$scheme-cs-2-intense;
+  }
+}

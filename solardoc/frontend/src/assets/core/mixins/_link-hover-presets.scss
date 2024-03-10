@@ -11,9 +11,14 @@
 
     /* For SVGs we have to use fill instead of color */
     svg {
-      &,
-      * {
+      &:not(.req-stroke),
+      *:not(.req-stroke) {
         fill: $scheme-link-hover-color;
+      }
+
+      &.req-stroke,
+      *.req-stroke {
+        stroke: $scheme-link-hover-color;
       }
     }
   }
@@ -23,9 +28,14 @@
 
     /* For SVGs we have to use fill instead of color */
     svg {
-      &,
-      * {
+      &:not(.req-stroke),
+      *:not(.req-stroke) {
         fill: $scheme-link-hover-color;
+      }
+
+      &.req-stroke,
+      *.req-stroke {
+          stroke: $scheme-link-hover-color;
       }
     }
   }
