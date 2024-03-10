@@ -9,7 +9,7 @@ defmodule SolardocPhoenixWeb.UserResetPasswordController do
 
   @api_path SolardocPhoenixWeb.v1_api_path()
 
-  def create(conn, %{"user" => %{"email" => email}}) do
+  def create(conn, %{"email" => email}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_reset_password_instructions(
         user,
@@ -27,7 +27,7 @@ defmodule SolardocPhoenixWeb.UserResetPasswordController do
 
   # Do not log in the user after reset password to avoid a
   # leaked token giving the user access to the account.
-  def update(conn, %{"user" => user_params}) do
+  def update(conn, user_params) do
     with {:ok, _} <- Accounts.reset_user_password(conn.assigns.user, user_params) do
         conn
         |> put_flash(:info, "Password reset successfully.")

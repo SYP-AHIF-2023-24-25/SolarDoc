@@ -40,7 +40,7 @@ defmodule SolardocPhoenixWeb.UserAuthController do
     response 200, "OK", Schema.ref(:UserToken)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, user_params) do
     %{"email" => email, "password" => password} = user_params
 
     with {:ok, user} <- Accounts.get_user_by_email_and_password(email, password) do

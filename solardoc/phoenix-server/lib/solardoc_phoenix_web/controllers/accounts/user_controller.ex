@@ -88,7 +88,7 @@ defmodule SolardocPhoenixWeb.UserController do
     response 201, "Created", Schema.ref(:UserPrivate)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, user_params) do
     with {:ok, user} <- Accounts.register_user(user_params) do
       {:ok, _} =
         Accounts.deliver_user_confirmation_instructions(

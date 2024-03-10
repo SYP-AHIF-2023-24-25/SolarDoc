@@ -18,7 +18,7 @@
       "properties": {
         "date": {
           "description": "The current date in milliseconds",
-          "example": 1710076194873,
+          "example": 1710077335077,
           "type": "integer"
         },
         "greeting": {
