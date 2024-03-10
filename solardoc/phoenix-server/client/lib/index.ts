@@ -18,6 +18,7 @@ type PhoenixSocket = Socket
  * @since 0.4.0
  */
 function socket(
+  url: string,
   userToken?: string
 ): PhoenixSocket {
     let socket: PhoenixSocket
@@ -33,7 +34,7 @@ function socket(
     } else {
         // And connect to the path in "lib/solardoc_phoenix_web/endpoint.ex". We pass the
         // token for authentication. Read below how it should be used.
-        socket = new Socket("/sds", {params: {token: userToken}})
+        socket = new Socket(url, {params: {token: userToken}})
 
         // When you connect, you'll often need to authenticate the client.
         // For example, imagine you have an authentication plug, `MyAuth`,

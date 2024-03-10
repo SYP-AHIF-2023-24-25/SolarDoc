@@ -5,6 +5,10 @@ interface ImportMetaEnv {
   readonly DEV_BACKEND_PORT: string;
   readonly PROD_BACKEND_PORT: string;
   readonly PROD_BACKEND_HOST: string;
+  readonly DEV_PHOENIX_HOST: string;
+  readonly DEV_PHOENIX_PORT: string;
+  readonly PROD_PHOENIX_HOST: string;
+  readonly PROD_PHOENIX_PORT: string;
   readonly API_BASE_PATH: string;
 }
 
