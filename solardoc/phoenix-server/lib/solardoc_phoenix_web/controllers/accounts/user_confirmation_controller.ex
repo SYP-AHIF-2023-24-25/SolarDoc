@@ -5,6 +5,8 @@ defmodule SolardocPhoenixWeb.UserConfirmationController do
 
   action_fallback SolardocPhoenixWeb.FallbackController
 
+  @api_path SolardocPhoenixWeb.v1_api_path()
+
   def create(conn, %{"user" => %{"email" => email}}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_confirmation_instructions(

@@ -54,6 +54,9 @@ defmodule SolardocPhoenixWeb.Router do
   scope "/api/v1/", SolardocPhoenixWeb do
     pipe_through :api
 
+    # Ping route
+    get "/ping", PingController, :index
+
     # User routes
     get "/users", UserController, :index
 

@@ -3,47 +3,28 @@
     "version": "0.4.0-dev",
     "description": "The Solardoc Phoenix Rest API and SDS (Solardoc Socket)",
     "title": "@solardoc/phoenix",
+    "contact": {
+      "name": "Luna Klatzer, Emma Walchshofer & Lisa Pichler"
+    },
     "license": {
       "name": "GNU General Public License v3.0",
       "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc/blob/main/LICENSE"
-    },
-    "contact": {
-      "name": "Luna Klatzer, Emma Walchshofer & Lisa Pichler"
     }
   },
   "host": "localhost:4000",
   "definitions": {
-    "UserLogin": {
-      "description": "A user login",
+    "Ping": {
+      "description": "A simple ping response",
       "properties": {
-        "email": {
-          "description": "Users email",
-          "type": "string"
-        },
-        "password": {
-          "description": "Users password",
+        "message": {
+          "description": "A simple message",
           "type": "string"
         }
       },
       "required": [
-        "password",
-        "email"
+        "message"
       ],
-      "title": "UserLogin",
-      "type": "object"
-    },
-    "UserToken": {
-      "description": "A user token",
-      "properties": {
-        "token": {
-          "description": "Users token",
-          "type": "string"
-        }
-      },
-      "required": [
-        "token"
-      ],
-      "title": "UserToken",
+      "title": "Ping",
       "type": "object"
     },
     "UserPublic": {
@@ -88,22 +69,6 @@
       "title": "UserPrivate",
       "type": "object"
     },
-    "UsersPublic": {
-      "description": "A collection of Users (public data)",
-      "items": {
-        "$ref": "#/definitions/UserPublic"
-      },
-      "title": "UsersPublic",
-      "type": "array"
-    },
-    "UsersPrivate": {
-      "description": "A collection of Users (full data)",
-      "items": {
-        "$ref": "#/definitions/UserPrivate"
-      },
-      "title": "UsersPrivate",
-      "type": "array"
-    },
     "CreateUser": {
       "description": "A new user to be created",
       "properties": {
@@ -122,6 +87,55 @@
       ],
       "title": "CreateUser",
       "type": "object"
+    },
+    "UsersPrivate": {
+      "description": "A collection of Users (full data)",
+      "items": {
+        "$ref": "#/definitions/UserPrivate"
+      },
+      "title": "UsersPrivate",
+      "type": "array"
+    },
+    "UsersPublic": {
+      "description": "A collection of Users (public data)",
+      "items": {
+        "$ref": "#/definitions/UserPublic"
+      },
+      "title": "UsersPublic",
+      "type": "array"
+    },
+    "UserLogin": {
+      "description": "A user login",
+      "properties": {
+        "email": {
+          "description": "Users email",
+          "type": "string"
+        },
+        "password": {
+          "description": "Users password",
+          "type": "string"
+        }
+      },
+      "required": [
+        "password",
+        "email"
+      ],
+      "title": "UserLogin",
+      "type": "object"
+    },
+    "UserToken": {
+      "description": "A user token",
+      "properties": {
+        "token": {
+          "description": "Users token",
+          "type": "string"
+        }
+      },
+      "required": [
+        "token"
+      ],
+      "title": "UserToken",
+      "type": "object"
     }
   },
   "schemes": [
@@ -131,6 +145,29 @@
     "wss"
   ],
   "paths": {
+    "/v1/ping": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.PingController.index",
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Ping"
+            }
+          }
+        },
+        "summary": "Ping the server",
+        "tags": [
+          "Ping"
+        ]
+      }
+    },
     "/v1/users": {
       "get": {
         "deprecated": false,
@@ -267,10 +304,13 @@
     }
   },
   "swagger": "2.0",
+  "basePath": "/api",
+  "consumes": [
+    "application/json"
+  ],
   "produces": [
     "application/json"
   ],
-  "basePath": "/api",
   "securityDefinitions": {
     "Bearer": {
       "in": "header",
@@ -279,9 +319,6 @@
       "description": "API Token must be provided via `Authorization: Bearer ` header"
     }
   },
-  "consumes": [
-    "application/json"
-  ],
   "tags": [
     {
       "name": "User",
