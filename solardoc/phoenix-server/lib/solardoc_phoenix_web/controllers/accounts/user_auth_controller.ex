@@ -25,6 +25,26 @@ defmodule SolardocPhoenixWeb.UserAuthController do
         properties do
           token :string, "Users token", required: true
         end
+      end,
+      Message: swagger_schema do
+        title "Message"
+        description "A message"
+        properties do
+          message :string, "A message", required: true
+        end
+      end,
+      Error: swagger_schema do
+        title "Error"
+        description "An error"
+        properties do
+          detail :string, "Error message", required: true
+        end
+      end,
+      Errors: swagger_schema do
+        title "Errors"
+        description "A list of errors"
+        type :array
+        items Schema.ref(:Error)
       end
     }
   end
@@ -38,6 +58,8 @@ defmodule SolardocPhoenixWeb.UserAuthController do
       user :body, Schema.ref(:UserLogin), "user login attributes"
     end
     response 200, "OK", Schema.ref(:UserToken)
+    response 400, "Bad Request", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
   def create(conn, user_params) do
@@ -54,6 +76,10 @@ defmodule SolardocPhoenixWeb.UserAuthController do
     produces "application/json"
     summary "Log out a user"
     deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
+    response 200, "OK", Schema.ref(:Message)
+    response 400, "Bad Request", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
   def delete(conn, _params) do

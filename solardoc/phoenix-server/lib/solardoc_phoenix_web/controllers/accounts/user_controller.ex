@@ -46,6 +46,19 @@ defmodule SolardocPhoenixWeb.UserController do
           email :string, "Users email", required: true
           password :string, "Users password", required: true
         end
+      end,
+      Error: swagger_schema do
+        title "Error"
+        description "An error"
+        properties do
+          detail :string, "Error message", required: true
+        end
+      end,
+      Errors: swagger_schema do
+        title "Errors"
+        description "A list of errors"
+        type :array
+        items Schema.ref(:Error)
       end
     }
   end
@@ -70,6 +83,7 @@ defmodule SolardocPhoenixWeb.UserController do
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     response 200, "OK", Schema.ref(:UserPrivate)
+    response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
   def current(conn, _params) do
@@ -86,6 +100,7 @@ defmodule SolardocPhoenixWeb.UserController do
       user :body, Schema.ref(:CreateUser), "user attributes"
     end
     response 201, "Created", Schema.ref(:UserPrivate)
+    response 400, "Bad Request", Schema.ref(:Errors)
   end
 
   def create(conn, user_params) do

@@ -18,7 +18,7 @@
       "properties": {
         "date": {
           "description": "The current date in milliseconds",
-          "example": 1710077335077,
+          "example": 1710079058281,
           "type": "integer"
         },
         "greeting": {
@@ -88,6 +88,20 @@
       "title": "UserPrivate",
       "type": "object"
     },
+    "Error": {
+      "description": "An error",
+      "properties": {
+        "detail": {
+          "description": "Error message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail"
+      ],
+      "title": "Error",
+      "type": "object"
+    },
     "CreateUser": {
       "description": "A new user to be created",
       "properties": {
@@ -107,6 +121,14 @@
       "title": "CreateUser",
       "type": "object"
     },
+    "Errors": {
+      "description": "A list of errors",
+      "items": {
+        "$ref": "#/definitions/Error"
+      },
+      "title": "Errors",
+      "type": "array"
+    },
     "UsersPrivate": {
       "description": "A collection of Users (full data)",
       "items": {
@@ -122,6 +144,20 @@
       },
       "title": "UsersPublic",
       "type": "array"
+    },
+    "Message": {
+      "description": "A message",
+      "properties": {
+        "message": {
+          "description": "A message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "title": "Message",
+      "type": "object"
     },
     "UserLogin": {
       "description": "A user login",
@@ -235,6 +271,12 @@
             "schema": {
               "$ref": "#/definitions/UserPrivate"
             }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
           }
         },
         "summary": "Create a new user",
@@ -248,11 +290,38 @@
         "deprecated": false,
         "description": "",
         "operationId": "SolardocPhoenixWeb.UserAuthController.delete",
-        "parameters": [],
+        "parameters": [
+          {
+            "description": "Bearer",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "produces": [
           "application/json"
         ],
-        "responses": {},
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
         "summary": "Log out a user",
         "tags": [
           "UserAuth"
@@ -281,6 +350,18 @@
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/UserToken"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Errors"
             }
           }
         },
@@ -312,6 +393,12 @@
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/UserPrivate"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Errors"
             }
           }
         },
