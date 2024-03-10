@@ -11,18 +11,6 @@ defmodule SolardocPhoenixWeb.Router do
     plug :put_secure_browser_headers
     plug :protect_from_forgery
     plug :fetch_current_user
-
-    # Auth with 'Phoenix.Token' for API requests and websocket connections
-    plug :put_user_token
-  end
-
-  defp put_user_token(conn, _) do
-    if current_user = conn.assigns[:current_user] do
-      token = Phoenix.Token.sign(conn, "user socket", current_user.id)
-      assign(conn, :user_token, token)
-    else
-      conn
-    end
   end
 
   pipeline :api do
@@ -32,11 +20,6 @@ defmodule SolardocPhoenixWeb.Router do
   pipeline :api_auth do
     plug :fetch_api_user
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", SolardocPhoenixWeb do
-  #   pipe_through :api
-  # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:solardoc_phoenix, :dev_routes) do
