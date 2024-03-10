@@ -38,7 +38,7 @@
     "eslint": "pnpm run lint",
     "format": "prettier --write src/",
     "prettier": "pnpm run format",
-    "oazapfts": "oazapfts ../rest-api/openapi.json src/services/backend/gen/backend-rest-service.ts",
+    "oazapfts": "oazapfts ../rest-api/openapi.json src/services/backend/gen/backend-rest-service.ts && oazapfts ../phoenix-server/priv/static/swagger.json src/services/phoenix/gen/phoenix-rest-service.ts",
     "predeploy": "pnpm run oazapfts;pnpm run gen-env-types",
     "deploy": "pnpm run build --mode production",
     "gen-env-types": "npx import-meta-env-typescript -x ./.env.template -o ./src/config"

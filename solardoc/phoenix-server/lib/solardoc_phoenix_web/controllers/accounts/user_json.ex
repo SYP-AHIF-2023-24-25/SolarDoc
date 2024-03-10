@@ -16,7 +16,14 @@ defmodule SolardocPhoenixWeb.UserJSON do
   end
 
   @doc """
-  Renders the current user. Only contains the publicly available data.
+  Renders a single user which was just created.
+  """
+  def new(%{user: user}) do
+    %{data: priv_data(user)}
+  end
+
+  @doc """
+  Renders the current user.
   """
   def show_priv(%{user: user}) do
     %{data: priv_data(user)}

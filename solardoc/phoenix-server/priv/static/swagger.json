@@ -1,0 +1,303 @@
+{
+  "info": {
+    "version": "0.4.0-dev",
+    "description": "The Solardoc Phoenix Rest API and SDS (Solardoc Socket)",
+    "title": "@solardoc/phoenix",
+    "license": {
+      "name": "GNU General Public License v3.0",
+      "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc/blob/main/LICENSE"
+    },
+    "contact": {
+      "name": "Luna Klatzer, Emma Walchshofer & Lisa Pichler"
+    }
+  },
+  "host": "localhost:4000",
+  "definitions": {
+    "UserLogin": {
+      "description": "A user login",
+      "properties": {
+        "email": {
+          "description": "Users email",
+          "type": "string"
+        },
+        "password": {
+          "description": "Users password",
+          "type": "string"
+        }
+      },
+      "required": [
+        "password",
+        "email"
+      ],
+      "title": "UserLogin",
+      "type": "object"
+    },
+    "UserToken": {
+      "description": "A user token",
+      "properties": {
+        "token": {
+          "description": "Users token",
+          "type": "string"
+        }
+      },
+      "required": [
+        "token"
+      ],
+      "title": "UserToken",
+      "type": "object"
+    },
+    "UserPublic": {
+      "description": "A user of the application (public data)",
+      "properties": {
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "UserPublic",
+      "type": "object"
+    },
+    "UserPrivate": {
+      "description": "A user of the application (full data)",
+      "properties": {
+        "confirmed_at": {
+          "description": "Date of confirmation",
+          "type": "date"
+        },
+        "email": {
+          "description": "Users email",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        },
+        "role": {
+          "description": "Users role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "email",
+        "id"
+      ],
+      "title": "UserPrivate",
+      "type": "object"
+    },
+    "UsersPublic": {
+      "description": "A collection of Users (public data)",
+      "items": {
+        "$ref": "#/definitions/UserPublic"
+      },
+      "title": "UsersPublic",
+      "type": "array"
+    },
+    "UsersPrivate": {
+      "description": "A collection of Users (full data)",
+      "items": {
+        "$ref": "#/definitions/UserPrivate"
+      },
+      "title": "UsersPrivate",
+      "type": "array"
+    },
+    "CreateUser": {
+      "description": "A new user to be created",
+      "properties": {
+        "email": {
+          "description": "Users email",
+          "type": "string"
+        },
+        "password": {
+          "description": "Users password",
+          "type": "string"
+        }
+      },
+      "required": [
+        "password",
+        "email"
+      ],
+      "title": "CreateUser",
+      "type": "object"
+    }
+  },
+  "schemes": [
+    "http",
+    "https",
+    "ws",
+    "wss"
+  ],
+  "paths": {
+    "/v1/users": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.UserController.index",
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UsersPublic"
+            }
+          }
+        },
+        "summary": "List all users",
+        "tags": [
+          "User"
+        ]
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.UserController.create",
+        "parameters": [
+          {
+            "description": "user attributes",
+            "in": "body",
+            "name": "user",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CreateUser"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/UserPrivate"
+            }
+          }
+        },
+        "summary": "Create a new user",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/v1/users/auth": {
+      "delete": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.UserAuthController.delete",
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {},
+        "summary": "Log out a user",
+        "tags": [
+          "UserAuth"
+        ]
+      },
+      "post": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.UserAuthController.create",
+        "parameters": [
+          {
+            "description": "user login attributes",
+            "in": "body",
+            "name": "user",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserToken"
+            }
+          }
+        },
+        "summary": "Log in a user",
+        "tags": [
+          "UserAuth"
+        ]
+      }
+    },
+    "/v1/users/current": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.UserController.current",
+        "parameters": [
+          {
+            "description": "Bearer",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserPrivate"
+            }
+          }
+        },
+        "summary": "Get the current user",
+        "tags": [
+          "User"
+        ]
+      }
+    }
+  },
+  "swagger": "2.0",
+  "produces": [
+    "application/json"
+  ],
+  "basePath": "/api",
+  "securityDefinitions": {
+    "Bearer": {
+      "in": "header",
+      "name": "Authorization",
+      "type": "apiKey",
+      "description": "API Token must be provided via `Authorization: Bearer ` header"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "User resources"
+    },
+    {
+      "name": "UserAuth",
+      "description": "User authentication resources"
+    },
+    {
+      "name": "UserConfirmation",
+      "description": "User confirmation resources"
+    },
+    {
+      "name": "UserSettings",
+      "description": "User settings resources"
+    }
+  ]
+}

@@ -18,7 +18,8 @@
     "test": "mix test",
     "format": "mix format",
     "lint": "mix credo --strict",
-    "build": "tsc"
+    "build": "tsc",
+    "openapi": "mix phx.swagger.generate"
   },
   "keywords": [
     "solardoc",

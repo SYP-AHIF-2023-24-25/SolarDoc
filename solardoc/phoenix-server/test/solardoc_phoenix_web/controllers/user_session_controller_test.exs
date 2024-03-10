@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.UserSessionControllerTest do
+defmodule SolardocPhoenixWeb.UserAuthControllerTest do
   use SolardocPhoenixWeb.ConnCase, async: true
 
   import SolardocPhoenix.AccountsFixtures
@@ -7,9 +7,9 @@ defmodule SolardocPhoenixWeb.UserSessionControllerTest do
     %{user: user_fixture()}
   end
 
-  describe "GET /users/login" do
+  describe "GET /users/auth" do
     test "renders log in page", %{conn: conn} do
-      conn = get(conn, ~p"/users/login")
+      conn = get(conn, ~p"/users/auth")
       response = html_response(conn, 200)
       assert response =~ "Log in"
       assert response =~ ~p"/users/register"
@@ -17,15 +17,15 @@ defmodule SolardocPhoenixWeb.UserSessionControllerTest do
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
-      conn = conn |> log_in_user(user) |> get(~p"/users/login")
+      conn = conn |> log_in_user(user) |> get(~p"/users/auth")
       assert redirected_to(conn) == ~p"/"
     end
   end
 
-  describe "POST /users/login" do
+  describe "POST /users/auth" do
     test "logs the user in", %{conn: conn, user: user} do
       conn =
-        post(conn, ~p"/users/login", %{
+        post(conn, ~p"/users/auth", %{
           "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
 
@@ -42,7 +42,7 @@ defmodule SolardocPhoenixWeb.UserSessionControllerTest do
 
     test "logs the user in with remember me", %{conn: conn, user: user} do
       conn =
-        post(conn, ~p"/users/login", %{
+        post(conn, ~p"/users/auth", %{
           "user" => %{
             "email" => user.email,
             "password" => valid_user_password(),
@@ -58,7 +58,7 @@ defmodule SolardocPhoenixWeb.UserSessionControllerTest do
       conn =
         conn
         |> init_test_session(user_return_to: "/foo/bar")
-        |> post(~p"/users/login", %{
+        |> post(~p"/users/auth", %{
           "user" => %{
             "email" => user.email,
             "password" => valid_user_password()
@@ -71,7 +71,7 @@ defmodule SolardocPhoenixWeb.UserSessionControllerTest do
 
     test "emits error message with invalid credentials", %{conn: conn, user: user} do
       conn =
-        post(conn, ~p"/users/login", %{
+        post(conn, ~p"/users/auth", %{
           "user" => %{"email" => user.email, "password" => "invalid_password"}
         })
 
