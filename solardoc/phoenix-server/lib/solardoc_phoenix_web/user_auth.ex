@@ -189,7 +189,7 @@ defmodule SolardocPhoenixWeb.UserAuth do
       socket =
         socket
         |> Phoenix.LiveView.put_flash(:error, "You must log in to access this page.")
-        |> Phoenix.LiveView.redirect(to: ~p"/users/login")
+        |> Phoenix.LiveView.redirect(to: ~p"/users/auth")
 
       {:halt, socket}
     end
@@ -239,7 +239,7 @@ defmodule SolardocPhoenixWeb.UserAuth do
       conn
       |> put_flash(:error, "You must log in to access this page.")
       |> maybe_store_return_to()
-      |> redirect(to: ~p"/users/login")
+      |> redirect(to: ~p"/users/auth")
       |> halt()
     end
   end

@@ -7,6 +7,8 @@ defmodule SolardocPhoenixWeb.UserResetPasswordController do
 
   action_fallback SolardocPhoenixWeb.FallbackController
 
+  @api_path SolardocPhoenixWeb.v1_api_path()
+
   def create(conn, %{"user" => %{"email" => email}}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_reset_password_instructions(
@@ -29,7 +31,7 @@ defmodule SolardocPhoenixWeb.UserResetPasswordController do
     with {:ok, _} <- Accounts.reset_user_password(conn.assigns.user, user_params) do
         conn
         |> put_flash(:info, "Password reset successfully.")
-        |> redirect(to: ~p"/users/login")
+        |> redirect(to: ~p"/users/auth")
     end
   end
 

@@ -91,7 +91,7 @@ defmodule SolardocPhoenixWeb.UserResetPasswordControllerTest do
           }
         })
 
-      assert redirected_to(conn) == ~p"/users/login"
+      assert redirected_to(conn) == ~p"/users/auth"
       refute get_session(conn, :user_token)
 
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~

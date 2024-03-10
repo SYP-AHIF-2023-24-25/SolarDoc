@@ -8,6 +8,8 @@ defmodule SolardocPhoenixWeb.UserSettingsController do
 
   action_fallback SolardocPhoenixWeb.FallbackController
 
+  @api_path SolardocPhoenixWeb.v1_api_path()
+
   def edit(conn, _params) do
     render(conn, :edit)
   end

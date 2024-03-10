@@ -14,8 +14,8 @@ export class SDSClient {
   private readonly socket: SDSClientBare;
   private _open: boolean;
 
-  constructor(userToken?: string) {
-    this.socket = wsClient(userToken);
+  constructor(url: string, userToken?: string) {
+    this.socket = wsClient(url, userToken);
     this._open = true;
   }
 

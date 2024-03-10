@@ -8,7 +8,7 @@ defmodule SolardocPhoenixWeb.UserRegistrationControllerTest do
       conn = get(conn, ~p"/users/register")
       response = html_response(conn, 200)
       assert response =~ "Register"
-      assert response =~ ~p"/users/login"
+      assert response =~ ~p"/users/auth"
       assert response =~ ~p"/users/register"
     end
 
