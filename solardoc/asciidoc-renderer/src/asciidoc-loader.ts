@@ -23,9 +23,12 @@ export function loadAsciidoctor(): AsciidoctorLib.Asciidoctor {
   globalScope.Asciidoctor = globalScope.Asciidoctor || (<typeof AsciidoctorLib>require('@asciidoctor/core'))()
 
   // Get the reveal.js converter
+  // @ts-ignore
   globalScope.asciidoctorRevealJS = globalScope.asciidoctorRevealJS || <typeof AsciidoctorRevealJS>require('@asciidoctor/reveal.js')
+  // @ts-ignore
   globalScope.asciidoctorRevealJS.register()
 
   // Return the asciidoctor instance
+  // @ts-ignore
   return globalScope.Asciidoctor
 }
