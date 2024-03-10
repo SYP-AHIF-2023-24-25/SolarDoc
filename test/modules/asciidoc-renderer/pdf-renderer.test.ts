@@ -1,27 +1,44 @@
-import {AsciidocCompiler, AsciidocFile} from "@solardoc/asciidoc-renderer";
-import {PDFRenderer} from "@solardoc/asciidoc-renderer/dist/renderer/targets/pdf";
-import {assert} from "chai";
+import {AsciidocCompiler, AsciidocFile, DecktapeSlim, HTMLRenderer, PDFRenderer} from "@solardoc/asciidoc-renderer";
+import { assert } from "chai";
+import path from "path";
+import fs from "fs";
 
-describe("PDFRenderer", () => {
-  describe("NodePDFRenderer", () => {
-    describe("render()", () => {
+
+describe("PdfRenderer", () => {
+  describe("render()", () => {
+    it("should return PDF document with multiple pages", async () => {
       const adocString =
-        `= Test\\n\\nx\\n\\n== Still testing\\n\\nMain-Slide 2\\n\\n=== Still testing\\n\\nSub-Slide 2.1\\n\\n== Still testing
-\\n\\nx\\n\\n== Still testing\\n\\nx"`;
+        `= Test\n\nx\n\n== Still testing\n\nMain-Slide 2\n\n=== Still testing\n\nSub-Slide 2.1\n\n== Still testing
+\n\nMain-Slide 3\n\n== Still testing\n\nMain-Slide 4`;
       const adocFilename = "test.adoc";
+      const adocFile = await AsciidocFile.fromString(
+        adocFilename,
+        adocString,
+      );
+      const asciidocCompiler = new AsciidocCompiler();
+      const presentation = await asciidocCompiler.parse(adocFile);
 
-      // TODO! Implement proper PDFRenderer tests once the PDFRenderer is implemented
-      // it("should return a PDFOutput", async () => {
-      //   const adocFile = await AsciidocFile.fromString(
-      //     adocString,
-      //     adocFilename
-      //   );
-      //   const asciidocCompiler = new AsciidocCompiler();
-      //   const presentation = await asciidocCompiler.compile(adocFile);
-      //
-      //   const html = await presentation.render(new PDFRenderer());
-      //   assert.notEqual(html.internalData, "", "internalData is empty");
-      // });
+      const pdf = await presentation.render(new PDFRenderer(),{revealJSAssetsPath: "https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/"});
+      assert.notEqual(pdf.internalData, null, "internalData is empty");
+      assert.equal(pdf.internalData.getPages().length, 5, "PDF document should have 5 pages");
     });
+  });
+  describe("renderSlide()", ()=>{
+    it("Should return PDF with a specific slide", async ()=>{
+      const adocString =
+        `= Test\n\nx\n\n== Slide 2\n\nMain-Slide 2\n\n=== Slide 3\n\nSub-Slide 2.1\n\n== Slide 4
+\n\nMain-Slide 3\n\n== Still testing\n\nMain-Slide 4`;
+      const adocFilename = "test.adoc";
+      const adocFile = await AsciidocFile.fromString(
+        adocFilename,
+        adocString,
+      );
+      const asciidocCompiler = new AsciidocCompiler();
+      const presentation = await asciidocCompiler.parse(adocFile);
+
+      const pdf = await presentation.renderSlide(new PDFRenderer(),3,{revealJSAssetsPath: "https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/"});
+      assert.notEqual(pdf.internalData, null, "internalData is empty");
+      assert.equal(pdf.internalData.getPages().length, 1, "PDF document should have 1 page");
+    })
   })
 });
