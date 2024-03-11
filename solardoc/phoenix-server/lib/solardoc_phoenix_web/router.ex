@@ -15,10 +15,11 @@ defmodule SolardocPhoenixWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_api_user
   end
 
   pipeline :api_auth do
-    plug :fetch_api_user
+    plug :require_api_user
   end
 
   # Enable LiveDashboard, Swagger Dashboard and Swoosh mailbox preview in development

@@ -24,6 +24,7 @@ defmodule SolardocPhoenixWeb.UserAuthController do
         description "A user token"
         properties do
           token :string, "Users token", required: true
+          expires_at :integer, "Token expiration date in milliseconds", required: true
         end
       end,
       Message: swagger_schema do
@@ -66,8 +67,8 @@ defmodule SolardocPhoenixWeb.UserAuthController do
     %{"email" => email, "password" => password} = user_params
 
     with {:ok, user} <- Accounts.get_user_by_email_and_password(email, password) do
-      token = UserAuth.create_user_token(user)
-      render(conn, :create, token: token)
+      {token, expiration_date} = UserAuth.create_user_token(user)
+      render(conn, :create, %{token: token, expiration_date: expiration_date})
     end
   end
 
@@ -84,7 +85,8 @@ defmodule SolardocPhoenixWeb.UserAuthController do
 
   def delete(conn, _params) do
     user = conn.assigns.current_user
-    UserAuth.delete_user_api_token(conn, user) # API Logout
-    render(conn, :delete, message: "Successfully logged out.")
+    conn
+    |> UserAuth.delete_user_api_token(user) # API Logout
+    |> render(:delete, message: "Successfully logged out.")
   end
 end

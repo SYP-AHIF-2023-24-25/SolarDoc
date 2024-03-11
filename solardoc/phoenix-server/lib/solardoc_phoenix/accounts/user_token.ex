@@ -68,7 +68,7 @@ defmodule SolardocPhoenix.Accounts.UserToken do
   end
 
   @doc """
-  Builds a token and its hash to be delivered to the user's email.
+  Builds a token and its hash to be delivered to the user.
 
   The non-hashed token is sent to the user email while the
   hashed part is stored in the database. The original token cannot be reconstructed,
@@ -76,12 +76,10 @@ defmodule SolardocPhoenix.Accounts.UserToken do
   the token in the application to gain access. Furthermore, if the user changes
   their email in the system, the tokens sent to the previous email are no longer
   valid.
-
-  Users can easily adapt the existing code to provide other types of delivery methods,
-  for example, by phone numbers.
   """
   def build_email_token(user, context) do
-    build_hashed_token(user, context, user.email)
+    # We return the token plus the expiration date in milliseconds
+    {build_hashed_token(user, context, user.email), days_for_context("api-token") * 24 * 60 * 60 * 1000 + :os.system_time(:millisecond)}
   end
 
   defp build_hashed_token(user, context, sent_to) do
