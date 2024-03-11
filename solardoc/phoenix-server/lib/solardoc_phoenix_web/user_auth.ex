@@ -86,7 +86,7 @@ defmodule SolardocPhoenixWeb.UserAuth do
   @doc """
   Deletes the user API token used for authorization i.e. logs the user out.
   """
-  def delete_user_api_token(_conn, user) do
+  def delete_user_api_token(user) do
     Accounts.delete_user_api_token(user)
   end
 

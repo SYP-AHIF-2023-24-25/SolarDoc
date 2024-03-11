@@ -1,5 +1,5 @@
 import * as api from './gen/phoenix-rest-service'
-import {PHOENIX_URL} from "./config";
+import {PHOENIX_URL, SDSCLIENT_URL} from "./config";
 
 // Overwrite the default configuration depending on the environment
 api.defaults.baseUrl = PHOENIX_URL;
@@ -15,7 +15,7 @@ if (!api.defaults.baseUrl.startsWith('http')) {
 console.log(`[phoenix/api-service.ts] Using phoenix backend at '${api.defaults.baseUrl}'`)
 
 // Log the WS URL in case there is a problem
-console.log(`[phoenix/api-service.ts] Using SDS at '${api.defaults.baseUrl.replace('http', 'ws')}'`)
+console.log(`[phoenix/api-service.ts] Using SDS at '${SDSCLIENT_URL}'`)
 
 export async function checkIfPhoenixBackendIsReachable(): Promise<void> {
   const ping = await api.getV1Ping()

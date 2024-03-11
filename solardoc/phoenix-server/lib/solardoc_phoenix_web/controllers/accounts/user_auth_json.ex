@@ -1,6 +1,6 @@
 defmodule SolardocPhoenixWeb.UserAuthJSON do
-  def create(%{token: token, expiration_date: expiration_date}) do
-    %{token: token, expiration_date: expiration_date}
+  def create(%{token: token, expires_at: expires_at}) do
+    %{token: token, expires_at: expires_at}
   end
 
   def delete(%{message: message}) do

@@ -67,8 +67,8 @@ defmodule SolardocPhoenixWeb.UserAuthController do
     %{"email" => email, "password" => password} = user_params
 
     with {:ok, user} <- Accounts.get_user_by_email_and_password(email, password) do
-      {token, expiration_date} = UserAuth.create_user_token(user)
-      render(conn, :create, %{token: token, expiration_date: expiration_date})
+      {token, expires_at} = UserAuth.create_user_token(user)
+      render(conn, :create, %{token: token, expires_at: expires_at})
     end
   end
 
@@ -85,8 +85,7 @@ defmodule SolardocPhoenixWeb.UserAuthController do
 
   def delete(conn, _params) do
     user = conn.assigns.current_user
-    conn
-    |> UserAuth.delete_user_api_token(user) # API Logout
-    |> render(:delete, message: "Successfully logged out.")
+    UserAuth.delete_user_api_token(user) # API Logout
+    render(conn, :delete, message: "Successfully logged out.")
   end
 end

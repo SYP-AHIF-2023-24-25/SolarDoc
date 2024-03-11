@@ -21,7 +21,7 @@ const form$ = ref<{
   }
 } | null>(null)
 
-function submitForm() {
+async function submitForm() {
   if (!form$.value) {
     throw new Error("Form data is null");
   }
@@ -30,26 +30,26 @@ function submitForm() {
     email: form$.value.data.email,
     password: form$.value.data.password,
   } satisfies phoenixBackend.CreateUser;
-  phoenixBackend
-    .postV1UsersAuth(loginUser)
-    .then(async (resp) => {
-      if (resp.status === 200) {
-        console.log("Login successful")
-        currentUserStore.setCurrentAuth(resp.data)
-      } else if (resp.status === 401) {
-        throw new Error("Server rejected sign up. Cause: Unauthorized")
-      } else if (resp.status === 400) {
-        throw new Error("Server rejected sign up. Cause: Bad request")
-      } else {
-        throw new Error("Server rejected sign up. Cause: Unknown error (status: " + (resp as {status: never}).status + ")")
-      }
 
-      await currentUserStore.fetchCurrentUser()
-      await $router.push("/profile")
-    })
-    .catch((error) => {
-      throw new Error("Signup rejected by backend. Cause: " + error)
-    });
+  let resp: Awaited<ReturnType<typeof phoenixBackend.postV1UsersAuth>>
+  try {
+    resp = await phoenixBackend.postV1UsersAuth(loginUser)
+  } catch (e) {
+    throw new Error("Signup rejected by backend. Cause: " + e)
+  }
+  if (resp.status === 200) {
+    console.log("Login successful")
+    currentUserStore.setCurrentAuth(resp.data)
+  } else if (resp.status === 401) {
+    throw new Error("Server rejected sign up. Cause: Unauthorized")
+  } else if (resp.status === 400) {
+    throw new Error("Server rejected sign up. Cause: Bad request")
+  } else {
+    throw new Error("Server rejected sign up. Cause: Unknown error (status: " + (resp as {status: never}).status + ")")
+  }
+
+  await currentUserStore.fetchCurrentUser()
+  await $router.push("/profile")
 }
 </script>
 

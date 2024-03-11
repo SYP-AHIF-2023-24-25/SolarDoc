@@ -255,9 +255,9 @@ defmodule SolardocPhoenix.Accounts do
   This token cannot be recovered from the database.
   """
   def create_user_api_token(user) do
-    {{encoded_token, user_token}, expiration_date} = UserToken.build_email_token(user, "api-token")
+    {{encoded_token, user_token}, expires_at} = UserToken.build_email_token(user, "api-token")
     Repo.insert!(user_token)
-    {encoded_token, expiration_date}
+    {encoded_token, expires_at}
   end
 
   @doc """

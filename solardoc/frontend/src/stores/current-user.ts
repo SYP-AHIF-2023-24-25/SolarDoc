@@ -27,12 +27,16 @@ export const useCurrentUserStore = defineStore('currentUser', {
       currentAuth: currentAuth as UserToken | null,
     }
   },
-  actions: {
-    get loggedIn(): boolean {
-      return !!this.currentAuth
-        && !!this.currentUser
+  getters: {
+    loggedIn(): boolean {
+      return this.currentUser !== null
+        && this.currentAuth !== null
+        && this.currentUser !== undefined
+        && this.currentAuth !== undefined
         && Number(new Date()) < this.currentAuth.expires_at // Check if token is expired
-    },
+    }
+  },
+  actions: {
     async fetchCurrentUserIfNotFetchedAndAuthValid() {
       if (!this.currentUser) {
         await this.fetchCurrentUser()

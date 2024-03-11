@@ -12,9 +12,9 @@ if (!currentUserStore.loggedIn) {
   $router.push("/login")
 }
 
-function logout() {
-  currentUserStore.logout()
-  $router.push("/login")
+async function logout() {
+  await currentUserStore.logout()
+  await $router.push("/login")
 }
 </script>
 
