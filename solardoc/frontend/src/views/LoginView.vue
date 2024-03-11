@@ -29,7 +29,7 @@ async function submitForm() {
   const loginUser = {
     email: form$.value.data.email,
     password: form$.value.data.password,
-  } satisfies phoenixBackend.CreateUser;
+  } satisfies phoenixBackend.UserLogin;
 
   let resp: Awaited<ReturnType<typeof phoenixBackend.postV1UsersAuth>>
   try {

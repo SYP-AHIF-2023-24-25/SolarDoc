@@ -28,13 +28,20 @@ export type UserPublic = {
 export type UsersPublic = UserPublic[];
 export type CreateUser = {
     email: string;
+    intended_use?: number;
+    organisation?: string;
     password: string;
+    role?: string;
+    username?: string;
 };
 export type UserPrivate = {
-    confirmed_at?: any;
+    confirmed_at?: string;
     email: string;
     id: string;
-    role: string;
+    intended_use?: number;
+    organisation?: string;
+    role?: string;
+    username?: string;
 };
 export type Error = {
     detail: string;

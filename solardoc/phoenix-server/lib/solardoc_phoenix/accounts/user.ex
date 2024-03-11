@@ -4,11 +4,14 @@ defmodule SolardocPhoenix.Accounts.User do
 
   @primary_key {:id, Ecto.UUID, autogenerate: true}
   schema "users" do
+    field :username, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     field :role, :string, default: "user"
+    field :organisation, :string
+    field :intended_use, :integer
 
     timestamps(type: :utc_datetime)
   end
@@ -16,7 +19,7 @@ defmodule SolardocPhoenix.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password, :role])
+    |> cast(attrs, [:username, :email, :password, :role, :organisation, :intended_use])
   end
 
   @doc """
@@ -44,7 +47,7 @@ defmodule SolardocPhoenix.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :username, :role, :organisation, :intended_use])
     |> validate_email(opts)
     |> validate_password(opts)
   end
@@ -63,7 +66,7 @@ defmodule SolardocPhoenix.Accounts.User do
     |> validate_length(:password, min: 12, max: 72)
     |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
-    |> validate_format(:password, ~r/[!?@#$%^&*_]/, message: "at least one special character")
+    |> validate_format(:password, ~r/[!?@#$%^&*_<>~]/, message: "at least one special character")
     |> validate_format(:password, ~r/[0-9]/, message: "at least one digit")
     |> maybe_hash_password(opts)
   end

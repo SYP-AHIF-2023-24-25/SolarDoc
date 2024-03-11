@@ -18,7 +18,7 @@
       "properties": {
         "date": {
           "description": "The current date in milliseconds",
-          "example": 1710184706261,
+          "example": 1710199788930,
           "type": "integer"
         },
         "greeting": {
@@ -65,7 +65,7 @@
       "properties": {
         "confirmed_at": {
           "description": "Date of confirmation",
-          "type": "date"
+          "type": "string"
         },
         "email": {
           "description": "Users email",
@@ -75,13 +75,24 @@
           "description": "Unique identifier",
           "type": "string"
         },
+        "intended_use": {
+          "description": "Users intended use",
+          "type": "integer"
+        },
+        "organisation": {
+          "description": "Users organisation",
+          "type": "string"
+        },
         "role": {
           "description": "Users role",
+          "type": "string"
+        },
+        "username": {
+          "description": "Users username",
           "type": "string"
         }
       },
       "required": [
-        "role",
         "email",
         "id"
       ],
@@ -109,8 +120,24 @@
           "description": "Users email",
           "type": "string"
         },
+        "intended_use": {
+          "description": "Users intended use",
+          "type": "integer"
+        },
+        "organisation": {
+          "description": "Users organisation",
+          "type": "string"
+        },
         "password": {
           "description": "Users password",
+          "type": "string"
+        },
+        "role": {
+          "description": "Users role",
+          "type": "string"
+        },
+        "username": {
+          "description": "Users username",
           "type": "string"
         }
       },

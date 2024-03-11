@@ -22,9 +22,12 @@ defmodule SolardocPhoenixWeb.UserController do
         description "A user of the application (full data)"
         properties do
           id :string, "Unique identifier", required: true
+          username :string, "Users username", required: false
           email :string, "Users email", required: true
-          confirmed_at :date, "Date of confirmation", required: false
-          role :string, "Users role", required: true
+          confirmed_at :string, "Date of confirmation", required: false
+          role :string, "Users role", required: false
+          organisation :string, "Users organisation", required: false
+          intended_use :integer, "Users intended use", required: false
         end
       end,
       UsersPublic: swagger_schema do
@@ -45,6 +48,10 @@ defmodule SolardocPhoenixWeb.UserController do
         properties do
           email :string, "Users email", required: true
           password :string, "Users password", required: true
+          username :string, "Users username", required: false
+          role :string, "Users role", required: false
+          organisation :string, "Users organisation", required: false
+          intended_use :integer, "Users intended use", required: false
         end
       end,
       Error: swagger_schema do
@@ -105,11 +112,12 @@ defmodule SolardocPhoenixWeb.UserController do
 
   def create(conn, user_params) do
     with {:ok, user} <- Accounts.register_user(user_params) do
-      {:ok, _} =
-        Accounts.deliver_user_confirmation_instructions(
-          user,
-          &url(~p"/users/confirm/#{&1}")
-        )
+# TODO! Uncomment this when email is working
+#      {:ok, _} =
+#        Accounts.deliver_user_confirmation_instructions(
+#          user,
+#          &url(~p"/users/confirm/#{&1}")
+#        )
 
       # Return a success JSON response
       conn

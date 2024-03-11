@@ -13,37 +13,42 @@ const form$ = ref<{
     email: string,
     password: string,
     organisation: string,
-    intendedUse: string,
-    acceptsConditions: boolean,
+    "intended-use": number,
+    "accepts-conditions": boolean,
   }
 } | null>(null)
 
-function submitForm() {
+async function submitForm() {
   if (!form$.value) {
     throw new Error("Form data is null")
   }
+  console.log(form$.value.data)
 
   const newUser = {
     email: form$.value.data.email,
     password: form$.value.data.password,
+    username: form$.value.data.username,
+    organisation: form$.value.data.organisation,
+    intended_use: form$.value.data["intended-use"],
   } satisfies phoenixBackend.CreateUser
-  phoenixBackend
-    .postV1Users(newUser)
-    .then((resp) => {
-      if (resp.status === 201) {
-        console.log("Signup successful")
-        currentUserStore.setCurrentUser(resp.data)
-      } else if (resp.status === 400) {
-        throw new Error("Server rejected sign up. Cause: Bad request")
-      } else {
-        throw new Error("Server rejected sign up. Cause: Unknown error (status: " + (resp as {status: never}).status + ")")
-      }
 
-      $router.push("login")
-    })
-    .catch((error) => {
-      throw new Error("Signup rejected by backend. Cause: " + error)
-    });
+  let resp: Awaited<ReturnType<typeof phoenixBackend.postV1Users>>
+  try {
+    resp = await phoenixBackend.postV1Users(newUser)
+  } catch (e) {
+    throw new Error("Signup rejected by backend. Cause: " + e)
+  }
+
+  if (resp.status === 201) {
+    console.log("Signup successful")
+    currentUserStore.setCurrentUser(resp.data)
+  } else if (resp.status === 400) {
+    throw new Error("Server rejected sign up. Cause: Bad request")
+  } else {
+    throw new Error("Server rejected sign up. Cause: Unknown error (status: " + (resp as {status: never}).status + ")")
+  }
+
+  await $router.push("login")
 }
 </script>
 
@@ -81,7 +86,7 @@ function submitForm() {
             :rules="[
               'required',
               'min:12',
-              'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/',
+              'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*_<>~]).{12,}$/',
             ]"
             info="Use at least 12 characters, at least one uppercase and lowercase letter, one number and one special character."
         />

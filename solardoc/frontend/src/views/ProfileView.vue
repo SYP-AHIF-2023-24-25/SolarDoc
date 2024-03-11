@@ -20,17 +20,18 @@ async function logout() {
 
 <template>
   <div id="profile-wrapper" class="page-form-wrapper">
-    <div id="profile-container" class="page-form-container">
+    <div id="profile-container" class="page-form-container large">
       <button id="logout-button" class="highlighted-button" @click="logout()">
         Logout
       </button>
       <div id="profile-form">
-        <h1>Profile Page</h1>
+        <h1>Profile Page ~<code>{{ currentUserStore.currentUser?.username || '' }}</code></h1>
         <div id="profile-description">
           <p><span>Id:</span><code>{{ currentUserStore.currentUser?.id || '' }}</code></p>
           <p><span>Email:</span> {{ currentUserStore.currentUser?.email || '' }}</p>
           <p><span>Role:</span> {{ currentUserStore.currentUser?.role || '' }}</p>
           <p><span>Confirmed At:</span> {{ currentUserStore.currentUser?.confirmed_at || 'NaN' }}</p>
+          <p><span>Organisation:</span> {{ currentUserStore.currentUser?.organisation || '' }}</p>
         </div>
       </div>
     </div>
@@ -43,6 +44,7 @@ async function logout() {
 @use '@/assets/core/mixins/align-center' as *;
 
 #profile-container {
+  display: flex;
   position: relative;
   align-content: unset;
   justify-content: unset;
@@ -61,9 +63,15 @@ async function logout() {
   }
 
   #profile-form {
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     flex-direction: column;
-    width: 100%;
+    min-width: 100%;
+
+    h1 {
+      // Avoid line break
+      white-space: nowrap;
+      margin-right: 10rem;
+    }
 
     p {
       margin-bottom: 1rem;

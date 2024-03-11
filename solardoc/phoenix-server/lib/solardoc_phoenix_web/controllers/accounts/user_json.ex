@@ -38,9 +38,12 @@ defmodule SolardocPhoenixWeb.UserJSON do
   defp priv_data(%User{} = user) do
     %{
       id: user.id,
+      username: user.username,
       email: user.email,
       confirmed_at: user.confirmed_at,
       role: user.role,
+      organisation: user.organisation,
+      intended_use: user.intended_use
     }
   end
 end

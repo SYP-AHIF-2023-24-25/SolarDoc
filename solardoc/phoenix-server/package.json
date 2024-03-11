@@ -14,6 +14,7 @@
     "start": "mix phx.server",
     "fetch-deps": "mix deps.get",
     "migrate": "mix ecto.migrate",
+    "new-migration": "mix ecto.gen.migration",
     "rollback": "mix ecto.rollback",
     "test": "mix test",
     "format": "mix format",
