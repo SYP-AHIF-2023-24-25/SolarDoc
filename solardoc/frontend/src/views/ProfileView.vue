@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useCurrentUserStore} from "@/stores/current-user";
 import {useRouter} from "vue-router";
+import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
 
 const currentUserStore = useCurrentUserStore()
 const $router = useRouter()
@@ -9,11 +10,20 @@ const $router = useRouter()
 if (!currentUserStore.currentUser || !currentUserStore.currentAuth) {
   $router.push("/login")
 }
+
+function logout() {
+  currentUserStore.unsetCurrentUser()
+  currentUserStore.unsetCurrentAuth()
+  $router.push("/login")
+}
 </script>
 
 <template>
   <div id="profile-wrapper" class="page-form-wrapper">
     <div id="profile-container" class="page-form-container">
+      <button id="logout-button" class="highlighted-button" @click="logout()">
+        Logout
+      </button>
       <div id="profile-form">
         <h1>Profile Page</h1>
         <div id="profile-description">
@@ -22,19 +32,33 @@ if (!currentUserStore.currentUser || !currentUserStore.currentAuth) {
           <p><span>Role:</span> {{ currentUserStore.currentUser?.role || '' }}</p>
           <p><span>Confirmed At:</span> {{ currentUserStore.currentUser?.confirmed_at || 'NaN' }}</p>
         </div>
-        <small>This means you are successfully logged in.</small>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+@use '@/assets/core/var' as var;
 @use '@/assets/page-form' as *;
 @use '@/assets/core/mixins/align-center' as *;
 
 #profile-container {
+  position: relative;
   align-content: unset;
   justify-content: unset;
+
+  #logout-button {
+    position: absolute;
+    top: calc(0.5rem + 40px * 0.67 + 48px - 1.5rem - 4px);
+    right: 1.5rem;
+    z-index: 101;
+
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      fill: var.$text-color;
+    }
+  }
 
   #profile-form {
     flex: 0 1 auto;
