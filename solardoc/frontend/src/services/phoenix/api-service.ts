@@ -14,6 +14,9 @@ if (!api.defaults.baseUrl.startsWith('http')) {
 // Log the base URL in case there is a problem
 console.log(`[phoenix/api-service.ts] Using phoenix backend at '${api.defaults.baseUrl}'`)
 
+// Log the WS URL in case there is a problem
+console.log(`[phoenix/api-service.ts] Using SDS at '${api.defaults.baseUrl.replace('http', 'ws')}'`)
+
 export async function checkIfPhoenixBackendIsReachable(): Promise<void> {
   const ping = await api.getV1Ping()
   if (ping.status !== 200) {

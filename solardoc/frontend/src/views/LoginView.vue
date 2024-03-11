@@ -7,11 +7,10 @@ import {useCurrentUserStore} from "@/stores/current-user"
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
 
+currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
+
 // Ensure if the user is already logged in that he is redirected to the '/profile' page
-if (
-  currentUserStore.currentUser &&
-  currentUserStore.currentAuth
-) {
+if (currentUserStore.loggedIn) {
   $router.push("/profile")
 }
 

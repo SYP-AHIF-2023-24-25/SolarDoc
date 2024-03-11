@@ -11,6 +11,8 @@ import { handleRender } from '@/scripts/handle-render'
 import { useFileNameStore } from '@/stores/file-name'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
+import {useWSClientStore} from "@/stores/ws-client";
+import {useCurrentUserStore} from "@/stores/current-user";
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
@@ -20,6 +22,8 @@ import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import EditorSandwichDropdown from "@/components/editor/dropdown/EditorSandwichDropdown.vue"
 import ChannelView from "@/components/channel-view/ChannelView.vue"
 import * as backendAPI from '@/services/backend/api-service'
+import * as phoenixBackend from "@/services/phoenix/api-service";
+import {SDSCLIENT_URL} from "@/services/phoenix/config";
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -29,10 +33,14 @@ const overlayStateStore = useOverlayStateStore()
 const renderDataStore = useRenderDataStore()
 const fileNameStore = useFileNameStore()
 const lastModifiedStore = useLastModifiedStore()
-const previewSelectedSlide = usePreviewSelectedSlideStore()
+const previewSelectedSlideStore = usePreviewSelectedSlideStore()
+const currentUserStore = useCurrentUserStore()
+const wsClientStore = useWSClientStore()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
-const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlide)
+const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
+
+currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
 
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
@@ -45,6 +53,22 @@ backendAPI
     }
     throw new Error('Render Backend is not reachable. Please copy the logs and contact the developers.')
   })
+
+// Ensure the Phoenix backend is running and reachable -> If yes establish a connection
+phoenixBackend
+    .checkIfPhoenixBackendIsReachable()
+    .then(async () => {
+      if (currentUserStore.loggedIn) {
+        console.log("Attempting to connect to SDS")
+        wsClientStore.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
+      }
+    })
+    .catch((error: Error) => {
+      if (error) {
+        console.error(error)
+      }
+      throw new Error('Phoenix Backend is not reachable. Please copy the logs and contact the developers.')
+    })
 
 // Ensure the render preview is updated whenever the editor content changes
 editorContentStore.$subscribe(

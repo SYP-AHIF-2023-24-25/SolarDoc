@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import {useCurrentUserStore} from "@/stores/current-user";
 import {useRouter} from "vue-router";
-import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
 
 const currentUserStore = useCurrentUserStore()
 const $router = useRouter()
 
+currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
+
 // Ensure if the user is not logged in that he is redirected to the '/login' page
-if (!currentUserStore.currentUser || !currentUserStore.currentAuth) {
+if (!currentUserStore.loggedIn) {
   $router.push("/login")
 }
 
 function logout() {
-  currentUserStore.unsetCurrentUser()
-  currentUserStore.unsetCurrentAuth()
+  currentUserStore.logout()
   $router.push("/login")
 }
 </script>

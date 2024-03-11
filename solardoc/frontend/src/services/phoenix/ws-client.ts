@@ -1,4 +1,5 @@
-import wsClient from "@solardoc/phoenix";
+import * as SolardocPhoenix from "@solardoc/phoenix";
+const wsClient = SolardocPhoenix.default;
 
 export type SDSClientBare = ReturnType<typeof wsClient>;
 
@@ -33,7 +34,7 @@ export class SDSClient {
    */
   public disconnect() {
     this.socket.disconnect(
-      () => void (this._open = true)
+      () => void (this._open = false)
     );
   }
 }

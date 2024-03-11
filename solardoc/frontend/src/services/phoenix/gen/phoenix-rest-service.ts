@@ -48,6 +48,7 @@ export type UserLogin = {
     password: string;
 };
 export type UserToken = {
+    expires_at: number;
     token: string;
 };
 /**
