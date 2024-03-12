@@ -3,7 +3,7 @@ defmodule SolardocPhoenixWeb.UserSocket do
 
   alias SolardocPhoenixWeb.UserAuth
 
-  channel "room:*", SolardocPhoenixWeb.RoomChannel
+  channel "channel:*", SolardocPhoenixWeb.EditorChannel
 
   @impl true
   def connect(%{"token" => token}, socket, _connect_info) do
@@ -19,12 +19,4 @@ defmodule SolardocPhoenixWeb.UserSocket do
 
   @impl true
   def id(socket), do: "user_socket:#{socket.assigns.user_id}"
-
-  def handle_error(conn, :unauthorized) do
-    Plug.Conn.send_resp(conn, 401, "Unauthorized")
-  end
-
-  def handle_error(conn, :rate_limit) do
-    Plug.Conn.send_resp(conn, 429, "Too many requests")
-  end
 end

@@ -19,7 +19,8 @@ defmodule SolardocPhoenix.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :password, :role, :organisation, :intended_use])
+    |> cast(attrs, [:username, :email, :role, :organisation, :intended_use])
+    |> validate_required([:email, :role])
   end
 
   @doc """
@@ -72,7 +73,7 @@ defmodule SolardocPhoenix.Accounts.User do
   end
 
   defp maybe_hash_password(changeset, opts) do
-    hash_password? = Keyword.get(opts, :hash_password, true)
+    hash_password? = Keyword.get(opts, :hash_password, true) # Defaulting to hashing the password
     password = get_change(changeset, :password)
 
     if hash_password? && password && changeset.valid? do
@@ -87,6 +88,7 @@ defmodule SolardocPhoenix.Accounts.User do
   end
 
   defp maybe_validate_unique_email(changeset, opts) do
+    # Defaulting to validating the email
     if Keyword.get(opts, :validate_email, true) do
       changeset
       |> unsafe_validate_unique(:email, SolardocPhoenix.Repo)
