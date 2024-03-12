@@ -1,7 +1,5 @@
-import * as SolardocPhoenix from "@solardoc/phoenix";
-const wsClient = SolardocPhoenix.default;
-
-export type SDSClientBare = ReturnType<typeof wsClient>;
+import {socket, Channel, type PhoenixSocket as SDSClientBare} from "@solardoc/phoenix";
+import {PhoenixSDSError} from "@/services/phoenix/errors";
 
 /**
  * The SolarDoc Socket client (SDS) is a Phoenix Channels client that connects to the SolarDoc Phoenix server. It is
@@ -14,9 +12,10 @@ export type SDSClientBare = ReturnType<typeof wsClient>;
 export class SDSClient {
   private readonly socket: SDSClientBare;
   private _open: boolean;
+  private _currentChannel: Channel | null = null;
 
   constructor(url: string, userToken?: string) {
-    this.socket = wsClient(url, userToken);
+    this.socket = socket(url, userToken);
     this._open = true;
   }
 
@@ -36,5 +35,26 @@ export class SDSClient {
     this.socket.disconnect(
       () => void (this._open = false)
     );
+  }
+
+  /**
+   * Attempts to join the specified channel with the given parameters.
+   * @param topic The topic of the channel to join.
+   * @param params The parameters to pass to the channel.
+   * @param onJoin
+   * @throws PhoenixSDSError If connecting to the channel fails.
+   * @since 0.4.0
+   */
+  public joinChannel<T extends {} | undefined = undefined>(
+    topic: string,
+    params?: T,
+    onJoin?: (resp: any) => void | Promise<void>
+  ): void {
+    const channel = this.socket.channel(topic, params)
+    channel.join()
+      .receive("ok", resp => onJoin ? onJoin(resp) : void 0)
+      .receive("error", (resp) => {
+        throw new PhoenixSDSError(`Failed to join channel: ${resp.reason}`);
+      });
   }
 }
