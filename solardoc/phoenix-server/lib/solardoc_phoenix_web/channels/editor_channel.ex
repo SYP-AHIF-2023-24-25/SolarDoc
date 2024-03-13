@@ -1,7 +1,25 @@
 defmodule SolardocPhoenixWeb.EditorChannel do
   use SolardocPhoenixWeb, :channel
 
+  alias SolardocPhoenix.Accounts
   alias SolardocPhoenix.EditorChannels
+  alias SolardocPhoenix.EditorChannels.EditorChannel
+  alias SolardocPhoenixWeb.ChangesetJSON
+
+  @impl true
+  def join("channel:new", %{"data" => data}, socket) do
+    data = Map.put(data, "creator_id", socket.assigns.user_id)
+    with {:ok, editor_channel } <- EditorChannels.create_channel(data) do
+      broadcast!(socket, "new_channel", %{editor_channel: editor_channel.id})
+      {:ok, socket}
+    else
+      {:error, changeset} -> {:error, %{
+        message: "Failed to create the channel",
+        data: data,
+        errors: ChangesetJSON.error(%{changeset: changeset})
+      }}
+    end
+  end
 
   @impl true
   def join("channel:" <> editor_channel_id, %{"auth" => auth}, socket) do
@@ -20,16 +38,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   @impl true
   def join("channel:" <> _editor_channel_id, _params, _socket) do
     {:error, :unauthorized}
-  end
-
-  @impl true
-  def join("channel:new", %{"data" => data}, socket) do
-    with {:ok, editor_channel } <- EditorChannels.create_channel(data) do
-      broadcast!(socket, "new_channel", %{editor_channel: editor_channel.id})
-      {:ok, socket}
-    else
-      _ -> {:error, :bad_request}
-    end
   end
 
   @impl true
@@ -58,7 +66,13 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     :ok
   end
 
+  @impl true
+  def onError(reason, socket) do
+    IO.puts("Error in channel: #{inspect(reason)}")
+    {:noreply, socket}
+  end
+
   defp authorized?(editor_channel, %{auth: auth}) do
-    Channel.valid_password?(editor_channel, auth)
+    EditorChannel.valid_password?(editor_channel, auth)
   end
 end

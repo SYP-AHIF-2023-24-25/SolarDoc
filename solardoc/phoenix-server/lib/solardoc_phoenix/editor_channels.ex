@@ -2,10 +2,9 @@ defmodule SolardocPhoenix.EditorChannels do
   @moduledoc """
   The UpdateChannel context.
   """
-
   import Ecto.Query, warn: false
-  alias SolardocPhoenix.Repo
 
+  alias SolardocPhoenix.Repo
   alias SolardocPhoenix.EditorChannels.EditorChannel
 
   @doc """

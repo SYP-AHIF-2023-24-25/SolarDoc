@@ -11,19 +11,20 @@ import { handleRender } from '@/scripts/handle-render'
 import { useFileNameStore } from '@/stores/file-name'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
-import {useWSClientStore} from "@/stores/ws-client";
-import {useCurrentUserStore} from "@/stores/current-user";
+import { useWSClientStore } from '@/stores/ws-client'
+import { useCurrentUserStore } from '@/stores/current-user'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import type { CreateEditorChannel } from '@/services/phoenix/editor-channel'
 import Editor from '@/components/editor/Editor.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
 import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavigator.vue'
 import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
-import EditorSandwichDropdown from "@/components/editor/dropdown/EditorSandwichDropdown.vue"
-import ChannelView from "@/components/channel-view/ChannelView.vue"
+import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
+import ChannelView from '@/components/channel-view/ChannelView.vue'
 import * as backendAPI from '@/services/backend/api-service'
-import * as phoenixBackend from "@/services/phoenix/api-service";
-import {SDSCLIENT_URL} from "@/services/phoenix/config";
+import * as phoenixBackend from '@/services/phoenix/api-service'
+import { SDSCLIENT_URL } from '@/services/phoenix/config'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -51,30 +52,55 @@ backendAPI
     if (error) {
       console.error(error)
     }
-    throw new Error('Render Backend is not reachable. Please copy the logs and contact the developers.')
+    throw new Error(
+      'Render Backend is not reachable. Please copy the logs and contact the developers.',
+    )
   })
 
 // Ensure the Phoenix backend is running and reachable -> If yes establish a connection
 phoenixBackend
-    .checkIfPhoenixBackendIsReachable()
-    .then(async () => {
-      const authStatus = currentUserStore.loggedIn && await currentUserStore.ensureAuthNotExpiredOrRevoked()
-      if (authStatus === 'authenticated') {
-        console.log("Attempting to connect to SDS")
-        wsClientStore.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
-      } else if (authStatus === 'expired-or-revoked') {
-        await currentUserStore.logout()
-      } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
-        console.error("Auth status is unreachable or unknown")
-      }
-      console.log("Skipping connection to SDS")
-    })
-    .catch((error: Error) => {
-      if (error) {
-        console.error(error)
-      }
-      throw new Error('Phoenix Backend is not reachable. Please copy the logs and contact the developers.')
-    })
+  .checkIfPhoenixBackendIsReachable()
+  .then(async () => {
+    const authStatus =
+      currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
+    if (authStatus === 'authenticated') {
+      console.log('Attempting to connect to SDS')
+      const wsClient = wsClientStore.createWSClient(
+        SDSCLIENT_URL,
+        currentUserStore.currentAuth?.token,
+      )
+      await wsClient.joinChannel(
+        'channel:new',
+        joinResp => {
+          console.log('Joined channel', joinResp)
+        },
+        errorResp => {
+          console.error('Error joining channel', errorResp)
+        },
+        {
+          data: {
+            name: 'Test',
+            description: 'Test',
+            password: 'TestTest1234',
+          } satisfies CreateEditorChannel,
+        },
+      )
+    } else if (authStatus === 'expired-or-revoked') {
+      await currentUserStore.logout()
+    } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
+      console.error('Auth status is unreachable or unknown')
+    } else {
+      console.log('Skipping connection to SDS. Not logged in!')
+    }
+  })
+  .catch((error: Error) => {
+    if (error) {
+      console.error(error)
+    }
+    throw new Error(
+      'Phoenix Backend is not reachable. Please copy the logs and contact the developers.',
+    )
+  })
 
 // Ensure the render preview is updated whenever the editor content changes
 editorContentStore.$subscribe(
@@ -101,7 +127,7 @@ let unsecureWarningShown: boolean = false
 function unsecuredCopyToClipboard(text: string) {
   if (!unsecureWarningShown) {
     console.warn(
-        "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
+      "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
     )
     unsecureWarningShown = true
   }
@@ -130,13 +156,13 @@ function handleCopyButtonClick() {
     unsecuredCopyToClipboard(editorContentStore.editorContent)
   }
 
-  copyButtonContent.value = 'Copied!';
+  copyButtonContent.value = 'Copied!'
   if (copyButtonTimeout) {
-    clearTimeout(copyButtonTimeout);
+    clearTimeout(copyButtonTimeout)
   }
   copyButtonTimeout = setTimeout(() => {
-    copyButtonContent.value = 'Copy';
-  }, 1000);
+    copyButtonContent.value = 'Copy'
+  }, 1000)
 }
 
 function handleDownloadButtonClick() {
@@ -176,7 +202,9 @@ setInterval(updateLastModified, 500)
       <div id="menu-left-side">
         <EditorSandwichDropdown />
         <div id="button-menu">
-          <button class="editor-button" @click="handleCopyButtonClick()">{{ copyButtonContent }}</button>
+          <button class="editor-button" @click="handleCopyButtonClick()">
+            {{ copyButtonContent }}
+          </button>
           <button class="editor-button">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>

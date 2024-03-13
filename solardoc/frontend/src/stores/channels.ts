@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia'
-import type {Channel} from "@/services/phoenix/channel";
+import type { EditorChannel } from '@/services/phoenix/editorChannel'
 
 export const useChannelsStore = defineStore('channels', {
   state: () => {
-    return { currentChannel: <Channel | undefined>undefined }
+    return { currentChannel: <EditorChannel | undefined>undefined }
   },
   actions: {
-    setCurrentChannel(channel: Channel) {
+    setCurrentChannel(channel: EditorChannel) {
       this.currentChannel = channel
     },
     unsetCurrentChannel() {
       this.currentChannel = undefined
-    }
+    },
   },
 })

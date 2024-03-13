@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import {SDSClient} from "@/services/phoenix/ws-client";
+import { SDSClient } from '@/services/phoenix/ws-client'
 
 export const useWSClientStore = defineStore('wsClient', {
   state: () => {
@@ -7,7 +7,7 @@ export const useWSClientStore = defineStore('wsClient', {
   },
   actions: {
     createWSClient(url: string, userToken?: string) {
-      this.wsClient = new SDSClient(url, userToken)
+      return (this.wsClient = new SDSClient(url, userToken))
     },
     disconnectWSClient() {
       if (this.wsClient) {

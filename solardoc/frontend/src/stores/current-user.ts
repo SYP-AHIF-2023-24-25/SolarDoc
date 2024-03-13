@@ -1,27 +1,27 @@
-import {defineStore} from "pinia";
-import type {UserPrivate, UserToken} from "@/services/phoenix/gen/phoenix-rest-service";
-import * as phoenixRestService from "@/services/phoenix/api-service";
-import constants from "@/plugins/constants";
-import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
+import { defineStore } from 'pinia'
+import type { UserPrivate, UserToken } from '@/services/phoenix/gen/phoenix-rest-service'
+import * as phoenixRestService from '@/services/phoenix/api-service'
+import constants from '@/plugins/constants'
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 
-export type ServerAuthStatus = 'authenticated' | 'expired-or-revoked' | 'unreachable' | 'unknown';
+export type ServerAuthStatus = 'authenticated' | 'expired-or-revoked' | 'unreachable' | 'unknown'
 
 export const useCurrentUserStore = defineStore('currentUser', {
   state: () => {
-    let currentUser: UserPrivate | null;
+    let currentUser: UserPrivate | null
     try {
-      currentUser = JSON.parse(localStorage.getItem(constants.localStorageCurrUserKey) as string);
+      currentUser = JSON.parse(localStorage.getItem(constants.localStorageCurrUserKey) as string)
     } catch (e) {
-      currentUser = null;
-      localStorage.removeItem(constants.localStorageCurrUserKey);
+      currentUser = null
+      localStorage.removeItem(constants.localStorageCurrUserKey)
     }
 
-    let currentAuth: UserToken | null;
+    let currentAuth: UserToken | null
     try {
-      currentAuth = JSON.parse(localStorage.getItem(constants.localStorageAuthKey) as string);
+      currentAuth = JSON.parse(localStorage.getItem(constants.localStorageAuthKey) as string)
     } catch (e) {
-      currentAuth = null;
-      localStorage.removeItem(constants.localStorageCurrUserKey);
+      currentAuth = null
+      localStorage.removeItem(constants.localStorageCurrUserKey)
     }
 
     return {
@@ -38,12 +38,14 @@ export const useCurrentUserStore = defineStore('currentUser', {
      * @since 0.4.0
      */
     loggedIn(): boolean {
-      return this.currentUser !== null
-        && this.currentAuth !== null
-        && this.currentUser !== undefined
-        && this.currentAuth !== undefined
-        && Number(new Date()) < this.currentAuth.expires_at // Check if token is expired
-    }
+      return (
+        this.currentUser !== null &&
+        this.currentAuth !== null &&
+        this.currentUser !== undefined &&
+        this.currentAuth !== undefined &&
+        Number(new Date()) < this.currentAuth.expires_at
+      ) // Check if token is expired
+    },
   },
   actions: {
     /**
@@ -95,14 +97,19 @@ export const useCurrentUserStore = defineStore('currentUser', {
       try {
         resp = await phoenixRestService.getV1UsersCurrent(`Bearer ${this.currentAuth.token}`)
       } catch (e) {
-        throw new PhoenixInternalError("Critically failed to fetch current user. Cause: " + ((<Error>e).message))
+        throw new PhoenixInternalError(
+          'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+        )
       }
       if (resp.status === 200) {
         this.setCurrentUser(resp.data)
       } else if (resp.status === 401) {
         this.unsetCurrentUser()
         this.unsetCurrentAuth()
-        throw new PhoenixRestError("Server rejected request to fetch current user. Cause: Unauthorized", resp.status)
+        throw new PhoenixRestError(
+          'Server rejected request to fetch current user. Cause: Unauthorized',
+          resp.status,
+        )
       }
     },
     /**
@@ -120,16 +127,22 @@ export const useCurrentUserStore = defineStore('currentUser', {
       try {
         resp = await phoenixRestService.deleteV1UsersAuth(`Bearer ${this.currentAuth.token}`)
       } catch (e) {
-        throw new PhoenixInternalError("Critically failed to logout. Cause: " + ((<Error>e).message))
+        throw new PhoenixInternalError('Critically failed to logout. Cause: ' + (<Error>e).message)
       }
       if (resp.status === 200) {
         this.clean()
       } else if (resp.status === 400) {
         this.clean()
-        throw new PhoenixRestError("Server rejected request to logout. Cause: Bad request", resp.status)
+        throw new PhoenixRestError(
+          'Server rejected request to logout. Cause: Bad request',
+          resp.status,
+        )
       } else if (resp.status === 401) {
         this.clean()
-        throw new PhoenixRestError("Server rejected request to logout. Cause: Unauthorized", resp.status)
+        throw new PhoenixRestError(
+          'Server rejected request to logout. Cause: Unauthorized',
+          resp.status,
+        )
       }
     },
     setCurrentUser(currentUser: UserPrivate) {
@@ -155,4 +168,4 @@ export const useCurrentUserStore = defineStore('currentUser', {
       localStorage.removeItem(constants.localStorageAuthKey)
     },
   },
-});
+})

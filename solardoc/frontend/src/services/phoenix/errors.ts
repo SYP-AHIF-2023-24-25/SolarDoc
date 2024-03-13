@@ -3,9 +3,12 @@
  * @since 0.4.0
  */
 export class PhoenixRestError extends Error {
-  constructor(public readonly message: string, public readonly errorCode?: number) {
-    super(message);
-    this.name = "PhoenixRestError";
+  constructor(
+    public readonly message: string,
+    public readonly errorCode?: number,
+  ) {
+    super(message)
+    this.name = 'PhoenixRestError'
   }
 }
 
@@ -15,8 +18,19 @@ export class PhoenixRestError extends Error {
  */
 export class PhoenixInternalError extends Error {
   constructor(public readonly message: string) {
-    super(message);
-    this.name = "PhoenixInternalError";
+    super(message)
+    this.name = 'PhoenixInternalError'
+  }
+}
+
+/**
+ * An error that is thrown when the Phoenix backend service encounters an invalid operation.
+ * @since 0.4.0
+ */
+export class PhoenixInvalidOperationError extends PhoenixInternalError {
+  constructor(public readonly message: string) {
+    super(message)
+    this.name = 'PhoenixInvalidOperationError'
   }
 }
 
@@ -26,7 +40,7 @@ export class PhoenixInternalError extends Error {
  */
 export class PhoenixSDSError extends Error {
   constructor(public readonly message: string) {
-    super(message);
-    this.name = "PhoenixSDSError";
+    super(message)
+    this.name = 'PhoenixSDSError'
   }
 }

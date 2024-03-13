@@ -8,8 +8,8 @@ import SolardocLogoDarkModeSVG from '@/components/icons/SolardocLogoDarkModeSVG.
 import SunDarkModeSVG from '@/components/icons/SunDarkModeSVG.vue'
 import constants from '@/plugins/constants'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import UserIconDarkModeSVG from "@/components/icons/UserIconDarkModeSVG.vue";
-import UserIconSVG from "@/components/icons/UserIconSVG.vue";
+import UserIconDarkModeSVG from '@/components/icons/UserIconDarkModeSVG.vue'
+import UserIconSVG from '@/components/icons/UserIconSVG.vue'
 
 const loadingStore = useLoadingStore()
 const darkModeStore = useDarkModeStore()

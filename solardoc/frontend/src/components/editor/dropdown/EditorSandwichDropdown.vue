@@ -1,21 +1,23 @@
 <script setup lang="ts">
 import Dropdown from 'v-dropdown'
-import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
-import SandwichMenuDarkModeSVG from "@/components/icons/SandwichMenuDarkModeSVG.vue";
-import { useDarkModeStore } from "@/stores/dark-mode";
-import { useOverlayStateStore } from "@/stores/overlay-state";
-import {ref} from "vue";
+import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
+import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
+import { useDarkModeStore } from '@/stores/dark-mode'
+import { useOverlayStateStore } from '@/stores/overlay-state'
+import { ref } from 'vue'
 
-const darkModeStore = useDarkModeStore();
-const overlayStateStore = useOverlayStateStore();
+const darkModeStore = useDarkModeStore()
+const overlayStateStore = useOverlayStateStore()
 
 const dropdown = ref(null)
 
 function handleJoinChannel() {
-  overlayStateStore.setChannelView(true);
-  (dropdown.value as {
-    close: () => void
-  } | null)?.close()
+  overlayStateStore.setChannelView(true)
+  ;(
+    dropdown.value as {
+      close: () => void
+    } | null
+  )?.close()
 }
 </script>
 
@@ -26,30 +28,19 @@ function handleJoinChannel() {
       "value" is also used.
       -->
       <button
-          id="sandwich-menu-button"
-          class="sandwich-button"
-          :class="{ 'highlighted': visible.value }"
+        id="sandwich-menu-button"
+        class="sandwich-button"
+        :class="{ highlighted: visible.value }"
       >
         <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
         <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
       </button>
     </template>
     <div id="dropdown-elements">
-      <div class="dropdown-element">
-        Close file (In work...)
-      </div>
-      <div
-          class="dropdown-element"
-          @click="handleJoinChannel()"
-      >
-        Join Channel
-      </div>
-      <div class="dropdown-element">
-        Share (In work...)
-      </div>
-      <div class="dropdown-element">
-        Settings (In work...)
-      </div>
+      <div class="dropdown-element">Close file (In work...)</div>
+      <div class="dropdown-element" @click="handleJoinChannel()">Join Channel</div>
+      <div class="dropdown-element">Share (In work...)</div>
+      <div class="dropdown-element">Settings (In work...)</div>
     </div>
   </Dropdown>
 </template>

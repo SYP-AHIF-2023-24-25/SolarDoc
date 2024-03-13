@@ -6,8 +6,8 @@ defmodule SolardocPhoenix.Repo.Migrations.CreateChannels do
       add :id, :binary, primary_key: true
       add :name, :string
       add :description, :string
-      add :activeSince, :date
-      add :creator, references(:users, type: :uuid, on_delete: :delete_all), null: false
+      add :activeSince, :naive_datetime
+      add :creator_id, references(:users, type: :uuid, on_delete: :delete_all), null: false
 
       timestamps(type: :utc_datetime)
     end

@@ -8,7 +8,7 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :description, :string
-    field :activeSince, :date
+    field :active_since, :naive_datetime
     belongs_to :creator, SolardocPhoenix.Accounts.User
 
     timestamps(type: :utc_datetime)
@@ -17,8 +17,8 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   @doc false
   def changeset(channel, attrs) do
     channel
-    |> cast(attrs, [:name, :description, :activeSince, :creator])
-    |> validate_required([:name, :description, :activeSince, :creator])
+    |> cast(attrs, [:name, :description, :active_since, :creator])
+    |> validate_required([:name, :description, :active_since, :creator])
   end
 
   @doc """
@@ -37,11 +37,14 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
       validations on a LiveView form), this option can be set to `false`.
       Defaults to `true`.
   """
-  def create_changeset(user, attrs, opts \\ []) do
-    user
-    |> cast(attrs, [:name, :password, :description, :activeSince, :creator])
+  def create_changeset(channel, attrs, opts \\ []) do
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    channel
+    |> cast(attrs, [:name, :password, :description, :creator_id])
     |> validate_name()
     |> validate_password(opts)
+    |> foreign_key_constraint(:creator_id)
+    |> change(active_since: now)
   end
 
   defp validate_name(changeset) do
