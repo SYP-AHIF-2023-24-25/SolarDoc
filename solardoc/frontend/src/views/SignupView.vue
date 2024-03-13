@@ -113,6 +113,9 @@ async function submitForm() {
           :native="false"
           input-type="search"
           autocomplete="off"
+          :rules="[
+            'required',
+          ]"
           label="Intended Use"
           info="What you are planning to use Solardoc for."
         />
@@ -120,13 +123,17 @@ async function submitForm() {
           name="accepts-conditions"
           text="You, as the user, acknowledge that Solardoc is still in development and as such can not provide any guarantee for satisfaction or consistent user experience."
           size="lg"
-          :rules="['accepted']"
+          :rules="[
+            'required',
+            'accepted'
+          ]"
           field-name="usage conditions"
         />
         <ButtonElement
           name="submit"
           button-label="Submit"
           @click="submitForm()"
+          submits
           :columns="{
             container: 3,
           }"
