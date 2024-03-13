@@ -7,7 +7,8 @@
     "phoenix": "~1.7.11"
   },
   "devDependencies": {
-    "@types/phoenix": "~1.6.4"
+    "@types/phoenix": "~1.6.4",
+    "typescript": "5.2.2"
   },
   "scripts": {
     "setup": "mix setup",
@@ -20,7 +21,7 @@
     "format": "mix format",
     "lint": "mix credo --strict",
     "build": "tsc",
-    "openapi": "mix phx.swagger.generate"
+    "openapi-spec": "mix phx.swagger.generate"
   },
   "keywords": [
     "solardoc",

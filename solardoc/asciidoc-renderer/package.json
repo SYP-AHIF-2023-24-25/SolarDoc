@@ -30,13 +30,13 @@
     "@babel/preset-env": "7.23.3",
     "eslint": "8.48.0",
     "urijs": "1.19.11",
-    "typescript": "5.2.2",
     "tsify": "4.0.2",
     "ts-node": "10.9.1",
     "uglify-js": "3.17.4",
     "prettier": "^3.0.3",
     "babelify": "10.0.0",
-    "copyfiles": "2.4.1"
+    "copyfiles": "2.4.1",
+    "typescript": "5.2.2"
   },
   "engines": {
     "node": "16 || 18 || 20",
