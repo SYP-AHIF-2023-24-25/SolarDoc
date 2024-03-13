@@ -46,7 +46,7 @@ function setLoading(state: boolean): void {
           <UserIconDarkModeSVG v-show="darkModeStore.darkMode" />
           <UserIconSVG v-show="!darkModeStore.darkMode" />
         </a>
-        <a @click="$router.push('signup')" target="_blank" rel="noopener noreferrer">
+        <a :href="constants.githubURL" target="_blank" rel="noopener noreferrer">
           <GithubLogoDarkModeSVG v-show="darkModeStore.darkMode" />
           <GithubLogoSVG v-show="!darkModeStore.darkMode" />
         </a>
