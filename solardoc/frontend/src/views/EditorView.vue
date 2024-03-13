@@ -58,10 +58,16 @@ backendAPI
 phoenixBackend
     .checkIfPhoenixBackendIsReachable()
     .then(async () => {
-      if (currentUserStore.loggedIn) {
+      const authStatus = currentUserStore.loggedIn && await currentUserStore.ensureAuthNotExpiredOrRevoked()
+      if (authStatus === 'authenticated') {
         console.log("Attempting to connect to SDS")
         wsClientStore.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
+      } else if (authStatus === 'expired-or-revoked') {
+        await currentUserStore.logout()
+      } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
+        console.error("Auth status is unreachable or unknown")
       }
+      console.log("Skipping connection to SDS")
     })
     .catch((error: Error) => {
       if (error) {
