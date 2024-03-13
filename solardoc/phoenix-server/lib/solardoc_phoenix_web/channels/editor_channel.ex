@@ -10,7 +10,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   def join("channel:new", %{"data" => data}, socket) do
     data = Map.put(data, "creator_id", socket.assigns.user_id)
     with {:ok, editor_channel } <- EditorChannels.create_channel(data) do
-      broadcast!(socket, "new_channel", %{editor_channel: editor_channel.id})
+      send(self(), {:after_create, editor_channel: editor_channel})
       {:ok, socket}
     else
       {:error, changeset} -> {:error, %{
@@ -26,6 +26,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     with {:ok, editor_channel} <- EditorChannels.get_channel!(editor_channel_id) do
       assign(socket, :private_room_id, editor_channel_id)
       if authorized?(editor_channel, %{auth: auth}) do
+        send(self(), {:after_join, editor_channel})
         {:ok, socket}
       else
         {:error, :unauthorized}
@@ -45,11 +46,23 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     {:reply, {:ok, payload}, socket}
   end
 
+  @impl true
+  def handle_info({:after_create, editor_channel: editor_channel}, socket) do
+    broadcast!(socket, "new_msg", %{body: "A new channel has been created (Channel: #{editor_channel.id}, Creator: #{socket.assigns.user_id})", from: "system"})
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:after_join, editor_channel: editor_channel}, socket) do
+    broadcast!(socket, "new_msg", %{body: "A new user has joined a channel (Channel: #{editor_channel.id}, User: #{socket.assigns.user_id})", from: "system"})
+    {:noreply, socket}
+  end
+
   @doc """
   Broadcasts the update of the editor content to all clients in the room.
   """
-  def handle_in("update", %{"body" => body}, socket) do
-    broadcast!(socket, "new_msg", %{body: body})
+  def handle_in("editor_update", %{"body" => body}, socket) do
+    broadcast!(socket, "editor_update", %{body: body})
     {:noreply, socket}
   end
 

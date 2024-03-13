@@ -3,6 +3,7 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   import Ecto.Changeset
 
   @primary_key {:id, Ecto.UUID, autogenerate: true}
+  @foreign_key_type Ecto.UUID
   schema "channels" do
     field :name, :string
     field :password, :string, virtual: true, redact: true
