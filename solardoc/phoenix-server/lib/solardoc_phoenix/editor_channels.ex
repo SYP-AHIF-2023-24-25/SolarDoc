@@ -104,4 +104,101 @@ defmodule SolardocPhoenix.EditorChannels do
   def change_channel(%EditorChannel{} = channel, attrs \\ %{}) do
     EditorChannel.changeset(channel, attrs)
   end
+
+  alias SolardocPhoenix.EditorChannels.EditorChannel
+
+  @doc """
+  Returns the list of editor_channels.
+
+  ## Examples
+
+      iex> list_editor_channels()
+      [%EditorChannel{}, ...]
+
+  """
+  def list_editor_channels do
+    Repo.all(EditorChannel)
+    |> Repo.preload(:creator)
+  end
+
+  @doc """
+  Gets a single editor_channel.
+
+  Raises `Ecto.NoResultsError` if the Editor channel does not exist.
+
+  ## Examples
+
+      iex> get_editor_channel!(123)
+      %EditorChannel{}
+
+      iex> get_editor_channel!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_editor_channel!(id), do: Repo.get!(EditorChannel, id)
+
+  @doc """
+  Creates a editor_channel.
+
+  ## Examples
+
+      iex> create_editor_channel(%{field: value})
+      {:ok, %EditorChannel{}}
+
+      iex> create_editor_channel(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_editor_channel(attrs \\ %{}) do
+    %EditorChannel{}
+    |> EditorChannel.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a editor_channel.
+
+  ## Examples
+
+      iex> update_editor_channel(editor_channel, %{field: new_value})
+      {:ok, %EditorChannel{}}
+
+      iex> update_editor_channel(editor_channel, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_editor_channel(%EditorChannel{} = editor_channel, attrs) do
+    editor_channel
+    |> EditorChannel.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a editor_channel.
+
+  ## Examples
+
+      iex> delete_editor_channel(editor_channel)
+      {:ok, %EditorChannel{}}
+
+      iex> delete_editor_channel(editor_channel)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_editor_channel(%EditorChannel{} = editor_channel) do
+    Repo.delete(editor_channel)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking editor_channel changes.
+
+  ## Examples
+
+      iex> change_editor_channel(editor_channel)
+      %Ecto.Changeset{data: %EditorChannel{}}
+
+  """
+  def change_editor_channel(%EditorChannel{} = editor_channel, attrs \\ %{}) do
+    EditorChannel.changeset(editor_channel, attrs)
+  end
 end

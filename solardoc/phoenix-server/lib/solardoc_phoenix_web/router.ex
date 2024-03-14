@@ -58,9 +58,6 @@ defmodule SolardocPhoenixWeb.Router do
     # Ping route
     get "/ping", PingController, :index
 
-    # User routes
-    get "/users", UserController, :index
-
     # User registration, login, and password reset routes
     post "/users", UserController, :create
     post "/users/auth", UserAuthController, :create
@@ -69,14 +66,16 @@ defmodule SolardocPhoenixWeb.Router do
   end
 
   # User routes requiring authentication
+  # (This may also include routes which actually don't need authentication, but are only accessible to authenticated
+  # users to avoid spam or other abuse)
   scope "/api/v1/", SolardocPhoenixWeb do
     pipe_through [:api, :api_auth]
 
     # Get the current user
     get "/users/current", UserController, :current
 
-    # Logging out i.e. deleting the user token
-    delete "/users/auth", UserAuthController, :delete
+    # User routes
+    get "/users", UserController, :index
 
     # User confirmation routes
     # TODO! Finish the migration from the old user confirmation controller to the new API-only controller
@@ -87,6 +86,12 @@ defmodule SolardocPhoenixWeb.Router do
     # TODO! Finish the migration from the old user settings controller to the new API-only controller
     # put "/users/settings", UserSettingsController, :update
     # get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+
+    # Logging out i.e. deleting the user token
+    delete "/users/auth", UserAuthController, :delete
+
+    # Channel routes
+    resources "/editor_channels", EditorChannelController, only: [:index, :show, :update]
   end
 
   ########## - General API Info - ##########

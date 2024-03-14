@@ -2,7 +2,7 @@ defmodule SolardocPhoenix.Repo.Migrations.CreateChannels do
   use Ecto.Migration
 
   def change do
-    create table(:channels, primary_key: false) do
+    create table(:editor_channels, primary_key: false) do
       add :id, :binary, primary_key: true
       add :name, :string
       add :description, :string
