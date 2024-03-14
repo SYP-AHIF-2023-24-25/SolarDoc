@@ -1,15 +1,15 @@
-import type { UserPrivate, UserPublic } from '@/services/phoenix/gen/phoenix-rest-service'
+import type {EditorChannel as APIEditorChannel, UserTrusted} from '@/services/phoenix/gen/phoenix-rest-service'
 
 /**
  * A SDS channel, which can be joined to receive updates for a specific document from the server.
  * @since 0.4.0
  */
-export interface EditorChannel {
-  readonly id: number
+export interface EditorChannel extends APIEditorChannel {
+  readonly id: string
   readonly name: string
   readonly description: string
-  readonly activeSince: number
-  readonly creator: UserPublic | UserPrivate
+  readonly active_since: number
+  readonly creator: UserTrusted
 }
 
 /**

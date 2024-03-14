@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
 import type { UserPrivate, UserToken } from '@/services/phoenix/gen/phoenix-rest-service'
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import constants from '@/plugins/constants'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import { defineStore } from 'pinia'
 
 export type ServerAuthStatus = 'authenticated' | 'expired-or-revoked' | 'unreachable' | 'unknown'
 
@@ -46,6 +46,9 @@ export const useCurrentUserStore = defineStore('currentUser', {
         Number(new Date()) < this.currentAuth.expires_at
       ) // Check if token is expired
     },
+    bearer(): string | undefined {
+      return this.currentAuth ? `Bearer ${this.currentAuth.token}` : undefined
+    }
   },
   actions: {
     /**

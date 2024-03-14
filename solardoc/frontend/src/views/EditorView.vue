@@ -21,7 +21,7 @@ import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavig
 import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
-import ChannelView from '@/components/channel-view/ChannelView.vue'
+import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
 import * as backendAPI from '@/services/backend/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'

@@ -38,7 +38,7 @@ function handleJoinChannel() {
     </template>
     <div id="dropdown-elements">
       <div class="dropdown-element">Close file (In work...)</div>
-      <div class="dropdown-element" @click="handleJoinChannel()">Join Channel</div>
+      <div class="dropdown-element" @click="handleJoinChannel()">Channels</div>
       <div class="dropdown-element">Share (In work...)</div>
       <div class="dropdown-element">Settings (In work...)</div>
     </div>

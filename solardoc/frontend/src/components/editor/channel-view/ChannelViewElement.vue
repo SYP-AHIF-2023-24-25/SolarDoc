@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { EditorChannel } from '@/services/phoenix/editorChannel'
+import type {EditorChannel} from "@/services/phoenix/editor-channel"
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { useChannelsStore } from '@/stores/channels'
 
 const props = defineProps<{
-  channelInfo: EditorChannel
+  channel: EditorChannel
 }>()
 
 const channelStore = useChannelsStore()
 
 function handleJoinChannel() {
-  channelStore.setCurrentChannel(props.channelInfo)
+  channelStore.setCurrentChannel(props.channel)
 }
 </script>
 
@@ -19,13 +19,12 @@ function handleJoinChannel() {
     <span id="list-icon">~</span>
     <div id="channel-view-element-info">
       <h2 id="channel-info-title">
-        <code>{{ channelInfo.id }}</code
-        >- {{ channelInfo.name }}
+        <code>{{ channel.id }}</code>• {{ channel.name }}
       </h2>
       <div id="channel-info-description">
-        <p><span>Creator:</span> {{ channelInfo.creator }}</p>
-        <p><span>Active since:</span> {{ getHumanReadableTimeInfo(channelInfo.activeSince) }}</p>
-        <p><span>Description:</span> {{ channelInfo.description }}</p>
+        <p><span>Creator:</span> {{ channel.creator.username }} (<code id="creator-id">{{ channel.creator.id }}</code>)</p>
+        <p><span>Description:</span> {{ channel.description }}</p>
+        <p><span>Active since:</span> {{ getHumanReadableTimeInfo(channel.active_since) }}</p>
       </div>
     </div>
     <div id="channel-view-element-interaction">
@@ -66,6 +65,11 @@ function handleJoinChannel() {
 
     #channel-info-description {
       margin-left: 0.5rem;
+
+      #creator-id {
+        padding: 0;
+        margin: 0;
+      }
     }
 
     code {

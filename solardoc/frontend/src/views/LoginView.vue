@@ -62,7 +62,7 @@ async function submitForm() {
     <div id="profile-container" class="page-form-container">
       <div id="do-not-have-an-account">
         <p>Don't have an account yet?</p>
-        <a class="emphasised-link" @click="$router.push('signup')">→ Sign up</a>
+        <RouterLink class="emphasised-link" to="/signup" >→ Sign up</RouterLink>
       </div>
       <h1 id="login-signup-title">Log in</h1>
       <Vueform ref="form$" add-class="solardoc-style-form" :display-errors="false">

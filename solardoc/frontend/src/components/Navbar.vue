@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useLoadingStore } from '@/stores/loading'
 import HalfMoonSVG from '@/components/icons/HalfMoonSVG.vue'
 import GithubLogoSVG from '@/components/icons/GithubLogoSVG.vue'
 import SolardocLogoSVG from '@/components/icons/SolardocLogoSVG.vue'
@@ -7,16 +6,12 @@ import GithubLogoDarkModeSVG from '@/components/icons/GithubLogoDarkModeSVG.vue'
 import SolardocLogoDarkModeSVG from '@/components/icons/SolardocLogoDarkModeSVG.vue'
 import SunDarkModeSVG from '@/components/icons/SunDarkModeSVG.vue'
 import constants from '@/plugins/constants'
-import { useDarkModeStore } from '@/stores/dark-mode'
 import UserIconDarkModeSVG from '@/components/icons/UserIconDarkModeSVG.vue'
 import UserIconSVG from '@/components/icons/UserIconSVG.vue'
+import SDRouterLink from "@/components/SDRouterLink.vue"
+import { useDarkModeStore } from '@/stores/dark-mode'
 
-const loadingStore = useLoadingStore()
 const darkModeStore = useDarkModeStore()
-
-function setLoading(state: boolean): void {
-  loadingStore.setLoading(state)
-}
 </script>
 
 <template>
@@ -27,7 +22,7 @@ function setLoading(state: boolean): void {
         <SolardocLogoSVG v-show="!darkModeStore.darkMode" />
       </div>
       <div id="title">
-        <RouterLink to="/" @click="setLoading(true)">SolarDoc</RouterLink>
+        <SDRouterLink to="/">SolarDoc</SDRouterLink>
         <a id="version-tag" :href="`${constants.githubVersionURL}/${constants.version}`">{{
           constants.version
         }}</a>
@@ -36,16 +31,16 @@ function setLoading(state: boolean): void {
     <div id="right-components">
       <div id="navigation-links">
         <div id="router-links">
-          <RouterLink to="/docs" @click="setLoading(true)">docs</RouterLink>
-          <RouterLink to="/editor" @click="setLoading(true)">editor</RouterLink>
-          <RouterLink to="/about" @click="setLoading(true)">about</RouterLink>
+          <SDRouterLink to="/docs">docs</SDRouterLink>
+          <SDRouterLink to="/editor">editor</SDRouterLink>
+          <SDRouterLink to="/about">about</SDRouterLink>
         </div>
       </div>
       <div id="clickable-icons">
-        <a href="./login" @click="setLoading(true)">
+        <SDRouterLink to="/login">
           <UserIconDarkModeSVG v-show="darkModeStore.darkMode" />
           <UserIconSVG v-show="!darkModeStore.darkMode" />
-        </a>
+        </SDRouterLink>
         <a :href="constants.githubURL" target="_blank" rel="noopener noreferrer">
           <GithubLogoDarkModeSVG v-show="darkModeStore.darkMode" />
           <GithubLogoSVG v-show="!darkModeStore.darkMode" />
