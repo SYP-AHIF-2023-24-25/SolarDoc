@@ -8,19 +8,6 @@ defmodule SolardocPhoenix.EditorChannels do
   alias SolardocPhoenix.EditorChannels.EditorChannel
 
   @doc """
-  Returns the list of channels.
-
-  ## Examples
-
-      iex> list_channels()
-      [%EditorChannel{}, ...]
-
-  """
-  def list_channels do
-    Repo.all(EditorChannel)
-  end
-
-  @doc """
   Gets a single channel.
 
   Raises `Ecto.NoResultsError` if the EditorChannel does not exist.
