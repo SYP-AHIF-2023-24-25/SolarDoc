@@ -3,7 +3,7 @@ import { PHOENIX_URL, SDSCLIENT_URL } from './config'
 
 // Overwrite the default configuration depending on the environment
 api.defaults.baseUrl = PHOENIX_URL
-api.defaults.baseUrl += `${import.meta.env.API_BASE_PATH}`.trim() ?? '/api'
+api.defaults.baseUrl += `${import.meta.env.PHX_BASE_PATH}`.trim() ?? '/api'
 
 // Ensure to add the protocol to the base URL (if not already present)
 // If HTTPS is needed, it should be set in the environment variables

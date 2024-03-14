@@ -4,7 +4,7 @@ import constants from '@/plugins/constants'
 import { defineStore } from 'pinia'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 
-export const useChannelsStore = defineStore('channels', {
+export const useChannelViewStore = defineStore('channels', {
   state: () => {
     // To not let the user wait before showing anything, we will store all the channels in the store and session storage
     // This way, we can show the user the channels that are already in the session storage, and then update them with
@@ -56,6 +56,10 @@ export const useChannelsStore = defineStore('channels', {
     setChannels(channels: Array<EditorChannel>) {
       this.channels = channels
       sessionStorage.setItem(constants.sessionStorageChannelKey, JSON.stringify(channels))
+    },
+    clearChannels() {
+      this.channels = []
+      sessionStorage.removeItem(constants.sessionStorageChannelKey)
     },
     setChannelJoined(channelJoined: boolean) {
       this.channelJoined = channelJoined

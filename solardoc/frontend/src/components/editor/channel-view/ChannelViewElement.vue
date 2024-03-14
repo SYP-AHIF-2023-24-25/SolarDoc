@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import type { EditorChannel } from '@/services/phoenix/editor-channel'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
-import { useChannelsStore } from '@/stores/channels'
+import { useChannelViewStore } from '@/stores/channel-view'
 
 const props = defineProps<{
   channel: EditorChannel
 }>()
 
-const channelStore = useChannelsStore()
+const channelViewStore = useChannelViewStore()
 
 function handleJoinChannel() {
-  channelStore.setCurrentChannel(props.channel)
+  channelViewStore.setCurrentChannel(props.channel)
 }
 </script>
 
@@ -19,8 +19,7 @@ function handleJoinChannel() {
     <span id="list-icon">~</span>
     <div id="channel-view-element-info">
       <h2 id="channel-info-title">
-        <code>{{ channel.id }}</code
-        >• {{ channel.name }}
+        <code>{{ channel.name }}</code><span>·</span><code class="small">{{ channel.id }}</code>
       </h2>
       <div id="channel-info-description">
         <p>
@@ -41,6 +40,7 @@ function handleJoinChannel() {
 
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
+@use '@/assets/core/mixins/align-horizontal-center' as *;
 
 #channel-view-element-wrapper {
   // Align content in the center on the x-axis
@@ -66,7 +66,17 @@ function handleJoinChannel() {
     flex-direction: column;
 
     #channel-info-title {
+      @include align-horizontal-center;
       margin-bottom: 0.5rem;
+
+      span {
+        padding-top: 1px;
+      }
+
+      code.small {
+        padding-top: 1px;
+        font-size: 0.8rem;
+      }
     }
 
     #channel-info-description {

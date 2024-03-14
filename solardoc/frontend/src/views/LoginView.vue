@@ -79,7 +79,7 @@ async function submitForm() {
           @click="submitForm()"
           submits
           :columns="{
-            container: 3,
+            container: 2,
           }"
         />
         <ButtonElement
@@ -88,8 +88,9 @@ async function submitForm() {
           :secondary="true"
           :resets="true"
           :columns="{
-            container: 3,
+            container: 2,
           }"
+          align="center"
         />
         <div id="forgot-my-password">
           <a class="emphasised-link" @click="$router.push('reset-password')"

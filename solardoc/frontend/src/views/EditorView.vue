@@ -14,7 +14,6 @@ import { useLastModifiedStore } from '@/stores/last-modified'
 import { useWSClientStore } from '@/stores/ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
-import type { CreateEditorChannel } from '@/services/phoenix/editor-channel'
 import Editor from '@/components/editor/Editor.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
 import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavigator.vue'
@@ -53,7 +52,7 @@ backendAPI
       console.error(error)
     }
     throw new Error(
-      'Render Backend is not reachable. Please copy the logs and contact the developers.',
+      '[Editor] Render Backend is not reachable. Please copy the logs and contact the developers.',
     )
   })
 
@@ -64,41 +63,25 @@ phoenixBackend
     const authStatus =
       currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
     if (authStatus === 'authenticated') {
-      console.log('Attempting to connect to SDS')
-      const wsClient = wsClientStore.createWSClient(
+      console.log('[Editor] Attempting to connect to SDS')
+      wsClientStore.createWSClient(
         SDSCLIENT_URL,
         currentUserStore.currentAuth?.token,
-      )
-      await wsClient.joinChannel(
-        'channel:new',
-        joinResp => {
-          console.log('Joined channel', joinResp)
-        },
-        errorResp => {
-          console.error('Error joining channel', errorResp)
-        },
-        {
-          data: {
-            name: 'Test',
-            description: 'Test',
-            password: 'TestTest1234',
-          } satisfies CreateEditorChannel,
-        },
       )
     } else if (authStatus === 'expired-or-revoked') {
       await currentUserStore.logout()
     } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
-      console.error('Auth status is unreachable or unknown')
+      console.error('[Editor] Auth status is unreachable or unknown')
     } else {
-      console.log('Skipping connection to SDS. Not logged in!')
+      console.log('[Editor] Skipping connection to SDS. Not logged in!')
     }
   })
   .catch((error: Error) => {
     if (error) {
-      console.error(error)
+      console.error(`[Editor] ${error}`)
     }
     throw new Error(
-      'Phoenix Backend is not reachable. Please copy the logs and contact the developers.',
+      '[Editor] Phoenix Backend is not reachable. Please copy the logs and contact the developers.',
     )
   })
 
@@ -111,13 +94,31 @@ editorContentStore.$subscribe(
     const { editorContent } = state
     const renderResp = await handleRender(fileNameStore.fileName, editorContent)
     renderDataStore.setRenderData(renderResp)
+    console.log(renderResp)
+
+    // If there is a connection to the Phoenix backend, send the updated content to the channel
+    if (wsClientStore.hasActiveChannelConnection) {
+      console.log('[Editor] Sending editor update to channel')
+      await wsClientStore.wsClient?.sendEditorUpdate(
+        {
+          body: editorContent,
+          render_url: renderResp.previewURL,
+        },
+        (resp) => {
+          console.log(`[Editor] Editor update sent (Resp: `, resp, ')')
+        },
+        (error) => {
+          console.error(`[Editor] Error sending editor update: `, error)
+        },
+      )
+    }
   },
 )
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
   overlayStateStore.setFullScreenPreview(true)
-  console.log('Preview button clicked')
+  console.log('[Editor] Preview button clicked')
 }
 
 let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
@@ -142,7 +143,7 @@ function unsecuredCopyToClipboard(text: string) {
     document.execCommand('copy')
   } catch (err) {
     document.body.removeChild(textArea)
-    throw new Error('Unable to copy to clipboard. Cause: ' + err)
+    throw new Error('[Editor] Unable to copy to clipboard. Cause: ' + err)
   }
   document.body.removeChild(textArea)
 }

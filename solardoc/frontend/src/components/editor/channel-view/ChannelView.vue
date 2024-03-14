@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { useChannelsStore } from '@/stores/channels'
+import { useChannelViewStore } from '@/stores/channel-view'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import ChannelViewElement from '@/components/editor/channel-view/ChannelViewElement.vue'
@@ -8,14 +8,29 @@ import ChannelViewJoinConfirm from '@/components/editor/channel-view/ChannelView
 import ChannelViewCurrent from '@/components/editor/channel-view/ChannelViewCurrent.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
 import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreate.vue'
+import {storeToRefs} from "pinia";
+import {watch} from "vue";
 
 const overlayStateStore = useOverlayStateStore()
-const channelStore = useChannelsStore()
+const channelViewStore = useChannelViewStore()
 const currentUserStore = useCurrentUserStore()
 
-if (currentUserStore.loggedIn && currentUserStore.bearer) {
-  channelStore.fetchChannels(currentUserStore.bearer)
+const {creatingChannel, currentChannel, channels} = storeToRefs(channelViewStore)
+
+function refreshChannels() {
+  if (currentUserStore.loggedIn && currentUserStore.bearer) {
+    channelViewStore.fetchChannels(currentUserStore.bearer)
+  } else {
+    channelViewStore.clearChannels()
+  }
 }
+
+// Fetch channels again when the user returns from one of the forms
+watch([currentChannel, creatingChannel], () => {
+  if (!currentChannel.value || !creatingChannel.value) {
+    refreshChannels()
+  }
+})
 </script>
 
 <template>
@@ -34,30 +49,33 @@ if (currentUserStore.loggedIn && currentUserStore.bearer) {
           <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
         </p>
       </div>
-      <div id="channel-create" v-else-if="channelStore.creatingChannel">
+      <div id="channel-create" v-else-if="creatingChannel">
         <ChannelViewCreate />
       </div>
-      <template v-else-if="!channelStore.currentChannel">
+      <template v-else-if="!channelViewStore.currentChannel">
         <button
           id="create-button"
           class="highlighted-button"
-          @click="channelStore.setCreatingChannel(true)"
+          @click="channelViewStore.setCreatingChannel(true)"
         >
           Create
         </button>
-        <div id="channel-view-list">
+        <div id="channel-view-list" v-if="channels.length > 0">
           <ChannelViewElement
-            v-for="channel in channelStore.channels"
+            v-for="channel in channels"
             :key="channel.id"
             :channel="channel"
           ></ChannelViewElement>
         </div>
+        <p id="channel-view-empty-msg" v-else>
+          So empty! Maybe go ahead and create a channel?
+        </p>
       </template>
-      <div id="channel-view-confirm" v-else-if="!channelStore.channelJoined">
+      <div id="channel-view-confirm" v-else-if="!channelViewStore.channelJoined">
         <ChannelViewJoinConfirm />
       </div>
       <div id="channel-view-info" v-else>
-        <ChannelViewCurrent :channel="channelStore.currentChannel" />
+        <ChannelViewCurrent :channel="channelViewStore.currentChannel" />
       </div>
     </div>
   </div>
@@ -113,8 +131,18 @@ if (currentUserStore.loggedIn && currentUserStore.bearer) {
 
     #channel-view-create,
     #channel-view-confirm,
-    #channel-view-not-logged-in {
+    #channel-view-not-logged-in,
+    #channel-view-empty-msg {
       margin-bottom: 1rem;
+    }
+
+    #channel-view-confirm,
+    #channel-view-not-logged-in,
+    #channel-view-empty-msg {
+      @include align-center;
+      width: 100%;
+      height: 8rem;
+      font-size: 1.4rem;
     }
 
     #create-button,
