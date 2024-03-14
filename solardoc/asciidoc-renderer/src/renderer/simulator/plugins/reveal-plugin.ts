@@ -1,10 +1,10 @@
 /* istanbul ignore file */
 import URI from 'urijs'
 
-export const create = page => new Reveal(page)
+export const create = (page: any) => new Reveal(page)
 
 class Reveal {
-  private page: any;
+  private page: any
 
   constructor(page: any) {
     this.page = page
@@ -31,7 +31,7 @@ class Reveal {
 
   configure() {
     return this.page.evaluate(
-      fragments => {
+      (fragments: any) => {
         // @ts-ignore
         Reveal.configure({
           controls: false,
@@ -43,7 +43,7 @@ class Reveal {
         // This is a workaround to disable the open button of the RevealMenu plugin.
         // See the following issue for more details: https://github.com/denehyg/reveal.js-menu/issues/99
         // eslint-disable-next-line no-undef
-        const menuOpenButtons = document.getElementsByClassName('slide-menu-button');
+        const menuOpenButtons = document.getElementsByClassName('slide-menu-button')
         for (let i = 0; i < menuOpenButtons.length; i++) {
           // @ts-ignore
           menuOpenButtons[i].style.display = 'none'

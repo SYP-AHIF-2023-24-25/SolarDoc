@@ -8,7 +8,7 @@ import { DecktapeSlim } from '../../simulator'
  * Renders a presentation or slide to an image file.
  * @since 0.2.0
  */
-export class ImageRenderer extends TargetRenderer<unknown, unknown> {
+export class ImageRenderer extends TargetRenderer<Buffer[], Buffer[]> {
   public constructor() {
     super()
   }
@@ -27,7 +27,7 @@ export class ImageRenderer extends TargetRenderer<unknown, unknown> {
     const img: Buffer[] = await decktapeSimulator.renderRJSHTMLToImage(
       await revealJsHtml.write(),
       'png',
-      presentation.metadata
+      presentation.metadata,
     )
     return new ImageOutput(img, presentation)
   }
@@ -50,9 +50,8 @@ export class ImageRenderer extends TargetRenderer<unknown, unknown> {
       await revealJsHtml.write(),
       'png',
       presentation.metadata,
-      slide
+      slide,
     )
     return new ImageOutput(img, presentation)
-
   }
 }

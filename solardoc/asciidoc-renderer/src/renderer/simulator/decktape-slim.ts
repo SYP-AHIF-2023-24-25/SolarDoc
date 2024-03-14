@@ -3,13 +3,18 @@
  *
  * It is based on the decktape module version 3.10.0.
  */
-import {PDFDocument} from 'pdf-lib'
+import { PDFDocument } from 'pdf-lib'
 import puppeteer from 'puppeteer'
-import {exportSlide,
+import {
+  exportSlide,
   exportSlides,
-  getScreenshots, getSingleScreenshot, nextSlide, preparePage, preparePlugin,
+  getScreenshots,
+  getSingleScreenshot,
+  nextSlide,
+  preparePage,
+  preparePlugin,
 } from './decktape-utils'
-import {PresentationMetadata} from "../../presentation-metadata";
+import { PresentationMetadata } from '../../presentation-metadata'
 
 /**
  * This is a slimmed down version of the decktape module, which is not CLI-bound.
@@ -31,13 +36,17 @@ export class DecktapeSlim {
    * @since 0.2.0
    */
   // eslint-disable-next-line no-unused-vars
-  public async renderRJSHTMLToPDF(rjsHTML: string, metadata: PresentationMetadata,slideNum?: number): Promise<PDFDocument> {
+  public async renderRJSHTMLToPDF(
+    rjsHTML: string,
+    metadata: PresentationMetadata,
+    slideNum?: number,
+  ): Promise<PDFDocument> {
     const browser = await puppeteer.launch({
-      headless: "new",
+      headless: 'new',
     })
-    const page = await preparePage(rjsHTML,browser);
-    const plugin = await preparePlugin(page);
-    const pdfDocument = await PDFDocument.create();
+    const page = await preparePage(rjsHTML, browser)
+    const plugin = await preparePlugin(page)
+    const pdfDocument = await PDFDocument.create()
     const context: any = {
       progressBarOverflow: 0,
       currentSlide: 1,
@@ -47,14 +56,13 @@ export class DecktapeSlim {
       totalSlides: metadata.slideCountInclSubslides,
     }
 
-    if(slideNum){
-      for(let i  = 1;i < slideNum;i++){
-        await nextSlide(plugin,context);
+    if (slideNum) {
+      for (let i = 1; i < slideNum; i++) {
+        await nextSlide(plugin, context)
       }
-      await exportSlide(page,pdfDocument,context)
-    }
-    else{
-      await exportSlides(pdfDocument, page, plugin,context)
+      await exportSlide(page, pdfDocument, context)
+    } else {
+      await exportSlides(pdfDocument, page, plugin, context)
     }
 
     await browser.close()
@@ -75,13 +83,18 @@ export class DecktapeSlim {
    * @since 0.2.0
    */
   // eslint-disable-next-line no-unused-vars
-  public async renderRJSHTMLToImage(rjsHTML: string, format: 'png' | 'jpeg', metadata : PresentationMetadata,slideNum?: number ): Promise<Buffer[]> {
+  public async renderRJSHTMLToImage(
+    rjsHTML: string,
+    format: 'png' | 'jpeg',
+    metadata: PresentationMetadata,
+    slideNum?: number,
+  ): Promise<Buffer[]> {
     const browser = await puppeteer.launch({
-      headless: "new",
+      headless: 'new',
     })
 
-    const page = await preparePage(rjsHTML,browser);
-    const plugin = await preparePlugin(page);
+    const page = await preparePage(rjsHTML, browser)
+    const plugin = await preparePlugin(page)
     const pdfDocument = await PDFDocument.create()
     const context: any = {
       progressBarOverflow: 0,
@@ -92,10 +105,9 @@ export class DecktapeSlim {
       totalSlides: metadata.slideCountInclSubslides,
     }
 
-    if(slideNum){
-      return await getSingleScreenshot(page,plugin,context,format,slideNum);
+    if (slideNum) {
+      return await getSingleScreenshot(page, plugin, context, format, slideNum)
     }
-    return await getScreenshots(page, pdfDocument,plugin,format,metadata,context);
-
+    return await getScreenshots(page, pdfDocument, plugin, format, metadata, context)
   }
 }

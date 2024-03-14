@@ -102,7 +102,7 @@ export class CacheService {
    */
   private async saveToPersistentStorage(
     filename: string,
-    fileContent: string,
+    fileContent: string | Buffer[] | Uint8Array,
     uuidDiscriminator: string,
   ): Promise<string> {
     const storeFilename: string = this.getStoreFilename(uuidDiscriminator, filename)
@@ -117,9 +117,14 @@ export class CacheService {
    * @since 0.2.0
    * @private
    */
-  private async readFromPersistentStorage(storeFilePath: string): Promise<string> {
+  private async readFromPersistentStorage(
+    storeFilePath: string,
+    mimeType: ReturnType<typeof checkFileExtensionForMimeType>,
+  ): Promise<string | Buffer> {
     try {
-      return await fs.readFile(storeFilePath, { encoding: 'utf-8' })
+      return await fs.readFile(storeFilePath, {
+        encoding: mimeType === 'text/html' ? 'utf-8' : undefined,
+      })
     } catch (e) {
       if ('code' in e && e.code === 'ENOENT') {
         throw new CacheStoredFileNotFound(`File '${storeFilePath}' not found`)
@@ -141,7 +146,7 @@ export class CacheService {
    */
   public async addFile(
     filename: string,
-    fileContent: string,
+    fileContent: string | Buffer[] | Uint8Array,
     ttl: number = CacheService.DEFAULT_EXPIRATION_TIME,
   ): Promise<Required<CachedElement>> {
     const cachedElement = await this.add({
@@ -174,7 +179,7 @@ export class CacheService {
    */
   public async getFile(uuid: string): Promise<{
     mimeType: string
-    fileContent: string
+    fileContent: string | Buffer
     originalFilename: string
   }> {
     const cachedElement = await this.cache.findById(uuid)
@@ -186,10 +191,11 @@ export class CacheService {
       )
     }
 
+    const mimeType = checkFileExtensionForMimeType(getFileExtension(cachedElement.storeFilename))
     const content = await this.readFromPersistentStorage(
       this.getStoreFilePath(cachedElement.storeFilename),
+      mimeType,
     )
-    const mimeType = checkFileExtensionForMimeType(getFileExtension(cachedElement.storeFilename))
     return {
       mimeType,
       fileContent: content,
