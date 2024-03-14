@@ -109,9 +109,10 @@ export class SDSClient {
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
     this._currentChannel = this.socket.channel(topic, params)
-    this._currentChannel.join()
+    this._currentChannel
+      .join()
       .receive('ok', onJoin)
-      .receive('error', (resp) => {
+      .receive('error', resp => {
         onError(resp)
         this._leaveChannelAndEnsureDestruction()
       })

@@ -1,4 +1,7 @@
-import type {EditorChannel as APIEditorChannel, UserTrusted} from '@/services/phoenix/gen/phoenix-rest-service'
+import type {
+  EditorChannel as APIEditorChannel,
+  UserTrusted,
+} from '@/services/phoenix/gen/phoenix-rest-service'
 
 /**
  * A SDS channel, which can be joined to receive updates for a specific document from the server.

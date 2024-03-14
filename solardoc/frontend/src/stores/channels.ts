@@ -1,8 +1,8 @@
 import type { EditorChannel } from '@/services/phoenix/editor-channel'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import constants from "@/plugins/constants";
+import constants from '@/plugins/constants'
 import { defineStore } from 'pinia'
-import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 
 export const useChannelsStore = defineStore('channels', {
   state: () => {
@@ -11,11 +11,15 @@ export const useChannelsStore = defineStore('channels', {
     // the latest channels from the server
     let channels: Array<EditorChannel> | undefined
     try {
-      const storedChannels = JSON.parse(<string>sessionStorage.getItem(constants.sessionStorageChannelKey))
+      const storedChannels = JSON.parse(
+        <string>sessionStorage.getItem(constants.sessionStorageChannelKey),
+      )
       if (Array.isArray(storedChannels)) {
         channels = storedChannels
       }
-    } catch (e) { /* empty */ }
+    } catch (e) {
+      /* empty */
+    }
 
     return {
       creatingChannel: <boolean>false,
@@ -30,7 +34,9 @@ export const useChannelsStore = defineStore('channels', {
       try {
         resp = await phoenixRestService.getV1EditorChannels(bearer)
       } catch (e) {
-        throw new PhoenixInternalError('Critically failed to fetch current user. Cause: ' + (<Error>e).message)
+        throw new PhoenixInternalError(
+          'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+        )
       }
       if (resp.status === 200) {
         this.setChannels(resp.data)

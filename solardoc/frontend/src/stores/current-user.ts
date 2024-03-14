@@ -48,7 +48,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
     },
     bearer(): string | undefined {
       return this.currentAuth ? `Bearer ${this.currentAuth.token}` : undefined
-    }
+    },
   },
   actions: {
     /**

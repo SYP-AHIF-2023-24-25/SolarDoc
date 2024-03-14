@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {getHumanReadableTimeInfo} from "@/scripts/format-date";
-import type {EditorChannel} from "@/services/phoenix/editor-channel";
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import type { EditorChannel } from '@/services/phoenix/editor-channel'
 
 defineProps<{
   channel: EditorChannel

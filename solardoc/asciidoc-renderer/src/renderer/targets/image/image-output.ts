@@ -11,7 +11,7 @@ export class ImageOutput extends RenderOutput<Buffer[], Buffer[]> {
   }
 
   public get extension(): string {
-    return 'png';
+    return 'png'
   }
 
   /**

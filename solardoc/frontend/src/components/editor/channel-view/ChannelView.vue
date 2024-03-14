@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { useChannelsStore } from '@/stores/channels'
-import {useCurrentUserStore} from "@/stores/current-user";
+import { useCurrentUserStore } from '@/stores/current-user'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import ChannelViewElement from '@/components/editor/channel-view/ChannelViewElement.vue'
 import ChannelViewJoinConfirm from '@/components/editor/channel-view/ChannelViewJoinConfirm.vue'
-import ChannelViewCurrent from "@/components/editor/channel-view/ChannelViewCurrent.vue";
-import SDRouterLink from "@/components/SDRouterLink.vue";
-import ChannelViewCreate from "@/components/editor/channel-view/ChannelViewCreate.vue";
+import ChannelViewCurrent from '@/components/editor/channel-view/ChannelViewCurrent.vue'
+import SDRouterLink from '@/components/SDRouterLink.vue'
+import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreate.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const channelStore = useChannelsStore()
@@ -29,20 +29,27 @@ if (currentUserStore.loggedIn && currentUserStore.bearer) {
         <p id="experimental-tag">Experimental</p>
       </div>
       <div id="channel-view-not-logged-in" v-if="!currentUserStore.loggedIn">
-        <p>You need to be logged in to view channels <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink></p>
+        <p>
+          You need to be logged in to view channels
+          <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
+        </p>
       </div>
       <div id="channel-create" v-else-if="channelStore.creatingChannel">
         <ChannelViewCreate />
       </div>
       <template v-else-if="!channelStore.currentChannel">
-        <button id="create-button" class="highlighted-button" @click="channelStore.setCreatingChannel(true)">
+        <button
+          id="create-button"
+          class="highlighted-button"
+          @click="channelStore.setCreatingChannel(true)"
+        >
           Create
         </button>
         <div id="channel-view-list">
           <ChannelViewElement
-              v-for="channel in channelStore.channels"
-              :key="channel.id"
-              :channel="channel"
+            v-for="channel in channelStore.channels"
+            :key="channel.id"
+            :channel="channel"
           ></ChannelViewElement>
         </div>
       </template>
@@ -50,7 +57,7 @@ if (currentUserStore.loggedIn && currentUserStore.bearer) {
         <ChannelViewJoinConfirm />
       </div>
       <div id="channel-view-info" v-else>
-        <ChannelViewCurrent :channel="channelStore.currentChannel"/>
+        <ChannelViewCurrent :channel="channelStore.currentChannel" />
       </div>
     </div>
   </div>

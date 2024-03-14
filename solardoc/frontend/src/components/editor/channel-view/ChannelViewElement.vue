@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {EditorChannel} from "@/services/phoenix/editor-channel"
+import type { EditorChannel } from '@/services/phoenix/editor-channel'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { useChannelsStore } from '@/stores/channels'
 
@@ -19,10 +19,16 @@ function handleJoinChannel() {
     <span id="list-icon">~</span>
     <div id="channel-view-element-info">
       <h2 id="channel-info-title">
-        <code>{{ channel.id }}</code>• {{ channel.name }}
+        <code>{{ channel.id }}</code
+        >• {{ channel.name }}
       </h2>
       <div id="channel-info-description">
-        <p><span>Creator:</span> {{ channel.creator.username }} (<code id="creator-id">{{ channel.creator.id }}</code>)</p>
+        <p>
+          <span>Creator:</span> {{ channel.creator.username }} (<code id="creator-id">{{
+            channel.creator.id
+          }}</code
+          >)
+        </p>
         <p><span>Description:</span> {{ channel.description }}</p>
         <p><span>Active since:</span> {{ getHumanReadableTimeInfo(channel.active_since) }}</p>
       </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useChannelsStore} from "@/stores/channels";
+import { useChannelsStore } from '@/stores/channels'
 
 const channelState = useChannelsStore()
 
