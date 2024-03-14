@@ -10,8 +10,48 @@ function handleGoBack() {
 
 <template>
   <div id="channel-view-create">
-    <p>Creation form in work...</p>
-    <button class="highlighted-button" @click="handleGoBack">Go Back</button>
+    <Vueform add-class="solardoc-style-form" :display-errors="false">
+      <TextElement
+          name="channelName"
+          label="Channel name"
+          :rules="[
+        'required',
+        'min:4',
+      ]"
+      />
+      <TextElement
+          name="password"
+          input-type="password"
+          label="Password"
+          :rules="[
+        'required',
+        'min:10',
+      ]"
+      />
+      <TextareaElement
+          name="description"
+          label="Channel description"
+      />
+      <ButtonElement
+          name="Create"
+          button-label="Create"
+          :submits="true"
+          :columns="{
+        container: 3,
+      }"
+      />
+      <ButtonElement
+          name="goBack"
+          button-label="Go Back"
+          @click="handleGoBack"
+          :resets="true"
+          :columns="{
+        container: 3,
+      }"
+          :secondary="true"
+          align="center"
+      />
+    </Vueform>
   </div>
 </template>
 
