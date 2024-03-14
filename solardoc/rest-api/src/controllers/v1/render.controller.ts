@@ -24,6 +24,22 @@ export class RenderController {
     @inject('services.RenderService') public renderService: RenderService,
   ) {}
 
+  /**
+   * Ensures that the host header is present in the request.
+   *
+   * This is to make sure that unsupported environments don't get through.
+   * @param req The request to check the host header for.
+   * @private
+   * @since 0.4.0
+   */
+  private _ensureHostHeader(req: Request): string {
+    const hostHeader = req.headers.host
+    if (hostHeader === undefined) {
+      throw new Error('Host header is missing. Client may be using HTTP 1.0, HTTP >=1.1 is required!')
+    }
+    return hostHeader
+  }
+
   @post(`/${RenderController.BASE_PATH}/presentation/pdf`, {
     responses: {
       '200': {
@@ -60,6 +76,7 @@ export class RenderController {
     @requestBody() presentationModel: RenderPresentationRjsHtmlDtoModel,
     @inject(RestBindings.Http.REQUEST) req: Request,
   ): Promise<RenderedPresentationRjsHtmlDtoModel> {
+    this._ensureHostHeader(req)
     const htmlOutput: HTMLOutput = await this.renderService.renderRJSHTMLPresentation(
       presentationModel.fileName,
       presentationModel.fileContent,
@@ -72,7 +89,8 @@ export class RenderController {
 
     // Build the download URL where the user can download the file
     const downloadURL: string = buildAPIURL(req, ResultController.BASE_PATH, cachedElement.id)
-
+    console.log(downloadURL)
+    console.log(req)
     return {
       fileName: presentationModel.fileName, // Original filename
       cache: cachedElement.toCacheDtoModel(),
@@ -99,7 +117,9 @@ export class RenderController {
   })
   async renderPresentationImages(
     @requestBody() presentationModel: RenderPresentationDtoModel,
+    @inject(RestBindings.Http.REQUEST) req: Request,
   ): Promise<RenderedPresentationImagesDtoModel> {
+    this._ensureHostHeader(req)
     throw new Error('Not implemented yet!')
   }
 
@@ -118,8 +138,10 @@ export class RenderController {
   })
   async renderSlideImage(
     @param.path.string('uuid') id: number,
+    @inject(RestBindings.Http.REQUEST) req: Request,
     @requestBody() presentationModel: RenderPresentationDtoModel,
   ): Promise<RenderedSlideImageDtoModel> {
+    this._ensureHostHeader(req)
     throw new Error('Not implemented yet!')
   }
 }

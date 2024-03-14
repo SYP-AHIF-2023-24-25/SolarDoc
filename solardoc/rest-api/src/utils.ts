@@ -1,6 +1,7 @@
 import { Request } from '@loopback/rest'
 import path from 'path'
 import { API_BASE_PATH } from './index'
+import {isDev} from "./env";
 
 /**
  * Returns the current date in seconds.
@@ -13,11 +14,12 @@ export function getDateNowInSeconds(): number {
 }
 
 /**
- * Get the host that the user called the API on.
+ * Get the host that the user called the API on i.e. the public URL of the API.
  * @since 0.2.0
  */
 export function getHostURL(req: Request): string {
-  return req.headers.origin ?? (new URL(req.url)).origin
+  const protocol = isDev ? 'http' : 'https'
+  return (new URL(`${protocol}://${req.headers.host!}`)).origin
 }
 
 /**
