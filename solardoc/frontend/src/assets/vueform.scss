@@ -1,6 +1,9 @@
 @use './core/var' as var;
 
-:root, :before, :after, * {
+:root,
+:before,
+:after,
+* {
   $input-color: white;
 
   --vf-primary: var(--vueform-button-color);

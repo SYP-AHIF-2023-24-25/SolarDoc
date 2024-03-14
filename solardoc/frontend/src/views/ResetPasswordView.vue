@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div id="profile-wrapper" class="page-form-wrapper">
@@ -12,5 +10,4 @@
 
 <style scoped lang="scss">
 @use '@/assets/page-form' as *;
-
 </style>

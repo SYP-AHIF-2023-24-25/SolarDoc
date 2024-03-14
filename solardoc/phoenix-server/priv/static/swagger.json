@@ -18,7 +18,7 @@
       "properties": {
         "date": {
           "description": "The current date in milliseconds",
-          "example": 1710199788930,
+          "example": 1710378432166,
           "type": "integer"
         },
         "greeting": {
@@ -223,6 +223,67 @@
       ],
       "title": "UserToken",
       "type": "object"
+    },
+    "UserTrusted": {
+      "description": "A user which data can be accessed by trusted users i.e. an in between of public and private data",
+      "properties": {
+        "id": {
+          "description": "User UUID",
+          "type": "string"
+        },
+        "username": {
+          "description": "User username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "username",
+        "id"
+      ],
+      "title": "UserTrusted",
+      "type": "object"
+    },
+    "EditorChannel": {
+      "description": "An editor channel",
+      "properties": {
+        "active_since": {
+          "description": "Editor channel active since in milliseconds",
+          "type": "integer"
+        },
+        "creator": {
+          "$ref": "#/definitions/UserTrusted",
+          "description": "Editor channel creator"
+        },
+        "description": {
+          "description": "Editor channel description",
+          "type": "string"
+        },
+        "id": {
+          "description": "Editor channel UUID",
+          "type": "string"
+        },
+        "name": {
+          "description": "Editor channel name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "active_since",
+        "creator",
+        "description",
+        "name",
+        "id"
+      ],
+      "title": "EditorChannel",
+      "type": "object"
+    },
+    "EditorChannels": {
+      "description": "A list of editor channels",
+      "items": {
+        "$ref": "#/definitions/EditorChannel"
+      },
+      "title": "EditorChannels",
+      "type": "array"
     }
   },
   "schemes": [
@@ -232,6 +293,87 @@
     "wss"
   ],
   "paths": {
+    "/v1/editor_channels": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.EditorChannelController.index",
+        "parameters": [
+          {
+            "description": "Bearer",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/EditorChannels"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
+        "summary": "List all currently running editor channels",
+        "tags": [
+          "EditorChannel"
+        ]
+      }
+    },
+    "/v1/editor_channels/:id": {
+      "get": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.EditorChannelController.show",
+        "parameters": [
+          {
+            "description": "Bearer",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Editor channel ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/EditorChannel"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
+        "summary": "Get a single editor channel",
+        "tags": [
+          "EditorChannel"
+        ]
+      }
+    },
     "/v1/ping": {
       "get": {
         "deprecated": false,

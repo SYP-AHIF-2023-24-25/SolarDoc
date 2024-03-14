@@ -7,7 +7,7 @@
 // Bring in Phoenix channels client library:
 import {Socket} from "phoenix"
 
-type PhoenixSocket = Socket
+export type PhoenixSocket = Socket
 
 /**
  * Creates a new Socket instance and attempts to connect to the server. If the user token is not passed in, it will
@@ -18,7 +18,7 @@ type PhoenixSocket = Socket
  * @returns A new Phoenix Socket instance with an active connection to the server
  * @since 0.4.0
  */
-function socket(
+export function socket(
   url: string,
   userToken?: string
 ): PhoenixSocket {
@@ -86,4 +86,4 @@ function socket(
     return socket
 }
 
-export default socket
+export * from "phoenix"

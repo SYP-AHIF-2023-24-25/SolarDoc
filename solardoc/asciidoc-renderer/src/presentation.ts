@@ -7,7 +7,7 @@ import { PresentationMetadata } from './presentation-metadata'
  * The default title that is used if no title is specified in the asciidoc file.
  * @since 0.3.1
  */
-export const DEFAULT_PRESENTATION_TITLE: string = "Unnamed Presentation"
+export const DEFAULT_PRESENTATION_TITLE: string = 'Unnamed Presentation'
 
 /**
  * A presentation is a collection of slides, which internally are reveal.js slides. These can be converted to HTML,
@@ -94,9 +94,12 @@ export class Presentation {
    * @param config The configuration that should be used to render the presentation.
    * @since 0.3.0
    */
-  public async renderSlide<RawT, OutT>(target: TargetRenderer<RawT, OutT>, slide: number,config?: { [key: string]: any },
+  public async renderSlide<RawT, OutT>(
+    target: TargetRenderer<RawT, OutT>,
+    slide: number,
+    config?: { [key: string]: any },
   ): Promise<RenderOutput<RawT, OutT>> {
-    return await target.renderSlide(this,slide, config)
+    return await target.renderSlide(this, slide, config)
   }
 
   /**
@@ -105,12 +108,14 @@ export class Presentation {
    * @since 0.2.0
    */
   private getDocumentMetadata(document: Asciidoctor.Document): PresentationMetadata {
+    type MinReqAbstractBlock = Pick<
+      Asciidoctor.AbstractBlock,
+      'getContext' | 'getBlocks' | 'getLevel'
+    >
 
-    type MinReqAbstractBlock = Pick<Asciidoctor.AbstractBlock, 'getContext' | 'getBlocks' | 'getLevel'>
-
-    let slides = <Array<MinReqAbstractBlock>>document.getBlocks();
-    const preambleExists = slides[0]?.getContext() === 'preamble';
-    const nonPreambleFirstSlideExists = !preambleExists && slides[0]?.getLevel() === 0;
+    let slides = <Array<MinReqAbstractBlock>>document.getBlocks()
+    const preambleExists = slides[0]?.getContext() === 'preamble'
+    const nonPreambleFirstSlideExists = !preambleExists && slides[0]?.getLevel() === 0
 
     // We have to also check for 'nonPreambleFirstSlideExists' because if the first slide is the only slide and it is
     // also not a preamble slide but a standard slide (paragraphs in asciidoc).
@@ -119,15 +124,17 @@ export class Presentation {
         {
           getContext: () => 'preamble',
           getBlocks: () => [],
-          getLevel: () => 0
+          getLevel: () => 0,
         },
-        ...slides
+        ...slides,
       ]
     }
 
     const subslideCountPerSlide = slides.map((slide: MinReqAbstractBlock) => {
       let subBlocks = <Array<Asciidoctor.AbstractBlock>>slide.getBlocks()
-      return subBlocks.filter((block: Asciidoctor.AbstractBlock) => block.getContext() === 'section').length
+      return subBlocks.filter(
+        (block: Asciidoctor.AbstractBlock) => block.getContext() === 'section',
+      ).length
     })
     const slideCount = subslideCountPerSlide.length
     const slideCountInclSubslides = subslideCountPerSlide.reduce((a, b) => a + b, slideCount)
@@ -140,7 +147,7 @@ export class Presentation {
       slideCount: slideCount,
       slideCountInclSubslides: slideCountInclSubslides,
       subslideCountPerSlide: subslideCountPerSlide,
-      originalDocument: document
+      originalDocument: document,
     } satisfies PresentationMetadata
   }
 }

@@ -52,7 +52,7 @@ const router = createRouter({
     {
       path: '/profile' + htmlExtMatcher,
       name: 'profile',
-        component: () => import('@/views/ProfileView.vue'),
+      component: () => import('@/views/ProfileView.vue'),
     },
     {
       path: '/test-editor' + htmlExtMatcher,

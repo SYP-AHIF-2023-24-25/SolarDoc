@@ -1,8 +1,8 @@
 import * as api from './gen/phoenix-rest-service'
-import {PHOENIX_URL, SDSCLIENT_URL} from "./config";
+import { PHOENIX_URL, SDSCLIENT_URL } from './config'
 
 // Overwrite the default configuration depending on the environment
-api.defaults.baseUrl = PHOENIX_URL;
+api.defaults.baseUrl = PHOENIX_URL
 api.defaults.baseUrl += `${import.meta.env.API_BASE_PATH}`.trim() ?? '/api'
 
 // Ensure to add the protocol to the base URL (if not already present)

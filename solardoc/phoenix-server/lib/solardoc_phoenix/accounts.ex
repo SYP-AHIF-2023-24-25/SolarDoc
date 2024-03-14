@@ -55,10 +55,10 @@ defmodule SolardocPhoenix.Accounts do
 
   ## Examples
 
-      iex> get_user!(123)
+      iex> get_user!("2f3d4e5d-6c7b-8a9a-1b2c-3d4e5f6d7e8f")
       %User{}
 
-      iex> get_user!(456)
+      iex> get_user!("01234567-89ab-cdef-0123-456789abcdef")
       ** (Ecto.NoResultsError)
 
   """

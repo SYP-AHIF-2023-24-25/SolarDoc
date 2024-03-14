@@ -14,7 +14,9 @@ defmodule SolardocPhoenix.AccountsFixtures do
     })
   end
 
-  def user_fixture(attrs \\ %{}) do
+  def user_fixture(attrs \\ %{})
+
+  def user_fixture(attrs) do
     {:ok, user} =
       attrs
       |> valid_user_attributes()
@@ -32,7 +34,7 @@ defmodule SolardocPhoenix.AccountsFixtures do
   @doc """
   Generate a user.
   """
-  def user_fixture(attrs \\ %{}) do
+  def user_fixture(attrs) do
     {:ok, user} =
       attrs
       |> Enum.into(%{

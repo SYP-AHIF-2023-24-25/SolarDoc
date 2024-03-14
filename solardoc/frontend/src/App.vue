@@ -2,7 +2,6 @@
 import { RouterView } from 'vue-router'
 import Navbar from '@/components/Navbar.vue'
 import ProgressSpinner from '@/components/ProgressSpinner.vue'
-import * as phoenixBackend from "@/services/phoenix/api-service";
 </script>
 
 <template>

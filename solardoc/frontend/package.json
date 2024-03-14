@@ -46,14 +46,15 @@
   "dependencies": {
     "@solardoc/phoenix": "workspace:~",
     "@vueuse/core": "10.5.0",
+    "@vueform/vueform": "1.8.0",
+    "@import-meta-env/cli": "0.6.8",
     "monaco-editor": "0.44.0",
     "pinia": "2.1.7",
     "vue": "3.3.7",
     "vue-router": "4.2.5",
-    "dotenv": "16.3.1",
     "v-dropdown": "3.0.0",
-    "@vueform/vueform": "1.8.0",
-    "@import-meta-env/cli": "0.6.8"
+    "vue-final-modal": "4.5.4",
+    "dotenv": "16.3.1"
   },
   "devDependencies": {
     "@import-meta-env/unplugin": "0.5.1",
@@ -76,11 +77,10 @@
     "prettier": "^3.0.3",
     "sass": "^1.68.0",
     "sass-loader": "13.3.2",
-    "typescript": "5.2.2",
     "vite": "^4.4.9",
     "vitest": "^0.34.4",
     "vue-tsc": "^1.8.11",
     "oazapfts": "^4.11.2",
-    "esbuild": "0.18.20"
+    "typescript": "5.2.2"
   }
 }

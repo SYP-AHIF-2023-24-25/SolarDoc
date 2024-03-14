@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {useCurrentUserStore} from "@/stores/current-user";
-import {useRouter} from "vue-router";
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useRouter } from 'vue-router'
 
 const currentUserStore = useCurrentUserStore()
 const $router = useRouter()
@@ -9,28 +9,32 @@ currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
 
 // Ensure if the user is not logged in that he is redirected to the '/login' page
 if (!currentUserStore.loggedIn) {
-  $router.push("/login")
+  $router.push('/login')
 }
 
 async function logout() {
   await currentUserStore.logout()
-  await $router.push("/login")
+  await $router.push('/login')
 }
 </script>
 
 <template>
   <div id="profile-wrapper" class="page-form-wrapper">
     <div id="profile-container" class="page-form-container large">
-      <button id="logout-button" class="highlighted-button" @click="logout()">
-        Logout
-      </button>
+      <button id="logout-button" class="highlighted-button" @click="logout()">Logout</button>
       <div id="profile-form">
-        <h1>Profile Page ~<code>{{ currentUserStore.currentUser?.username || '' }}</code></h1>
+        <h1>
+          Profile Page ~<code>{{ currentUserStore.currentUser?.username || '' }}</code>
+        </h1>
         <div id="profile-description">
-          <p><span>Id:</span><code>{{ currentUserStore.currentUser?.id || '' }}</code></p>
+          <p>
+            <span>Id:</span><code>{{ currentUserStore.currentUser?.id || '' }}</code>
+          </p>
           <p><span>Email:</span> {{ currentUserStore.currentUser?.email || '' }}</p>
           <p><span>Role:</span> {{ currentUserStore.currentUser?.role || '' }}</p>
-          <p><span>Confirmed At:</span> {{ currentUserStore.currentUser?.confirmed_at || 'NaN' }}</p>
+          <p>
+            <span>Confirmed At:</span> {{ currentUserStore.currentUser?.confirmed_at || 'NaN' }}
+          </p>
           <p><span>Organisation:</span> {{ currentUserStore.currentUser?.organisation || '' }}</p>
         </div>
       </div>

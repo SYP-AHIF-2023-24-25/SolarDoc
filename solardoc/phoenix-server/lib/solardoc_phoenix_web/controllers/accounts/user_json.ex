@@ -40,7 +40,11 @@ defmodule SolardocPhoenixWeb.UserJSON do
       id: user.id,
       username: user.username,
       email: user.email,
-      confirmed_at: user.confirmed_at,
+      confirmed_at: if user.confirmed_at do
+        user.confirmed_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_unix(:millisecond)
+      else
+        nil
+      end,
       role: user.role,
       organisation: user.organisation,
       intended_use: user.intended_use
