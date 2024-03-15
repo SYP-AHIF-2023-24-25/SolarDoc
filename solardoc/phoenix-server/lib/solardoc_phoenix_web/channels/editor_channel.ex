@@ -10,7 +10,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   @impl true
   def join("channel:new", %{"data" => data}, socket) do
     data = Map.put(data, "creator_id", socket.assigns.user_id)
-    with {:ok, editor_channel } <- EditorChannels.create_channel(data) do
+    with {:ok, editor_channel} <- EditorChannels.create_channel(data) do
       editor_channel = Repo.preload(editor_channel, :creator)
       send(self(), {:after_create, editor_channel: editor_channel})
       {:ok, socket}
@@ -25,10 +25,10 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def join("channel:" <> editor_channel_id, %{"auth" => auth}, socket) do
-    with {:ok, editor_channel} <- EditorChannels.get_channel!(editor_channel_id) do
-      assign(socket, :editor_channel_id, editor_channel_id)
+    with %EditorChannel{} = editor_channel <- EditorChannels.get_channel!(editor_channel_id) do
       if authorized?(editor_channel, %{auth: auth}) do
-        send(self(), {:after_join, editor_channel})
+        assign(socket, :editor_channel_id, editor_channel_id)
+        send(self(), {:after_join, editor_channel: editor_channel})
         {:ok, socket}
       else
         {:error, %{
@@ -54,7 +54,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     {:reply, {:ok, payload}, socket}
   end
 
-  @impl true
   def handle_info({:after_create, editor_channel: editor_channel}, socket) do
     broadcast!(
       socket,
@@ -69,7 +68,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     {:noreply, socket}
   end
 
-  @impl true
   def handle_info({:after_join, editor_channel: editor_channel}, socket) do
     broadcast!(socket, "user_join", %{
       body: "A new user has joined a channel",
