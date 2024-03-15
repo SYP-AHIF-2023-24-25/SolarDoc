@@ -23,7 +23,7 @@ export const useChannelViewStore = defineStore('channels', {
 
     return {
       creatingChannel: <boolean>false,
-      currentChannel: <EditorChannel | undefined>undefined,
+      selectedChannel: <EditorChannel | undefined>undefined,
       channelJoined: <boolean>false,
       channels: <Array<EditorChannel>>channels ?? [],
     }
@@ -47,11 +47,11 @@ export const useChannelViewStore = defineStore('channels', {
         )
       }
     },
-    setCurrentChannel(channel: EditorChannel) {
-      this.currentChannel = channel
+    setSelectedChannel(channel: EditorChannel) {
+      this.selectedChannel = channel
     },
-    unsetCurrentChannel() {
-      this.currentChannel = undefined
+    unsetSelectedChannel() {
+      this.selectedChannel = undefined
     },
     setChannels(channels: Array<EditorChannel>) {
       this.channels = channels

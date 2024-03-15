@@ -70,11 +70,11 @@ div#home-page {
 
         /* Here we apply a gradient which should be visible on WebKit & Moz browsers */
         background: -moz-linear-gradient(
-                90deg,
-                var.$scheme-cs-1,
-                var.$scheme-cs-2,
-                var.$scheme-cs-3,
-                var.$scheme-cs-4
+          90deg,
+          var.$scheme-cs-1,
+          var.$scheme-cs-2,
+          var.$scheme-cs-3,
+          var.$scheme-cs-4
         );
         background: -webkit-linear-gradient(
           90deg,

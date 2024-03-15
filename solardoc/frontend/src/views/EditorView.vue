@@ -64,10 +64,7 @@ phoenixBackend
       currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
     if (authStatus === 'authenticated') {
       console.log('[Editor] Attempting to connect to SDS')
-      wsClientStore.createWSClient(
-        SDSCLIENT_URL,
-        currentUserStore.currentAuth?.token,
-      )
+      wsClientStore.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
     } else if (authStatus === 'expired-or-revoked') {
       await currentUserStore.logout()
     } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
@@ -104,10 +101,10 @@ editorContentStore.$subscribe(
           body: editorContent,
           render_url: renderResp.previewURL,
         },
-        (resp) => {
+        resp => {
           console.log(`[Editor] Editor update sent (Resp: `, resp, ')')
         },
-        (error) => {
+        error => {
           console.error(`[Editor] Error sending editor update: `, error)
         },
       )
@@ -185,7 +182,7 @@ function handleDownloadButtonClick() {
   }, 1500)
 }
 
-// Last modified is a ref which is updated every second to show the last modified time
+// Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 function getLastModified(): string {
   return getHumanReadableTimeInfo(lastModifiedStore.lastModified)

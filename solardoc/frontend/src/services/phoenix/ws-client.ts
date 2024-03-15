@@ -5,10 +5,14 @@ import {
   type ChannelState,
   type PhoenixSocket as SDSClientBare,
 } from '@solardoc/phoenix'
-import { PhoenixInvalidOperationError, PhoenixSDSError } from '@/services/phoenix/errors'
-import type {EditorUpdate} from "@/services/phoenix/editor-update";
-import type {CreateEditorChannel, EditorChannel} from "@/services/phoenix/editor-channel";
-import type {UserPrivate} from "@/services/phoenix/gen/phoenix-rest-service";
+import {
+  PhoenixInternalError,
+  PhoenixInvalidOperationError,
+  PhoenixSDSError,
+} from '@/services/phoenix/errors'
+import type { EditorUpdate } from '@/services/phoenix/editor-update'
+import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
+import type { UserPrivate } from '@/services/phoenix/gen/phoenix-rest-service'
 
 /**
  * The SolarDoc Socket client (SDS) is a Phoenix Channels client that connects to the SolarDoc Phoenix server. It is
@@ -82,7 +86,9 @@ export class SDSClient {
   private async _ensureSocketIsHealthy(): Promise<void> {
     await this._waitForSocketToBeHealthyIfConnecting()
     if (!this._active) {
-      throw new PhoenixInvalidOperationError('[ws-client.ts] Cannot perform operation on a closed socket.')
+      throw new PhoenixInvalidOperationError(
+        '[ws-client.ts] Cannot perform operation on a closed socket.',
+      )
     }
   }
 
@@ -102,11 +108,13 @@ export class SDSClient {
   private async _ensureChannelIsHealthy(): Promise<void> {
     await this._waitForChannelToBeHealthyIfConnecting()
     if (!this.channelHealthy) {
-      throw new PhoenixInvalidOperationError('[ws-client.ts] Cannot perform operation on a channel that has not been joined.')
+      throw new PhoenixInvalidOperationError(
+        '[ws-client.ts] Cannot perform operation on a channel that has not been joined.',
+      )
     }
   }
 
-  private async  _waitForChannelToBeHealthyIfConnecting(): Promise<void> {
+  private async _waitForChannelToBeHealthyIfConnecting(): Promise<void> {
     if (this.currentChannelState === 'joining') {
       return new Promise<void>(resolve => {
         const interval = setInterval(() => {
@@ -149,8 +157,36 @@ export class SDSClient {
       })
   }
 
+  private async _leaveChannelNew(): Promise<void> {
+    if (this._currentChannel?.topic === 'channel:new') {
+      this._leaveChannelAndEnsureDestruction()
+    }
+  }
+
+  private async _handleCreateChannel(
+    editorChannel: CreateEditorChannel,
+    onJoin: (resp: EditorChannel) => void | Promise<void>,
+    onError: (resp: any) => void | Promise<void>,
+    resp: {} | { creator_id: string; editor_channel: EditorChannel },
+  ) {
+    if (!('creator_id' in resp)) {
+      this._leaveChannelAndEnsureDestruction()
+      onError(new PhoenixInternalError('[ws-client.ts] Server did not return a valid response.'))
+    }
+
+    const validResp = resp as { creator_id: string; editor_channel: EditorChannel }
+    await this._leaveChannelNew()
+    if (validResp.creator_id === editorChannel.creator) {
+      console.log('[ws-client.ts] Channel successfully created!')
+      onJoin(validResp.editor_channel)
+    }
+  }
+
   /**
    * Creates a new editor channel with the given parameters.
+   *
+   * This will automatically join the channel if it is successfully created. If the channel is successfully joined, the
+   * `onJoin` function will be called with the response from the server.
    * @param onJoin The function to call when the channel is successfully joined.
    * @param onError The function to call when the channel fails to join.
    * @param editorChannel The parameters to pass to the channel.
@@ -163,28 +199,18 @@ export class SDSClient {
     editorChannel: CreateEditorChannel,
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
-    this._currentChannel = this.socket.channel("channel:new", {data: editorChannel})
+    this._currentChannel = this.socket.channel('channel:new', { data: editorChannel })
+    this._currentChannel?.on('new_channel', resp =>
+      this._handleCreateChannel(editorChannel, onJoin, onError, resp),
+    )
     this._currentChannel
       .join()
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .receive('ok', _ => {
-        this._currentChannel?.on('new_channel', (resp: {} | {creator_id: string, editor_channel: EditorChannel}) => {
-          if (!("creator_id" in resp)) {
-            this._leaveChannelAndEnsureDestruction()
-            throw new PhoenixSDSError('[ws-client.ts] Received invalid response from server.')
-          }
-
-          if (resp.creator_id === editorChannel.creator) {
-            console.log('[ws-client.ts] Channel successfully created!')
-            onJoin(resp.editor_channel)
-          }
-        })
-      })
+      .receive('ok', _ => console.log('[ws-client.ts] Channel successfully created!'))
       .receive('error', resp => {
         onError(resp)
         this._leaveChannelAndEnsureDestruction()
       })
-      .send()
   }
 
   /**
@@ -203,11 +229,7 @@ export class SDSClient {
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
     await this._ensureChannelIsHealthy()
-    this._currentChannel!
-      .push(
-        'editor_update',
-        update
-      )
+    this._currentChannel!.push('editor_update', update)
       .receive('ok', onSuccess)
       .receive('error', onError)
       .send()
@@ -233,7 +255,9 @@ export class SDSClient {
   public async leaveChannel(): Promise<void> {
     await this._ensureSocketIsHealthy()
     if (!this._currentChannel) {
-      throw new PhoenixInvalidOperationError('[ws-client.ts] Cannot leave a channel when none has been joined.')
+      throw new PhoenixInvalidOperationError(
+        '[ws-client.ts] Cannot leave a channel when none has been joined.',
+      )
     }
     await this._ensureChannelIsHealthy()
     this._leaveChannelAndEnsureDestruction()

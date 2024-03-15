@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import type {
+  CreateEditorChannel,
+  EditorChannel,
+  JoinChannelOptions,
+} from '@/services/phoenix/editor-channel'
 import { useChannelViewStore } from '@/stores/channel-view'
-import type {CreateEditorChannel} from "@/services/phoenix/editor-channel";
-import {ref} from "vue";
-import {useWSClientStore} from "@/stores/ws-client";
-import {useCurrentUserStore} from "@/stores/current-user";
+import { ref } from 'vue'
+import { useWSClientStore } from '@/stores/ws-client'
+import { useCurrentUserStore } from '@/stores/current-user'
 
 const currentUserStore = useCurrentUserStore()
 const channelViewStore = useChannelViewStore()
@@ -11,10 +15,11 @@ const wsClientStore = useWSClientStore()
 
 const form$ = ref<{
   data: {
-    "channel-name": string
+    'channel-name': string
     description: string
     password: string
   }
+  validate: () => Promise<void>
 } | null>(null)
 
 const loadingState = ref(false)
@@ -25,28 +30,53 @@ function handleGoBack() {
 
 async function submitForm() {
   if (!form$.value) {
-    throw new Error('Form data is null')
+    return
   } else if (!currentUserStore.loggedIn || !currentUserStore.bearer) {
-    throw new Error('[ChannelView] User is not logged in! User shouldn\'t have been able to access this form')
+    throw new Error(
+      "[ChannelView] User is not logged in! User shouldn't have been able to access this form",
+    )
   } else if (!wsClientStore.wsClient || !wsClientStore.wsClient.healthy) {
-    throw new Error('[ChannelView] Websocket client is not active or healthy. Can not join channel!')
+    throw new Error(
+      '[ChannelView] Websocket client is not active or healthy. Can not join channel!',
+    )
+  }
+
+  const newChannel = {
+    name: form$.value.data['channel-name'],
+    description: form$.value.data.description,
+    password: form$.value.data.password,
+    creator: currentUserStore.currentUser!.id,
+  } satisfies CreateEditorChannel
+
+  async function joinNewChannel(channel: EditorChannel) {
+    await wsClientStore.wsClient?.joinChannel(
+      `channel:${channel.id}`,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      async _ => {
+        channelViewStore.setCreatingChannel(false)
+        channelViewStore.setChannelJoined(true)
+        channelViewStore.setSelectedChannel(channel)
+        console.log('[ChannelView] Channel joined', channel)
+      },
+      errorResp => {
+        console.error('[ChannelView] Error joining new channel', errorResp)
+      },
+      {
+        auth: newChannel.password,
+      } satisfies JoinChannelOptions,
+    )
   }
 
   await wsClientStore.wsClient.createChannel(
     async channel => {
-      channelViewStore.setCreatingChannel(false)
-      channelViewStore.setChannelJoined(true)
-      channelViewStore.setCurrentChannel(channel)
+      console.log('[ChannelView] Channel created', channel)
+
+      await joinNewChannel(channel)
     },
     errorResp => {
-      console.error('Error creating channel', errorResp)
+      console.error('[ChannelView] Error creating channel', errorResp)
     },
-    {
-      name: form$.value.data['channel-name'],
-      description: form$.value.data.description,
-      password: form$.value.data.password,
-      creator: currentUserStore.currentUser!.id
-    } satisfies CreateEditorChannel,
+    newChannel,
   )
   loadingState.value = true
 }
@@ -54,34 +84,29 @@ async function submitForm() {
 
 <template>
   <div id="channel-view-create">
-    <Vueform v-if="!loadingState" ref="form$" add-class="solardoc-style-form" :display-errors="false">
+    <Vueform
+      v-if="!loadingState"
+      ref="form$"
+      add-class="solardoc-style-form"
+      :display-errors="false"
+    >
       <TextElement
         name="channel-name"
         label="Channel name"
-        :rules="[
-          'required',
-          'min:4',
-          'max:25'
-        ]"
+        :rules="['required', 'min:4', 'max:25']"
       />
       <TextElement
         name="password"
         input-type="password"
         label="Password"
-        :rules="[
-          'required',
-          'min:10',
-        ]"
+        :rules="['required', 'min:10']"
       />
-      <TextareaElement
-        name="description"
-        label="Channel description"
-      />
+      <TextareaElement name="description" label="Channel description" />
       <ButtonElement
         name="Create"
         button-label="Create"
         submits
-        @click="submitForm()"
+        @submit="submitForm()"
         :columns="{
           container: 1,
         }"

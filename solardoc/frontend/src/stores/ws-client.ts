@@ -8,7 +8,7 @@ export const useWSClientStore = defineStore('wsClient', {
   getters: {
     hasActiveChannelConnection(): boolean {
       return this.wsClient?.channelHealthy ?? false
-    }
+    },
   },
   actions: {
     createWSClient(url: string, userToken?: string) {

@@ -10,7 +10,8 @@ const props = defineProps<{
 const channelViewStore = useChannelViewStore()
 
 function handleJoinChannel() {
-  channelViewStore.setCurrentChannel(props.channel)
+  channelViewStore.setChannelJoined(false)
+  channelViewStore.setSelectedChannel(props.channel)
 }
 </script>
 
@@ -19,7 +20,8 @@ function handleJoinChannel() {
     <span id="list-icon">~</span>
     <div id="channel-view-element-info">
       <h2 id="channel-info-title">
-        <code>{{ channel.name }}</code><span>·</span><code class="small">{{ channel.id }}</code>
+        <code>{{ channel.name }}</code
+        ><span>·</span><code class="small">{{ channel.id }}</code>
       </h2>
       <div id="channel-info-description">
         <p>

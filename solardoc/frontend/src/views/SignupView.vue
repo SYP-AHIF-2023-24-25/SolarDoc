@@ -127,8 +127,8 @@ async function submitForm() {
         <ButtonElement
           name="submit"
           button-label="Submit"
-          @click="submitForm()"
           submits
+          @submit="submitForm()"
           :columns="{
             container: 2,
           }"

@@ -25,3 +25,11 @@ export interface CreateEditorChannel {
   readonly password: string
   readonly creator: string
 }
+
+/**
+ * Options for joining a channel.
+ * @since 0.4.0
+ */
+export interface JoinChannelOptions {
+  readonly auth: string
+}

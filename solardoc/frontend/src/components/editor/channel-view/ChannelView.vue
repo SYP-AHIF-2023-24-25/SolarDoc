@@ -8,29 +8,34 @@ import ChannelViewJoinConfirm from '@/components/editor/channel-view/ChannelView
 import ChannelViewCurrent from '@/components/editor/channel-view/ChannelViewCurrent.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
 import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreate.vue'
-import {storeToRefs} from "pinia";
-import {watch} from "vue";
+import { storeToRefs } from 'pinia'
+import { ref, watch } from 'vue'
 
 const overlayStateStore = useOverlayStateStore()
 const channelViewStore = useChannelViewStore()
 const currentUserStore = useCurrentUserStore()
 
-const {creatingChannel, currentChannel, channels} = storeToRefs(channelViewStore)
+const { creatingChannel, selectedChannel, channels } = storeToRefs(channelViewStore)
 
-function refreshChannels() {
+const loadingState = ref(false)
+
+async function refreshChannels() {
+  loadingState.value = true
   if (currentUserStore.loggedIn && currentUserStore.bearer) {
-    channelViewStore.fetchChannels(currentUserStore.bearer)
+    await channelViewStore.fetchChannels(currentUserStore.bearer)
   } else {
     channelViewStore.clearChannels()
   }
+  loadingState.value = false
 }
 
 // Fetch channels again when the user returns from one of the forms
-watch([currentChannel, creatingChannel], () => {
-  if (!currentChannel.value || !creatingChannel.value) {
+watch([selectedChannel, creatingChannel], () => {
+  if (!selectedChannel.value || !creatingChannel.value) {
     refreshChannels()
   }
 })
+refreshChannels()
 </script>
 
 <template>
@@ -52,7 +57,7 @@ watch([currentChannel, creatingChannel], () => {
       <div id="channel-create" v-else-if="creatingChannel">
         <ChannelViewCreate />
       </div>
-      <template v-else-if="!channelViewStore.currentChannel">
+      <template v-else-if="!selectedChannel">
         <button
           id="create-button"
           class="highlighted-button"
@@ -60,22 +65,28 @@ watch([currentChannel, creatingChannel], () => {
         >
           Create
         </button>
-        <div id="channel-view-list" v-if="channels.length > 0">
-          <ChannelViewElement
-            v-for="channel in channels"
-            :key="channel.id"
-            :channel="channel"
-          ></ChannelViewElement>
+        <template v-if="channels.length > 0">
+          <div id="channel-view-secondary-header">
+            <h2>Public Channels</h2>
+          </div>
+          <div id="channel-view-list">
+            <ChannelViewElement
+              v-for="channel in channels"
+              :key="channel.id"
+              :channel="channel"
+            ></ChannelViewElement>
+          </div>
+        </template>
+        <div id="loading-banner" v-else-if="loadingState">
+          <h2><span class="dot-dot-dot-flashing"></span></h2>
         </div>
-        <p id="channel-view-empty-msg" v-else>
-          So empty! Maybe go ahead and create a channel?
-        </p>
+        <p id="channel-view-empty-msg" v-else>So empty! Maybe go ahead and create a channel?</p>
       </template>
       <div id="channel-view-confirm" v-else-if="!channelViewStore.channelJoined">
-        <ChannelViewJoinConfirm />
+        <ChannelViewJoinConfirm :channel="selectedChannel" />
       </div>
       <div id="channel-view-info" v-else>
-        <ChannelViewCurrent :channel="channelViewStore.currentChannel" />
+        <ChannelViewCurrent :channel="selectedChannel" />
       </div>
     </div>
   </div>
@@ -101,6 +112,7 @@ watch([currentChannel, creatingChannel], () => {
     position: relative;
     flex: 0 1 auto;
     width: 50vw;
+    height: max-content;
     border-radius: 1rem;
     padding: 0.5rem 2rem;
     background-color: var.$overlay-background-color;
@@ -136,7 +148,6 @@ watch([currentChannel, creatingChannel], () => {
       margin-bottom: 1rem;
     }
 
-    #channel-view-confirm,
     #channel-view-not-logged-in,
     #channel-view-empty-msg {
       @include align-center;
