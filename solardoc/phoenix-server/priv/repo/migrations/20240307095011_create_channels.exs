@@ -3,7 +3,7 @@ defmodule SolardocPhoenix.Repo.Migrations.CreateChannels do
 
   def change do
     create table(:editor_channels, primary_key: false) do
-      add :id, :binary, primary_key: true
+      add :id, :uuid, primary_key: true
       add :name, :string
       add :description, :string
       add :active_since, :naive_datetime
