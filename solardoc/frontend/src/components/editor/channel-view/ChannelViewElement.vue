@@ -2,12 +2,15 @@
 import type { EditorChannel } from '@/services/phoenix/editor-channel'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { useChannelViewStore } from '@/stores/channel-view'
+import {ref} from "vue";
 
 const props = defineProps<{
   channel: EditorChannel
 }>()
 
 const channelViewStore = useChannelViewStore()
+
+const channelDescription = ref(props.channel.description || '<None provided>')
 
 function handleJoinChannel() {
   channelViewStore.setChannelJoined(false)
@@ -23,15 +26,17 @@ function handleJoinChannel() {
         <code>{{ channel.name }}</code
         ><span>·</span><code class="small">{{ channel.id }}</code>
       </h2>
-      <div id="channel-info-description">
+      <div id="channel-info-details">
         <p>
           <span>Creator:</span> {{ channel.creator.username }} (<code id="creator-id">{{
             channel.creator.id
           }}</code
           >)
         </p>
-        <p><span>Description:</span> {{ channel.description }}</p>
         <p><span>Active since:</span> {{ getHumanReadableTimeInfo(channel.active_since) }}</p>
+        <p><span>Description:</span></p>
+        <!-- eslint-disable-next-line vue/no-mutating-props -->
+        <textarea disabled wrap="soft" cols="1" v-model="channelDescription"></textarea>
       </div>
     </div>
     <div id="channel-view-element-interaction">
@@ -52,7 +57,7 @@ function handleJoinChannel() {
   flex-flow: row nowrap;
 
   width: 100%;
-  height: 100px;
+  height: max-content;
 
   #list-icon {
     margin-right: 0.5rem;
@@ -81,12 +86,24 @@ function handleJoinChannel() {
       }
     }
 
-    #channel-info-description {
+    #channel-info-details {
       margin-left: 0.5rem;
 
       #creator-id {
         padding: 0;
         margin: 0;
+      }
+
+      textarea {
+        border: none;
+        resize: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+
+        &:hover {
+          cursor: text;
+        }
       }
     }
 

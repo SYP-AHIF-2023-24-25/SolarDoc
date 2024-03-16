@@ -67,12 +67,13 @@ setInterval(updateLastModified, 500)
             <code>{{ channel.name }}</code
             ><span>·</span><code class="small">{{ channel.id }}</code>
           </h2>
-          <div id="channel-info-description">
+          <div id="channel-info-details">
             <p><span>Creator:</span> {{ channel.creator.username }}</p>
             <p><span>Active since:</span> {{ lastModified }}</p>
-            <p><span>Description:</span> {{ channel.description }}</p>
             <p><span>Active Users:</span> NaN</p>
-            <p></p>
+            <p><span>Description:</span></p>
+            <!-- eslint-disable-next-line vue/no-mutating-props -->
+            <textarea disabled wrap="soft" v-model="channel.description"></textarea>
           </div>
         </div>
         <div id="current-channel-element-interaction">
@@ -111,7 +112,7 @@ setInterval(updateLastModified, 500)
   }
 
   width: 100%;
-  height: 100px;
+  height: max-content;
 
   #list-icon {
     margin-right: 0.5rem;
@@ -201,10 +202,22 @@ setInterval(updateLastModified, 500)
         }
       }
 
-      #channel-info-description {
+      #channel-info-details {
         margin-left: 0.5rem;
         font-size: 1.1rem;
         line-height: 2rem;
+
+        textarea {
+          border: none;
+          resize: none;
+          padding: 0;
+          margin: 0 0 0.5rem 0;
+          width: 100%;
+
+          &:hover {
+            cursor: text;
+          }
+        }
       }
 
       code {
