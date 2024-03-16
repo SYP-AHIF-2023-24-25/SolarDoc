@@ -4,26 +4,26 @@ import { RestExplorerBindings, RestExplorerComponent } from '@loopback/rest-expl
 import { RepositoryMixin } from '@loopback/repository'
 import { RestApplication } from '@loopback/rest'
 import { ServiceMixin } from '@loopback/service-proxy'
+import { SolardocSequence } from './sequence'
+import {isProd} from "./env";
 import path from 'path'
-import { MySequence } from './sequence'
 
 export { ApplicationConfig }
 
-export class RestApiApplication extends BootMixin(ServiceMixin(RepositoryMixin(RestApplication))) {
+export class SolardocRestApiApplication extends BootMixin(ServiceMixin(RepositoryMixin(RestApplication))) {
   constructor(options: ApplicationConfig = {}) {
     super(options)
 
-    // Set up the custom sequence
-    this.sequence(MySequence)
+    this.sequence(SolardocSequence)
 
-    // Set up default home page
     this.static('/', path.join(__dirname, '../public'))
 
-    // Customize @loopback/rest-explorer configuration here
-    this.configure(RestExplorerBindings.COMPONENT).to({
-      path: '/explorer',
-    })
-    this.component(RestExplorerComponent)
+    if (!isProd) {
+      this.configure(RestExplorerBindings.COMPONENT).to({
+        path: '/explorer',
+      })
+      this.component(RestExplorerComponent)
+    }
 
     this.projectRoot = __dirname
     // Customize @loopback/boot Booter Conventions here

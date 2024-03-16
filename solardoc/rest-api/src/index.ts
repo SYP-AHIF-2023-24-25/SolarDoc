@@ -1,5 +1,5 @@
-import { ApplicationConfig, RestApiApplication } from './application'
-import { ensureEnvLoaded, getEnv } from './env'
+import { ApplicationConfig, SolardocRestApiApplication } from './application'
+import {ensureEnvLoaded, getEnv, isProd} from './env'
 import * as fs from 'fs/promises'
 
 export * from './application'
@@ -64,7 +64,7 @@ export async function main(options: ApplicationConfig = {}) {
   await ensurePersistentStorageExists()
 
   // Then start the application
-  const app = new RestApiApplication(options)
+  const app = new SolardocRestApiApplication(options)
 
   // Set the base path for the API
   app.basePath(API_BASE_PATH)
@@ -96,6 +96,9 @@ if (require.main === module) {
         // useful when used with OpenAPI-to-GraphQL to locate your application
         setServersFromRequest: true,
       },
+      apiExplorer: {
+        disabled: isProd,
+      }
     },
   }
   main(config).catch(err => {
