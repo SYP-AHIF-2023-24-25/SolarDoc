@@ -5,22 +5,14 @@ import type {
   JoinChannelOptions,
 } from '@/services/phoenix/editor-channel'
 import { useChannelViewStore } from '@/stores/channel-view'
-import { ref } from 'vue'
+import { type Ref, ref } from 'vue'
 import { useWSClientStore } from '@/stores/ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
+import type { Vueform } from '@vueform/vueform'
 
 const currentUserStore = useCurrentUserStore()
 const channelViewStore = useChannelViewStore()
 const wsClientStore = useWSClientStore()
-
-const form$ = ref<{
-  data: {
-    'channel-name': string
-    description: string
-    password: string
-  }
-  validate: () => Promise<void>
-} | null>(null)
 
 const loadingState = ref(false)
 
@@ -28,8 +20,16 @@ function handleGoBack() {
   channelViewStore.setCreatingChannel(false)
 }
 
-async function submitForm() {
-  if (!form$.value) {
+async function submitForm(
+  form$: Vueform & {
+    requestData: {
+      'channel-name': string
+      description: string
+      password: string
+    }
+  },
+) {
+  if (!form$?.requestData) {
     return
   } else if (!currentUserStore.loggedIn || !currentUserStore.bearer) {
     throw new Error(
@@ -42,9 +42,9 @@ async function submitForm() {
   }
 
   const newChannel = {
-    name: form$.value.data['channel-name'],
-    description: form$.value.data.description,
-    password: form$.value.data.password,
+    name: form$.requestData['channel-name'],
+    description: form$.requestData.description,
+    password: form$.requestData.password,
     creator: currentUserStore.currentUser!.id,
   } satisfies CreateEditorChannel
 
@@ -89,6 +89,8 @@ async function submitForm() {
       ref="form$"
       add-class="solardoc-style-form"
       :display-errors="false"
+      :endpoint="false"
+      @submit="submitForm"
     >
       <TextElement
         name="channel-name"
@@ -105,11 +107,10 @@ async function submitForm() {
       <ButtonElement
         name="Create"
         button-label="Create"
-        submits
-        @submit="submitForm()"
         :columns="{
           container: 1,
         }"
+        :submits="true"
       />
       <ButtonElement
         name="goBack"
