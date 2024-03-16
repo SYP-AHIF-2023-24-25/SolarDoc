@@ -8,11 +8,9 @@ import {
 import {
   PhoenixInternalError,
   PhoenixInvalidOperationError,
-  PhoenixSDSError,
 } from '@/services/phoenix/errors'
 import type { EditorUpdate } from '@/services/phoenix/editor-update'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
-import type { UserPrivate } from '@/services/phoenix/gen/phoenix-rest-service'
 
 /**
  * The SolarDoc Socket client (SDS) is a Phoenix Channels client that connects to the SolarDoc Phoenix server. It is

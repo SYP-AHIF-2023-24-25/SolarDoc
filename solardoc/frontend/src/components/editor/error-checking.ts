@@ -1,5 +1,4 @@
 import * as monaco from 'monaco-editor'
-import constants from '@/plugins/constants'
 import { editor } from 'monaco-editor'
 import { headingSpaceMissingError } from '@/components/editor/error-checkers/heading-space-missing-error'
 import { listInconsistentError } from '@/components/editor/error-checkers/list-inconsistent-error'
