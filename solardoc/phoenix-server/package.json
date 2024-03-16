@@ -7,19 +7,21 @@
     "phoenix": "~1.7.11"
   },
   "devDependencies": {
-    "@types/phoenix": "~1.6.4"
+    "@types/phoenix": "~1.6.4",
+    "typescript": "5.2.2"
   },
   "scripts": {
     "setup": "mix setup",
     "start": "mix phx.server",
     "fetch-deps": "mix deps.get",
     "migrate": "mix ecto.migrate",
+    "new-migration": "mix ecto.gen.migration",
     "rollback": "mix ecto.rollback",
     "test": "mix test",
     "format": "mix format",
     "lint": "mix credo --strict",
     "build": "tsc",
-    "openapi": "mix phx.swagger.generate"
+    "openapi-spec": "mix phx.swagger.generate"
   },
   "keywords": [
     "solardoc",

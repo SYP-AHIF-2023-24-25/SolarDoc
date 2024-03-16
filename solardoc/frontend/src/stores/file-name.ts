@@ -4,16 +4,16 @@ import constants from '@/plugins/constants'
 export const useFileNameStore = defineStore('fileName', {
   state: () => {
     return {
-      fileName: localStorage.getItem(constants.localeStorageFileNameKey) || 'untitled.adoc',
+      fileName: localStorage.getItem(constants.localStorageFileNameKey) || 'untitled.adoc',
     }
   },
   actions: {
     setFileName(fileName: string) {
       this.fileName = fileName
-      localStorage.setItem(constants.localeStorageFileNameKey, fileName)
+      localStorage.setItem(constants.localStorageFileNameKey, fileName)
     },
     storeLocally() {
-      localStorage.setItem(constants.localeStorageFileNameKey, this.fileName)
+      localStorage.setItem(constants.localStorageFileNameKey, this.fileName)
     },
   },
 })

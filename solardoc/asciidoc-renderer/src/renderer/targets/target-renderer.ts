@@ -7,9 +7,7 @@ import { RenderOutput } from '../render-output'
  * @since 0.2.0
  */
 export abstract class TargetRenderer<RawT, OutT> {
-  public constructor() {
-
-  }
+  public constructor() {}
 
   /**
    * Renders the given {@link Presentation presentation} to the target format.

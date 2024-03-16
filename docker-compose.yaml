@@ -15,6 +15,7 @@ services:
       PROD_BACKEND_PORT: ${BACKEND_PORT}
       PROD_BACKEND_HOST: ${BACKEND_HOST}
       API_BASE_PATH: ${API_BASE_PATH}
+      PHX_BASE_PATH: ${PHX_BASE_PATH}
       NODE_ENV: production
     depends_on:
       - rest-api

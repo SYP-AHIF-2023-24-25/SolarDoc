@@ -46,7 +46,7 @@ defmodule SolardocPhoenixWeb.UserSettingsController do
     end
   end
 
-  def confirm_email(conn, %{"token" => token}) do
+  def confirm_email(conn, token) do
     with :ok <- Accounts.update_user_email(conn.assigns.current_user, token) do
         conn
         |> put_flash(:info, "Email changed successfully.")

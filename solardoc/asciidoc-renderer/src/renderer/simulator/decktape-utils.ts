@@ -1,10 +1,10 @@
 import { decodePDFRawStream, ParseSpeeds, PDFDocument, PDFName } from 'pdf-lib'
 import crypto from 'crypto'
 import { Font } from 'fonteditor-core'
-import {Browser, Page} from 'puppeteer'
+import { Browser, Page } from 'puppeteer'
 import fs from 'fs'
 import path from 'path'
-import {PresentationMetadata} from "../../presentation-metadata";
+import { PresentationMetadata } from '../../presentation-metadata'
 
 export async function registerErrorHandler(page: Page) {
   page
@@ -16,9 +16,9 @@ export async function registerErrorHandler(page: Page) {
 }
 
 export async function loadAvailablePlugins(pluginsPath: string) {
-  const plugins = (await fs.promises
-    .readdir(pluginsPath))
-    .filter((pluginPath: string) => pluginPath.endsWith(".js"))
+  const plugins = (await fs.promises.readdir(pluginsPath)).filter((pluginPath: string) =>
+    pluginPath.endsWith('.js'),
+  )
   const entries = await Promise.all(
     plugins.map(async pluginPath => {
       const [, plugin] = pluginPath.match(/^(.*)\.js$/)
@@ -47,14 +47,17 @@ async function createActivePlugin(page: Page, plugins: any) {
   }
 }
 
-export async function exportSlides(pdf: PDFDocument, page: Page, plugin: any,context: any): Promise<void> {
-
+export async function exportSlides(
+  pdf: PDFDocument,
+  page: Page,
+  plugin: any,
+  context: any,
+): Promise<void> {
   await exportSlide(page, pdf, context)
 
   while (context.currentSlide < context.totalSlides) {
-    await nextSlide(plugin, context);
+    await nextSlide(plugin, context)
     await exportSlide(page, pdf, context)
-
   }
   // Flush consolidated fonts
   Object.values(context.pdfFonts).forEach(({ ref, font }) => {
@@ -64,7 +67,6 @@ export async function exportSlides(pdf: PDFDocument, page: Page, plugin: any,con
 }
 
 export async function exportSlide(page: Page, pdf: PDFDocument, context: any) {
-
   const buffer = await page.pdf({
     width: 1280,
     height: 720,
@@ -78,7 +80,6 @@ export async function exportSlide(page: Page, pdf: PDFDocument, context: any) {
     context,
   )
   context.exportedSlides++
-
 }
 
 async function printSlide(pdf: PDFDocument, slide: any, context: any) {
@@ -215,44 +216,51 @@ async function printSlide(pdf: PDFDocument, slide: any, context: any) {
   }
 }
 
-export async function getScreenshots(page: Page, pdf: PDFDocument, plugin: any, format: 'png' | 'jpeg',metadata: PresentationMetadata,context: any): Promise<Buffer[]> {
-  let screenshots : Buffer[] = [];
-  for(let i = 0; i < metadata.slideCountInclSubslides;i++){
-    await exportSlide(page, pdf, context);
+export async function getScreenshots(
+  page: Page,
+  pdf: PDFDocument,
+  plugin: any,
+  format: 'png' | 'jpeg',
+  metadata: PresentationMetadata,
+  context: any,
+): Promise<Buffer[]> {
+  let screenshots: Buffer[] = []
+  for (let i = 0; i < metadata.slideCountInclSubslides; i++) {
+    await exportSlide(page, pdf, context)
 
-    await pause(200);
+    await pause(200)
     let screenshot = await page.screenshot({
       fullPage: false,
       omitBackground: true,
-      encoding: "binary",
+      encoding: 'binary',
       type: format,
-    });
-    screenshots.push(screenshot);
-    await nextSlide(plugin,context);
+    })
+    screenshots.push(screenshot)
+    await nextSlide(plugin, context)
   }
 
-  return screenshots;
+  return screenshots
 }
 
 async function pause(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 export async function nextSlide(plugin, context) {
-  context.currentSlide++;
-  return plugin.nextSlide();
+  context.currentSlide++
+  return plugin.nextSlide()
 }
 
-export async function preparePage(rjsHTML : string,browser : Browser):Promise<Page> {
-  const page = await browser.newPage();
-  await page.emulateMediaType('screen');
-  await registerErrorHandler(page);
-  await page.setContent(rjsHTML);
-  await page.setViewport({ width: 1280, height: 720 });
-  return page;
+export async function preparePage(rjsHTML: string, browser: Browser): Promise<Page> {
+  const page = await browser.newPage()
+  await page.emulateMediaType('screen')
+  await registerErrorHandler(page)
+  await page.setContent(rjsHTML)
+  await page.setViewport({ width: 1280, height: 720 })
+  return page
 }
 
-export async function preparePlugin(page: Page){
+export async function preparePlugin(page: Page) {
   const plugins = await loadAvailablePlugins(path.join(__dirname, 'plugins'))
   let plugin = await createPlugin(page, plugins)
 
@@ -260,25 +268,29 @@ export async function preparePlugin(page: Page){
     await plugin.configure()
   }
 
-  return plugin;
+  return plugin
 }
 
-export async function getSingleScreenshot(page: Page,plugin: any,context: any,format: 'png'|'jpeg',slideNum: number){
-  for(let i = 1; i < slideNum;i++) {
-    await nextSlide(plugin, context);
+export async function getSingleScreenshot(
+  page: Page,
+  plugin: any,
+  context: any,
+  format: 'png' | 'jpeg',
+  slideNum: number,
+) {
+  for (let i = 1; i < slideNum; i++) {
+    await nextSlide(plugin, context)
   }
 
-  let screenshots : Buffer[] = [];
+  let screenshots: Buffer[] = []
 
   let screenshot = await page.screenshot({
     fullPage: false,
     omitBackground: true,
-    encoding: "binary",
+    encoding: 'binary',
     type: format,
-  });
+  })
 
-  screenshots.push(screenshot);
-  return screenshots;
+  screenshots.push(screenshot)
+  return screenshots
 }
-
-

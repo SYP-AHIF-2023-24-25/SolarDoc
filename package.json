@@ -24,7 +24,8 @@
     "build": "pnpm run -r build",
     "test": "pnpm run test-no-rebuild",
     "pretest": "pnpm run build",
-    "test-no-rebuild": "nyc mocha ./test/"
+    "test-no-rebuild": "nyc mocha ./test/",
+    "prettier": "pnpm run -r prettier"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "1.0.2",

@@ -20,11 +20,16 @@
   --scheme-background-black: #0f111a;
   --scheme-background-black-subtle: #242038;
   --scheme-background-blue: #10355b;
-  --scheme-background-blue-subtle: #0F2555;
+  --scheme-background-blue-subtle: #0f2555;
   --scheme-editor-black: var(--scheme-background-black);
   --scheme-editor-blue: var(--scheme-background-blue);
   --scheme-white-subtle: rgba(255, 255, 255, 0.2);
   --scheme-link-hover-color: var(--scheme-cs-2);
+  --scheme-starting-green: #8be19c;
+  --scheme-healthy-green: #00b834;
+  --scheme-warning-yellow: #ffcc00;
+  --scheme-danger-red: #ff0000;
+  --scheme-catastrophic-red: #940027;
 
   // Universal gray tones
   --scheme-gray-100: #f3f4f6;
@@ -75,7 +80,7 @@
   --editor-menu-button-menu-padding: 0;
   --editor-menu-button-menu-margin: 0;
   --editor-monaco-and-preview-menu-height: calc(
-          var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
+    var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
   );
   --editor-preview-menu-height: var(--editor-monaco-and-preview-menu-height);
   --editor-monaco-height: var(--editor-monaco-and-preview-menu-height);
@@ -87,7 +92,7 @@
 
   // Editor preview presets (Has a ratio of 2:1)
   --editor-preview-frame-width: calc(
-          100vw - var(--editor-monaco-width) - var(--editor-border-width)
+    100vw - var(--editor-monaco-width) - var(--editor-border-width)
   );
   --editor-preview-frame-height: calc(var(--editor-preview-frame-width) * 0.5);
   --editor-preview-frame-padding: 0;
@@ -101,29 +106,29 @@
   --editor-preview-slides-navigator-width: var(--editor-preview-frame-width);
   --editor-preview-slides-navigator-element-height: 10rem;
   --editor-preview-slides-navigator-element-width: calc(
-          var(--editor-preview-slides-navigator-element-height) * 2
+    var(--editor-preview-slides-navigator-element-height) * 2
   );
   --editor-preview-slides-navigator-element-margin: 0.5rem;
   --editor-preview-sub-slides-navigator-height: max(
-          calc(
-                  100vh - var(--nav-bar-height) - var(--editor-menu-height) - var(--editor-preview-frame-height) - var(
-                          --editor-preview-meta-info-height
-                  ) - var(--editor-preview-slides-navigator-height) - var(--editor-border-width)
-          ),
-          15rem
+    calc(
+      100vh - var(--nav-bar-height) - var(--editor-menu-height) - var(--editor-preview-frame-height) - var(
+          --editor-preview-meta-info-height
+        ) - var(--editor-preview-slides-navigator-height) - var(--editor-border-width)
+    ),
+    15rem
   );
   --editor-preview-sub-slides-navigator-list-height: var(
-                  --editor-preview-sub-slides-navigator-height
+    --editor-preview-sub-slides-navigator-height
   );
   --editor-preview-sub-slides-navigator-list-width: calc(
-          var(--editor-preview-slides-navigator-element-width) +
-          var(--editor-preview-slides-navigator-element-margin) * 2
+    var(--editor-preview-slides-navigator-element-width) +
+      var(--editor-preview-slides-navigator-element-margin) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-height: calc(
-          var(--editor-preview-slides-navigator-element-height) - 1rem
+    var(--editor-preview-slides-navigator-element-height) - 1rem
   );
   --editor-preview-sub-slides-navigator-list-element-width: calc(
-          var(--editor-preview-sub-slides-navigator-list-element-height) * 2
+    var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
 }
@@ -151,6 +156,11 @@ $scheme-editor-black: var(--scheme-background-black);
 $scheme-editor-blue: var(--scheme-editor-blue);
 $scheme-white-subtle: var(--scheme-white-subtle);
 $scheme-link-hover-color: var(--scheme-cs-2);
+$scheme-starting-green: var(--scheme-starting-green);
+$scheme-healthy-green: var(--scheme-healthy-green);
+$scheme-warning-yellow: var(--scheme-warning-yellow);
+$scheme-danger-red: var(--scheme-danger-red);
+$scheme-catastrophic-red: var(--scheme-catastrophic-red);
 
 // Universal gray tones
 $scheme-gray-100: var(--scheme-gray-100);
@@ -222,29 +232,29 @@ $editor-preview-slides-navigator-padding: var(--editor-preview-slides-navigator-
 $editor-preview-slides-navigator-height: var(--editor-preview-slides-navigator-height);
 $editor-preview-slides-navigator-width: var(--editor-preview-slides-navigator-width);
 $editor-preview-slides-navigator-element-height: var(
-                --editor-preview-slides-navigator-element-height
+  --editor-preview-slides-navigator-element-height
 );
 $editor-preview-slides-navigator-element-width: var(
-                --editor-preview-slides-navigator-element-width
+  --editor-preview-slides-navigator-element-width
 );
 $editor-preview-slides-navigator-element-margin: var(
-                --editor-preview-slides-navigator-element-margin
+  --editor-preview-slides-navigator-element-margin
 );
 $editor-preview-sub-slides-navigator-height: var(--editor-preview-sub-slides-navigator-height);
 $editor-preview-sub-slides-navigator-list-height: var(
-                --editor-preview-sub-slides-navigator-list-height
+  --editor-preview-sub-slides-navigator-list-height
 );
 $editor-preview-sub-slides-navigator-list-width: var(
-                --editor-preview-sub-slides-navigator-list-width
+  --editor-preview-sub-slides-navigator-list-width
 );
 $editor-preview-sub-slides-navigator-list-element-height: var(
-                --editor-preview-sub-slides-navigator-list-element-height
+  --editor-preview-sub-slides-navigator-list-element-height
 );
 $editor-preview-sub-slides-navigator-list-element-width: var(
-                --editor-preview-sub-slides-navigator-list-element-width
+  --editor-preview-sub-slides-navigator-list-element-width
 );
 $editor-preview-sub-slides-navigator-list-element-margin: var(
-                --editor-preview-sub-slides-navigator-list-element-margin
+  --editor-preview-sub-slides-navigator-list-element-margin
 );
 
 // Light & Dark Theme

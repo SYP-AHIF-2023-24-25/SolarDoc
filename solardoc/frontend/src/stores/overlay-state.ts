@@ -10,7 +10,6 @@ export const useOverlayStateStore = defineStore('fullScreenPreview', {
   actions: {
     setFullScreenPreview(fullScreenPreview: boolean) {
       this.fullScreenPreview = fullScreenPreview
-
     },
     setChannelView(channelView: boolean) {
       this.channelView = channelView

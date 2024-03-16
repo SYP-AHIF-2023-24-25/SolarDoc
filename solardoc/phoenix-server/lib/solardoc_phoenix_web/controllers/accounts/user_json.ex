@@ -5,28 +5,28 @@ defmodule SolardocPhoenixWeb.UserJSON do
   Renders a list of accounts. Only contains the publicly available data.
   """
   def index(%{accounts: accounts}) do
-    %{data: for(user <- accounts, do: publ_data(user))}
+    for(user <- accounts, do: publ_data(user))
   end
 
   @doc """
   Renders a single user. Only contains the publicly available data.
   """
   def show_publ(%{user: user}) do
-    %{data: publ_data(user)}
+    publ_data(user)
   end
 
   @doc """
   Renders a single user which was just created.
   """
   def new(%{user: user}) do
-    %{data: priv_data(user)}
+    priv_data(user)
   end
 
   @doc """
   Renders the current user.
   """
   def show_priv(%{user: user}) do
-    %{data: priv_data(user)}
+    priv_data(user)
   end
 
   defp publ_data(%User{} = user) do
@@ -38,9 +38,16 @@ defmodule SolardocPhoenixWeb.UserJSON do
   defp priv_data(%User{} = user) do
     %{
       id: user.id,
+      username: user.username,
       email: user.email,
-      confirmed_at: user.confirmed_at,
+      confirmed_at: if user.confirmed_at do
+        user.confirmed_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_unix(:millisecond)
+      else
+        nil
+      end,
       role: user.role,
+      organisation: user.organisation,
+      intended_use: user.intended_use
     }
   end
 end

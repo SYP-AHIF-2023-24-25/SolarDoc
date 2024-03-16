@@ -21,15 +21,37 @@ defmodule SolardocPhoenixWeb.UserAuth do
          {:ok, user} <- Accounts.fetch_user_by_api_token(token) do
       assign(conn, :current_user, user)
     else
+      _ -> conn
+    end
+  end
+
+  @doc """
+  Authenticates the user by checking the provided token.
+  """
+  def fetch_ws_user(token) do
+    with {:ok, user} <- Accounts.fetch_user_by_api_token(token) do
+      {:ok, user}
+    else
       _ ->
-        conn
-        |> put_status(401)
-        |> json(%{
-          errors: %{
-            detail: "Unauthorized access. You must log in to access this page."
-          }
-        })
-        |> halt()
+        {:error, :unauthorized}
+    end
+  end
+
+  @doc """
+  Requires the user to be authenticated via API token.
+  """
+  def require_api_user(conn, _opts) do
+    if conn.assigns[:current_user] do
+      conn
+    else
+      conn
+      |> put_status(401)
+      |> json(%{
+        errors: %{
+          detail: "Unauthorized access. You must log in to access this page."
+        }
+      })
+      |> halt()
     end
   end
 
@@ -59,6 +81,13 @@ defmodule SolardocPhoenixWeb.UserAuth do
   """
   def create_user_token(user) do
     Accounts.create_user_api_token(user)
+  end
+
+  @doc """
+  Deletes the user API token used for authorization i.e. logs the user out.
+  """
+  def delete_user_api_token(user) do
+    Accounts.delete_user_api_token(user)
   end
 
   defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do

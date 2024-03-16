@@ -12,8 +12,11 @@ defmodule SolardocPhoenixWeb.Endpoint do
   ]
   # Serve socket at "/sds" (can be then accessed by the client through "ws://<DOMAIN>:4000/sd/websocket")
   socket "/sds", SolardocPhoenixWeb.UserSocket,
-    websocket: true,
-    longpoll: false
+    websocket: [
+      error_handler: {SolardocPhoenixWeb.UserSocket, :handle_error, []}
+    ],
+    longpoll: false,
+    check_origin: false
 
   # Serve live server with longpolling at "/live"
   socket "/live", Phoenix.LiveView.Socket,

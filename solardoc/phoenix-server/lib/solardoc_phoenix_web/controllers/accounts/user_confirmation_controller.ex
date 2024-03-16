@@ -5,7 +5,9 @@ defmodule SolardocPhoenixWeb.UserConfirmationController do
 
   action_fallback SolardocPhoenixWeb.FallbackController
 
-  def create(conn, %{"user" => %{"email" => email}}) do
+  @api_path SolardocPhoenixWeb.v1_api_path()
+
+  def create(conn, %{"email" => email}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_confirmation_instructions(
         user,
@@ -24,7 +26,7 @@ defmodule SolardocPhoenixWeb.UserConfirmationController do
 
   # Do not log in the user after confirmation to avoid a
   # leaked token giving the user access to the account.
-  def update(conn, %{"token" => token}) do
+  def update(conn, token) do
     with {:ok, _} <- Accounts.confirm_user(token) do
         conn
         |> put_flash(:info, "User confirmed successfully.")

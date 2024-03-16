@@ -1,20 +1,34 @@
 defmodule SolardocPhoenixWeb.UserSocket do
   use Phoenix.Socket
 
-  channel "room:*", SolardocPhoenixWeb.RoomChannel
+  alias SolardocPhoenixWeb.UserAuth
+
+  channel "channel:*", SolardocPhoenixWeb.EditorChannel
 
   @impl true
   def connect(%{"token" => token}, socket, _connect_info) do
-    # max_age: 1209600 is equivalent to two weeks in seconds
-    # TODO! Needs to be reworked, we're gonna use the user token returned by the API
-    case Phoenix.Token.verify(socket, "user socket", token, max_age: 1209600) do
-      {:ok, user_id} ->
-        {:ok, assign(socket, :current_user, user_id)}
-      {:error, _reason} ->
-        :error
+    # We are simply reusing here the token issued by '/user/auth'
+    # to authenticate the user and assign the user_id to the socket
+    case UserAuth.fetch_ws_user(token) do
+      {:ok, user} ->
+        {:ok, assign(socket, :user_id, user.id)}
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 
   @impl true
   def id(socket), do: "user_socket:#{socket.assigns.user_id}"
+
+  def handle_error(conn, :unauthorized) do
+    Plug.Conn.send_resp(conn, 401, "Unauthorized")
+  end
+
+  def handle_error(conn, :not_found) do
+    Plug.Conn.send_resp(conn, 401, "Not found")
+  end
+
+  def handle_error(conn, :rate_limit) do
+    Plug.Conn.send_resp(conn, 429, "Too many requests")
+  end
 end

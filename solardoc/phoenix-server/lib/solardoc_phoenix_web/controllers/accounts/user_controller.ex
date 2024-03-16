@@ -22,9 +22,12 @@ defmodule SolardocPhoenixWeb.UserController do
         description "A user of the application (full data)"
         properties do
           id :string, "Unique identifier", required: true
+          username :string, "Users username", required: false
           email :string, "Users email", required: true
-          confirmed_at :date, "Date of confirmation", required: false
-          role :string, "Users role", required: true
+          confirmed_at :string, "Date of confirmation", required: false
+          role :string, "Users role", required: false
+          organisation :string, "Users organisation", required: false
+          intended_use :integer, "Users intended use", required: false
         end
       end,
       UsersPublic: swagger_schema do
@@ -45,7 +48,24 @@ defmodule SolardocPhoenixWeb.UserController do
         properties do
           email :string, "Users email", required: true
           password :string, "Users password", required: true
+          username :string, "Users username", required: false
+          role :string, "Users role", required: false
+          organisation :string, "Users organisation", required: false
+          intended_use :integer, "Users intended use", required: false
         end
+      end,
+      Error: swagger_schema do
+        title "Error"
+        description "An error"
+        properties do
+          detail :string, "Error message", required: true
+        end
+      end,
+      Errors: swagger_schema do
+        title "Errors"
+        description "A list of errors"
+        type :array
+        items Schema.ref(:Error)
       end
     }
   end
@@ -70,6 +90,7 @@ defmodule SolardocPhoenixWeb.UserController do
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     response 200, "OK", Schema.ref(:UserPrivate)
+    response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
   def current(conn, _params) do
@@ -86,15 +107,17 @@ defmodule SolardocPhoenixWeb.UserController do
       user :body, Schema.ref(:CreateUser), "user attributes"
     end
     response 201, "Created", Schema.ref(:UserPrivate)
+    response 400, "Bad Request", Schema.ref(:Errors)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, user_params) do
     with {:ok, user} <- Accounts.register_user(user_params) do
-      {:ok, _} =
-        Accounts.deliver_user_confirmation_instructions(
-          user,
-          &url(~p"/users/confirm/#{&1}")
-        )
+# TODO! Uncomment this when email is working
+#      {:ok, _} =
+#        Accounts.deliver_user_confirmation_instructions(
+#          user,
+#          &url(~p"/users/confirm/#{&1}")
+#        )
 
       # Return a success JSON response
       conn

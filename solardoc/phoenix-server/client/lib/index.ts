@@ -7,17 +7,18 @@
 // Bring in Phoenix channels client library:
 import {Socket} from "phoenix"
 
-type PhoenixSocket = Socket
+export type PhoenixSocket = Socket
 
 /**
  * Creates a new Socket instance and attempts to connect to the server. If the user token is not passed in, it will
  * attempt to use the global {@link window.userToken} variable. If that is also not set, it will throw an error.
+ * @param url The URL of the server to connect to
  * @param userToken The user token to use for authentication. If not passed in, it will attempt to use the global
  * {@link window.userToken} variable.
  * @returns A new Phoenix Socket instance with an active connection to the server
  * @since 0.4.0
  */
-function socket(
+export function socket(
   url: string,
   userToken?: string
 ): PhoenixSocket {
@@ -85,4 +86,4 @@ function socket(
     return socket
 }
 
-export default socket
+export * from "phoenix"

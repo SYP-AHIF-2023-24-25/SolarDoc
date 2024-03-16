@@ -24,7 +24,28 @@ defmodule SolardocPhoenixWeb.UserAuthController do
         description "A user token"
         properties do
           token :string, "Users token", required: true
+          expires_at :integer, "Token expiration date in milliseconds", required: true
         end
+      end,
+      Message: swagger_schema do
+        title "Message"
+        description "A message"
+        properties do
+          message :string, "A message", required: true
+        end
+      end,
+      Error: swagger_schema do
+        title "Error"
+        description "An error"
+        properties do
+          detail :string, "Error message", required: true
+        end
+      end,
+      Errors: swagger_schema do
+        title "Errors"
+        description "A list of errors"
+        type :array
+        items Schema.ref(:Error)
       end
     }
   end
@@ -38,14 +59,16 @@ defmodule SolardocPhoenixWeb.UserAuthController do
       user :body, Schema.ref(:UserLogin), "user login attributes"
     end
     response 200, "OK", Schema.ref(:UserToken)
+    response 400, "Bad Request", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, user_params) do
     %{"email" => email, "password" => password} = user_params
 
     with {:ok, user} <- Accounts.get_user_by_email_and_password(email, password) do
-      token = UserAuth.create_user_token(user)
-      render(conn, :create, token: token)
+      {token, expires_at} = UserAuth.create_user_token(user)
+      render(conn, :create, %{token: token, expires_at: expires_at})
     end
   end
 
@@ -54,11 +77,15 @@ defmodule SolardocPhoenixWeb.UserAuthController do
     produces "application/json"
     summary "Log out a user"
     deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
+    response 200, "OK", Schema.ref(:Message)
+    response 400, "Bad Request", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
   def delete(conn, _params) do
-    conn
-    |> UserAuth.delete_user_token() # API Logout
-    |> render(:delete, message: "Successfully logged out.")
+    user = conn.assigns.current_user
+    UserAuth.delete_user_api_token(user) # API Logout
+    render(conn, :delete, message: "Successfully logged out.")
   end
 end

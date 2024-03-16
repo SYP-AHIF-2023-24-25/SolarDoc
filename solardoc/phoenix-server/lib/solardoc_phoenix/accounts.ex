@@ -55,10 +55,10 @@ defmodule SolardocPhoenix.Accounts do
 
   ## Examples
 
-      iex> get_user!(123)
+      iex> get_user!("2f3d4e5d-6c7b-8a9a-1b2c-3d4e5f6d7e8f")
       %User{}
 
-      iex> get_user!(456)
+      iex> get_user!("01234567-89ab-cdef-0123-456789abcdef")
       ** (Ecto.NoResultsError)
 
   """
@@ -255,11 +255,10 @@ defmodule SolardocPhoenix.Accounts do
   This token cannot be recovered from the database.
   """
   def create_user_api_token(user) do
-    {encoded_token, user_token} = UserToken.build_email_token(user, "api-token")
+    {{encoded_token, user_token}, expires_at} = UserToken.build_email_token(user, "api-token")
     Repo.insert!(user_token)
-    encoded_token
+    {encoded_token, expires_at}
   end
-
 
   @doc """
   Fetches the user by API token.
@@ -271,6 +270,13 @@ defmodule SolardocPhoenix.Accounts do
     else
       _ -> {:error, :unauthorized}
     end
+  end
+
+  @doc """
+  Deletes the API token.
+  """
+  def delete_user_api_token(user) do
+    Repo.delete_all(UserToken.by_user_and_contexts_query(user, ["api-token"]))
   end
 
   ## Confirmation
