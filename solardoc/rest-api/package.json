@@ -22,6 +22,7 @@
     "prettier:cli": "lb-prettier \"**/*.ts\" \"**/*.js\"",
     "prettier:check": "pnpm run prettier:cli -l",
     "prettier:fix": "pnpm run prettier:cli --write",
+    "prettier": "pnpm run prettier:fix",
     "eslint": "lb-eslint --report-unused-disable-directives .",
     "eslint:fix": "pnpm run eslint -- --fix",
     "pretest": "pnpm run rebuild",

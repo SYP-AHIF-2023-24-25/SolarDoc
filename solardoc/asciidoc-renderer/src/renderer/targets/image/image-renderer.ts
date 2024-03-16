@@ -8,7 +8,7 @@ import { DecktapeSlim } from '../../simulator'
  * Renders a presentation or slide to an image file.
  * @since 0.2.0
  */
-export class ImageRenderer extends TargetRenderer<unknown, unknown> {
+export class ImageRenderer extends TargetRenderer<Buffer[], Buffer[]> {
   public constructor() {
     super()
   }

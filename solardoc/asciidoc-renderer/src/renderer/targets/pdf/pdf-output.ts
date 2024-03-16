@@ -27,12 +27,4 @@ export class PDFOutput extends RenderOutput<PDFDocument, PDFByteArray> {
   public async write(): Promise<PDFByteArray> {
     return this.internalData.save()
   }
-
-  /**
-   * Converts the content to a base64-encoded string.
-   * @since 0.3.0
-   */
-  public async writeAsBase64(): Promise<string> {
-    return this.internalData.saveAsBase64()
-  }
 }
