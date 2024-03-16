@@ -3,22 +3,41 @@
     "version": "0.4.0-dev",
     "description": "The Solardoc Phoenix Rest API and SDS (Solardoc Socket)",
     "title": "@solardoc/phoenix",
-    "contact": {
-      "name": "Luna Klatzer, Emma Walchshofer & Lisa Pichler"
-    },
     "license": {
       "name": "GNU General Public License v3.0",
       "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc/blob/main/LICENSE"
+    },
+    "contact": {
+      "name": "Luna Klatzer, Emma Walchshofer & Lisa Pichler"
     }
   },
   "host": "localhost:4000",
   "definitions": {
+    "UserToken": {
+      "description": "A user token",
+      "properties": {
+        "expires_at": {
+          "description": "Token expiration date in milliseconds",
+          "type": "integer"
+        },
+        "token": {
+          "description": "Users token",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expires_at",
+        "token"
+      ],
+      "title": "UserToken",
+      "type": "object"
+    },
     "Ping": {
       "description": "A simple ping response",
       "properties": {
         "date": {
           "description": "The current date in milliseconds",
-          "example": 1710378432166,
+          "example": 1710613099769,
           "type": "integer"
         },
         "greeting": {
@@ -46,19 +65,13 @@
       "title": "Ping",
       "type": "object"
     },
-    "UserPublic": {
-      "description": "A user of the application (public data)",
-      "properties": {
-        "id": {
-          "description": "Unique identifier",
-          "type": "string"
-        }
+    "UsersPublic": {
+      "description": "A collection of Users (public data)",
+      "items": {
+        "$ref": "#/definitions/UserPublic"
       },
-      "required": [
-        "id"
-      ],
-      "title": "UserPublic",
-      "type": "object"
+      "title": "UsersPublic",
+      "type": "array"
     },
     "UserPrivate": {
       "description": "A user of the application (full data)",
@@ -99,19 +112,13 @@
       "title": "UserPrivate",
       "type": "object"
     },
-    "Error": {
-      "description": "An error",
-      "properties": {
-        "detail": {
-          "description": "Error message",
-          "type": "string"
-        }
+    "Errors": {
+      "description": "A list of errors",
+      "items": {
+        "$ref": "#/definitions/Error"
       },
-      "required": [
-        "detail"
-      ],
-      "title": "Error",
-      "type": "object"
+      "title": "Errors",
+      "type": "array"
     },
     "CreateUser": {
       "description": "A new user to be created",
@@ -148,13 +155,19 @@
       "title": "CreateUser",
       "type": "object"
     },
-    "Errors": {
-      "description": "A list of errors",
-      "items": {
-        "$ref": "#/definitions/Error"
+    "UserPublic": {
+      "description": "A user of the application (public data)",
+      "properties": {
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        }
       },
-      "title": "Errors",
-      "type": "array"
+      "required": [
+        "id"
+      ],
+      "title": "UserPublic",
+      "type": "object"
     },
     "UsersPrivate": {
       "description": "A collection of Users (full data)",
@@ -164,13 +177,19 @@
       "title": "UsersPrivate",
       "type": "array"
     },
-    "UsersPublic": {
-      "description": "A collection of Users (public data)",
-      "items": {
-        "$ref": "#/definitions/UserPublic"
+    "Error": {
+      "description": "An error",
+      "properties": {
+        "detail": {
+          "description": "Error message",
+          "type": "string"
+        }
       },
-      "title": "UsersPublic",
-      "type": "array"
+      "required": [
+        "detail"
+      ],
+      "title": "Error",
+      "type": "object"
     },
     "Message": {
       "description": "A message",
@@ -203,44 +222,6 @@
         "email"
       ],
       "title": "UserLogin",
-      "type": "object"
-    },
-    "UserToken": {
-      "description": "A user token",
-      "properties": {
-        "expires_at": {
-          "description": "Token expiration date in milliseconds",
-          "type": "integer"
-        },
-        "token": {
-          "description": "Users token",
-          "type": "string"
-        }
-      },
-      "required": [
-        "expires_at",
-        "token"
-      ],
-      "title": "UserToken",
-      "type": "object"
-    },
-    "UserTrusted": {
-      "description": "A user which data can be accessed by trusted users i.e. an in between of public and private data",
-      "properties": {
-        "id": {
-          "description": "User UUID",
-          "type": "string"
-        },
-        "username": {
-          "description": "User username",
-          "type": "string"
-        }
-      },
-      "required": [
-        "username",
-        "id"
-      ],
-      "title": "UserTrusted",
       "type": "object"
     },
     "EditorChannel": {
@@ -284,6 +265,25 @@
       },
       "title": "EditorChannels",
       "type": "array"
+    },
+    "UserTrusted": {
+      "description": "A user which data can be accessed by trusted users i.e. an in between of public and private data",
+      "properties": {
+        "id": {
+          "description": "User UUID",
+          "type": "string"
+        },
+        "username": {
+          "description": "User username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "username",
+        "id"
+      ],
+      "title": "UserTrusted",
+      "type": "object"
     }
   },
   "schemes": [
@@ -585,12 +585,6 @@
   },
   "swagger": "2.0",
   "basePath": "/api",
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
   "securityDefinitions": {
     "Bearer": {
       "in": "header",
@@ -599,6 +593,12 @@
       "description": "API Token must be provided via `Authorization: Bearer ` header"
     }
   },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "tags": [
     {
       "name": "User",
