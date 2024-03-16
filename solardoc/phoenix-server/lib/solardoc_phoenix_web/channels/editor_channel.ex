@@ -54,6 +54,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     {:reply, {:ok, payload}, socket}
   end
 
+  @impl true
   def handle_info({:after_create, editor_channel: editor_channel}, socket) do
     broadcast!(
       socket,
@@ -68,6 +69,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     {:noreply, socket}
   end
 
+  @impl true
   def handle_info({:after_join, editor_channel: editor_channel}, socket) do
     broadcast!(socket, "user_join", %{
       body: "A new user has joined a channel",
