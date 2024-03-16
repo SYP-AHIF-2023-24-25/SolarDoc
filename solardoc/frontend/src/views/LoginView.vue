@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useRouter } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'

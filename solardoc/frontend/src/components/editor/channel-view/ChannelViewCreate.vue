@@ -5,7 +5,7 @@ import type {
   JoinChannelOptions,
 } from '@/services/phoenix/editor-channel'
 import { useChannelViewStore } from '@/stores/channel-view'
-import { type Ref, ref } from 'vue'
+import { ref } from 'vue'
 import { useWSClientStore } from '@/stores/ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Vueform } from '@vueform/vueform'
