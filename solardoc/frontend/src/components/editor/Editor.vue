@@ -35,6 +35,7 @@ const EDITOR_UPDATE_TIMEOUT = 1000
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null
 const editorRef = <Ref<HTMLElement>>ref(document.querySelector('#editor'))
 
+
 onMounted(() => {
   // Register a new language
   monaco.languages.register({ id: 'asciiDoc' })
