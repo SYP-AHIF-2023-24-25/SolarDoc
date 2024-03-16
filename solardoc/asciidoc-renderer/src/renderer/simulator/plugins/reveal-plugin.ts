@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 import URI from 'urijs'
 
-export const create = page => new Reveal(page)
+export const create = (page: any) => new Reveal(page)
 
 class Reveal {
   private page: any
@@ -31,7 +31,7 @@ class Reveal {
 
   configure() {
     return this.page.evaluate(
-      fragments => {
+      (fragments: any) => {
         // @ts-ignore
         Reveal.configure({
           controls: false,

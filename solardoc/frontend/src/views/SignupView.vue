@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import type { Vueform } from '@vueform/vueform'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
@@ -7,52 +7,46 @@ import { useRouter } from 'vue-router'
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
 
-const form$ = ref<{
-  data: {
-    username: string
-    email: string
-    password: string
-    organisation: string
-    'intended-use': number
-    'accepts-conditions': boolean
+async function submitForm(
+  form$: Vueform & {
+    requestData: {
+      username: string
+      email: string
+      password: string
+      organisation: string
+      'intended-use': number
+      'accepts-conditions': boolean
+    }
+  },
+) {
+  if (!form$?.requestData) {
+    return
   }
-} | null>(null)
-
-async function submitForm() {
-  if (!form$.value) {
-    throw new Error('Form data is null')
-  }
-  console.log(form$.value.data)
-
   const newUser = {
-    email: form$.value.data.email,
-    password: form$.value.data.password,
-    username: form$.value.data.username,
-    organisation: form$.value.data.organisation,
-    intended_use: form$.value.data['intended-use'],
+    email: form$.requestData.email,
+    password: form$.requestData.password,
+    username: form$.requestData.username,
+    organisation: form$.requestData.organisation,
+    intended_use: form$.requestData['intended-use'],
   } satisfies phoenixBackend.CreateUser
 
   let resp: Awaited<ReturnType<typeof phoenixBackend.postV1Users>>
   try {
     resp = await phoenixBackend.postV1Users(newUser)
   } catch (e) {
-    throw new Error('Signup rejected by backend. Cause: ' + e)
+    console.error('Signup rejected by backend. Cause: ', e)
+    return
   }
 
   if (resp.status === 201) {
     console.log('Signup successful')
     currentUserStore.setCurrentUser(resp.data)
+    await $router.push('login')
   } else if (resp.status === 400) {
-    throw new Error('Server rejected sign up. Cause: Bad request')
+    console.error('Server rejected sign up. Cause: Bad request', resp.data)
   } else {
-    throw new Error(
-      'Server rejected sign up. Cause: Unknown error (status: ' +
-        (resp as { status: never }).status +
-        ')',
-    )
+    console.error('Server rejected sign up. Cause: Unknown error', resp)
   }
-
-  await $router.push('login')
 }
 </script>
 
@@ -64,7 +58,13 @@ async function submitForm() {
         <a class="emphasised-link" @click="$router.push('login')">→ Log in</a>
       </div>
       <h1 id="login-signup-title">Sign up</h1>
-      <Vueform ref="form$" add-class="solardoc-style-form" :display-errors="false">
+      <Vueform
+        ref="form$"
+        add-class="solardoc-style-form"
+        :display-errors="false"
+        :endpoint="false"
+        @submit="submitForm"
+      >
         <TextElement name="username" label="Username" :rules="['required', 'min:6']" />
         <TextElement
           name="email"
@@ -127,11 +127,10 @@ async function submitForm() {
         <ButtonElement
           name="submit"
           button-label="Submit"
-          submits
-          @submit="submitForm()"
           :columns="{
             container: 2,
           }"
+          :submits="true"
         />
         <ButtonElement
           name="reset"
@@ -139,7 +138,7 @@ async function submitForm() {
           :secondary="true"
           :resets="true"
           :columns="{
-            container: 2,
+            container: 3,
           }"
           align="center"
         />

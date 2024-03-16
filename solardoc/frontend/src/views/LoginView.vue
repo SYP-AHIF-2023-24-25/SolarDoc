@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useRouter } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'
+import type { Vueform } from '@vueform/vueform'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
@@ -14,46 +14,44 @@ if (currentUserStore.loggedIn) {
   $router.push('/profile')
 }
 
-const form$ = ref<{
-  data: {
-    email: string
-    password: string
-  }
-} | null>(null)
-
-async function submitForm() {
-  if (!form$.value) {
-    throw new Error('Form data is null')
+async function submitForm(
+  form$: Vueform & {
+    requestData: {
+      email: string
+      password: string
+    }
+  },
+) {
+  if (!form$?.requestData) {
+    return
   }
 
   const loginUser = {
-    email: form$.value.data.email,
-    password: form$.value.data.password,
+    email: form$.requestData.email,
+    password: form$.requestData.password,
   } satisfies phoenixBackend.UserLogin
 
   let resp: Awaited<ReturnType<typeof phoenixBackend.postV1UsersAuth>>
   try {
     resp = await phoenixBackend.postV1UsersAuth(loginUser)
   } catch (e) {
-    throw new Error('Signup rejected by backend. Cause: ' + e)
+    console.error('Signup rejected by backend. Cause: ' + e)
+    return
   }
+
   if (resp.status === 200) {
     console.log('Login successful')
     currentUserStore.setCurrentAuth(resp.data)
-  } else if (resp.status === 401) {
-    throw new Error('Server rejected sign up. Cause: Unauthorized')
-  } else if (resp.status === 400) {
-    throw new Error('Server rejected sign up. Cause: Bad request')
-  } else {
-    throw new Error(
-      'Server rejected sign up. Cause: Unknown error (status: ' +
-        (resp as { status: never }).status +
-        ')',
-    )
-  }
 
-  await currentUserStore.fetchCurrentUser()
-  await $router.push('/profile')
+    await currentUserStore.fetchCurrentUser()
+    await $router.push('/profile')
+  } else if (resp.status === 401) {
+    console.error('Server rejected sign up. Cause: Unauthorized')
+  } else if (resp.status === 400) {
+    console.error('Server rejected sign up. Cause: Bad request')
+  } else {
+    console.error('Server rejected sign up. Cause: Unknown error', resp)
+  }
 }
 </script>
 
@@ -65,7 +63,13 @@ async function submitForm() {
         <RouterLink class="emphasised-link" to="/signup">→ Sign up</RouterLink>
       </div>
       <h1 id="login-signup-title">Log in</h1>
-      <Vueform ref="form$" add-class="solardoc-style-form" :display-errors="false">
+      <Vueform
+        ref="form$"
+        add-class="solardoc-style-form"
+        :display-errors="false"
+        :endpoint="false"
+        @submit="submitForm"
+      >
         <TextElement name="email" label="Email" :rules="['required', 'email']" />
         <TextElement
           name="password"
@@ -76,11 +80,11 @@ async function submitForm() {
         <ButtonElement
           name="login"
           button-label="Login"
-          submits
-          @submit="submitForm()"
+          @submit="submitForm"
           :columns="{
             container: 2,
           }"
+          :submits="true"
         />
         <ButtonElement
           name="reset"

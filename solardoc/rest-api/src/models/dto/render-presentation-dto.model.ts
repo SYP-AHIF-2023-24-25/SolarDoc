@@ -15,6 +15,14 @@ export class RenderPresentationDtoModel extends DtoModel<RenderPresentationDtoMo
   })
   fileContent: string
 
+  @property({
+    required: false,
+    description:
+      'The prepend path for the reveal.js assets (If empty or undefined, ' +
+      "the default 'node_modules/reveal.js/dist' will be used).",
+  })
+  revealJSAssetsPath: string
+
   constructor(data?: Partial<RenderPresentationDtoModel>) {
     super(data)
   }

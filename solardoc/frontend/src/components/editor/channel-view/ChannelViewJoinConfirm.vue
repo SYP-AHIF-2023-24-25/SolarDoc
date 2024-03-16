@@ -3,6 +3,7 @@ import { useChannelViewStore } from '@/stores/channel-view'
 import { useWSClientStore } from '@/stores/ws-client'
 import { ref } from 'vue'
 import type { EditorChannel, JoinChannelOptions } from '@/services/phoenix/editor-channel'
+import type { Vueform } from '@vueform/vueform'
 
 const channelState = useChannelViewStore()
 const wsClientStore = useWSClientStore()
@@ -14,15 +15,19 @@ const props = defineProps<{
   channel: EditorChannel
 }>()
 
-const form$ = ref<{
-  data: {
-    password: string
-  }
-} | null>(null)
-
-async function joinChannel() {
-  if (!form$.value?.data.password) {
+async function submitForm(
+  form$: Vueform & {
+    requestData: {
+      password: string
+    }
+  },
+) {
+  if (!form$?.requestData) {
     return
+  } else if (!wsClientStore.wsClient || !wsClientStore.wsClient.healthy) {
+    throw new Error(
+      '[ChannelView] Websocket client is not active or healthy. Can not join channel!',
+    )
   }
 
   loadingState.value = true
@@ -38,7 +43,7 @@ async function joinChannel() {
       console.error('[ChannelView] Error joining new channel', errorResp)
     },
     {
-      auth: form$.value.data.password,
+      auth: form$.requestData.password,
     } satisfies JoinChannelOptions,
   )
   loadingState.value = false
@@ -52,7 +57,13 @@ function handleGoBack() {
 <template>
   <div v-if="!loadingState" id="channel-view-join-confirm-wrapper">
     <h2>Please enter password for "{{ channel.name }}"</h2>
-    <Vueform ref="form$" add-class="solardoc-style-form" :display-errors="false">
+    <Vueform
+      ref="form$"
+      add-class="solardoc-style-form"
+      :display-errors="false"
+      :endpoint="false"
+      @submit="submitForm"
+    >
       <TextElement
         name="password"
         input-type="password"
@@ -62,11 +73,10 @@ function handleGoBack() {
       <ButtonElement
         name="confirm"
         button-label="Confirm"
-        submits
-        @submit="joinChannel"
         :columns="{
           container: 1,
         }"
+        :submits="true"
       />
       <ButtonElement
         name="goBack"
