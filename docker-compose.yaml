@@ -14,6 +14,8 @@ services:
       PUPPETEER_SKIP_DOWNLOAD: true
       PROD_BACKEND_PORT: ${BACKEND_PORT}
       PROD_BACKEND_HOST: ${BACKEND_HOST}
+      PROD_PHOENIX_HOST: ${PHOENIX_HOST}
+      PROD_PHOENIX_PORT: ${PHOENIX_PORT}
       API_BASE_PATH: ${API_BASE_PATH}
       PHX_BASE_PATH: ${PHX_BASE_PATH}
       NODE_ENV: production
@@ -56,7 +58,7 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgresql-db:5432/${POSTGRES_DB}
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
-      PHX_HOST: ${PROD_PHX_HOST}
+      PHX_HOST: 0.0.0.0
       PORT: 4000
     depends_on:
       postgresql-db:
@@ -97,6 +99,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./solardoc/postgresql-db/scripts:/docker-entrypoint-initdb.d/
+      - ./solardoc/postgresql-db/postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $POSTGRES_DB -U $POSTGRES_USER"]
       interval: 1s
