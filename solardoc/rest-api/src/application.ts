@@ -5,12 +5,14 @@ import { RepositoryMixin } from '@loopback/repository'
 import { RestApplication } from '@loopback/rest'
 import { ServiceMixin } from '@loopback/service-proxy'
 import { SolardocSequence } from './sequence'
-import {isProd} from "./env";
+import { isProd } from './env'
 import path from 'path'
 
 export { ApplicationConfig }
 
-export class SolardocRestApiApplication extends BootMixin(ServiceMixin(RepositoryMixin(RestApplication))) {
+export class SolardocRestApiApplication extends BootMixin(
+  ServiceMixin(RepositoryMixin(RestApplication)),
+) {
   constructor(options: ApplicationConfig = {}) {
     super(options)
 

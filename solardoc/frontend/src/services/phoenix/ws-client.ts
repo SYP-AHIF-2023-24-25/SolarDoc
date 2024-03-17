@@ -5,10 +5,7 @@ import {
   type ChannelState,
   type PhoenixSocket as SDSClientBare,
 } from '@solardoc/phoenix'
-import {
-  PhoenixInternalError,
-  PhoenixInvalidOperationError,
-} from '@/services/phoenix/errors'
+import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
 import type { EditorUpdate } from '@/services/phoenix/editor-update'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
 

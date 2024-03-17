@@ -130,7 +130,7 @@ export class RenderController {
     )
 
     const downloadModels: Record<number, DownloadDtoModel> = {}
-    const cacheModels : Record<number, CacheDtoModel> = {}
+    const cacheModels: Record<number, CacheDtoModel> = {}
     const content: Buffer[] = await imageOutput.write()
     for (let i = 0; i < content.length; i++) {
       const cachedElement = await this.cacheService.addFile(imageOutput.outFilename, content[i])
