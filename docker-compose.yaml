@@ -92,6 +92,7 @@ services:
     ports:
       - "5432:5432"
     restart: always
+    user: "${UID}:${GID}"
     environment:
       PGUSER: ${POSTGRES_USER}
       POSTGRES_USER: ${POSTGRES_USER}
