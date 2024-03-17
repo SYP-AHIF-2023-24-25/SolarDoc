@@ -31,9 +31,9 @@ async function submitForm(
     password: form$.requestData.password,
   } satisfies phoenixBackend.UserLogin
 
-  let resp: Awaited<ReturnType<typeof phoenixBackend.postV1UsersAuth>>
+  let resp: Awaited<ReturnType<typeof phoenixBackend.postV1AuthBearer>>
   try {
-    resp = await phoenixBackend.postV1UsersAuth(loginUser)
+    resp = await phoenixBackend.postV1AuthBearer(loginUser)
   } catch (e) {
     console.error('Signup rejected by backend. Cause: ' + e)
     return

@@ -51,7 +51,7 @@ defmodule SolardocPhoenixWeb.UserAuthController do
   end
 
   swagger_path :create do
-    post "#{@api_path}/users/auth"
+    post "#{@api_path}/auth/bearer"
     produces "application/json"
     summary "Log in a user"
     deprecated false
@@ -73,7 +73,7 @@ defmodule SolardocPhoenixWeb.UserAuthController do
   end
 
   swagger_path :delete do
-    PhoenixSwagger.Path.delete "#{@api_path}/users/auth"
+    PhoenixSwagger.Path.delete "#{@api_path}/auth/bearer"
     produces "application/json"
     summary "Log out a user"
     deprecated false

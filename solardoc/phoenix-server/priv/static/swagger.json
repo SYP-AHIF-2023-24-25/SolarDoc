@@ -13,6 +13,25 @@
   },
   "host": "localhost:4000",
   "definitions": {
+    "UserLogin": {
+      "description": "A user login",
+      "properties": {
+        "email": {
+          "description": "Users email",
+          "type": "string"
+        },
+        "password": {
+          "description": "Users password",
+          "type": "string"
+        }
+      },
+      "required": [
+        "password",
+        "email"
+      ],
+      "title": "UserLogin",
+      "type": "object"
+    },
     "UserToken": {
       "description": "A user token",
       "properties": {
@@ -32,12 +51,109 @@
       "title": "UserToken",
       "type": "object"
     },
+    "Message": {
+      "description": "A message",
+      "properties": {
+        "message": {
+          "description": "A message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "title": "Message",
+      "type": "object"
+    },
+    "Error": {
+      "description": "An error",
+      "properties": {
+        "detail": {
+          "description": "Error message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail"
+      ],
+      "title": "Error",
+      "type": "object"
+    },
+    "Errors": {
+      "description": "A list of errors",
+      "items": {
+        "$ref": "#/definitions/Error"
+      },
+      "title": "Errors",
+      "type": "array"
+    },
+    "EditorChannel": {
+      "description": "An editor channel",
+      "properties": {
+        "active_since": {
+          "description": "Editor channel active since in milliseconds",
+          "type": "integer"
+        },
+        "creator": {
+          "$ref": "#/definitions/UserTrusted",
+          "description": "Editor channel creator"
+        },
+        "description": {
+          "description": "Editor channel description",
+          "type": "string"
+        },
+        "id": {
+          "description": "Editor channel UUID",
+          "type": "string"
+        },
+        "name": {
+          "description": "Editor channel name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "active_since",
+        "creator",
+        "description",
+        "name",
+        "id"
+      ],
+      "title": "EditorChannel",
+      "type": "object"
+    },
+    "EditorChannels": {
+      "description": "A list of editor channels",
+      "items": {
+        "$ref": "#/definitions/EditorChannel"
+      },
+      "title": "EditorChannels",
+      "type": "array"
+    },
+    "UserTrusted": {
+      "description": "A user which data can be accessed by trusted users i.e. an in between of public and private data",
+      "properties": {
+        "id": {
+          "description": "User UUID",
+          "type": "string"
+        },
+        "username": {
+          "description": "User username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "username",
+        "id"
+      ],
+      "title": "UserTrusted",
+      "type": "object"
+    },
     "Ping": {
       "description": "A simple ping response",
       "properties": {
         "date": {
           "description": "The current date in milliseconds",
-          "example": 1710613099769,
+          "example": 1710633431631,
           "type": "integer"
         },
         "greeting": {
@@ -112,14 +228,6 @@
       "title": "UserPrivate",
       "type": "object"
     },
-    "Errors": {
-      "description": "A list of errors",
-      "items": {
-        "$ref": "#/definitions/Error"
-      },
-      "title": "Errors",
-      "type": "array"
-    },
     "CreateUser": {
       "description": "A new user to be created",
       "properties": {
@@ -176,114 +284,6 @@
       },
       "title": "UsersPrivate",
       "type": "array"
-    },
-    "Error": {
-      "description": "An error",
-      "properties": {
-        "detail": {
-          "description": "Error message",
-          "type": "string"
-        }
-      },
-      "required": [
-        "detail"
-      ],
-      "title": "Error",
-      "type": "object"
-    },
-    "Message": {
-      "description": "A message",
-      "properties": {
-        "message": {
-          "description": "A message",
-          "type": "string"
-        }
-      },
-      "required": [
-        "message"
-      ],
-      "title": "Message",
-      "type": "object"
-    },
-    "UserLogin": {
-      "description": "A user login",
-      "properties": {
-        "email": {
-          "description": "Users email",
-          "type": "string"
-        },
-        "password": {
-          "description": "Users password",
-          "type": "string"
-        }
-      },
-      "required": [
-        "password",
-        "email"
-      ],
-      "title": "UserLogin",
-      "type": "object"
-    },
-    "EditorChannel": {
-      "description": "An editor channel",
-      "properties": {
-        "active_since": {
-          "description": "Editor channel active since in milliseconds",
-          "type": "integer"
-        },
-        "creator": {
-          "$ref": "#/definitions/UserTrusted",
-          "description": "Editor channel creator"
-        },
-        "description": {
-          "description": "Editor channel description",
-          "type": "string"
-        },
-        "id": {
-          "description": "Editor channel UUID",
-          "type": "string"
-        },
-        "name": {
-          "description": "Editor channel name",
-          "type": "string"
-        }
-      },
-      "required": [
-        "active_since",
-        "creator",
-        "description",
-        "name",
-        "id"
-      ],
-      "title": "EditorChannel",
-      "type": "object"
-    },
-    "EditorChannels": {
-      "description": "A list of editor channels",
-      "items": {
-        "$ref": "#/definitions/EditorChannel"
-      },
-      "title": "EditorChannels",
-      "type": "array"
-    },
-    "UserTrusted": {
-      "description": "A user which data can be accessed by trusted users i.e. an in between of public and private data",
-      "properties": {
-        "id": {
-          "description": "User UUID",
-          "type": "string"
-        },
-        "username": {
-          "description": "User username",
-          "type": "string"
-        }
-      },
-      "required": [
-        "username",
-        "id"
-      ],
-      "title": "UserTrusted",
-      "type": "object"
     }
   },
   "schemes": [
@@ -293,6 +293,92 @@
     "wss"
   ],
   "paths": {
+    "/v1/auth/bearer": {
+      "delete": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.UserAuthController.delete",
+        "parameters": [
+          {
+            "description": "Bearer",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
+        "summary": "Log out a user",
+        "tags": [
+          "UserAuth"
+        ]
+      },
+      "post": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.UserAuthController.create",
+        "parameters": [
+          {
+            "description": "user login attributes",
+            "in": "body",
+            "name": "user",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserToken"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
+        "summary": "Log in a user",
+        "tags": [
+          "UserAuth"
+        ]
+      }
+    },
     "/v1/editor_channels": {
       "get": {
         "deprecated": false,
@@ -459,92 +545,6 @@
         ]
       }
     },
-    "/v1/users/auth": {
-      "delete": {
-        "deprecated": false,
-        "description": "",
-        "operationId": "SolardocPhoenixWeb.UserAuthController.delete",
-        "parameters": [
-          {
-            "description": "Bearer",
-            "in": "header",
-            "name": "Authorization",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/Message"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Errors"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/Errors"
-            }
-          }
-        },
-        "summary": "Log out a user",
-        "tags": [
-          "UserAuth"
-        ]
-      },
-      "post": {
-        "deprecated": false,
-        "description": "",
-        "operationId": "SolardocPhoenixWeb.UserAuthController.create",
-        "parameters": [
-          {
-            "description": "user login attributes",
-            "in": "body",
-            "name": "user",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/UserLogin"
-            }
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/UserToken"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Errors"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/Errors"
-            }
-          }
-        },
-        "summary": "Log in a user",
-        "tags": [
-          "UserAuth"
-        ]
-      }
-    },
     "/v1/users/current": {
       "get": {
         "deprecated": false,
@@ -584,18 +584,6 @@
     }
   },
   "swagger": "2.0",
-  "basePath": "/api",
-  "securityDefinitions": {
-    "Bearer": {
-      "in": "header",
-      "name": "Authorization",
-      "type": "apiKey",
-      "description": "API Token must be provided via `Authorization: Bearer ` header"
-    }
-  },
-  "consumes": [
-    "application/json"
-  ],
   "produces": [
     "application/json"
   ],
@@ -616,5 +604,17 @@
       "name": "UserSettings",
       "description": "User settings resources"
     }
-  ]
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "basePath": "/api",
+  "securityDefinitions": {
+    "Bearer": {
+      "in": "header",
+      "name": "Authorization",
+      "type": "apiKey",
+      "description": "API Token must be provided via `Authorization: Bearer ` header"
+    }
+  }
 }
