@@ -107,7 +107,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     :ok
   end
 
-  @impl true
   def onError(reason, socket) do
     IO.puts("Error in channel: #{inspect(reason)}")
     {:noreply, socket}
