@@ -21,6 +21,9 @@ jobs:
         with:
           version: 8.x.x
           run_install: false
+          build-args: |
+            PUPPETEER_SKIP_DOWNLOAD=true
+      - run: pnpm node_modules/puppeteer/install.js
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
 
