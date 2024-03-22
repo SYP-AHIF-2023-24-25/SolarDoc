@@ -48,7 +48,6 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST")
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :solardoc_phoenix, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
@@ -56,7 +55,14 @@ if config_env() == :prod do
   config :solardoc_phoenix, SolardocPhoenixWeb.Endpoint,
     # Despite Solardoc being publicly accessible over HTTPS, we still use HTTP locally as we will be using a
     # reverse proxy on the deployment server to handle HTTPS.
-    url: [host: host, port: port, scheme: "http"],
+    url: [port: port, scheme: "http"],
+    check_origin: [
+      "http://127.0.0.1",
+      "http://localhost",
+      "//0.0.0.0",
+      "https://solardoc.htl-leonding.ac.at",
+      "https://*.htl-leonding.ac.at"
+    ],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.

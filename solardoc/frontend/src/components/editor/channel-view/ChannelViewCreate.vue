@@ -56,7 +56,7 @@ async function submitForm(
         channelViewStore.setCreatingChannel(false)
         channelViewStore.setChannelJoined(true)
         channelViewStore.setSelectedChannel(channel)
-        console.log('[ChannelView] Channel joined', channel)
+        console.log(`[ChannelView] Channel joined (Id: ${channel.id})`)
       },
       errorResp => {
         console.error('[ChannelView] Error joining new channel', errorResp)

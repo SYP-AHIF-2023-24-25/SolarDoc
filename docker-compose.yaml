@@ -35,6 +35,7 @@ services:
     ports:
       - "3000:3000"
     environment:
+      STAGING: ${STAGING}
       API_BASE_PATH: ${API_BASE_PATH}
       REDIS_ROOT_PASSWORD: ${REDIS_ROOT_PASSWORD}
       REDIS_USERNAME: ${REDIS_USERNAME}
@@ -59,7 +60,6 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgresql-db:5432/${POSTGRES_DB}
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
-      PHX_HOST: 0.0.0.0
       PORT: 4000
     depends_on:
       postgresql-db:
