@@ -249,7 +249,7 @@ setInterval(updateLastModified, 500)
             <p id="init-msg">Start typing and see preview!</p>
             <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
           </div>
-          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
+          <h2 v-else-if="(previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL">
             <span class="dot-dot-dot-flashing"></span>
           </h2>
           <iframe
