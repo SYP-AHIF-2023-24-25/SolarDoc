@@ -15,8 +15,7 @@ defmodule SolardocPhoenixWeb.Endpoint do
     websocket: [
       error_handler: {SolardocPhoenixWeb.UserSocket, :handle_error, []}
     ],
-    longpoll: false,
-    check_origin: false
+    longpoll: false
 
   # Serve live server with longpolling at "/live"
   socket "/live", Phoenix.LiveView.Socket,
