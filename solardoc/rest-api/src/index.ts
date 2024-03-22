@@ -1,13 +1,8 @@
-import { ApplicationConfig, SolardocRestApiApplication } from './application'
-import { ensureEnvLoaded, getEnv, isProd } from './env'
 import * as fs from 'fs/promises'
-
+import { ApplicationConfig, SolardocRestApiApplication } from './application'
+import { getEnv, isProd } from './env'
 export * from './application'
 
-// Ensure that the environment variables are loaded (only relevant for development mode, as in production mode the .env
-// files are not used but rather global environment variables are used instead. This simplifies the deployment process
-// using Docker.)
-ensureEnvLoaded()
 
 /**
  * The latest version of the API.

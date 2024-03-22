@@ -18,7 +18,7 @@ export function getDateNowInSeconds(): number {
  * @since 0.2.0
  */
 export function getHostURL(req: Request): string {
-  const protocol = isDev && !isStaging ? 'http' : 'https'
+  const protocol = isDev || isStaging ? 'http' : 'https'
   return (new URL(`${protocol}://${req.headers.host!}`)).origin
 }
 

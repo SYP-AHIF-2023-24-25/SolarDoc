@@ -102,9 +102,14 @@ export function getEnv(key: string, throwIfUndef: boolean = true): string | unde
   }
 }
 
+// Ensure that the environment variables are loaded (only relevant for development mode, as in production mode the .env
+// files are not used but rather global environment variables are used instead. This simplifies the deployment process
+// using Docker.)
+ensureEnvLoaded()
+
 /**
  * Staging is a deployment state between development and production. This means it's deployed inside Docker but not
  * publicly exposed using HTTPS.
  * @since 0.4.0
  */
-export const isStaging = getEnv('STAGING', false) === 'staging'
+export const isStaging = getEnv('STAGING', false) === 'true'

@@ -35,6 +35,7 @@ services:
     ports:
       - "3000:3000"
     environment:
+      STAGING: ${STAGING}
       API_BASE_PATH: ${API_BASE_PATH}
       REDIS_ROOT_PASSWORD: ${REDIS_ROOT_PASSWORD}
       REDIS_USERNAME: ${REDIS_USERNAME}
