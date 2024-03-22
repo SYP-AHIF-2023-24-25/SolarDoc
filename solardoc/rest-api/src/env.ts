@@ -101,3 +101,10 @@ export function getEnv(key: string, throwIfUndef: boolean = true): string | unde
     return val
   }
 }
+
+/**
+ * Staging is a deployment state between development and production. This means it's deployed inside Docker but not
+ * publicly exposed using HTTPS.
+ * @since 0.4.0
+ */
+export const isStaging = getEnv('STAGING', false) === 'staging'

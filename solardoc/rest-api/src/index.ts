@@ -38,6 +38,12 @@ export const API_BASE_PATH = getEnv('API_BASE_PATH', false) ?? '/api'
 export const API_VERSIONED_FULL_BASE_PATH = `/${API_BASE_PATH}/v${API_VERSION}`
 
 /**
+ * The port of the API.
+ * @since 0.4.0
+ */
+export const PORT = +(getEnv('PORT', false) || 3000)
+
+/**
  * The path to the persistent storage directory.
  */
 const persistentStoragePath: string = getEnv('PERSISTENT_STORAGE_PATH', true)!
@@ -84,7 +90,7 @@ if (require.main === module) {
   // Run the application
   const config = {
     rest: {
-      port: +process.env.PORT! || 3000,
+      port: PORT,
       host: process.env.HOST ?? '0.0.0.0',
       // The `gracePeriodForClose` provides a graceful close for http/https
       // servers with keep-alive clients. The default value is `Infinity`
