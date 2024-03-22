@@ -58,11 +58,13 @@ defmodule SolardocPhoenixWeb.Router do
     # Ping route
     get "/ping", PingController, :index
 
-    # User registration, login, and password reset routes
+    # User registration and password reset routes
     post "/users", UserController, :create
-    post "/users/auth", UserAuthController, :create
     post "/users/reset_password", UserResetPasswordController, :create
     put "/users/reset_password/:token", UserResetPasswordController, :update
+
+    # Solardoc Auth API - Bearer token authentication
+    post "/auth/bearer", UserAuthController, :create
   end
 
   # User routes requiring authentication
@@ -87,11 +89,11 @@ defmodule SolardocPhoenixWeb.Router do
     # put "/users/settings", UserSettingsController, :update
     # get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
 
-    # Logging out i.e. deleting the user token
-    delete "/users/auth", UserAuthController, :delete
-
     # Channel routes
     resources "/editor_channels", EditorChannelController, only: [:index, :show, :update]
+
+    # Solardoc Auth API - Logging out i.e. deleting the user bearer token
+    delete "/auth/bearer", UserAuthController, :delete
   end
 
   ########## - General API Info - ##########

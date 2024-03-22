@@ -4,7 +4,7 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
 
   @primary_key {:id, Ecto.UUID, autogenerate: true}
   @foreign_key_type Ecto.UUID
-  schema "channels" do
+  schema "editor_channels" do
     field :name, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
@@ -57,10 +57,7 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 8, max: 72)
-    |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
-    |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
-    |> validate_format(:password, ~r/[0-9]/, message: "at least one digit")
+    |> validate_length(:password, min: 10, max: 72)
     |> maybe_hash_password(opts)
   end
 

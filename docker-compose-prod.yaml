@@ -29,6 +29,22 @@ services:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-redis-db:latest
     networks:
       - solardocnet
+  phoenix-server:
+    image: ghcr.io/syp-ahif-2023-24-25/solardoc-phoenix-server:latest
+    networks:
+      - solardocnet
+    environment:
+      PHX_HOST: $DOMAIN
+  postgresql-db:
+    image: ghcr.io/syp-ahif-2023-24-25/solardoc-postgresql-db:latest
+    networks:
+      - solardocnet
+  postgres-adminer:
+    image: ghcr.io/syp-ahif-2023-24-25/solardoc-postgres-adminer:latest
+    ports: !override
+      - "8082:8080"
+    networks:
+      - solardocnet
 
 volumes:
   frontend:

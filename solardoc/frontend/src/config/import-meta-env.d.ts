@@ -10,6 +10,7 @@ interface ImportMetaEnv {
   readonly PROD_PHOENIX_HOST: string
   readonly PROD_PHOENIX_PORT: string
   readonly API_BASE_PATH: string
+  readonly PHX_BASE_PATH: string
 }
 
 interface ImportMeta {

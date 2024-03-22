@@ -38,7 +38,7 @@ export function getFileExtension(filename: string): string {
  * @param ext The file extension to check.
  * @since 0.2.0
  */
-export function checkFileExtensionForMimeType(ext: string): string {
+export function checkFileExtensionForMimeType(ext: string) {
   switch (ext) {
     case '.pdf':
       return 'application/pdf'
@@ -47,8 +47,6 @@ export function checkFileExtensionForMimeType(ext: string): string {
     case '.jpg':
     case '.jpeg':
       return 'image/jpeg'
-    case '.svg':
-      return 'image/svg+xml'
     case '.html':
       return 'text/html'
     default:

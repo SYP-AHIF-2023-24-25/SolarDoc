@@ -16,7 +16,7 @@ config :solardoc_phoenix, SolardocPhoenixWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
-    formats: [html: SolardocPhoenixWeb.ErrorHTML, json: SolardocPhoenixWeb.ErrorJSON],
+    formats: [json: SolardocPhoenixWeb.ErrorJSON],
     layout: false
   ],
   formats: [:json, :html],

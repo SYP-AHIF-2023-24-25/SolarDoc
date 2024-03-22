@@ -35,7 +35,35 @@ export class ResultController {
       '200': {
         description: 'The file for the specified uuid',
         content: {
+          'application/pdf': {
+            'x-is-file': true,
+            schema: {
+              type: 'file',
+              format: 'binary',
+            },
+          },
+          'image/png': {
+            'x-is-file': true,
+            schema: {
+              type: 'file',
+              format: 'binary',
+            },
+          },
+          'image/jpeg': {
+            'x-is-file': true,
+            schema: {
+              type: 'file',
+              format: 'binary',
+            },
+          },
           'application/octet-stream': {
+            'x-is-file': true,
+            schema: {
+              type: 'file',
+              format: 'binary',
+            },
+          },
+          'text/html': {
             'x-is-file': true,
             schema: {
               type: 'string',
@@ -51,7 +79,7 @@ export class ResultController {
   })
   async getCachedResult(
     @param.path.string('uuid') uuid: string,
-    @param.query.string('static') _static: string,
+    @param.query.string('static') $static: string,
     @inject(RestBindings.Http.RESPONSE) res: Response,
   ) {
     try {
@@ -59,8 +87,8 @@ export class ResultController {
 
       // If the static query parameter is set, transform the file content to a static presentation
       let finalFileContent = fileContent
-      if (_static !== undefined) {
-        finalFileContent = this.transformToStaticPresentation(fileContent)
+      if ($static !== undefined && mimeType === 'text/html') {
+        finalFileContent = this.transformToStaticPresentation(<string>fileContent)
       }
 
       res.setHeader('Content-Type', mimeType)

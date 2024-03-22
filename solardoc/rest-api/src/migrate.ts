@@ -1,10 +1,10 @@
-import { RestApiApplication } from './application'
+import { SolardocRestApiApplication } from './application'
 
 export async function migrate(args: string[]) {
   const existingSchema = args.includes('--rebuild') ? 'drop' : 'alter'
   console.log('Migrating schemas (%s existing schema)', existingSchema)
 
-  const app = new RestApiApplication()
+  const app = new SolardocRestApiApplication()
   await app.boot()
   await app.migrateSchema({ existingSchema })
 

@@ -1,5 +1,5 @@
-import { ApplicationConfig, RestApiApplication } from './application'
-import { ensureEnvLoaded, getEnv } from './env'
+import { ApplicationConfig, SolardocRestApiApplication } from './application'
+import { ensureEnvLoaded, getEnv, isProd } from './env'
 import * as fs from 'fs/promises'
 
 export * from './application'
@@ -64,7 +64,7 @@ export async function main(options: ApplicationConfig = {}) {
   await ensurePersistentStorageExists()
 
   // Then start the application
-  const app = new RestApiApplication(options)
+  const app = new SolardocRestApiApplication(options)
 
   // Set the base path for the API
   app.basePath(API_BASE_PATH)
@@ -84,8 +84,8 @@ if (require.main === module) {
   // Run the application
   const config = {
     rest: {
-      port: (+process.env.PORT! || 3000),
-      host: process.env.HOST || '0.0.0.0',
+      port: +process.env.PORT! || 3000,
+      host: process.env.HOST ?? '0.0.0.0',
       // The `gracePeriodForClose` provides a graceful close for http/https
       // servers with keep-alive clients. The default value is `Infinity`
       // (don't force-close). If you want to immediately destroy all sockets
@@ -95,6 +95,9 @@ if (require.main === module) {
       openApiSpec: {
         // useful when used with OpenAPI-to-GraphQL to locate your application
         setServersFromRequest: true,
+      },
+      apiExplorer: {
+        disabled: isProd,
       },
     },
   }

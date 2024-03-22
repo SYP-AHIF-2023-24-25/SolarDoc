@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { useChannelsStore } from '@/stores/channels'
+import { useChannelViewStore } from '@/stores/channel-view'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import ChannelViewElement from '@/components/editor/channel-view/ChannelViewElement.vue'
@@ -8,14 +8,34 @@ import ChannelViewJoinConfirm from '@/components/editor/channel-view/ChannelView
 import ChannelViewCurrent from '@/components/editor/channel-view/ChannelViewCurrent.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
 import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreate.vue'
+import { storeToRefs } from 'pinia'
+import { ref, watch } from 'vue'
 
 const overlayStateStore = useOverlayStateStore()
-const channelStore = useChannelsStore()
+const channelViewStore = useChannelViewStore()
 const currentUserStore = useCurrentUserStore()
 
-if (currentUserStore.loggedIn && currentUserStore.bearer) {
-  channelStore.fetchChannels(currentUserStore.bearer)
+const { creatingChannel, selectedChannel, channels } = storeToRefs(channelViewStore)
+
+const loadingState = ref(false)
+
+async function refreshChannels() {
+  loadingState.value = true
+  if (currentUserStore.loggedIn && currentUserStore.bearer) {
+    await channelViewStore.fetchChannels(currentUserStore.bearer)
+  } else {
+    channelViewStore.clearChannels()
+  }
+  loadingState.value = false
 }
+
+// Fetch channels again when the user returns from one of the forms
+watch([selectedChannel, creatingChannel], () => {
+  if (!selectedChannel.value || !creatingChannel.value) {
+    refreshChannels()
+  }
+})
+refreshChannels()
 </script>
 
 <template>
@@ -34,30 +54,39 @@ if (currentUserStore.loggedIn && currentUserStore.bearer) {
           <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
         </p>
       </div>
-      <div id="channel-create" v-else-if="channelStore.creatingChannel">
+      <div id="channel-create" v-else-if="creatingChannel">
         <ChannelViewCreate />
       </div>
-      <template v-else-if="!channelStore.currentChannel">
+      <template v-else-if="!selectedChannel">
         <button
           id="create-button"
           class="highlighted-button"
-          @click="channelStore.setCreatingChannel(true)"
+          @click="channelViewStore.setCreatingChannel(true)"
         >
           Create
         </button>
-        <div id="channel-view-list">
-          <ChannelViewElement
-            v-for="channel in channelStore.channels"
-            :key="channel.id"
-            :channel="channel"
-          ></ChannelViewElement>
+        <template v-if="channels.length > 0">
+          <div id="channel-view-secondary-header">
+            <h2>Public Channels</h2>
+          </div>
+          <div id="channel-view-list">
+            <ChannelViewElement
+              v-for="channel in channels"
+              :key="channel.id"
+              :channel="channel"
+            ></ChannelViewElement>
+          </div>
+        </template>
+        <div id="loading-banner" v-else-if="loadingState">
+          <h2><span class="dot-dot-dot-flashing"></span></h2>
         </div>
+        <p id="channel-view-empty-msg" v-else>So empty! Maybe go ahead and create a channel?</p>
       </template>
-      <div id="channel-view-confirm" v-else-if="!channelStore.channelJoined">
-        <ChannelViewJoinConfirm />
+      <div id="channel-view-confirm" v-else-if="!channelViewStore.channelJoined">
+        <ChannelViewJoinConfirm :channel="selectedChannel" />
       </div>
       <div id="channel-view-info" v-else>
-        <ChannelViewCurrent :channel="channelStore.currentChannel" />
+        <ChannelViewCurrent :channel="selectedChannel" />
       </div>
     </div>
   </div>
@@ -83,6 +112,7 @@ if (currentUserStore.loggedIn && currentUserStore.bearer) {
     position: relative;
     flex: 0 1 auto;
     width: 50vw;
+    height: max-content;
     border-radius: 1rem;
     padding: 0.5rem 2rem;
     background-color: var.$overlay-background-color;
@@ -103,18 +133,32 @@ if (currentUserStore.loggedIn && currentUserStore.bearer) {
       & > *:not(:first-child) {
         border-top: 1px solid #e0e0e0;
         padding-top: 1rem;
-        margin-bottom: 1rem;
       }
 
       & > *:first-child {
-        margin-top: 1rem;
+        margin-top: 0.5rem;
       }
+    }
+
+    #loading-banner {
+      @include align-center;
+
+      margin: 2rem 0;
     }
 
     #channel-view-create,
     #channel-view-confirm,
-    #channel-view-not-logged-in {
+    #channel-view-not-logged-in,
+    #channel-view-empty-msg {
       margin-bottom: 1rem;
+    }
+
+    #channel-view-not-logged-in,
+    #channel-view-empty-msg {
+      @include align-center;
+      width: 100%;
+      height: 8rem;
+      font-size: 1.4rem;
     }
 
     #create-button,

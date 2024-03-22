@@ -25,6 +25,11 @@
   --scheme-editor-blue: var(--scheme-background-blue);
   --scheme-white-subtle: rgba(255, 255, 255, 0.2);
   --scheme-link-hover-color: var(--scheme-cs-2);
+  --scheme-starting-green: #8be19c;
+  --scheme-healthy-green: #00b834;
+  --scheme-warning-yellow: #ffcc00;
+  --scheme-danger-red: #ff0000;
+  --scheme-catastrophic-red: #940027;
 
   // Universal gray tones
   --scheme-gray-100: #f3f4f6;
@@ -151,6 +156,11 @@ $scheme-editor-black: var(--scheme-background-black);
 $scheme-editor-blue: var(--scheme-editor-blue);
 $scheme-white-subtle: var(--scheme-white-subtle);
 $scheme-link-hover-color: var(--scheme-cs-2);
+$scheme-starting-green: var(--scheme-starting-green);
+$scheme-healthy-green: var(--scheme-healthy-green);
+$scheme-warning-yellow: var(--scheme-warning-yellow);
+$scheme-danger-red: var(--scheme-danger-red);
+$scheme-catastrophic-red: var(--scheme-catastrophic-red);
 
 // Universal gray tones
 $scheme-gray-100: var(--scheme-gray-100);

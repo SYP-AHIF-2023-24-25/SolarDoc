@@ -16,6 +16,21 @@ export const servers = {
   server3: 'ws://localhost:4000/api',
   server4: 'wss://localhost:4000/api',
 }
+export type Message = {
+  message: string
+}
+export type Error = {
+  detail: string
+}
+export type Errors = Error[]
+export type UserLogin = {
+  email: string
+  password: string
+}
+export type UserToken = {
+  expires_at: number
+  token: string
+}
 export type UserTrusted = {
   id: string
   username: string
@@ -28,10 +43,6 @@ export type EditorChannel = {
   name: string
 }
 export type EditorChannels = EditorChannel[]
-export type Error = {
-  detail: string
-}
-export type Errors = Error[]
 export type Ping = {
   date: number
   greeting: string
@@ -59,16 +70,57 @@ export type UserPrivate = {
   role?: string
   username?: string
 }
-export type Message = {
-  message: string
+/**
+ * Log out a user
+ */
+export function deleteV1AuthBearer(authorization: string, opts?: Oazapfts.RequestOpts) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: Message
+      }
+    | {
+        status: 400
+        data: Errors
+      }
+    | {
+        status: 401
+        data: Errors
+      }
+  >('/v1/auth/bearer', {
+    ...opts,
+    method: 'DELETE',
+    headers: {
+      ...(opts && opts.headers),
+      Authorization: authorization,
+    },
+  })
 }
-export type UserLogin = {
-  email: string
-  password: string
-}
-export type UserToken = {
-  expires_at: number
-  token: string
+/**
+ * Log in a user
+ */
+export function postV1AuthBearer(userLogin?: UserLogin, opts?: Oazapfts.RequestOpts) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: UserToken
+      }
+    | {
+        status: 400
+        data: Errors
+      }
+    | {
+        status: 401
+        data: Errors
+      }
+  >(
+    '/v1/auth/bearer',
+    oazapfts.json({
+      ...opts,
+      method: 'POST',
+      body: userLogin,
+    }),
+  )
 }
 /**
  * List all currently running editor channels
@@ -157,58 +209,6 @@ export function postV1Users(createUser?: CreateUser, opts?: Oazapfts.RequestOpts
       ...opts,
       method: 'POST',
       body: createUser,
-    }),
-  )
-}
-/**
- * Log out a user
- */
-export function deleteV1UsersAuth(authorization: string, opts?: Oazapfts.RequestOpts) {
-  return oazapfts.fetchJson<
-    | {
-        status: 200
-        data: Message
-      }
-    | {
-        status: 400
-        data: Errors
-      }
-    | {
-        status: 401
-        data: Errors
-      }
-  >('/v1/users/auth', {
-    ...opts,
-    method: 'DELETE',
-    headers: {
-      ...(opts && opts.headers),
-      Authorization: authorization,
-    },
-  })
-}
-/**
- * Log in a user
- */
-export function postV1UsersAuth(userLogin?: UserLogin, opts?: Oazapfts.RequestOpts) {
-  return oazapfts.fetchJson<
-    | {
-        status: 200
-        data: UserToken
-      }
-    | {
-        status: 400
-        data: Errors
-      }
-    | {
-        status: 401
-        data: Errors
-      }
-  >(
-    '/v1/users/auth',
-    oazapfts.json({
-      ...opts,
-      method: 'POST',
-      body: userLogin,
     }),
   )
 }

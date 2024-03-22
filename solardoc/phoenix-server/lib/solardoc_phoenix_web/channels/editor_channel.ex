@@ -1,15 +1,17 @@
 defmodule SolardocPhoenixWeb.EditorChannel do
   use SolardocPhoenixWeb, :channel
 
-  alias SolardocPhoenix.Accounts
+  alias SolardocPhoenix.Repo
   alias SolardocPhoenix.EditorChannels
   alias SolardocPhoenix.EditorChannels.EditorChannel
   alias SolardocPhoenixWeb.ChangesetJSON
+  alias SolardocPhoenixWeb.EditorChannelJSON
 
   @impl true
   def join("channel:new", %{"data" => data}, socket) do
     data = Map.put(data, "creator_id", socket.assigns.user_id)
-    with {:ok, editor_channel } <- EditorChannels.create_channel(data) do
+    with {:ok, editor_channel} <- EditorChannels.create_channel(data) do
+      editor_channel = Repo.preload(editor_channel, :creator)
       send(self(), {:after_create, editor_channel: editor_channel})
       {:ok, socket}
     else
@@ -23,22 +25,28 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def join("channel:" <> editor_channel_id, %{"auth" => auth}, socket) do
-    with {:ok, editor_channel} <- EditorChannels.get_channel!(editor_channel_id) do
-      assign(socket, :private_room_id, editor_channel_id)
+    with %EditorChannel{} = editor_channel <- EditorChannels.get_channel!(editor_channel_id) do
       if authorized?(editor_channel, %{auth: auth}) do
-        send(self(), {:after_join, editor_channel})
+        assign(socket, :editor_channel_id, editor_channel_id)
+        send(self(), {:after_join, editor_channel: editor_channel})
         {:ok, socket}
       else
-        {:error, :unauthorized}
+        {:error, %{
+          message: "Unauthorized operation"
+        }}
       end
     else
-      _ -> {:error, :not_found}
+      _ -> {:error, %{
+        message: "Not found"
+      }}
     end
   end
 
   @impl true
   def join("channel:" <> _editor_channel_id, _params, _socket) do
-    {:error, :unauthorized}
+    {:error, %{
+      message: "Unauthorized operation"
+    }}
   end
 
   @impl true
@@ -48,22 +56,42 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def handle_info({:after_create, editor_channel: editor_channel}, socket) do
-    broadcast!(socket, "new_msg", %{body: "A new channel has been created (Channel: #{editor_channel.id}, Creator: #{socket.assigns.user_id})", from: "system"})
+    broadcast!(
+      socket,
+      "new_channel",
+      %{
+        body: "A new channel has been created",
+        editor_channel: EditorChannelJSON.show(%{editor_channel: editor_channel}),
+        creator_id: socket.assigns.user_id,
+        from: "system"
+      }
+    )
     {:noreply, socket}
   end
 
   @impl true
   def handle_info({:after_join, editor_channel: editor_channel}, socket) do
-    broadcast!(socket, "new_msg", %{body: "A new user has joined a channel (Channel: #{editor_channel.id}, User: #{socket.assigns.user_id})", from: "system"})
+    broadcast!(socket, "user_join", %{
+      body: "A new user has joined a channel",
+      channel_id: editor_channel.id,
+      user_id: socket.assigns.user_id,
+      from: "system"
+    })
     {:noreply, socket}
   end
 
   @doc """
   Broadcasts the update of the editor content to all clients in the room.
   """
-  def handle_in("editor_update", %{"body" => body}, socket) do
-    broadcast!(socket, "editor_update", %{body: body})
-    {:noreply, socket}
+  def handle_in("editor_update", %{"body" => body, "api_url" => api_url}, socket) do
+    with true <- is_channel_creator(socket) do
+      broadcast!(socket, "editor_update", %{body: body, api_url: api_url})
+      {:noreply, socket}
+    else
+      _ -> {:error, %{
+        message: "Unauthorized operation"
+      }}
+    end
   end
 
   @impl true
@@ -79,7 +107,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     :ok
   end
 
-  @impl true
   def onError(reason, socket) do
     IO.puts("Error in channel: #{inspect(reason)}")
     {:noreply, socket}
@@ -87,5 +114,9 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   defp authorized?(editor_channel, %{auth: auth}) do
     EditorChannel.valid_password?(editor_channel, auth)
+  end
+
+  defp is_channel_creator(socket) do
+    socket.assigns.editor_channel_id == socket.assigns.user_id
   end
 end

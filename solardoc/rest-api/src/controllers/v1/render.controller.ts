@@ -1,5 +1,7 @@
 import { getModelSchemaRef, param, post, Request, requestBody, RestBindings } from '@loopback/rest'
 import {
+  CacheDtoModel,
+  DownloadDtoModel,
   RenderedPresentationImagesDtoModel,
   RenderedPresentationPdfDtoModel,
   RenderedPresentationRjsHtmlDtoModel,
@@ -8,10 +10,9 @@ import {
 } from '../../models'
 import { CacheService, RenderService } from '../../services'
 import { inject } from '@loopback/core'
-import { HTMLOutput } from '@solardoc/asciidoc-renderer'
+import { HTMLOutput, ImageOutput, PDFOutput } from '@solardoc/asciidoc-renderer'
 import { API_PREFIXED_VERSION, ResultController } from './index'
 import { buildAPIURL } from '../../utils'
-import {RenderPresentationRjsHtmlDtoModel} from "../../models/dto/render-presentation-rjs-html-dto.model";
 
 /**
  * The controller for managing the ${RenderController.BASE_PATH} operation of Asciidoc presentations.
@@ -55,8 +56,29 @@ export class RenderController {
   })
   async renderPresentationPdf(
     @requestBody() presentationModel: RenderPresentationDtoModel,
+    @inject(RestBindings.Http.REQUEST) req: Request,
   ): Promise<RenderedPresentationPdfDtoModel> {
-    throw new Error('Not implemented yet!')
+    const pdfOutput: PDFOutput = await this.renderService.renderPDF(
+      presentationModel.fileName,
+      presentationModel.fileContent,
+      presentationModel.revealJSAssetsPath,
+    )
+
+    const content: Uint8Array = await pdfOutput.write()
+    const cachedElement = await this.cacheService.addFile(pdfOutput.outFilename, content)
+
+    // Build the download URL where the user can download the file
+    const downloadURL: string = buildAPIURL(req, ResultController.BASE_PATH, cachedElement.id)
+
+    return {
+      fileName: presentationModel.fileName, // Original filename
+      cache: cachedElement.toCacheDtoModel(),
+      download: cachedElement.toDownloadDtoModel(downloadURL),
+      rawSize: pdfOutput.presentation.sourceFile.getFileSize('KB'),
+      slideCount: pdfOutput.presentation.metadata.slideCount,
+      slideCountInclSubslides: pdfOutput.presentation.metadata.slideCountInclSubslides,
+      subslideCountPerSlide: pdfOutput.presentation.metadata.subslideCountPerSlide,
+    }
   }
 
   @post(`/${RenderController.BASE_PATH}/presentation/rjs-html`, {
@@ -73,7 +95,7 @@ export class RenderController {
     },
   })
   async renderPresentationRjsHtml(
-    @requestBody() presentationModel: RenderPresentationRjsHtmlDtoModel,
+    @requestBody() presentationModel: RenderPresentationDtoModel,
     @inject(RestBindings.Http.REQUEST) req: Request,
   ): Promise<RenderedPresentationRjsHtmlDtoModel> {
     this._ensureHostHeader(req)
@@ -89,8 +111,7 @@ export class RenderController {
 
     // Build the download URL where the user can download the file
     const downloadURL: string = buildAPIURL(req, ResultController.BASE_PATH, cachedElement.id)
-    console.log(downloadURL)
-    console.log(req)
+
     return {
       fileName: presentationModel.fileName, // Original filename
       cache: cachedElement.toCacheDtoModel(),
@@ -120,10 +141,34 @@ export class RenderController {
     @inject(RestBindings.Http.REQUEST) req: Request,
   ): Promise<RenderedPresentationImagesDtoModel> {
     this._ensureHostHeader(req)
-    throw new Error('Not implemented yet!')
+    const imageOutput: ImageOutput = await this.renderService.renderImage(
+      presentationModel.fileName,
+      presentationModel.fileContent,
+      presentationModel.revealJSAssetsPath,
+    )
+
+    const downloadModels: Record<number, DownloadDtoModel> = {}
+    const cacheModels: Record<number, CacheDtoModel> = {}
+    const content: Buffer[] = await imageOutput.write()
+    for (let i = 0; i < content.length; i++) {
+      const cachedElement = await this.cacheService.addFile(imageOutput.outFilename, content[i])
+      const downloadURL: string = buildAPIURL(req, ResultController.BASE_PATH, cachedElement.id)
+      downloadModels[i] = cachedElement.toDownloadDtoModel(downloadURL)
+      cacheModels[i] = cachedElement.toCacheDtoModel()
+    }
+
+    return {
+      fileName: presentationModel.fileName, // Original filename
+      cache: cacheModels,
+      download: downloadModels,
+      rawSize: imageOutput.presentation.sourceFile.getFileSize('KB'),
+      slideCount: imageOutput.presentation.metadata.slideCount,
+      slideCountInclSubslides: imageOutput.presentation.metadata.slideCountInclSubslides,
+      subslideCountPerSlide: imageOutput.presentation.metadata.subslideCountPerSlide,
+    }
   }
 
-  @post(`/${RenderController.BASE_PATH}/slide/{uuid}/image`, {
+  @post(`/${RenderController.BASE_PATH}/slide/{id}/image`, {
     responses: {
       '200': {
         description:
@@ -137,11 +182,28 @@ export class RenderController {
     },
   })
   async renderSlideImage(
-    @param.path.string('uuid') id: number,
-    @inject(RestBindings.Http.REQUEST) req: Request,
+    @param.path.string('id') id: number,
     @requestBody() presentationModel: RenderPresentationDtoModel,
+    @inject(RestBindings.Http.REQUEST) req: Request,
   ): Promise<RenderedSlideImageDtoModel> {
     this._ensureHostHeader(req)
-    throw new Error('Not implemented yet!')
+    const imageOutput: ImageOutput = await this.renderService.renderImage(
+      presentationModel.fileName,
+      presentationModel.fileContent,
+      presentationModel.revealJSAssetsPath,
+      id,
+    )
+
+    const content: Buffer[] = await imageOutput.write()
+    const cachedElement = await this.cacheService.addFile(imageOutput.outFilename, content[0])
+
+    // Build the download URL where the user can download the file
+    const downloadURL: string = buildAPIURL(req, ResultController.BASE_PATH, cachedElement.id)
+
+    return {
+      fileName: presentationModel.fileName, // Original filename
+      cache: cachedElement.toCacheDtoModel(),
+      download: cachedElement.toDownloadDtoModel(downloadURL),
+    }
   }
 }

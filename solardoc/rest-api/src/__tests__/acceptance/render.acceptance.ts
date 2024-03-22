@@ -1,9 +1,9 @@
-import { RestApiApplication } from '../../application'
+import { SolardocRestApiApplication } from '../../application'
 import { Client } from '@loopback/testlab'
 import { setupApplication } from './test-helper'
 
 describe('Render', () => {
-  let app: RestApiApplication
+  let app: SolardocRestApiApplication
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let client: Client
 
