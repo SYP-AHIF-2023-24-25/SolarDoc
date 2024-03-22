@@ -2,3 +2,5 @@ packages:
   - "solardoc/**"
   # exclude packages that are inside test directories
   - "!**/test/**"
+  - "!**/postgresql-db/"
+  - "!**/postgres-adminer/"

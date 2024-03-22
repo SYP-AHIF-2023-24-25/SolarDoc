@@ -7,3 +7,4 @@ coverage
 .env
 openapi.json
 *.rdb
+postgresql-db/postgres-data

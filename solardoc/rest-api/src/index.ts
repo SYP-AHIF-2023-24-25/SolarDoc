@@ -1,5 +1,5 @@
 import { ApplicationConfig, SolardocRestApiApplication } from './application'
-import {ensureEnvLoaded, getEnv, isProd} from './env'
+import { ensureEnvLoaded, getEnv, isProd } from './env'
 import * as fs from 'fs/promises'
 
 export * from './application'
@@ -98,7 +98,7 @@ if (require.main === module) {
       },
       apiExplorer: {
         disabled: isProd,
-      }
+      },
     },
   }
   main(config).catch(err => {

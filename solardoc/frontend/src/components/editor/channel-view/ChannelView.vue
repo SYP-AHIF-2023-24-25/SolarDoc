@@ -140,6 +140,12 @@ refreshChannels()
       }
     }
 
+    #loading-banner {
+      @include align-center;
+
+      margin: 2rem 0;
+    }
+
     #channel-view-create,
     #channel-view-confirm,
     #channel-view-not-logged-in,

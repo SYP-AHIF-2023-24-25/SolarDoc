@@ -31,12 +31,37 @@ defmodule SolardocPhoenixWeb.PingController do
 
   def index(conn, _params) do
     # Return static JSON for now
-    {ip1, ip2, ip3, ip4} = conn.remote_ip
     json(conn, %{
       greeting: "Hello from Solardoc Phoenix!",
       date: :os.system_time(:millisecond),
       url: "#{@api_path}/ping",
-      ip: "#{ip1}.#{ip2}.#{ip3}.#{ip4}"
+      ip: ip_to_str(conn.remote_ip)
     })
+  end
+
+  defp ip_to_str({ip1, ip2, ip3, ip4}) do
+    ipv4_to_str({ip1, ip2, ip3, ip4})
+  end
+
+  defp ip_to_str({ip1, ip2, ip3, ip4, ip5, ip6, ip7, ip8}) do
+    ipv6_to_str({ip1, ip2, ip3, ip4, ip5, ip6, ip7, ip8})
+  end
+
+  defp ipv4_to_str({ip1, ip2, ip3, ip4}) do
+    "#{ip1}.#{ip2}.#{ip3}.#{ip4}"
+  end
+
+  defp ipv6_to_str({ip1, ip2, ip3, ip4, ip5, ip6, ip7, ip8}) do
+    {ip1, ip2, ip3, ip4, ip5, ip6, ip7, ip8} = {
+      Integer.to_string(ip1, 16),
+      Integer.to_string(ip2, 16),
+      Integer.to_string(ip3, 16),
+      Integer.to_string(ip4, 16),
+      Integer.to_string(ip5, 16),
+      Integer.to_string(ip6, 16),
+      Integer.to_string(ip7, 16),
+      Integer.to_string(ip8, 16)
+    }
+    "#{ip1}:#{ip2}:#{ip3}:#{ip4}:#{ip5}:#{ip6}:#{ip7}:#{ip8}"
   end
 end

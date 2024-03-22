@@ -3,189 +3,16 @@
     "version": "0.4.0-dev",
     "description": "The Solardoc Phoenix Rest API and SDS (Solardoc Socket)",
     "title": "@solardoc/phoenix",
-    "contact": {
-      "name": "Luna Klatzer, Emma Walchshofer & Lisa Pichler"
-    },
     "license": {
       "name": "GNU General Public License v3.0",
       "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc/blob/main/LICENSE"
+    },
+    "contact": {
+      "name": "Luna Klatzer, Emma Walchshofer & Lisa Pichler"
     }
   },
   "host": "localhost:4000",
   "definitions": {
-    "Ping": {
-      "description": "A simple ping response",
-      "properties": {
-        "date": {
-          "description": "The current date in milliseconds",
-          "example": 1710378432166,
-          "type": "integer"
-        },
-        "greeting": {
-          "description": "A friendly greeting",
-          "example": "Hello from Solardoc Phoenix!",
-          "type": "string"
-        },
-        "ip": {
-          "description": "The IP address of the client",
-          "example": "123.98.21.101",
-          "type": "string"
-        },
-        "url": {
-          "description": "The URL to ping",
-          "example": "/v1/ping",
-          "type": "string"
-        }
-      },
-      "required": [
-        "ip",
-        "url",
-        "date",
-        "greeting"
-      ],
-      "title": "Ping",
-      "type": "object"
-    },
-    "UserPublic": {
-      "description": "A user of the application (public data)",
-      "properties": {
-        "id": {
-          "description": "Unique identifier",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id"
-      ],
-      "title": "UserPublic",
-      "type": "object"
-    },
-    "UserPrivate": {
-      "description": "A user of the application (full data)",
-      "properties": {
-        "confirmed_at": {
-          "description": "Date of confirmation",
-          "type": "string"
-        },
-        "email": {
-          "description": "Users email",
-          "type": "string"
-        },
-        "id": {
-          "description": "Unique identifier",
-          "type": "string"
-        },
-        "intended_use": {
-          "description": "Users intended use",
-          "type": "integer"
-        },
-        "organisation": {
-          "description": "Users organisation",
-          "type": "string"
-        },
-        "role": {
-          "description": "Users role",
-          "type": "string"
-        },
-        "username": {
-          "description": "Users username",
-          "type": "string"
-        }
-      },
-      "required": [
-        "email",
-        "id"
-      ],
-      "title": "UserPrivate",
-      "type": "object"
-    },
-    "Error": {
-      "description": "An error",
-      "properties": {
-        "detail": {
-          "description": "Error message",
-          "type": "string"
-        }
-      },
-      "required": [
-        "detail"
-      ],
-      "title": "Error",
-      "type": "object"
-    },
-    "CreateUser": {
-      "description": "A new user to be created",
-      "properties": {
-        "email": {
-          "description": "Users email",
-          "type": "string"
-        },
-        "intended_use": {
-          "description": "Users intended use",
-          "type": "integer"
-        },
-        "organisation": {
-          "description": "Users organisation",
-          "type": "string"
-        },
-        "password": {
-          "description": "Users password",
-          "type": "string"
-        },
-        "role": {
-          "description": "Users role",
-          "type": "string"
-        },
-        "username": {
-          "description": "Users username",
-          "type": "string"
-        }
-      },
-      "required": [
-        "password",
-        "email"
-      ],
-      "title": "CreateUser",
-      "type": "object"
-    },
-    "Errors": {
-      "description": "A list of errors",
-      "items": {
-        "$ref": "#/definitions/Error"
-      },
-      "title": "Errors",
-      "type": "array"
-    },
-    "UsersPrivate": {
-      "description": "A collection of Users (full data)",
-      "items": {
-        "$ref": "#/definitions/UserPrivate"
-      },
-      "title": "UsersPrivate",
-      "type": "array"
-    },
-    "UsersPublic": {
-      "description": "A collection of Users (public data)",
-      "items": {
-        "$ref": "#/definitions/UserPublic"
-      },
-      "title": "UsersPublic",
-      "type": "array"
-    },
-    "Message": {
-      "description": "A message",
-      "properties": {
-        "message": {
-          "description": "A message",
-          "type": "string"
-        }
-      },
-      "required": [
-        "message"
-      ],
-      "title": "Message",
-      "type": "object"
-    },
     "UserLogin": {
       "description": "A user login",
       "properties": {
@@ -224,24 +51,41 @@
       "title": "UserToken",
       "type": "object"
     },
-    "UserTrusted": {
-      "description": "A user which data can be accessed by trusted users i.e. an in between of public and private data",
+    "Message": {
+      "description": "A message",
       "properties": {
-        "id": {
-          "description": "User UUID",
-          "type": "string"
-        },
-        "username": {
-          "description": "User username",
+        "message": {
+          "description": "A message",
           "type": "string"
         }
       },
       "required": [
-        "username",
-        "id"
+        "message"
       ],
-      "title": "UserTrusted",
+      "title": "Message",
       "type": "object"
+    },
+    "Error": {
+      "description": "An error",
+      "properties": {
+        "detail": {
+          "description": "Error message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail"
+      ],
+      "title": "Error",
+      "type": "object"
+    },
+    "Errors": {
+      "description": "A list of errors",
+      "items": {
+        "$ref": "#/definitions/Error"
+      },
+      "title": "Errors",
+      "type": "array"
     },
     "EditorChannel": {
       "description": "An editor channel",
@@ -284,6 +128,162 @@
       },
       "title": "EditorChannels",
       "type": "array"
+    },
+    "UserTrusted": {
+      "description": "A user which data can be accessed by trusted users i.e. an in between of public and private data",
+      "properties": {
+        "id": {
+          "description": "User UUID",
+          "type": "string"
+        },
+        "username": {
+          "description": "User username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "username",
+        "id"
+      ],
+      "title": "UserTrusted",
+      "type": "object"
+    },
+    "Ping": {
+      "description": "A simple ping response",
+      "properties": {
+        "date": {
+          "description": "The current date in milliseconds",
+          "example": 1710633431631,
+          "type": "integer"
+        },
+        "greeting": {
+          "description": "A friendly greeting",
+          "example": "Hello from Solardoc Phoenix!",
+          "type": "string"
+        },
+        "ip": {
+          "description": "The IP address of the client",
+          "example": "123.98.21.101",
+          "type": "string"
+        },
+        "url": {
+          "description": "The URL to ping",
+          "example": "/v1/ping",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ip",
+        "url",
+        "date",
+        "greeting"
+      ],
+      "title": "Ping",
+      "type": "object"
+    },
+    "UsersPublic": {
+      "description": "A collection of Users (public data)",
+      "items": {
+        "$ref": "#/definitions/UserPublic"
+      },
+      "title": "UsersPublic",
+      "type": "array"
+    },
+    "UserPrivate": {
+      "description": "A user of the application (full data)",
+      "properties": {
+        "confirmed_at": {
+          "description": "Date of confirmation",
+          "type": "string"
+        },
+        "email": {
+          "description": "Users email",
+          "type": "string"
+        },
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        },
+        "intended_use": {
+          "description": "Users intended use",
+          "type": "integer"
+        },
+        "organisation": {
+          "description": "Users organisation",
+          "type": "string"
+        },
+        "role": {
+          "description": "Users role",
+          "type": "string"
+        },
+        "username": {
+          "description": "Users username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "email",
+        "id"
+      ],
+      "title": "UserPrivate",
+      "type": "object"
+    },
+    "CreateUser": {
+      "description": "A new user to be created",
+      "properties": {
+        "email": {
+          "description": "Users email",
+          "type": "string"
+        },
+        "intended_use": {
+          "description": "Users intended use",
+          "type": "integer"
+        },
+        "organisation": {
+          "description": "Users organisation",
+          "type": "string"
+        },
+        "password": {
+          "description": "Users password",
+          "type": "string"
+        },
+        "role": {
+          "description": "Users role",
+          "type": "string"
+        },
+        "username": {
+          "description": "Users username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "password",
+        "email"
+      ],
+      "title": "CreateUser",
+      "type": "object"
+    },
+    "UserPublic": {
+      "description": "A user of the application (public data)",
+      "properties": {
+        "id": {
+          "description": "Unique identifier",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "UserPublic",
+      "type": "object"
+    },
+    "UsersPrivate": {
+      "description": "A collection of Users (full data)",
+      "items": {
+        "$ref": "#/definitions/UserPrivate"
+      },
+      "title": "UsersPrivate",
+      "type": "array"
     }
   },
   "schemes": [
@@ -293,6 +293,92 @@
     "wss"
   ],
   "paths": {
+    "/v1/auth/bearer": {
+      "delete": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.UserAuthController.delete",
+        "parameters": [
+          {
+            "description": "Bearer",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
+        "summary": "Log out a user",
+        "tags": [
+          "UserAuth"
+        ]
+      },
+      "post": {
+        "deprecated": false,
+        "description": "",
+        "operationId": "SolardocPhoenixWeb.UserAuthController.create",
+        "parameters": [
+          {
+            "description": "user login attributes",
+            "in": "body",
+            "name": "user",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserToken"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Errors"
+            }
+          }
+        },
+        "summary": "Log in a user",
+        "tags": [
+          "UserAuth"
+        ]
+      }
+    },
     "/v1/editor_channels": {
       "get": {
         "deprecated": false,
@@ -459,92 +545,6 @@
         ]
       }
     },
-    "/v1/users/auth": {
-      "delete": {
-        "deprecated": false,
-        "description": "",
-        "operationId": "SolardocPhoenixWeb.UserAuthController.delete",
-        "parameters": [
-          {
-            "description": "Bearer",
-            "in": "header",
-            "name": "Authorization",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/Message"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Errors"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/Errors"
-            }
-          }
-        },
-        "summary": "Log out a user",
-        "tags": [
-          "UserAuth"
-        ]
-      },
-      "post": {
-        "deprecated": false,
-        "description": "",
-        "operationId": "SolardocPhoenixWeb.UserAuthController.create",
-        "parameters": [
-          {
-            "description": "user login attributes",
-            "in": "body",
-            "name": "user",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/UserLogin"
-            }
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/UserToken"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Errors"
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "$ref": "#/definitions/Errors"
-            }
-          }
-        },
-        "summary": "Log in a user",
-        "tags": [
-          "UserAuth"
-        ]
-      }
-    },
     "/v1/users/current": {
       "get": {
         "deprecated": false,
@@ -584,21 +584,9 @@
     }
   },
   "swagger": "2.0",
-  "basePath": "/api",
-  "consumes": [
-    "application/json"
-  ],
   "produces": [
     "application/json"
   ],
-  "securityDefinitions": {
-    "Bearer": {
-      "in": "header",
-      "name": "Authorization",
-      "type": "apiKey",
-      "description": "API Token must be provided via `Authorization: Bearer ` header"
-    }
-  },
   "tags": [
     {
       "name": "User",
@@ -616,5 +604,17 @@
       "name": "UserSettings",
       "description": "User settings resources"
     }
-  ]
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "basePath": "/api",
+  "securityDefinitions": {
+    "Bearer": {
+      "in": "header",
+      "name": "Authorization",
+      "type": "apiKey",
+      "description": "API Token must be provided via `Authorization: Bearer ` header"
+    }
+  }
 }

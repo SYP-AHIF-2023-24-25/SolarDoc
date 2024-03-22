@@ -1,6 +1,6 @@
 import type {
   RenderedPresentationRjsHtmlDtoModel,
-  RenderPresentationRjsHtmlDtoModel,
+  RenderPresentationDtoModel,
 } from '@/services/backend/gen/backend-rest-service'
 import * as backendAPI from '@/services/backend/api-service'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
@@ -40,7 +40,7 @@ export async function handleRender(
   initStateStore.setFalse()
   previewLoadingStore.setPreviewLoading(true)
 
-  const renderPresentationDtoModel: RenderPresentationRjsHtmlDtoModel = {
+  const renderPresentationDtoModel: RenderPresentationDtoModel = {
     fileName: fileName,
     fileContent: editorContent,
     revealJSAssetsPath: REVEAL_JS_CDN_URL,

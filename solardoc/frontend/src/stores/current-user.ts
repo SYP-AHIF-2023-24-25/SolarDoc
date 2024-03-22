@@ -126,9 +126,9 @@ export const useCurrentUserStore = defineStore('currentUser', {
         this.clean()
         return
       }
-      let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1UsersAuth>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1AuthBearer>>
       try {
-        resp = await phoenixRestService.deleteV1UsersAuth(`Bearer ${this.currentAuth.token}`)
+        resp = await phoenixRestService.deleteV1AuthBearer(`Bearer ${this.currentAuth.token}`)
       } catch (e) {
         throw new PhoenixInternalError('Critically failed to logout. Cause: ' + (<Error>e).message)
       }
