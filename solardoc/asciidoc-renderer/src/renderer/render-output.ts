@@ -1,5 +1,5 @@
-import {AsciidocFile} from "./asciidoc-file";
-import {Presentation} from "../presentation";
+import { AsciidocFile } from './asciidoc-file'
+import { Presentation } from '../presentation'
 
 /**
  * {@link RenderOutput} is the base class for all render outputs. It contains the content of the rendered output.
@@ -9,10 +9,7 @@ export abstract class RenderOutput<RawT, OutT> {
   protected _internalData: RawT
   protected _presentation: Presentation
 
-  protected constructor(
-    internalData: RawT,
-    presentation: Presentation,
-  ) {
+  protected constructor(internalData: RawT, presentation: Presentation) {
     this._internalData = internalData
     this._presentation = presentation
   }

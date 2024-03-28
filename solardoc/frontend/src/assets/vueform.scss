@@ -1,0 +1,24 @@
+@use './core/var' as var;
+
+:root,
+:before,
+:after,
+* {
+  $input-color: white;
+
+  --vf-primary: var(--vueform-button-color);
+  --vf-secondary: var(--vueform-button-color);
+  --vf-border-color-btn: var(--vueform-button-color);
+  --vf-shadow-input-hover: var(--vueform-button-color);
+  --vf-ring-color: var(--vueform-button-color);
+  --vf-color-input: $input-color;
+  --vf-bg-selected: var(--vueform-background-hover);
+  --vf-bg-input: var(--vueform-background);
+
+  .vf-multiselect-option.vf-multiselect-option-pointed {
+    &,
+    & * {
+      color: $input-color;
+    }
+  }
+}

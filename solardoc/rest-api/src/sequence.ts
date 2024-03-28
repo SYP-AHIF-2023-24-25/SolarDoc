@@ -1,3 +1,3 @@
 import { MiddlewareSequence } from '@loopback/rest'
 
-export class MySequence extends MiddlewareSequence {}
+export class SolardocSequence extends MiddlewareSequence {}

@@ -1,9 +1,9 @@
 import { Client, expect } from '@loopback/testlab'
-import { RestApiApplication } from '../..'
+import { SolardocRestApiApplication } from '../..'
 import { setupApplication } from './test-helper'
 
 describe('PingController', () => {
-  let app: RestApiApplication
+  let app: SolardocRestApiApplication
   let client: Client
 
   before('setupApplication', async () => {

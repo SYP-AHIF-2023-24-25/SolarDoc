@@ -1,13 +1,8 @@
-import { ApplicationConfig, RestApiApplication } from './application'
-import { ensureEnvLoaded, getEnv } from './env'
 import * as fs from 'fs/promises'
-
+import { ApplicationConfig, SolardocRestApiApplication } from './application'
+import { getEnv, isProd } from './env'
 export * from './application'
 
-// Ensure that the environment variables are loaded (only relevant for development mode, as in production mode the .env
-// files are not used but rather global environment variables are used instead. This simplifies the deployment process
-// using Docker.)
-ensureEnvLoaded()
 
 /**
  * The latest version of the API.
@@ -38,6 +33,12 @@ export const API_BASE_PATH = getEnv('API_BASE_PATH', false) ?? '/api'
 export const API_VERSIONED_FULL_BASE_PATH = `/${API_BASE_PATH}/v${API_VERSION}`
 
 /**
+ * The port of the API.
+ * @since 0.4.0
+ */
+export const PORT = +(getEnv('PORT', false) || 3000)
+
+/**
  * The path to the persistent storage directory.
  */
 const persistentStoragePath: string = getEnv('PERSISTENT_STORAGE_PATH', true)!
@@ -64,7 +65,7 @@ export async function main(options: ApplicationConfig = {}) {
   await ensurePersistentStorageExists()
 
   // Then start the application
-  const app = new RestApiApplication(options)
+  const app = new SolardocRestApiApplication(options)
 
   // Set the base path for the API
   app.basePath(API_BASE_PATH)
@@ -84,8 +85,8 @@ if (require.main === module) {
   // Run the application
   const config = {
     rest: {
-      port: (+process.env.PORT! || 3000),
-      host: process.env.HOST || '0.0.0.0',
+      port: PORT,
+      host: process.env.HOST ?? '0.0.0.0',
       // The `gracePeriodForClose` provides a graceful close for http/https
       // servers with keep-alive clients. The default value is `Infinity`
       // (don't force-close). If you want to immediately destroy all sockets
@@ -95,6 +96,9 @@ if (require.main === module) {
       openApiSpec: {
         // useful when used with OpenAPI-to-GraphQL to locate your application
         setServersFromRequest: true,
+      },
+      apiExplorer: {
+        disabled: isProd,
       },
     },
   }

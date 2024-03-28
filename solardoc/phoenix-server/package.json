@@ -1,0 +1,44 @@
+{
+  "name": "@solardoc/phoenix",
+  "version": "0.4.0-dev",
+  "description": "Websocket server using Elixir for SolarDoc",
+  "main": "dist/index.js",
+  "dependencies": {
+    "phoenix": "~1.7.11"
+  },
+  "devDependencies": {
+    "@types/phoenix": "~1.6.4",
+    "typescript": "5.2.2"
+  },
+  "scripts": {
+    "setup": "mix setup",
+    "start": "mix phx.server",
+    "fetch-deps": "mix deps.get",
+    "migrate": "mix ecto.migrate",
+    "new-migration": "mix ecto.gen.migration",
+    "rollback": "mix ecto.rollback",
+    "test": "mix test",
+    "format": "mix format",
+    "lint": "mix credo --strict",
+    "build": "tsc",
+    "openapi-spec": "mix phx.swagger.generate"
+  },
+  "keywords": [
+    "solardoc",
+    "websocket",
+    "server",
+    "elixir",
+    "phoenix"
+  ],
+  "files": [
+    "README.md",
+    "dist",
+    "client"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SYP-AHIF-2023-24-25/SolarDoc"
+  },
+  "author": "Luna Klatzer, Emma Walchshofer & Lisa Pichler",
+  "license": "GPL-3.0"
+}

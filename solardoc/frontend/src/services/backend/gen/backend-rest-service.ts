@@ -1,6 +1,6 @@
 /**
  * @solardoc/rest-api
- * 0.3.0
+ * 0.4.0-dev
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
@@ -23,10 +23,7 @@ export type PingDtoModel = {
 export type RenderPresentationDtoModel = {
   fileName: string
   fileContent: string
-}
-export type CacheDtoModel = {
-  cacheUUID: string
-  expiresAt: number
+  revealJSAssetsPath?: string
 }
 export type RenderedPresentationImagesDtoModel = {
   fileName: string
@@ -34,8 +31,12 @@ export type RenderedPresentationImagesDtoModel = {
   slideCount: number
   slideCountInclSubslides: number
   subslideCountPerSlide: number[]
-  cache: CacheDtoModel
   download: object
+  cache: object
+}
+export type CacheDtoModel = {
+  cacheUUID: string
+  expiresAt: number
 }
 export type DownloadDtoModel = {
   downloadURL: string
@@ -50,11 +51,6 @@ export type RenderedPresentationPdfDtoModel = {
   cache: CacheDtoModel
   download: DownloadDtoModel
 }
-export type RenderPresentationRjsHtmlDtoModel = {
-  fileName: string
-  fileContent: string
-  revealJSAssetsPath?: string
-}
 export type RenderedPresentationRjsHtmlDtoModel = {
   fileName: string
   rawSize: number
@@ -66,6 +62,7 @@ export type RenderedPresentationRjsHtmlDtoModel = {
 }
 export type RenderedSlideImageDtoModel = {
   fileName: string
+  cache: CacheDtoModel
   download: DownloadDtoModel
 }
 export function getV1Ping(opts?: Oazapfts.RequestOpts) {
@@ -109,7 +106,7 @@ export function postV1RenderPresentationPdf(
   )
 }
 export function postV1RenderPresentationRjsHtml(
-  renderPresentationRjsHtmlDtoModel?: RenderPresentationRjsHtmlDtoModel,
+  renderPresentationDtoModel?: RenderPresentationDtoModel,
   opts?: Oazapfts.RequestOpts,
 ) {
   return oazapfts.fetchJson<{
@@ -120,12 +117,12 @@ export function postV1RenderPresentationRjsHtml(
     oazapfts.json({
       ...opts,
       method: 'POST',
-      body: renderPresentationRjsHtmlDtoModel,
+      body: renderPresentationDtoModel,
     }),
   )
 }
-export function postV1RenderSlideByUuidImage(
-  uuid: string,
+export function postV1RenderSlideByIdImage(
+  id: string,
   renderPresentationDtoModel?: RenderPresentationDtoModel,
   opts?: Oazapfts.RequestOpts,
 ) {
@@ -133,7 +130,7 @@ export function postV1RenderSlideByUuidImage(
     status: 200
     data: RenderedSlideImageDtoModel
   }>(
-    `/v1/render/slide/${encodeURIComponent(uuid)}/image`,
+    `/v1/render/slide/${encodeURIComponent(id)}/image`,
     oazapfts.json({
       ...opts,
       method: 'POST',
@@ -150,15 +147,7 @@ export function getV1ResultByUuid(
   } = {},
   opts?: Oazapfts.RequestOpts,
 ) {
-  return oazapfts.fetchBlob<
-    | {
-        status: 200
-        data: Blob
-      }
-    | {
-        status: 404
-      }
-  >(
+  return oazapfts.fetchText(
     `/v1/result/${encodeURIComponent(uuid)}${QS.query(
       QS.explode({
         static: $static,

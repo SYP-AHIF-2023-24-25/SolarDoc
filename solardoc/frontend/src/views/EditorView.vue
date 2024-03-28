@@ -6,44 +6,80 @@ import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
-import { useFullScreenPreviewStore } from '@/stores/full-screen-preview'
+import { useOverlayStateStore } from '@/stores/overlay-state'
 import { handleRender } from '@/scripts/handle-render'
 import { useFileNameStore } from '@/stores/file-name'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
+import { useWSClientStore } from '@/stores/ws-client'
+import { useCurrentUserStore } from '@/stores/current-user'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
-import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
-import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
 import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavigator.vue'
 import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
+import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
 import * as backendAPI from '@/services/backend/api-service'
+import * as phoenixBackend from '@/services/phoenix/api-service'
+import { SDSCLIENT_URL } from '@/services/phoenix/config'
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
-const fullScreenPreviewStore = useFullScreenPreviewStore()
+const overlayStateStore = useOverlayStateStore()
 const renderDataStore = useRenderDataStore()
 const fileNameStore = useFileNameStore()
 const lastModifiedStore = useLastModifiedStore()
-const previewSelectedSlide = usePreviewSelectedSlideStore()
+const previewSelectedSlideStore = usePreviewSelectedSlideStore()
+const currentUserStore = useCurrentUserStore()
+const wsClientStore = useWSClientStore()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
-const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlide)
+const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
+
+currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
 
 // Ensure the backend is running and reachable
 // TODO! Implement proper popup in case of error
 backendAPI
-  .checkIfBackendIsReachable()
+  .checkIfRenderBackendIsReachable()
   .then(void 0)
   .catch((error: Error) => {
     if (error) {
       console.error(error)
     }
-    console.error('Backend is not reachable. Please copy the logs and contact the developers.')
+    throw new Error(
+      '[Editor] Render Backend is not reachable. Please copy the logs and contact the developers.',
+    )
+  })
+
+// Ensure the Phoenix backend is running and reachable -> If yes establish a connection
+phoenixBackend
+  .checkIfPhoenixBackendIsReachable()
+  .then(async () => {
+    const authStatus =
+      currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
+    if (authStatus === 'authenticated') {
+      console.log('[Editor] Attempting to connect to SDS')
+      wsClientStore.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
+    } else if (authStatus === 'expired-or-revoked') {
+      await currentUserStore.logout()
+    } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
+      console.error('[Editor] Auth status is unreachable or unknown')
+    } else {
+      console.log('[Editor] Skipping connection to SDS. Not logged in!')
+    }
+  })
+  .catch((error: Error) => {
+    if (error) {
+      console.error(`[Editor] ${error}`)
+    }
+    throw new Error(
+      '[Editor] Phoenix Backend is not reachable. Please copy the logs and contact the developers.',
+    )
   })
 
 // Ensure the render preview is updated whenever the editor content changes
@@ -55,13 +91,31 @@ editorContentStore.$subscribe(
     const { editorContent } = state
     const renderResp = await handleRender(fileNameStore.fileName, editorContent)
     renderDataStore.setRenderData(renderResp)
+    console.log(renderResp)
+
+    // If there is a connection to the Phoenix backend, send the updated content to the channel
+    if (wsClientStore.hasActiveChannelConnection) {
+      console.log('[Editor] Sending editor update to channel')
+      await wsClientStore.wsClient?.sendEditorUpdate(
+        {
+          body: editorContent,
+          render_url: renderResp.previewURL,
+        },
+        resp => {
+          console.log(`[Editor] Editor update sent (Resp: `, resp, ')')
+        },
+        error => {
+          console.error(`[Editor] Error sending editor update: `, error)
+        },
+      )
+    }
   },
 )
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
-  fullScreenPreviewStore.setFullScreenPreview(true)
-  console.log('Preview button clicked')
+  overlayStateStore.setFullScreenPreview(true)
+  console.log('[Editor] Preview button clicked')
 }
 
 let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
@@ -71,7 +125,7 @@ let unsecureWarningShown: boolean = false
 function unsecuredCopyToClipboard(text: string) {
   if (!unsecureWarningShown) {
     console.warn(
-        "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
+      "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
     )
     unsecureWarningShown = true
   }
@@ -85,7 +139,8 @@ function unsecuredCopyToClipboard(text: string) {
     // Deprecated, but there is not alternative for HTTP-only contexts
     document.execCommand('copy')
   } catch (err) {
-    console.error('Unable to copy to clipboard', err)
+    document.body.removeChild(textArea)
+    throw new Error('[Editor] Unable to copy to clipboard. Cause: ' + err)
   }
   document.body.removeChild(textArea)
 }
@@ -99,13 +154,13 @@ function handleCopyButtonClick() {
     unsecuredCopyToClipboard(editorContentStore.editorContent)
   }
 
-  copyButtonContent.value = 'Copied!';
+  copyButtonContent.value = 'Copied!'
   if (copyButtonTimeout) {
-    clearTimeout(copyButtonTimeout);
+    clearTimeout(copyButtonTimeout)
   }
   copyButtonTimeout = setTimeout(() => {
-    copyButtonContent.value = 'Copy';
-  }, 1000);
+    copyButtonContent.value = 'Copy'
+  }, 1000)
 }
 
 function handleDownloadButtonClick() {
@@ -127,7 +182,7 @@ function handleDownloadButtonClick() {
   }, 1500)
 }
 
-// Last modified is a ref which is updated every second to show the last modified time
+// Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 function getLastModified(): string {
   return getHumanReadableTimeInfo(lastModifiedStore.lastModified)
@@ -138,16 +193,16 @@ setInterval(updateLastModified, 500)
 </script>
 
 <template>
+  <ChannelView />
   <FullScreenPreview />
   <div id="editor-page">
     <div id="menu">
       <div id="menu-left-side">
-        <button id="sandwich-menu-button" class="sandwich-button">
-          <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
-          <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
-        </button>
+        <EditorSandwichDropdown />
         <div id="button-menu">
-          <button class="editor-button" @click="handleCopyButtonClick()">{{ copyButtonContent }}</button>
+          <button class="editor-button" @click="handleCopyButtonClick()">
+            {{ copyButtonContent }}
+          </button>
           <button class="editor-button">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
@@ -194,7 +249,7 @@ setInterval(updateLastModified, 500)
             <p id="init-msg">Start typing and see preview!</p>
             <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
           </div>
-          <h2 v-else-if="previewLoadingStore.previewLoading && !initStateStore.init">
+          <h2 v-else-if="(previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL">
             <span class="dot-dot-dot-flashing"></span>
           </h2>
           <iframe

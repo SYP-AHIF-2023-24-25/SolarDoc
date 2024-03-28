@@ -1,4 +1,4 @@
-import { RestApiApplication } from '../..'
+import { SolardocRestApiApplication } from '../..'
 import { Client, createRestAppClient, givenHttpServerConfig } from '@loopback/testlab'
 
 export async function setupApplication(): Promise<AppWithClient> {
@@ -10,7 +10,7 @@ export async function setupApplication(): Promise<AppWithClient> {
     // port: +process.env.PORT,
   })
 
-  const app = new RestApiApplication({
+  const app = new SolardocRestApiApplication({
     rest: restConfig,
   })
 
@@ -23,6 +23,6 @@ export async function setupApplication(): Promise<AppWithClient> {
 }
 
 export interface AppWithClient {
-  app: RestApiApplication
+  app: SolardocRestApiApplication
   client: Client
 }

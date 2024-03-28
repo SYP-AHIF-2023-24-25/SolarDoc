@@ -1,9 +1,9 @@
 import { Client } from '@loopback/testlab'
-import { RestApiApplication } from '../..'
+import { SolardocRestApiApplication } from '../..'
 import { setupApplication } from './test-helper'
 
 describe('HomePage', () => {
-  let app: RestApiApplication
+  let app: SolardocRestApiApplication
   let client: Client
 
   before('setupApplication', async () => {

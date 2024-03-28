@@ -1,5 +1,4 @@
 import { Presentation } from '../../presentation'
-import { Slide } from '../../slide'
 import { RenderOutput } from '../render-output'
 
 /**
@@ -7,10 +6,7 @@ import { RenderOutput } from '../render-output'
  * @since 0.2.0
  */
 export abstract class TargetRenderer<RawT, OutT> {
-  public constructor() {
-    // TODO!
-    //throw new Error('Not implemented yet!')
-  }
+  public constructor() {}
 
   /**
    * Renders the given {@link Presentation presentation} to the target format.
@@ -18,7 +14,10 @@ export abstract class TargetRenderer<RawT, OutT> {
    * @param config The configuration for the target renderer.
    * @since 0.2.0
    */
-  public abstract render(presentation: Presentation, config?: { [key: string]: any }): Promise<RenderOutput<RawT, OutT>>
+  public abstract render(
+    presentation: Presentation,
+    config?: { [key: string]: any },
+  ): Promise<RenderOutput<RawT, OutT>>
 
   /**
    * Renders a single {@link Slide slide} of the presentation.
@@ -29,20 +28,7 @@ export abstract class TargetRenderer<RawT, OutT> {
    */
   public abstract renderSlide(
     presentation: Presentation,
-    slide: Slide,
-    config?: { [key: string]: any }
-  ): Promise<RenderOutput<RawT, OutT>>
-
-  /**
-   * Renders a single {@link Slide slide} of the presentation.
-   * @param presentation The presentation that should be rendered.
-   * @param slide The index of the slide that should be rendered.
-   * @param config The configuration for the target renderer.
-   * @since 0.2.0
-   */
-  public abstract renderSlide(
-    presentation: Presentation,
     slide: number,
-    config?: { [key: string]: any }
+    config?: { [key: string]: any },
   ): Promise<RenderOutput<RawT, OutT>>
 }

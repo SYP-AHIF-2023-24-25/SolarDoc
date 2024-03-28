@@ -6,13 +6,13 @@ import { useRenderDataStore } from '@/stores/render-data'
 
 const props = defineProps(['colorMode'])
 
-const renderData = useRenderDataStore()
+const renderDataStore = useRenderDataStore()
 const editorContentStore = useEditorContentStore()
 const fileNameStore = useFileNameStore()
 
 async function loadAnyway(): Promise<void> {
   const renderResp = await handleRender(fileNameStore.fileName, editorContentStore.editorContent)
-  renderData.setRenderData(renderResp)
+  renderDataStore.setRenderData(renderResp)
 }
 
 function getColorModeClass(): string {

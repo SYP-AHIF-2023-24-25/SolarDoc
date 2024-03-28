@@ -37,7 +37,7 @@ export interface PresentationMetadata {
    * The index in the array represents the slide index.
    * @since 0.3.0
    */
-  subslideCountPerSlide: number[];
+  subslideCountPerSlide: number[]
 
   /**
    * Returns true if the {@link title} is "Untitled Presentation".
@@ -45,5 +45,5 @@ export interface PresentationMetadata {
    * This is the default title that is used by SolarDoc if no title is specified in the asciidoc file.
    * @since 0.3.1
    */
-  defaultTitle: boolean;
+  defaultTitle: boolean
 }

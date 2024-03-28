@@ -14,10 +14,14 @@ services:
       PUPPETEER_SKIP_DOWNLOAD: true
       PROD_BACKEND_PORT: ${BACKEND_PORT}
       PROD_BACKEND_HOST: ${BACKEND_HOST}
+      PROD_PHOENIX_HOST: ${PHOENIX_HOST}
+      PROD_PHOENIX_PORT: ${PHOENIX_PORT}
       API_BASE_PATH: ${API_BASE_PATH}
+      PHX_BASE_PATH: ${PHX_BASE_PATH}
       NODE_ENV: production
     depends_on:
       - rest-api
+      - phoenix-server
     links:
       - rest-api
     restart: always
@@ -31,6 +35,7 @@ services:
     ports:
       - "3000:3000"
     environment:
+      STAGING: ${STAGING}
       API_BASE_PATH: ${API_BASE_PATH}
       REDIS_ROOT_PASSWORD: ${REDIS_ROOT_PASSWORD}
       REDIS_USERNAME: ${REDIS_USERNAME}
@@ -46,6 +51,22 @@ services:
       redis-db:
         condition: service_healthy
     links:
+      - redis-db
+    restart: always
+  phoenix-server:
+    build: solardoc/phoenix-server
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgresql-db:5432/${POSTGRES_DB}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      PORT: 4000
+    depends_on:
+      postgresql-db:
+        condition: service_healthy
+    links:
+      - postgresql-db
+      - rest-api
       - redis-db
     restart: always
   redis-db:
@@ -66,8 +87,32 @@ services:
       timeout: 3s
       retries: 30
     restart: always
-
+  postgresql-db:
+    build: ./solardoc/postgresql-db
+    ports:
+      - "5432:5432"
+    user: "${UID}:${GID}"
+    environment:
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./solardoc/postgresql-db/scripts:/docker-entrypoint-initdb.d/
+      - ./solardoc/postgresql-db/postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $POSTGRES_DB -U $POSTGRES_USER"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    restart: always
+  postgres-adminer:
+    build: ./solardoc/postgres-adminer
+    ports:
+      - "8081:8080"
+    environment:
+      ADMINER_DESIGN: 'hydra'
+    restart: always
 volumes:
   frontend:
   rest-api-persistent-storage:
-

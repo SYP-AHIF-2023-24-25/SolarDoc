@@ -2,3 +2,7 @@ node_modules/
 dist/
 coverage/
 .eslintrc.js
+src/renderer/simulator/plugins/
+./src/renderer/targets/target-renderer.ts
+./src/renderer/simulator/decktape-utils.ts
+

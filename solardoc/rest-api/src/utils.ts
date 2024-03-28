@@ -1,6 +1,7 @@
 import { Request } from '@loopback/rest'
 import path from 'path'
 import { API_BASE_PATH } from './index'
+import {isDev, isStaging} from "./env";
 
 /**
  * Returns the current date in seconds.
@@ -13,11 +14,12 @@ export function getDateNowInSeconds(): number {
 }
 
 /**
- * Get the host that the user called the API on.
+ * Get the host that the user called the API on i.e. the public URL of the API.
  * @since 0.2.0
  */
 export function getHostURL(req: Request): string {
-  return req.headers.origin ?? (new URL(req.url)).origin
+  const protocol = isDev || isStaging ? 'http' : 'https'
+  return (new URL(`${protocol}://${req.headers.host!}`)).origin
 }
 
 /**
@@ -36,7 +38,7 @@ export function getFileExtension(filename: string): string {
  * @param ext The file extension to check.
  * @since 0.2.0
  */
-export function checkFileExtensionForMimeType(ext: string): string {
+export function checkFileExtensionForMimeType(ext: string) {
   switch (ext) {
     case '.pdf':
       return 'application/pdf'
@@ -45,8 +47,6 @@ export function checkFileExtensionForMimeType(ext: string): string {
     case '.jpg':
     case '.jpeg':
       return 'image/jpeg'
-    case '.svg':
-      return 'image/svg+xml'
     case '.html':
       return 'text/html'
     default:
