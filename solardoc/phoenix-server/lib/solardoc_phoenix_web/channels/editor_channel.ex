@@ -24,10 +24,9 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   @impl true
-  def join("channel:" <> editor_channel_id, %{"auth" => auth}, socket) do
-    with %EditorChannel{} = editor_channel <- EditorChannels.get_channel!(editor_channel_id) do
+  def join("channel:" <> channel_id, %{"auth" => auth}, socket) do
+    with %EditorChannel{} = editor_channel <- EditorChannels.get_channel!(channel_id) do
       if authorized?(editor_channel, %{auth: auth}) do
-        assign(socket, :editor_channel_id, editor_channel_id)
         send(self(), {:after_join, editor_channel: editor_channel})
         {:ok, socket}
       else
@@ -43,7 +42,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   @impl true
-  def join("channel:" <> _editor_channel_id, _params, _socket) do
+  def join("channel:" <> _channel_id, _params, _socket) do
     {:error, %{
       message: "Unauthorized operation"
     }}
@@ -83,9 +82,9 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   @doc """
   Broadcasts the update of the editor content to all clients in the room.
   """
-  def handle_in("editor_update", %{"body" => body, "api_url" => api_url}, socket) do
+  def handle_in("editor_update", %{"body" => body, "render_url" => render_url}, socket) do
     with true <- is_channel_creator(socket) do
-      broadcast!(socket, "editor_update", %{body: body, api_url: api_url})
+      broadcast!(socket, "editor_update", %{body: body, render_url: render_url})
       {:noreply, socket}
     else
       _ -> {:error, %{
@@ -117,6 +116,11 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   defp is_channel_creator(socket) do
-    socket.assigns.editor_channel_id == socket.assigns.user_id
+    "channel:" <> channel_id = socket.topic
+    with %EditorChannel{} = editor_channel <- EditorChannels.get_channel!(channel_id) do
+      true
+    else
+      _ -> false
+    end
   end
 end
