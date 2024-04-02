@@ -118,6 +118,20 @@ simply run the following command (This will use the `latest` tag):
 docker compose -f ./docker-compose.yaml -f ./docker-compose-prod.yaml up
 ----
 
+=== Accessing the Production Database
+
+To access the production database, you will need to connect to the remote server with a set-up SSH tunnel, which allows you to access Adminer or the database locally as well.
+
+If you have started the docker containers using the instructions in the [previous section](#user-content-deploying-using-the-ghcr-github-container-registry-images), then the ports will look like this:
+- PostgreSQL: 5432
+- Adminer: 8082
+
+Using that you can then setup the SSH tunnel using the following command:
+
+```bash
+ssh -L 8082:localhost:8082 -L 5432:localhost:5432 REMOTE_SSH_URL
+```
+
 === Testing
 
 At the moment, tests are only implemented for `@solardoc/asciidoc-renderer`. This is expected to change by v0.3.0, but

@@ -35,12 +35,16 @@ services:
       - solardocnet
     environment:
       PHX_HOST: $DOMAIN
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phoenix-server.rule=Host(`$DOMAIN`) && PathPrefix(`/phx`)"
+      - "traefik.http.routers.phoenix-server.entrypoints=websecure"
+      - "traefik.http.routers.phoenix-server.tls.certresolver=solardocresolver"
   postgresql-db:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-postgresql-db:latest
     networks:
       - solardocnet
   postgres-adminer:
-    image: ghcr.io/syp-ahif-2023-24-25/solardoc-postgres-adminer:latest
     ports: !override
       - "8082:8080"
     networks:
@@ -48,7 +52,6 @@ services:
 
 volumes:
   frontend:
-  certbot-etc:
 
 networks:
   solardocnet:

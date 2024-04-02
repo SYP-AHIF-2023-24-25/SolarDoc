@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  traefik_reverse_proxy:
+  traefik-reverse-proxy:
     image: traefik:v2.10
     volumes:
       # So that Traefik can listen to the Docker events
