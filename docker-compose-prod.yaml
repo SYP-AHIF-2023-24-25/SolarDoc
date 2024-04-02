@@ -52,7 +52,6 @@ services:
 
 volumes:
   frontend:
-  certbot-etc:
 
 networks:
   solardocnet:
