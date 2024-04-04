@@ -33,7 +33,7 @@ defmodule SolardocPhoenix.Share.ShareURL do
     |> foreign_key_constraint(:file_id)
     # 0: none, 1: read, 3: read/write (2 is excluded since only write is not possible)
     |> validate_inclusion(:perms, [0, 1, 3])
-    |> change(expires_at: now + 1.year)
+    |> change(expires_at: NaiveDateTime.add(now, 1, :year))
     |> change(issued_at: now)
     |> change(expired: false)
   end
