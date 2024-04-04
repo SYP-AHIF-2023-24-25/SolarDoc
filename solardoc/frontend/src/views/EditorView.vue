@@ -136,7 +136,7 @@ function unsecuredCopyToClipboard(text: string) {
   textArea.focus()
   textArea.select()
   try {
-    // Deprecated, but there is not alternative for HTTP-only contexts
+    // Deprecated, but there is no alternative for HTTP-only contexts
     document.execCommand('copy')
   } catch (err) {
     document.body.removeChild(textArea)
