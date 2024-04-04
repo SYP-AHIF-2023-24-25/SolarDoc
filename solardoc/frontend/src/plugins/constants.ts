@@ -12,5 +12,5 @@ export default Object.freeze({
     'heading-space-missing-error': 'Error: Heading should have a space after the equal sign/s',
     'list-inconsistent-error': 'Error: Lists should be consistent (use either "." or "*")',
   },
-  version: 'v0.4.0-dev',
+  version: 'v0.4.1',
 })

@@ -4,7 +4,7 @@ image::images/500x1500-banner-with-desc.png[]
 
 SolarDoc is a dynamic online editor which allows you to create beautiful presentations using AsciiDoc in your browser. Collaborate with your colleagues and friends in the online editor and freely share your work with anyone!
 
-🚀 The latest preview of Solardoc can be viewed http://152.67.66.155[here]! (_HTTP-only_) 🚀
+🚀 The latest preview of Solardoc can be viewed https://solardoc.htl-leonding.ac.at[here]! 🚀
 
 == Problem & Background 🛑
 
@@ -42,10 +42,18 @@ The user stories and goals for the project are listed here in the https://github
 * Sprint 2 (Finished 14.12.2023):
 ** Presentation Rendering & Preview (https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/3)
 ** Integration into editor view
-* Sprint 3 (Planned for 18.01.2024):
+* Sprint 3 (Finished 18.01.2024):
 ** PDF & Image Render Target
 ** Additional frontend features
 ** UX Enhancements
+* Sprint 4 (Finished 14.03.2024):
+** Phoenix Backend for Auth-API & WebSocket
+** Login & register pages
+** WebSocket backend with simple user pools to listen for changes
+* Sprint 5 (Finished 04.04.2024):
+** Collaborative Editing
+** Share Links
+** File Storage
 
 == Development 🛠
 
