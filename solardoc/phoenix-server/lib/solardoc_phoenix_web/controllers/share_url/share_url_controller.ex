@@ -1,10 +1,31 @@
 defmodule SolardocPhoenixWeb.ShareURLController do
   use SolardocPhoenixWeb, :controller
+  use PhoenixSwagger, except: [:delete]
 
   alias SolardocPhoenix.Share
   alias SolardocPhoenix.Share.ShareURL
 
   action_fallback SolardocPhoenixWeb.FallbackController
+  @api_path SolardocPhoenixWeb.v1_api_path()
+
+  def swagger_definitions do
+    %{
+      #TODO!! add definition for a share_url
+      Error: swagger_schema do
+        title "Error"
+        description "An error"
+        properties do
+          detail :string, "Error message", required: true
+        end
+      end,
+      Errors: swagger_schema do
+        title "Errors"
+        description "A list of errors"
+        type :array
+        items Schema.ref(:Error)
+      end
+    }
+  end
 
   def index(conn, _params) do
     share_urls = Share.list_share_urls()
