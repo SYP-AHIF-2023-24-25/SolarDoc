@@ -10,7 +10,18 @@ defmodule SolardocPhoenixWeb.ShareURLController do
 
   def swagger_definitions do
     %{
-      #TODO!! add definition for a share_url
+      ShareUrl: swagger_schema do
+        title "ShareUrl"
+        description "A share url"
+        properties do
+          id :string, "Share url UUID", required: true
+          file Schema.ref(:File), "File", required: true
+          expired :boolean, "Is the share url expired", required: true
+          issued_at :naive_datetime, "When the share url was issued", required: true
+          perms :integer, "Permissions", required: true
+          expires_at :naive_datetime, "When the share url expires", required: true
+        end
+      end,
       Error: swagger_schema do
         title "Error"
         description "An error"
@@ -44,14 +55,6 @@ defmodule SolardocPhoenixWeb.ShareURLController do
   def show(conn, %{"id" => id}) do
     share_url = Share.get_share_url!(id)
     render(conn, :show, share_url: share_url)
-  end
-
-  def update(conn, %{"id" => id, "share_url" => share_url_params}) do
-    share_url = Share.get_share_url!(id)
-
-    with {:ok, %ShareURL{} = share_url} <- Share.update_share_url(share_url, share_url_params) do
-      render(conn, :show, share_url: share_url)
-    end
   end
 
   def delete(conn, %{"id" => id}) do
