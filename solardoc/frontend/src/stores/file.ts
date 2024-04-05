@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
 import constants from '@/plugins/constants'
 
-export const useFileNameStore = defineStore('fileName', {
+export const useFileStore = defineStore('fileName', {
   state: () => {
     return {
       fileName: localStorage.getItem(constants.localStorageFileNameKey) || 'untitled.adoc',
+      saveState: 'Saved Locally'
     }
   },
   actions: {
@@ -15,5 +16,9 @@ export const useFileNameStore = defineStore('fileName', {
     storeLocally() {
       localStorage.setItem(constants.localStorageFileNameKey, this.fileName)
     },
+    storeOnServer() {
+      //TODO! add liss stuff
+      this.saveState = 'Saved Remotely'
+    }
   },
 })
