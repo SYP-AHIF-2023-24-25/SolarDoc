@@ -8,7 +8,7 @@ import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { handleRender } from '@/scripts/handle-render'
-import { useFileNameStore } from '@/stores/file-name'
+import { useFileStore } from '@/stores/file'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { useWSClientStore } from '@/stores/ws-client'
@@ -31,7 +31,7 @@ const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const overlayStateStore = useOverlayStateStore()
 const renderDataStore = useRenderDataStore()
-const fileNameStore = useFileNameStore()
+const fileNameStore = useFileStore()
 const lastModifiedStore = useLastModifiedStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const currentUserStore = useCurrentUserStore()
@@ -206,6 +206,9 @@ setInterval(updateLastModified, 500)
           <button class="editor-button">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
+        <div id="save-state">
+          <p>{{fileNameStore.saveState}}</p>
+        </div>
       </div>
       <div id="menu-center">
         <div>
@@ -313,6 +316,19 @@ $right-menu-width: calc(40vw - 0.5rem);
 
 div#editor-page {
   @include view-presets;
+
+  #save-state {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-content: center;
+    padding: 0.5rem;
+    margin: 0;
+
+    p {
+      color: var.$scheme-gray-600;
+    }
+  }
 
   #menu {
     display: flex;

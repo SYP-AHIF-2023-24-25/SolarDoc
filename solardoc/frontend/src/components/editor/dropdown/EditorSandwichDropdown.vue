@@ -5,14 +5,24 @@ import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { ref } from 'vue'
+import {useFileStore} from "@/stores/file";
 
 const darkModeStore = useDarkModeStore()
 const overlayStateStore = useOverlayStateStore()
+const fileStore = useFileStore();
 
 const dropdown = ref(null)
 
 function handleJoinChannel() {
   overlayStateStore.setChannelView(true)
+  ;(
+    dropdown.value as {
+      close: () => void
+    } | null
+  )?.close()
+}
+function handleSaveButtonClick() {
+  fileStore.storeOnServer()
   ;(
     dropdown.value as {
       close: () => void
@@ -37,9 +47,8 @@ function handleJoinChannel() {
       </button>
     </template>
     <div id="dropdown-elements">
-      <div class="dropdown-element">Close file (In work...)</div>
-      <div class="dropdown-element">Save (In work...)</div>
       <div class="dropdown-element" @click="handleJoinChannel()">Channels</div>
+      <div class="dropdown-element" @click="handleSaveButtonClick">Save in profile (In work...)</div>
       <div class="dropdown-element">Settings (In work...)</div>
     </div>
   </Dropdown>
