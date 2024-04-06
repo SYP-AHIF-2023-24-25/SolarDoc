@@ -7,7 +7,7 @@ services:
         PUPPETEER_SKIP_DOWNLOAD: "true"
     volumes:
       - ./solardoc/frontend:/home/node/app
-      - ./solardoc/frontend/nginx/nginx-dev.conf:/etc/nginx/conf.d/nginx.conf
+      - ./solardoc/frontend/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
     ports:
       - "80:80"
     environment:
