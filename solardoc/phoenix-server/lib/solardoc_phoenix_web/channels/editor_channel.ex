@@ -6,19 +6,25 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   alias SolardocPhoenix.EditorChannels.EditorChannel
   alias SolardocPhoenixWeb.ChangesetJSON
   alias SolardocPhoenixWeb.EditorChannelJSON
+  alias SolardocPhoenixWeb.EditorChannelState
 
   @impl true
-  def join("channel:new", %{"data" => data}, socket) do
+  def join("channel:new", %{"data" => data, "state" => state}, socket) do
     data = Map.put(data, "creator_id", socket.assigns.user_id)
     with {:ok, editor_channel} <- EditorChannels.create_channel(data) do
       editor_channel = Repo.preload(editor_channel, :creator)
+
+      # We assume that the user holds the truth about the channel state, so as such we simply load this into the server
+      # state. (Potentially in the future we will also save the state to the database, but for now we keep it simple)
+      EditorChannelState.update(editor_channel.id, state)
+
       send(self(), {:after_create, editor_channel: editor_channel})
       {:ok, socket}
     else
       {:error, changeset} -> {:error, %{
         message: "Failed to create the channel",
         data: data,
-        errors: ChangesetJSON.error(%{changeset: changeset})
+        errors: ChangesetJSON.error(%{changeset: changeset}),
       }}
     end
   end
@@ -26,25 +32,41 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   @impl true
   def join("channel:" <> channel_id, %{"auth" => auth}, socket) do
     with %EditorChannel{} = editor_channel <- EditorChannels.get_channel!(channel_id) do
+      state = EditorChannelState.get(channel_id)
+      if state == nil do
+        # TODO! Load the state from the database. This is not an active channel and as such we haven't saved the
+        # state to the server state yet (which is RAM based)
+      end
+
       if authorized?(editor_channel, %{auth: auth}) do
         send(self(), {:after_join, editor_channel: editor_channel})
         {:ok, socket}
       else
         {:error, %{
-          message: "Unauthorized operation"
+          message: "Unauthorized operation",
         }}
       end
     else
       _ -> {:error, %{
-        message: "Not found"
+        message: "Not found",
       }}
     end
   end
 
   @impl true
-  def join("channel:" <> _channel_id, _params, _socket) do
+  def join("channel:" <> _channel_id, data, _socket) do
     {:error, %{
-      message: "Unauthorized operation"
+      message: "Invalid operation",
+      data: data,
+    }}
+  end
+
+  @impl true
+  def join(_topic, data, _socket) do
+    {:error, %{
+      message: "Unknown topic. No operation possible.",
+      topic: _topic,
+      data: data,
     }}
   end
 
@@ -55,6 +77,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def handle_info({:after_create, editor_channel: editor_channel}, socket) do
+    IO.puts(EditorChannelState.get(editor_channel.id))
     broadcast!(
       socket,
       "new_channel",
@@ -70,6 +93,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def handle_info({:after_join, editor_channel: editor_channel}, socket) do
+    IO.puts(EditorChannelState.get(editor_channel.id))
     broadcast!(socket, "user_join", %{
       body: "A new user has joined a channel",
       channel_id: editor_channel.id,
