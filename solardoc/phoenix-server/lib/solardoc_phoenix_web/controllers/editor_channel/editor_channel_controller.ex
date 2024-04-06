@@ -74,7 +74,7 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameters do
-      id :path, :integer, "Editor channel ID", required: true
+      id :path, :string, "Editor channel ID", required: true
     end
     response 200, "OK", Schema.ref(:EditorChannel)
     response 401, "Unauthorized", Schema.ref(:Errors)
