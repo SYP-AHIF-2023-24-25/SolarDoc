@@ -39,6 +39,14 @@ defmodule SolardocPhoenix.Files do
 
   @doc """
   Gets all files owned by a user.
+
+  ## Examples
+
+      iex> get_files_for_user(123)
+      [%File{}, ...]
+
+      iex> get_files_for_user(456)
+      []
   """
   def get_files_for_user(user_id), do: Repo.all(from file in File, where: file.owner_id == ^user_id)
 
