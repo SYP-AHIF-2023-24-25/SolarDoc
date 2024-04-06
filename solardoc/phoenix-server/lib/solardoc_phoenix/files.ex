@@ -103,15 +103,19 @@ defmodule SolardocPhoenix.Files do
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking file changes.
+  Updates the content of a file.
 
   ## Examples
 
-      iex> change_file(file)
-      %Ecto.Changeset{data: %File{}}
+      iex> update_content(file, %{content: "new content"})
+      {:ok, %File{}}
 
+      iex> update_content(file, %{content: 1})
+      {:error, %Ecto.Changeset{}}
   """
-  def change_file(%File{} = file, attrs \\ %{}) do
-    File.changeset(file, attrs)
+  def change_content(%File{} = file, attrs \\ %{}) do
+    file
+    |> File.content_changeset(attrs)
+    |> Repo.update()
   end
 end
