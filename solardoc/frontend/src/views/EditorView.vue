@@ -467,8 +467,16 @@ div#editor-page {
           flex-direction: column;
 
           #init-msg {
-            font-size: 2rem;
-            margin: 0 0 2rem 0;
+            margin: 0.5rem 0.5rem 2rem 0.5rem;
+
+            // Change font size depending on the screen width
+            font-size: 1.2rem;
+
+            @media screen and (min-width: var.$window-large) {
+              & {
+                font-size: 2rem;
+              }
+            }
           }
         }
 
