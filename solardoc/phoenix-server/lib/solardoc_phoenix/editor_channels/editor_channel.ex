@@ -42,7 +42,7 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   def create_changeset(channel, attrs, opts \\ []) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     channel
-    |> cast(attrs, [:name, :password, :description, :creator_id, :file])
+    |> cast(attrs, [:name, :password, :description, :creator_id, :file_id])
     |> validate_name()
     |> validate_password(opts)
     |> foreign_key_constraint(:creator_id)
