@@ -68,7 +68,7 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
   end
 
   swagger_path :show do
-    get "#{@api_path}/editor_channels/:id"
+    get "#{@api_path}/editor_channels/{id}"
     produces "application/json"
     summary "Get a single editor channel"
     deprecated false
