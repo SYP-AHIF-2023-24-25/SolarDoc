@@ -114,11 +114,12 @@ defmodule SolardocPhoenixWeb.FileController do
   end
 
   def show(conn, %{"id" => id}) do
-    file = Files.get_file!(id)
-    with true <- is_owner(conn.assigns.current_user, file) do
+    with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
+         {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)} do
       render(conn, :show, file: file)
     else
-      false -> {:error, :unauthorized}
+      {:file_exists, _} -> {:error, :not_found}
+      {:is_owner, false} -> {:error, :unauthorized}
     end
   end
 
@@ -137,12 +138,14 @@ defmodule SolardocPhoenixWeb.FileController do
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
-  def update(conn, %{"id" => id, "file" => file_params}) do
-    with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
+  def update(conn, file_params) do
+    with {:id, id} <- {:id, file_params["id"]},
+         {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
          {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)},
          {:ok, %File{} = file} <- Files.update_file(file, file_params) do
       render(conn, :show, file: file)
     else
+      {:id, _} -> {:error, :not_found}
       {:file_exists, _} -> {:error, :not_found}
       {:is_owner, false} -> {:error, :unauthorized}
       {:error, changeset} -> {:error, changeset}
@@ -163,13 +166,15 @@ defmodule SolardocPhoenixWeb.FileController do
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
-  def delete(conn, %{"id" => id}) do
-    file = Files.get_file!(id)
-
-    with {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)},
+  def delete(conn, params) do
+    with {:id, id} <- {:id, params["id"]},
+         {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
+         {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)},
          {:ok, %File{}} <- Files.delete_file(file) do
         send_resp(conn, :no_content, "")
     else
+      {:id, _} -> {:error, :not_found}
+      {:file_exists, _} -> {:error, :not_found}
       {:is_owner, false} -> {:error, :unauthorized}
       {:error, changeset} -> {:error, changeset}
     end
