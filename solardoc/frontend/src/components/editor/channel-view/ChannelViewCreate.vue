@@ -75,6 +75,8 @@ async function submitForm(
       console.error('[ChannelView] Error creating channel', errorResp)
     },
     newChannel,
+    // Current-User must be present since otherwise the user wouldn't be able to access this form
+    currentUserStore.currentUser!.id
   )
   loadingState.value = true
 }
