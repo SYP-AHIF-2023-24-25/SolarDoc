@@ -19,9 +19,17 @@ defmodule SolardocPhoenixWeb.ShareURLJSON do
     %{
       id: share_url.id,
       file: share_url.file,
-      issued_at: share_url.issued_at,
+      issued_at: if share_url.issued_at do
+        share_url.issued_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_unix(:millisecond)
+      else
+        nil
+      end,
       perms: share_url.perms,
-      expires_at: share_url.expires_at,
+      expires_at: if share_url.expires_at do
+        share_url.expires_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_unix(:millisecond)
+      else
+        nil
+      end,
       expired: share_url.expired
     }
   end
