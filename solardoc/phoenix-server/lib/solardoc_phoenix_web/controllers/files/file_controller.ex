@@ -50,7 +50,6 @@ defmodule SolardocPhoenixWeb.FileController do
       type :array
       items Schema.ref(:Error)
     end
-
   }
   end
 
@@ -124,7 +123,6 @@ defmodule SolardocPhoenixWeb.FileController do
       id :path, :string, "File ID", required: true
       file :body, Schema.ref(:File), "file attributes", required: true
     end
-    parameter("file", :body, Schema.ref(:File), "file attributes", required: true)
     response 200, "OK", Schema.ref(:File)
     response 400, "Bad Request", Schema.ref(:Errors)
     response 401, "Unauthorized", Schema.ref(:Errors)

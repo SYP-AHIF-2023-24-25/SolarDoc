@@ -58,7 +58,7 @@ defmodule SolardocPhoenixWeb.UserAuthController do
     parameters do
       user :body, Schema.ref(:UserLogin), "user login attributes"
     end
-    response 200, "OK", Schema.ref(:UserToken)
+    response 201, "Created", Schema.ref(:UserToken)
     response 400, "Bad Request", Schema.ref(:Errors)
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
