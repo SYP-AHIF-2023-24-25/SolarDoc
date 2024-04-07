@@ -64,7 +64,7 @@ defmodule SolardocPhoenix.Files do
   """
   def create_file(attrs \\ %{}) do
     %File{}
-    |> File.changeset(attrs)
+    |> File.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -82,7 +82,7 @@ defmodule SolardocPhoenix.Files do
   """
   def update_file(%File{} = file, attrs) do
     file
-    |> File.changeset(attrs)
+    |> File.update_changeset(attrs)
     |> Repo.update()
   end
 

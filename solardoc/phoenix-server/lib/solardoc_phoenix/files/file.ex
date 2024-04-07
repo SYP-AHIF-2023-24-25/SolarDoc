@@ -14,30 +14,24 @@ defmodule SolardocPhoenix.Files.File do
   end
 
   @doc false
-  def changeset(file, attrs) do
-    file
-    |> cast(attrs, [:file_name, :last_edited, :created, :owner_id])
-    |> validate_required([:file_name, :last_edited, :created, :owner_id])
-  end
-
-  @doc """
-  A file changeset for creation.
-  """
-
-  def create_changeset(file, attrs, opts \\ []) do
+  def create_changeset(file, attrs) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     file
     |> cast(attrs, [:file_name, :owner_id])
+    |> validate_required([:file_name, :owner_id])
+    |> validate_length(:file_name, min: 1, max: 40)
+    |> unique_constraint(:file_name)
     |> foreign_key_constraint(:owner_id)
     |> change(created: now, last_edited: now)
   end
 
-  @doc """
-  A file changeset for updating.
-  """
+  @doc false
   def update_changeset(file, attrs) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     file
-    |> change(last_edited: now,file_name: attrs.file_name)
+    |> cast(attrs, [:file_name, :content])
+    |> unique_constraint([:file_name, :owner_id])
+    |> validate_length(:file_name, min: 1, max: 40)
+    |> change(last_edited: now)
   end
 end
