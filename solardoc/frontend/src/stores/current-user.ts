@@ -132,7 +132,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
       } catch (e) {
         throw new PhoenixInternalError('Critically failed to logout. Cause: ' + (<Error>e).message)
       }
-      if (resp.status === 200) {
+      if (resp.status === 204) {
         this.clean()
       } else if (resp.status === 400) {
         this.clean()
