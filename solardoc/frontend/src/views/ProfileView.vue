@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
+import {PhoenixRestError} from "@/services/phoenix/errors";
 
 const currentUserStore = useCurrentUserStore()
 const $router = useRouter()
@@ -13,7 +14,15 @@ if (!currentUserStore.loggedIn) {
 }
 
 async function logout() {
-  await currentUserStore.logout()
+  try {
+    await currentUserStore.logout()
+  } catch (e) {
+    if (e instanceof PhoenixRestError && e.errorCode === 401) {
+      console.warn("[Profile] User is not logged in (Token gone or expired, user deleted or other reason), redirecting to login page.")
+    } else {
+      throw e
+    }
+  }
   await $router.push('/login')
 }
 </script>

@@ -8,3 +8,4 @@ coverage
 openapi.json
 *.rdb
 postgresql-db/postgres-data
+temp

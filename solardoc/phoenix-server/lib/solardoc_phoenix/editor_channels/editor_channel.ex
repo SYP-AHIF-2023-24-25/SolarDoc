@@ -11,6 +11,7 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
     field :description, :string
     field :active_since, :naive_datetime
     belongs_to :creator, SolardocPhoenix.Accounts.User
+    belongs_to :file, SolardocPhoenix.Files.File
 
     timestamps(type: :utc_datetime)
   end
@@ -18,8 +19,8 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   @doc false
   def changeset(channel, attrs) do
     channel
-    |> cast(attrs, [:name, :description, :active_since, :creator])
-    |> validate_required([:name, :description, :active_since, :creator])
+    |> cast(attrs, [:name, :description, :active_since, :creator, :file])
+    |> validate_required([:name, :description, :active_since, :creator, :file])
   end
 
   @doc """
@@ -41,10 +42,11 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   def create_changeset(channel, attrs, opts \\ []) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     channel
-    |> cast(attrs, [:name, :password, :description, :creator_id])
+    |> cast(attrs, [:name, :password, :description, :creator_id, :file])
     |> validate_name()
     |> validate_password(opts)
     |> foreign_key_constraint(:creator_id)
+    |> foreign_key_constraint(:file_id)
     |> change(active_since: now)
   end
 
