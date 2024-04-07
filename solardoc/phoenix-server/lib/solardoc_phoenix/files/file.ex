@@ -18,7 +18,7 @@ defmodule SolardocPhoenix.Files.File do
   def create_changeset(file, attrs) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     file
-    |> cast(attrs, [:file_name, :owner_id])
+    |> cast(attrs, [:file_name, :owner_id, :content])
     |> validate_required([:file_name, :owner_id])
     |> validate_length(:file_name, min: 1, max: 40)
     |> unique_constraint([:file_name, :owner_id])
