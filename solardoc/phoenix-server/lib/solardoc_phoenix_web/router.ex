@@ -94,6 +94,9 @@ defmodule SolardocPhoenixWeb.Router do
 
     # Solardoc Auth API - Logging out i.e. deleting the user bearer token
     delete "/auth/bearer", UserAuthController, :delete
+
+    # File routes
+    resources "/files", FileController, only: [:index,:create, :show, :update, :delete]
   end
 
   ########## - General API Info - ##########
@@ -129,6 +132,8 @@ defmodule SolardocPhoenixWeb.Router do
         %{name: "UserAuth", description: "User authentication resources"},
         %{name: "UserConfirmation", description: "User confirmation resources"},
         %{name: "UserSettings", description: "User settings resources"},
+        %{name: "EditorChannel", description: "Editor channel resources"},
+        %{name: "File", description: "File resources"},
       ]
     }
   end
