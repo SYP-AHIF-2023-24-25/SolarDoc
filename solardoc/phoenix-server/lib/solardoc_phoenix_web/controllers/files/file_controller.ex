@@ -128,7 +128,7 @@ defmodule SolardocPhoenixWeb.FileController do
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
-  def update(conn, id, file_params) do
+  def update(conn, %{"id" => id, "file" => file_params}) do
     with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
          {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)},
          {:ok, %File{} = file} <- Files.update_file(file, file_params) do
