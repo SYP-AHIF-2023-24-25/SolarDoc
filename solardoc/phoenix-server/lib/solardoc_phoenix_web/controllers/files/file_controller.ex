@@ -82,10 +82,8 @@ defmodule SolardocPhoenixWeb.FileController do
     response 400, "Bad Request", Schema.ref(:Errors)
   end
 
-  def create(conn,file_params) do
+  def create(conn, file_params) do
     file_params = Map.put(file_params, "owner_id", conn.assigns.current_user.id)
-    file_params = Map.put(file_params, "created", DateTime.utc_now())
-    file_params = Map.put(file_params, "last_edited", DateTime.utc_now())
     with {:ok, %File{} = file} <- Files.create_file(file_params) do
       conn
       |> put_status(:created)
@@ -112,7 +110,7 @@ defmodule SolardocPhoenixWeb.FileController do
     with true <- is_owner(conn.assigns.current_user, file) do
       render(conn, :show, file: file)
     else
-      false -> {:error, :Unauthorized}
+      false -> {:error, :unauthorized}
     end
   end
 
@@ -132,14 +130,15 @@ defmodule SolardocPhoenixWeb.FileController do
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
-  def update(conn,id,file_params) do
-    file = Files.get_file!(id)
-    file_params = Map.put(file_params, "last_edited", DateTime.utc_now())
-    with true <- is_owner(conn.assigns.current_user, file),
+  def update(conn, id, file_params) do
+    with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
+         {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)},
          {:ok, %File{} = file} <- Files.update_file(file, file_params) do
       render(conn, :show, file: file)
     else
-      :error -> {:error, :Unauthorized}
+      {:file_exists, _} -> {:error, :not_found}
+      {:is_owner, false} -> {:error, :unauthorized}
+      {:error, changeset} -> {:error, changeset}
     end
   end
 
@@ -161,11 +160,12 @@ defmodule SolardocPhoenixWeb.FileController do
   def delete(conn, %{"id" => id}) do
     file = Files.get_file!(id)
 
-    with true <- is_owner(conn.assigns.current_user, file),
+    with {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)},
          {:ok, %File{}} <- Files.delete_file(file) do
         send_resp(conn, :no_content, "")
     else
-      :error -> {:error, :Unauthorized}
+      {:is_owner, false} -> {:error, :unauthorized}
+      {:error, changeset} -> {:error, changeset}
     end
   end
 
