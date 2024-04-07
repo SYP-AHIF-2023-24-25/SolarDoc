@@ -76,7 +76,7 @@ async function submitForm(
     },
     newChannel,
     // Current-User must be present since otherwise the user wouldn't be able to access this form
-    currentUserStore.currentUser!.id,
+    currentUserStore.currentUser!.id
   )
   loadingState.value = true
 }
