@@ -1,6 +1,6 @@
 {
   "name": "@solardoc/frontend",
-  "version": "0.4.1",
+  "version": "0.5.0-dev",
   "description": "SolarDoc frontend using Vue 3 and Vite",
   "private": true,
   "keywords": [
