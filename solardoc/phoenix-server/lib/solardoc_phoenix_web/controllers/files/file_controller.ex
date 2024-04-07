@@ -4,7 +4,6 @@ defmodule SolardocPhoenixWeb.FileController do
 
   alias SolardocPhoenix.Files
   alias SolardocPhoenix.Files.File
-  alias SolardocPhoenix.Accounts
   alias SolardocPhoenix.Accounts.User
 
   action_fallback SolardocPhoenixWeb.FallbackController
@@ -20,8 +19,8 @@ defmodule SolardocPhoenixWeb.FileController do
         id :string, "File UUID", required: false
         file_name :string, "File name", required: true
         owner_id :string, "Owner id", required: false
-        last_edited :integer, "last edited", required: false
-        created :integer, "creation date", required: false
+        last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: false
+        created :integer, "Creation date in UNIX timestamp milliseconds", required: false
       end
     end,
     Files: swagger_schema do
