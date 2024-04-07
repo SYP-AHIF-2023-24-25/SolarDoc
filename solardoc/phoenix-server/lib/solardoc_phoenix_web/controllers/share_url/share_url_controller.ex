@@ -38,6 +38,15 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     }
   end
 
+  swagger_path :index do
+    get "#{@api_path}/share_urls"
+    produces "application/json"
+    summary "list all share urls"
+    deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
+    response 200, "OK", Schema.ref(:ShareUrl)
+    response 401, "Unauthorized", Schema.ref(:Errors)
+  end
   def index(conn, _params) do
     share_urls = Share.list_share_urls()
     render(conn, :index, share_urls: share_urls)

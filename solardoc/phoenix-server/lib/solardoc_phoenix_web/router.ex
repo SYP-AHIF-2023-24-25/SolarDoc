@@ -94,6 +94,9 @@ defmodule SolardocPhoenixWeb.Router do
 
     # Solardoc Auth API - Logging out i.e. deleting the user bearer token
     delete "/auth/bearer", UserAuthController, :delete
+
+    # Share URL routes
+    resources "/share_urls", ShareURLController, only: [:index, :show, :create, :update, :delete]
   end
 
   ########## - General API Info - ##########
