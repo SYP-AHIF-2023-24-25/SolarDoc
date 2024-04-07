@@ -17,9 +17,9 @@ defmodule SolardocPhoenixWeb.ShareURLController do
           id :string, "Share url UUID", required: true
           file Schema.ref(:File), "File", required: true
           expired :boolean, "Is the share url expired", required: true
-          issued_at :naive_datetime, "When the share url was issued", required: true
+          issued_at :integer, "When the share url was issued in milliseconds", required: true
           perms :integer, "Permissions", required: true
-          expires_at :naive_datetime, "When the share url expires", required: true
+          expires_at :integer, "When the share url expires in milliseconds", required: true
         end
       end,
       Error: swagger_schema do
