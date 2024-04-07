@@ -75,6 +75,7 @@ defmodule SolardocPhoenixWeb.UserController do
     produces "application/json"
     summary "List all users"
     deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
     response 200, "OK", Schema.ref(:UsersPublic)
   end
 
