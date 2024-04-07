@@ -38,7 +38,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   def join("channel:" <> channel_id, %{"auth" => auth}, socket) do
     with {:exists, %EditorChannel{} = editor_channel} <- {:exists, EditorChannels.get_channel!(channel_id)},
          {:authorised, true} <- {:authorised, authorized?(editor_channel, %{auth: auth})} do
-      state = EditorChannelState.get(channel_id)
+      state = EditorChannelState.get_curr_state(channel_id)
       if state == nil do
         state = editor_channel.file.content
         EditorChannelState.force_set_state(channel_id, state)
@@ -75,7 +75,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def handle_info({:after_create, editor_channel: editor_channel, state: state}, socket) do
-    IO.puts(EditorChannelState.get(editor_channel.id))
+    IO.puts(EditorChannelState.get_curr_state(editor_channel.id))
     broadcast!(
       socket,
       "new_channel",
@@ -92,7 +92,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def handle_info({:after_join, editor_channel: editor_channel, state: state}, socket) do
-    IO.puts(EditorChannelState.get(editor_channel.id))
+    IO.puts(EditorChannelState.get_curr_state(editor_channel.id))
     broadcast!(socket, "user_join", %{
       body: "A new user has joined a channel",
       channel_id: editor_channel.id,
