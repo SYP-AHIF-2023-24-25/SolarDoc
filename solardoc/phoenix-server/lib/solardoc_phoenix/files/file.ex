@@ -31,6 +31,7 @@ defmodule SolardocPhoenix.Files.File do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     file
     |> cast(attrs, [:file_name, :content])
+    |> validate_required([:file_name])
     |> unique_constraint([:file_name, :owner_id])
     |> validate_length(:file_name, min: 1, max: 40)
     |> change(last_edited: now)
