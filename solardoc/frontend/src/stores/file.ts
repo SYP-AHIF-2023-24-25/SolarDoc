@@ -5,7 +5,7 @@ export const useFileStore = defineStore('fileName', {
   state: () => {
     return {
       fileName: localStorage.getItem(constants.localStorageFileKey) || 'untitled.adoc',
-      saveState: 'Saved Locally'
+      saveState: 'Saved Locally',
     }
   },
   actions: {

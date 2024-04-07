@@ -35,12 +35,12 @@ async function submitForm(
   try {
     resp = await phoenixBackend.postV1AuthBearer(loginUser)
   } catch (e) {
-    console.error('Signup rejected by backend. Cause: ' + e)
+    console.error('[Login] Signup rejected by backend. Cause: ' + e)
     return
   }
 
-  if (resp.status === 200) {
-    console.log('Login successful')
+  if (resp.status === 201) {
+    console.log('[Login] Login successful. Redirecting to profile page')
     currentUserStore.setCurrentAuth(resp.data)
 
     await currentUserStore.fetchCurrentUser()
