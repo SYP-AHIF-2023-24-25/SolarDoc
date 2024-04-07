@@ -61,6 +61,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     end
   end
 
+  # lisas part has the getting file part
   def show(conn, %{"id" => id}) do
     share_url = Share.get_share_url!(id)
     render(conn, :show, share_url: share_url)
