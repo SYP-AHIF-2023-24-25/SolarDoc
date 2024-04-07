@@ -21,7 +21,7 @@ defmodule SolardocPhoenix.Files.File do
     |> cast(attrs, [:file_name, :owner_id])
     |> validate_required([:file_name, :owner_id])
     |> validate_length(:file_name, min: 1, max: 40)
-    |> unique_constraint(:file_name)
+    |> unique_constraint([:file_name, :owner_id])
     |> foreign_key_constraint(:owner_id)
     |> change(created: now, last_edited: now)
   end
