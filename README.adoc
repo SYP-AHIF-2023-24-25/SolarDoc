@@ -143,3 +143,7 @@ To run the tests, run the following command:
 ----
 pnpm run test
 ----
+
+== Is it any good?
+
+https://news.ycombinator.com/item?id=3067434[Yes.]

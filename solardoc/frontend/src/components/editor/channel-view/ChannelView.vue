@@ -111,12 +111,26 @@ refreshChannels()
   #channel-view {
     position: relative;
     flex: 0 1 auto;
-    width: 50vw;
     height: max-content;
     border-radius: 1rem;
     padding: 0.5rem 2rem;
     background-color: var.$overlay-background-color;
     box-shadow: 0 0 10px 0 var.$box-shadow-color;
+
+    // Adjust size depending on the screen width
+    width: 90vw;
+
+    @media screen and (min-width: var.$window-medium) {
+      & {
+        width: 60vw;
+      }
+    }
+
+    @media screen and (min-width: var.$window-large) {
+      & {
+        width: 50vw;
+      }
+    }
 
     #channel-view-list {
       display: flex;

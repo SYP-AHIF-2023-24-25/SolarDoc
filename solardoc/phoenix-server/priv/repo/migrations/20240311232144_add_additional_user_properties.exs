@@ -1,4 +1,4 @@
-defmodule SolardocPhoenix.Repo.Migrations.AddedAdditionalUserProperties do
+defmodule SolardocPhoenix.Repo.Migrations.AddAdditionalUserProperties do
   use Ecto.Migration
 
   def change do

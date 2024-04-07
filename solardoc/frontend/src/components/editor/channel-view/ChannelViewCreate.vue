@@ -45,7 +45,6 @@ async function submitForm(
     name: form$.requestData['channel-name'],
     description: form$.requestData.description,
     password: form$.requestData.password,
-    creator: currentUserStore.currentUser!.id,
   } satisfies CreateEditorChannel
 
   async function joinNewChannel(channel: EditorChannel) {
@@ -70,7 +69,6 @@ async function submitForm(
   await wsClientStore.wsClient.createChannel(
     async channel => {
       console.log('[ChannelView] Channel created', channel)
-
       await joinNewChannel(channel)
     },
     errorResp => {

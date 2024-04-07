@@ -1,24 +1,29 @@
 defmodule SolardocPhoenixWeb.EditorChannel do
   use SolardocPhoenixWeb, :channel
 
+  alias Ecto.UUID
   alias SolardocPhoenix.Repo
   alias SolardocPhoenix.EditorChannels
   alias SolardocPhoenix.EditorChannels.EditorChannel
+  alias SolardocPhoenix.Files
   alias SolardocPhoenixWeb.ChangesetJSON
   alias SolardocPhoenixWeb.EditorChannelJSON
   alias SolardocPhoenixWeb.EditorChannelState
+  alias SolardocPhoenixWeb.EditorChannelTrans
 
   @impl true
   def join("channel:new", %{"data" => data, "state" => state}, socket) do
-    data = Map.put(data, "creator_id", socket.assigns.user_id)
-    with {:ok, editor_channel} <- EditorChannels.create_channel(data) do
+    with {:ok, editor_channel} <- EditorChannels.create_channel(Map.put(data, "creator_id", socket.assigns.user_id)) do
       editor_channel = Repo.preload(editor_channel, :creator)
+      file = Repo.preload(editor_channel, :file)
 
       # We assume that the user holds the truth about the channel state, so as such we simply load this into the server
-      # state. (Potentially in the future we will also save the state to the database, but for now we keep it simple)
-      EditorChannelState.update(editor_channel.id, state)
+      # state. To make sure that the state is in sync with the database (which it should usually be, but potentially
+      # there a recent un-synced state), we should load the state into the database as well.
+      EditorChannelState.force_set_state(editor_channel.id, state)
+      Files.change_content(file, %{content: state})
 
-      send(self(), {:after_create, editor_channel: editor_channel})
+      send(self(), {:after_create, editor_channel: editor_channel, state: state})
       {:ok, socket}
     else
       {:error, changeset} -> {:error, %{
@@ -31,24 +36,22 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def join("channel:" <> channel_id, %{"auth" => auth}, socket) do
-    with %EditorChannel{} = editor_channel <- EditorChannels.get_channel!(channel_id) do
+    with {:exists, %EditorChannel{} = editor_channel} <- {:exists, EditorChannels.get_channel!(channel_id)},
+         {:authorised, true} <- {:authorised, authorized?(editor_channel, %{auth: auth})} do
       state = EditorChannelState.get(channel_id)
       if state == nil do
-        # TODO! Load the state from the database. This is not an active channel and as such we haven't saved the
-        # state to the server state yet (which is RAM based)
+        state = editor_channel.file.content
+        EditorChannelState.force_set_state(channel_id, state)
       end
 
-      if authorized?(editor_channel, %{auth: auth}) do
-        send(self(), {:after_join, editor_channel: editor_channel})
-        {:ok, socket}
-      else
-        {:error, %{
-          message: "Unauthorized operation",
-        }}
-      end
+      send(self(), {:after_join, editor_channel: editor_channel, state: state})
+      {:ok, socket}
     else
-      _ -> {:error, %{
+      {:exists, _} -> {:error, %{
         message: "Not found",
+      }}
+      {:authorised, false} -> {:error, %{
+        message: "Unauthorized operation",
       }}
     end
   end
@@ -62,21 +65,16 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   @impl true
-  def join(_topic, data, _socket) do
+  def join(topic, data, _socket) do
     {:error, %{
       message: "Unknown topic. No operation possible.",
-      topic: _topic,
+      topic: topic,
       data: data,
     }}
   end
 
   @impl true
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
-  end
-
-  @impl true
-  def handle_info({:after_create, editor_channel: editor_channel}, socket) do
+  def handle_info({:after_create, editor_channel: editor_channel, state: state}, socket) do
     IO.puts(EditorChannelState.get(editor_channel.id))
     broadcast!(
       socket,
@@ -85,6 +83,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
         body: "A new channel has been created",
         editor_channel: EditorChannelJSON.show(%{editor_channel: editor_channel}),
         creator_id: socket.assigns.user_id,
+        state: state,
         from: "system"
       }
     )
@@ -92,23 +91,44 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   @impl true
-  def handle_info({:after_join, editor_channel: editor_channel}, socket) do
+  def handle_info({:after_join, editor_channel: editor_channel, state: state}, socket) do
     IO.puts(EditorChannelState.get(editor_channel.id))
     broadcast!(socket, "user_join", %{
       body: "A new user has joined a channel",
       channel_id: editor_channel.id,
       user_id: socket.assigns.user_id,
+      state: state,
       from: "system"
     })
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_info({:process_state_trans, %EditorChannelTrans{} = trans}, socket) do
+    IO.puts("Processing transformation received from #{trans.user_id} (#{trans.timestamp})")
+    # TODO!
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_in(_ping = "ping", payload, socket) do
+    {:reply, {:ok, payload}, socket}
+  end
+
   @doc """
   Broadcasts the update of the editor content to all clients in the room.
   """
-  def handle_in("editor_update", %{"body" => body, "render_url" => render_url}, socket) do
+  def handle_in(_state_trans = "state_trans", %{"trans" => trans, "timestamp" => timestamp}, socket) do
     with true <- is_channel_creator(socket) do
-      broadcast!(socket, "editor_update", %{body: body, render_url: render_url})
+      send(self(), {
+        :process_state_trans,
+        trans: %EditorChannelTrans{
+          trans_id: gen_state_uuid(),
+          trans: trans,
+          timestamp: DateTime.from_unix!(timestamp, :millisecond) |> NaiveDateTime.truncate(:second),
+          user_id: socket.assigns.user_id
+        }
+      })
       {:noreply, socket}
     else
       _ -> {:error, %{
@@ -118,7 +138,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   @impl true
-  def handle_in("shout", payload, socket) do
+  def handle_in(_shout = "shout", payload, socket) do
     broadcast(socket, "shout", payload)
     {:noreply, socket}
   end
@@ -126,7 +146,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   @impl true
   def terminate(reason, socket) do
     IO.puts("Terminating #{inspect(socket)} because #{inspect(reason)}")
-    # TODO! Destroy the editor channel if the creator leaves
     :ok
   end
 
@@ -135,13 +154,17 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     {:noreply, socket}
   end
 
+  defp gen_state_uuid() do
+    UUID.generate()
+  end
+
   defp authorized?(editor_channel, %{auth: auth}) do
     EditorChannel.valid_password?(editor_channel, auth)
   end
 
   defp is_channel_creator(socket) do
     "channel:" <> channel_id = socket.topic
-    with %EditorChannel{} = editor_channel <- EditorChannels.get_channel!(channel_id) do
+    with %EditorChannel{} <- EditorChannels.get_channel!(channel_id) do
       true
     else
       _ -> false
