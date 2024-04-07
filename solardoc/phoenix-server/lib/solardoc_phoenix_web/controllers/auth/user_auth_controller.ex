@@ -68,7 +68,9 @@ defmodule SolardocPhoenixWeb.UserAuthController do
 
     with {:ok, user} <- Accounts.get_user_by_email_and_password(email, password) do
       {token, expires_at} = UserAuth.create_user_token(user)
-      render(conn, :create, %{token: token, expires_at: expires_at})
+      conn
+      |> put_status(:created)
+      |> render(:create, %{token: token, expires_at: expires_at})
     end
   end
 
