@@ -24,18 +24,27 @@ defmodule SolardocPhoenixWeb.FileController do
         created :integer, "creation date", required: false
       end
     end,
-    Message: swagger_schema do
-      title "Message"
-      description "A message"
-      properties do
-        message :string, "A message", required: true
-      end
-    end,
     Files: swagger_schema do
       title "Files"
       description "A list of files"
       type :array
       items Schema.ref(:File)
+    end,
+    CreateFile: swagger_schema do
+      title "CreateFile"
+      description "Arguments for creating a file"
+      properties do
+        file_name :string, "File name", required: true
+        content :string, "File content", required: false
+      end
+    end,
+    UpdateFile: swagger_schema do
+      title "UpdateFile"
+      description "Arguments for updating a file"
+      properties do
+        file_name :string, "File name", required: false
+        content :string, "File content", required: false
+      end
     end,
     Error: swagger_schema do
       title "Error"
@@ -75,7 +84,7 @@ defmodule SolardocPhoenixWeb.FileController do
     summary "Create a new file"
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameters do
-      file :body, Schema.ref(:File), "file attributes"
+      file :body, Schema.ref(:CreateFile), "Arguments for creating a file", required: true
     end
     response 201, "Created", Schema.ref(:File)
     response 400, "Bad Request", Schema.ref(:Errors)
@@ -121,7 +130,7 @@ defmodule SolardocPhoenixWeb.FileController do
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameters do
       id :path, :string, "File ID", required: true
-      file :body, Schema.ref(:File), "file attributes", required: true
+      file :body, Schema.ref(:UpdateFile), "Arguments for updating a file", required: true
     end
     response 200, "OK", Schema.ref(:File)
     response 400, "Bad Request", Schema.ref(:Errors)
@@ -149,8 +158,7 @@ defmodule SolardocPhoenixWeb.FileController do
     parameters do
       id :path, :string, "File ID", required: true
     end
-    response 200, "OK", Schema.ref(:Message)
-    response 204, "No Content", Schema.ref(:Message)
+    response 204, "No Content"
     response 400, "Bad Request", Schema.ref(:Errors)
     response 401, "Unauthorized", Schema.ref(:Errors)
   end

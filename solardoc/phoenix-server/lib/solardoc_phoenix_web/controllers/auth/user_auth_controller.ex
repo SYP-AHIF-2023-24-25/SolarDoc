@@ -27,13 +27,6 @@ defmodule SolardocPhoenixWeb.UserAuthController do
           expires_at :integer, "Token expiration date in milliseconds", required: true
         end
       end,
-      Message: swagger_schema do
-        title "Message"
-        description "A message"
-        properties do
-          message :string, "A message", required: true
-        end
-      end,
       Error: swagger_schema do
         title "Error"
         description "An error"
@@ -56,7 +49,7 @@ defmodule SolardocPhoenixWeb.UserAuthController do
     summary "Log in a user"
     deprecated false
     parameters do
-      user :body, Schema.ref(:UserLogin), "user login attributes"
+      user :body, Schema.ref(:UserLogin), "Arguments for a login", required: true
     end
     response 201, "Created", Schema.ref(:UserToken)
     response 400, "Bad Request", Schema.ref(:Errors)
@@ -80,7 +73,7 @@ defmodule SolardocPhoenixWeb.UserAuthController do
     summary "Log out a user"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
-    response 200, "OK", Schema.ref(:Message)
+    response 204, "No Content"
     response 400, "Bad Request", Schema.ref(:Errors)
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
@@ -88,6 +81,6 @@ defmodule SolardocPhoenixWeb.UserAuthController do
   def delete(conn, _params) do
     user = conn.assigns.current_user
     UserAuth.delete_user_api_token(user) # API Logout
-    render(conn, :delete, message: "Successfully logged out.")
+    send_resp(conn, :no_content, "")
   end
 end

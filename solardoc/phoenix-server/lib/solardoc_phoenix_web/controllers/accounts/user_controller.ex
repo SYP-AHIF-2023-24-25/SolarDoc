@@ -105,7 +105,7 @@ defmodule SolardocPhoenixWeb.UserController do
     produces "application/json"
     summary "Create a new user"
     parameters do
-      user :body, Schema.ref(:CreateUser), "user attributes"
+      user :body, Schema.ref(:CreateUser), "Arguments for creating a user", required: true
     end
     response 201, "Created", Schema.ref(:UserPrivate)
     response 400, "Bad Request", Schema.ref(:Errors)
