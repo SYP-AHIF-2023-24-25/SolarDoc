@@ -51,7 +51,7 @@ defmodule SolardocPhoenix.Share do
   """
   def create_share_url(attrs \\ %{}) do
     %ShareURL{}
-    |> ShareURL.changeset(attrs)
+    |> ShareURL.create_changeset(attrs)
     |> Repo.insert()
   end
 
