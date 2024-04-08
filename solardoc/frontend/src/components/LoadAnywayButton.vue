@@ -8,10 +8,10 @@ const props = defineProps(['colorMode'])
 
 const renderDataStore = useRenderDataStore()
 const editorContentStore = useEditorContentStore()
-const fileNameStore = useFileStore()
+const fileStore = useFileStore()
 
 async function loadAnyway(): Promise<void> {
-  const renderResp = await handleRender(fileNameStore.fileName, editorContentStore.editorContent)
+  const renderResp = await handleRender(fileStore.fileName, editorContentStore.editorContent)
   renderDataStore.setRenderData(renderResp)
 }
 

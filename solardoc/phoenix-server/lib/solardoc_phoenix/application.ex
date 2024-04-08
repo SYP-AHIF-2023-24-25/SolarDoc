@@ -14,6 +14,8 @@ defmodule SolardocPhoenix.Application do
       {Phoenix.PubSub, name: SolardocPhoenix.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: SolardocPhoenix.Finch},
+      # Editor Channel State
+      SolardocPhoenixWeb.EditorChannelState,
       # Start a worker by calling: SolardocPhoenix.Worker.start_link(arg)
       # {SolardocPhoenix.Worker, arg},
       # Start to serve requests, typically the last entry

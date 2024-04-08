@@ -31,7 +31,7 @@ const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const overlayStateStore = useOverlayStateStore()
 const renderDataStore = useRenderDataStore()
-const fileNameStore = useFileStore()
+const fileStore = useFileStore()
 const lastModifiedStore = useLastModifiedStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const currentUserStore = useCurrentUserStore()
@@ -89,7 +89,7 @@ editorContentStore.$subscribe(
     state: { editorContent: string },
   ) => {
     const { editorContent } = state
-    const renderResp = await handleRender(fileNameStore.fileName, editorContent)
+    const renderResp = await handleRender(fileStore.fileName, editorContent)
     renderDataStore.setRenderData(renderResp)
     console.log(renderResp)
 
@@ -165,7 +165,7 @@ function handleCopyButtonClick() {
 
 function handleDownloadButtonClick() {
   let text: string = editorContentStore.editorContent
-  let fileName: string = fileNameStore.fileName
+  let fileName: string = fileStore.fileName
   let fileType: string = 'text/asciidoc'
   let bloby: Blob = new Blob([text], { type: fileType })
 
@@ -215,8 +215,8 @@ setInterval(updateLastModified, 500)
           <label for="file-name-input"></label>
           <input
             id="file-name-input"
-            v-model="fileNameStore.fileName"
-            @input="fileNameStore.storeLocally()"
+            v-model="fileStore.fileName"
+            @input="fileStore.storeLocally()"
           />
         </div>
       </div>
@@ -252,7 +252,9 @@ setInterval(updateLastModified, 500)
             <p id="init-msg">Start typing and see preview!</p>
             <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
           </div>
-          <h2 v-else-if="(previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL">
+          <h2
+            v-else-if="(previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL"
+          >
             <span class="dot-dot-dot-flashing"></span>
           </h2>
           <iframe
@@ -483,8 +485,16 @@ div#editor-page {
           flex-direction: column;
 
           #init-msg {
-            font-size: 2rem;
-            margin: 0 0 2rem 0;
+            margin: 0.5rem 0.5rem 2rem 0.5rem;
+
+            // Change font size depending on the screen width
+            font-size: 1.2rem;
+
+            @media screen and (min-width: var.$window-large) {
+              & {
+                font-size: 2rem;
+              }
+            }
           }
         }
 

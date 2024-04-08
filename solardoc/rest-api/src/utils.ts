@@ -1,7 +1,7 @@
 import { Request } from '@loopback/rest'
 import path from 'path'
 import { API_BASE_PATH } from './index'
-import {isDev, isStaging} from "./env";
+import { isDev, isStaging } from './env'
 
 /**
  * Returns the current date in seconds.
@@ -19,7 +19,7 @@ export function getDateNowInSeconds(): number {
  */
 export function getHostURL(req: Request): string {
   const protocol = isDev || isStaging ? 'http' : 'https'
-  return (new URL(`${protocol}://${req.headers.host!}`)).origin
+  return new URL(`${protocol}://${req.headers.host!}`).origin
 }
 
 /**

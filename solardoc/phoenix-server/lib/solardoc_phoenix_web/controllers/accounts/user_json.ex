@@ -1,5 +1,6 @@
 defmodule SolardocPhoenixWeb.UserJSON do
   alias SolardocPhoenix.Accounts.User
+  alias SolardocPhoenix.Utils
 
   @doc """
   Renders a list of accounts. Only contains the publicly available data.
@@ -40,11 +41,7 @@ defmodule SolardocPhoenixWeb.UserJSON do
       id: user.id,
       username: user.username,
       email: user.email,
-      confirmed_at: if user.confirmed_at do
-        user.confirmed_at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_unix(:millisecond)
-      else
-        nil
-      end,
+      confirmed_at: Utils.naive_datetime_to_unix_milliseconds(user.confirmed_at),
       role: user.role,
       organisation: user.organisation,
       intended_use: user.intended_use

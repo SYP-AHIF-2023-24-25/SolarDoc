@@ -1,0 +1,157 @@
+<mxfile host="app.diagrams.net" modified="2024-04-06T18:52:58.938Z" agent="Mozilla/5.0 (X11; Linux x86_64; rv:122.0) Gecko/20100101 Firefox/122.0" etag="_8JZ9KLxzWgFiVzdFpwE" version="24.2.2" type="device">
+  <diagram name="Page-1" id="vLUNh6CcBqiVmsHnrbxf">
+    <mxGraphModel dx="1687" dy="904" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-5" target="7MKWLppE5pVwkquH0Vv9-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-5" value="Owner" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="190" y="110" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-6" target="7MKWLppE5pVwkquH0Vv9-10">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="140" />
+              <mxPoint x="470" y="220" />
+              <mxPoint x="340" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-6" value="User" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="440" y="110" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-7" target="7MKWLppE5pVwkquH0Vv9-33">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="480" />
+              <mxPoint x="220" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-7" value="Creates a channel with the provided info" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-10" target="7MKWLppE5pVwkquH0Vv9-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-10" value="Joins the channel saved in the DB" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-15" target="7MKWLppE5pVwkquH0Vv9-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-19" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7MKWLppE5pVwkquH0Vv9-17">
+          <mxGeometry x="-0.3993" y="-2" relative="1" as="geometry">
+            <mxPoint x="12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-22" value="Creating" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7MKWLppE5pVwkquH0Vv9-17">
+          <mxGeometry x="0.6129" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-15" target="7MKWLppE5pVwkquH0Vv9-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-20" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7MKWLppE5pVwkquH0Vv9-18">
+          <mxGeometry x="-0.3898" y="1" relative="1" as="geometry">
+            <mxPoint x="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-21" value="Joining" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7MKWLppE5pVwkquH0Vv9-18">
+          <mxGeometry x="0.5789" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-15" value="Create?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="180" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-23" value="We expect the owner of a&amp;nbsp; channel to have a server-side file before they can even create a channel" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="480" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-24" target="7MKWLppE5pVwkquH0Vv9-62">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-24" value="Update the file in the DB using sent editor state" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="720" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-26" target="7MKWLppE5pVwkquH0Vv9-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-26" value="&lt;div&gt;Fetches the state of the file from the state agent&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-30" target="7MKWLppE5pVwkquH0Vv9-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-75" value="&lt;div&gt;No&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7MKWLppE5pVwkquH0Vv9-71">
+          <mxGeometry x="-0.619" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-72" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-30" target="7MKWLppE5pVwkquH0Vv9-32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-74" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7MKWLppE5pVwkquH0Vv9-72">
+          <mxGeometry x="-0.619" y="-2" relative="1" as="geometry">
+            <mxPoint y="-3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-30" value="Exists?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="440" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-32" target="7MKWLppE5pVwkquH0Vv9-62">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-32" value="&lt;div&gt;Use saved state&amp;nbsp; (Implies channel was potentially recently active)&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="540" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-33" target="7MKWLppE5pVwkquH0Vv9-42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-33" value="Create new entry in state agent" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="540" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-42" target="7MKWLppE5pVwkquH0Vv9-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-50" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7MKWLppE5pVwkquH0Vv9-48">
+          <mxGeometry x="-0.7638" relative="1" as="geometry">
+            <mxPoint x="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-42" target="7MKWLppE5pVwkquH0Vv9-58">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-78" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7MKWLppE5pVwkquH0Vv9-60">
+          <mxGeometry x="-0.5769" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-42" value="Is Owner?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="620" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-77" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-58" target="7MKWLppE5pVwkquH0Vv9-62">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-58" value="Fetch data from the DB and insert into state agent" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="720" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-82" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="7MKWLppE5pVwkquH0Vv9-62" target="7MKWLppE5pVwkquH0Vv9-81">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-62" value="&lt;div&gt;Server-side Truth Established&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="800" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-69" value="&amp;nbsp;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="600" y="380" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="7MKWLppE5pVwkquH0Vv9-81" value="Ready for Changes" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="280" y="900" width="120" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
