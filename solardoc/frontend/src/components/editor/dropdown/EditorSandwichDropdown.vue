@@ -6,12 +6,14 @@ import { useDarkModeStore } from '@/stores/dark-mode'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { ref } from 'vue'
 import {useFileStore} from "@/stores/file";
+import {useRouter} from "vue-router";
 
 const darkModeStore = useDarkModeStore()
 const overlayStateStore = useOverlayStateStore()
 const fileStore = useFileStore();
 
 const dropdown = ref(null)
+const $router = useRouter()
 
 function handleJoinChannel() {
   overlayStateStore.setChannelView(true)
@@ -22,12 +24,19 @@ function handleJoinChannel() {
   )?.close()
 }
 function handleSaveButtonClick() {
-  fileStore.storeOnServer()
-  ;(
-    dropdown.value as {
-      close: () => void
-    } | null
-  )?.close()
+  try{
+    fileStore.storeOnServer()
+    ;(
+        dropdown.value as {
+          close: () => void
+        } | null
+    )?.close()
+  }catch (e){
+    if(e instanceof Error && e.message === "User is not logged in"){
+      $router.push('/login');
+    }
+    console.log(e.message)
+  }
 }
 </script>
 
