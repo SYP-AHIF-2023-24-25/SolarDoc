@@ -19,7 +19,7 @@ defmodule SolardocPhoenixWeb.ShareURLJSON do
   defp data(%ShareURL{} = share_url) do
     %{
       id: share_url.id,
-      file: share_url.file,
+      file_id: share_url.file_id,
       issued_at: Utils.naive_datetime_to_unix_milliseconds(share_url.issued_at),
       perms: share_url.perms,
       expires_at: Utils.naive_datetime_to_unix_milliseconds(share_url.expires_at),
