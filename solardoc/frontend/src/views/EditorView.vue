@@ -207,7 +207,7 @@ setInterval(updateLastModified, 500)
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
         <div id="save-state">
-          <p>{{fileStore.saveState}}</p>
+          <p>{{ fileStore.saveState }}</p>
         </div>
       </div>
       <div id="menu-center">

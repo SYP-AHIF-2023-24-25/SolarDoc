@@ -5,12 +5,12 @@ import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { ref } from 'vue'
-import {useFileStore} from "@/stores/file";
-import {useRouter} from "vue-router";
+import { useFileStore } from '@/stores/file'
+import { useRouter } from 'vue-router'
 
 const darkModeStore = useDarkModeStore()
 const overlayStateStore = useOverlayStateStore()
-const fileStore = useFileStore();
+const fileStore = useFileStore()
 
 const dropdown = ref(null)
 const $router = useRouter()
@@ -24,16 +24,16 @@ function handleJoinChannel() {
   )?.close()
 }
 function handleSaveButtonClick() {
-  try{
+  try {
     fileStore.storeOnServer()
     ;(
-        dropdown.value as {
-          close: () => void
-        } | null
+      dropdown.value as {
+        close: () => void
+      } | null
     )?.close()
-  }catch (e){
-    if(e instanceof Error && e.message === "User is not logged in"){
-      $router.push('/login');
+  } catch (e) {
+    if (e instanceof Error && e.message === 'User is not logged in') {
+      $router.push('/login')
     }
     console.log(e.message)
   }
@@ -57,7 +57,9 @@ function handleSaveButtonClick() {
     </template>
     <div id="dropdown-elements">
       <div class="dropdown-element" @click="handleJoinChannel()">Channels</div>
-      <div class="dropdown-element" @click="handleSaveButtonClick">Save in profile (In work...)</div>
+      <div class="dropdown-element" @click="handleSaveButtonClick">
+        Save in profile (In work...)
+      </div>
       <div class="dropdown-element">Settings (In work...)</div>
     </div>
   </Dropdown>
