@@ -81,6 +81,9 @@ defmodule SolardocPhoenix.Files do
 
   """
   def update_file(%File{} = file, attrs) do
+    attrs = attrs
+    |> Map.put_new("file_name", file.file_name)
+    |> Map.put_new("owner_id", file.owner_id)
     file
     |> File.update_changeset(attrs)
     |> Repo.update()

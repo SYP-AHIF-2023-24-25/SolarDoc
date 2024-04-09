@@ -12,15 +12,15 @@ import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { ref, onMounted } from 'vue'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
 import { KeyCode } from 'monaco-editor'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { performErrorChecking } from '@/components/editor/error-checking'
+import {useCurrentFileStore} from "@/stores/current-file";
 
 const darkModeStore = useDarkModeStore()
-const editorContentStore = useEditorContentStore()
+const currentFileStore = useCurrentFileStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const lastModifiedStore = useLastModifiedStore()
 const initStateStore = useInitStateStore()
@@ -53,7 +53,7 @@ onMounted(() => {
   editorInstance = monaco.editor.create(editorRef.value!, {
     theme: darkModeStore.darkMode ? 'asciiDocDarkTheme' : 'asciiDocLightTheme',
     language: 'asciiDoc',
-    value: editorContentStore.editorContent,
+    value: currentFileStore.content,
     fontFamily: 'JetBrains Mono',
     minimap: {
       enabled: false,
@@ -89,7 +89,7 @@ onMounted(() => {
 
     activeTimeout = setTimeout(() => {
       console.log('[Editor] Broadcasting update')
-      editorContentStore.setEditorContent(editorInstance!.getValue())
+      currentFileStore.setContent(editorInstance!.getValue())
       lastModifiedStore.setLastModified(new Date())
     }, EDITOR_UPDATE_TIMEOUT)
   })
