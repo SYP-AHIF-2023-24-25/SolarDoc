@@ -9,7 +9,7 @@ import { useOverlayStateStore } from '@/stores/overlay-state'
 import { handleRender } from '@/scripts/handle-render'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
-import { useWSClientStore } from '@/stores/ws-client'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import {useCurrentFileStore} from "@/stores/current-file";
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
@@ -33,7 +33,7 @@ const lastModifiedStore = useLastModifiedStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
-const wsClientStore = useWSClientStore()
+const editorUpdateWSClient = useEditorUpdateWSClient()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
@@ -62,7 +62,7 @@ phoenixBackend
       currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
     if (authStatus === 'authenticated') {
       console.log('[Editor] Attempting to connect to SDS')
-      wsClientStore.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
+      editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
     } else if (authStatus === 'expired-or-revoked') {
       await currentUserStore.logout()
     } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
@@ -93,9 +93,9 @@ currentFileStore.$subscribe(
     console.log(renderResp)
 
     // If there is a connection to the Phoenix backend, send the updated content to the channel
-    if (wsClientStore.hasActiveChannelConnection) {
+    if (editorUpdateWSClient.hasActiveChannelConnection) {
       console.log('[Editor] Sending editor update to channel')
-      await wsClientStore.wsClient?.sendEditorUpdate(
+      await editorUpdateWSClient.wsClient?.sendEditorUpdate(
         {
           body: editorContent,
           render_url: renderResp.previewURL,

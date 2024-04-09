@@ -1,7 +1,9 @@
-import {defineStore} from 'pinia'
-import constants from '@/plugins/constants'
+import type {OTTrans, RawDeleteOTTrans, RawInsertOTTrans} from "@/services/phoenix/ot-trans"
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
+import constants from '@/plugins/constants'
+import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors"
+import {v4 as uuidv4} from 'uuid'
+import {defineStore} from 'pinia'
 
 const DEFAULT_TEXT = '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
 
@@ -13,6 +15,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       fileName: localStorage.getItem(constants.localStorageFileNameKey) || 'untitled.adoc',
       saveState: storedFileId ? 'Saved Remotely' : 'Saved Locally',
       content: localStorage.getItem(constants.localStorageTextKey) || DEFAULT_TEXT,
+      otTransStack: <Array<OTTrans>>[],
     }
   },
   actions: {
@@ -87,6 +90,19 @@ export const useCurrentFileStore = defineStore('currentFile', {
         )
       }
     },
+    pushOTTrans(otTrans: OTTrans) {
+      // TODO! Apply the OTTrans to the content
+    },
+    createOTTrans(insertOrDeleteTrans: RawInsertOTTrans | RawDeleteOTTrans): OTTrans {
+      return {
+        acknowledged: false,
+        timestamp: undefined,
+        rawTrans: {
+          id: uuidv4(),
+          trans: insertOrDeleteTrans
+        }
+      }
+    },
     closeFile() {
       this.clearFileId()
       this.setFileName('untitled.adoc')
@@ -109,5 +125,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.content = content
       localStorage.setItem(constants.localStorageTextKey, content)
     },
+    clearOTTransStack() {
+      this.otTransStack = []
+    }
   },
 })

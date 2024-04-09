@@ -6,13 +6,15 @@ import type {
 } from '@/services/phoenix/editor-channel'
 import { useChannelViewStore } from '@/stores/channel-view'
 import { ref } from 'vue'
-import { useWSClientStore } from '@/stores/ws-client'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Vueform } from '@vueform/vueform'
+import {useCurrentFileStore} from "@/stores/current-file";
 
 const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 const channelViewStore = useChannelViewStore()
-const wsClientStore = useWSClientStore()
+const editorUpdateWSClient = useEditorUpdateWSClient()
 
 const loadingState = ref(false)
 
@@ -35,7 +37,7 @@ async function submitForm(
     throw new Error(
       "[ChannelView] User is not logged in! User shouldn't have been able to access this form",
     )
-  } else if (!wsClientStore.wsClient || !wsClientStore.wsClient.healthy) {
+  } else if (!editorUpdateWSClient.wsClient || !editorUpdateWSClient.wsClient.healthy) {
     throw new Error(
       '[ChannelView] Websocket client is not active or healthy. Can not join channel!',
     )
@@ -45,10 +47,11 @@ async function submitForm(
     name: form$.requestData['channel-name'],
     description: form$.requestData.description,
     password: form$.requestData.password,
+    file_id: currentFileStore.fileId!,
   } satisfies CreateEditorChannel
 
   async function joinNewChannel(channel: EditorChannel) {
-    await wsClientStore.wsClient?.joinChannel(
+    await editorUpdateWSClient.wsClient?.joinChannel(
       `channel:${channel.id}`,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async _ => {
@@ -66,7 +69,7 @@ async function submitForm(
     )
   }
 
-  await wsClientStore.wsClient.createChannel(
+  await editorUpdateWSClient.wsClient.createChannel(
     async channel => {
       console.log('[ChannelView] Channel created', channel)
       await joinNewChannel(channel)
@@ -75,6 +78,7 @@ async function submitForm(
       console.error('[ChannelView] Error creating channel', errorResp)
     },
     newChannel,
+    currentFileStore.content,
     // Current-User must be present since otherwise the user wouldn't be able to access this form
     currentUserStore.currentUser!.id,
   )

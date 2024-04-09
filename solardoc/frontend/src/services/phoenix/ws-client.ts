@@ -159,7 +159,7 @@ export class SDSClient {
   }
 
   private async _handleCreateChannel(
-    creator_id: string,
+    creatorId: string,
     onJoin: (resp: EditorChannel) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
     resp: {} | { creator_id: string; editor_channel: EditorChannel },
@@ -171,7 +171,7 @@ export class SDSClient {
 
     const validResp = resp as { creator_id: string; editor_channel: EditorChannel }
     await this._leaveChannelNew()
-    if (validResp.creator_id === creator_id) {
+    if (validResp.creator_id === creatorId) {
       console.log('[ws-client.ts] Channel successfully created!')
       onJoin(validResp.editor_channel)
     }
@@ -185,7 +185,8 @@ export class SDSClient {
    * @param onJoin The function to call when the channel is successfully joined.
    * @param onError The function to call when the channel fails to join.
    * @param editorChannel The parameters to pass to the channel.
-   * @param curr_user_id The current user's ID.
+   * @param editorState The initial state of the editor.
+   * @param currUserId The current user's ID.
    * @throws PhoenixInvalidOperationError If the socket is not healthy.
    * @since 0.4.0
    */
@@ -193,12 +194,13 @@ export class SDSClient {
     onJoin: (resp: EditorChannel) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
     editorChannel: CreateEditorChannel,
-    curr_user_id: string,
+    editorState: string,
+    currUserId: string,
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
-    this._currentChannel = this.socket.channel('channel:new', { data: editorChannel })
+    this._currentChannel = this.socket.channel('channel:new', { data: editorChannel, state: editorState })
     this._currentChannel?.on('new_channel', resp =>
-      this._handleCreateChannel(curr_user_id, onJoin, onError, resp),
+      this._handleCreateChannel(currUserId, onJoin, onError, resp),
     )
     this._currentChannel
       .join()

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useChannelViewStore } from '@/stores/channel-view'
-import { useWSClientStore } from '@/stores/ws-client'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { ref } from 'vue'
 import type { EditorChannel, JoinChannelOptions } from '@/services/phoenix/editor-channel'
 import type { Vueform } from '@vueform/vueform'
 
 const channelState = useChannelViewStore()
-const wsClientStore = useWSClientStore()
+const editorUpdateWSClient = useEditorUpdateWSClient()
 const channelViewStore = useChannelViewStore()
 
 const loadingState = ref(false)
@@ -24,14 +24,14 @@ async function submitForm(
 ) {
   if (!form$?.requestData) {
     return
-  } else if (!wsClientStore.wsClient || !wsClientStore.wsClient.healthy) {
+  } else if (!editorUpdateWSClient.wsClient || !editorUpdateWSClient.wsClient.healthy) {
     throw new Error(
       '[ChannelView] Websocket client is not active or healthy. Can not join channel!',
     )
   }
 
   loadingState.value = true
-  await wsClientStore.wsClient?.joinChannel(
+  await editorUpdateWSClient.wsClient?.joinChannel(
     `channel:${props.channel.id}`,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async _ => {

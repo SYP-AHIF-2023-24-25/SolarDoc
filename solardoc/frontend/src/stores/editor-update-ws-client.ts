@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { SDSClient } from '@/services/phoenix/ws-client'
 
-export const useWSClientStore = defineStore('wsClient', {
+export const useEditorUpdateWSClient = defineStore('editorUpdateWSClient', {
   state: () => {
     return { wsClient: null as null | SDSClient }
   },
