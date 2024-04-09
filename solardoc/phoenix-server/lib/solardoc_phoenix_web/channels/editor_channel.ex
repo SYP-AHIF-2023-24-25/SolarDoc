@@ -125,15 +125,15 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   Handles the request for a transformation from the user and will then (eventually) process it and apply it to the state
   of the channel, if it is valid. If it is not valid, an error message will be sent back to the user.
   """
-  def handle_in(_state_trans = "state_trans", %{"trans" => trans, "timestamp" => timestamp}, socket) do
+  def handle_in(_state_trans = "state_trans", %{"id" => id, "trans" => trans}, socket) do
     case SolardocPhoenixWeb.EditorChannelTrans.validate_trans(trans) do
       {:ok, p_trans} ->
         send(self(), {
           :process_state_trans,
           trans: %EditorChannelTrans{
-            trans_id: gen_state_uuid(),
+            id: id,
             trans: p_trans,
-            timestamp: DateTime.from_unix!(timestamp, :millisecond) |> DateTime.to_naive(),
+            timestamp: NaiveDateTime.utc_now(),
             user_id: socket.assigns.user_id
           }
         })
@@ -162,10 +162,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   defp curr_channel_id(socket) do
     socket.topic |> String.split(":", trim: true) |> List.last()
-  end
-
-  defp gen_state_uuid() do
-    UUID.generate()
   end
 
   defp authorized?(editor_channel, %{auth: auth}) do
