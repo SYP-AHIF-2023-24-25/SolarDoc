@@ -51,7 +51,7 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
       # Push the new transformation to the stack of transformations for the channel
       channel_state = Map.get(state, channel_id, %{})
       trans_stack = Map.get(channel_state, :trans_stack, [])
-      updated_trans_stack = [new_trans | trans_stack]
+      updated_trans_stack = [trans | trans_stack]
       updated_channel_state = Map.put(channel_state, :trans_stack, updated_trans_stack)
 
       # Apply the transformation on the state string
