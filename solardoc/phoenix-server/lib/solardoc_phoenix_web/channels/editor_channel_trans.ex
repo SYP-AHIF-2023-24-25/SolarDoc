@@ -1,5 +1,5 @@
 defmodule SolardocPhoenixWeb.EditorChannelTrans do
-  defstruct trans_id: nil, trans: nil, timestamp: nil, user_id: nil
+  defstruct id: nil, trans: nil, timestamp: nil, user_id: nil
 
   @doc """
   Validate a transformation object. A transformation object should have the following structure:
