@@ -84,7 +84,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
         editor_channel: EditorChannelJSON.show(%{editor_channel: editor_channel}),
         creator_id: socket.assigns.user_id,
         state: state,
-        from: "system"
       }
     )
     {:noreply, socket}
