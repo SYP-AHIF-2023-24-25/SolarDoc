@@ -106,8 +106,13 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   @impl true
   def handle_info({:process_state_trans, %EditorChannelTrans{} = trans}, socket) do
     IO.puts("Processing transformation received from #{trans.user_id} (#{trans.timestamp})")
-    # TODO!
-    {:noreply, socket}
+
+    # We will first push the new transformation, applying it to the editor state and then broadcast the same
+    # transformation to all other users in the channel
+    EditorChannelState.push_new_trans(curr_channel_id(socket), trans.trans)
+
+    # We simply broadcast the transformation itself
+    broadcast!(socket, "state_trans", trans)
   end
 
   @impl true
@@ -116,24 +121,24 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   @doc """
-  Broadcasts the update of the editor content to all clients in the room.
+  Handles the request for a transformation from the user and will then (eventually) process it and apply it to the state
+  of the channel, if it is valid. If it is not valid, an error message will be sent back to the user.
   """
   def handle_in(_state_trans = "state_trans", %{"trans" => trans, "timestamp" => timestamp}, socket) do
-    with true <- is_channel_creator(socket) do
-      send(self(), {
-        :process_state_trans,
-        trans: %EditorChannelTrans{
-          trans_id: gen_state_uuid(),
-          trans: trans,
-          timestamp: DateTime.from_unix!(timestamp, :millisecond) |> NaiveDateTime.truncate(:second),
-          user_id: socket.assigns.user_id
-        }
-      })
-      {:noreply, socket}
-    else
-      _ -> {:error, %{
-        message: "Unauthorized operation"
-      }}
+    case SolardocPhoenixWeb.EditorChannelTrans.validate_trans(trans) do
+      {:ok, p_trans} ->
+        send(self(), {
+          :process_state_trans,
+          trans: %EditorChannelTrans{
+            trans_id: gen_state_uuid(),
+            trans: p_trans,
+            timestamp: DateTime.from_unix!(timestamp, :millisecond) |> DateTime.to_naive(),
+            user_id: socket.assigns.user_id
+          }
+        })
+        {:noreply, socket}
+      {:error, error_message} ->
+        {:reply, {:error, %{message: error_message}}, socket}
     end
   end
 
@@ -152,6 +157,10 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   def onError(reason, socket) do
     IO.puts("Error in channel: #{inspect(reason)}")
     {:noreply, socket}
+  end
+
+  defp curr_channel_id(socket) do
+    socket.topic |> String.split(":", trim: true) |> List.last()
   end
 
   defp gen_state_uuid() do
