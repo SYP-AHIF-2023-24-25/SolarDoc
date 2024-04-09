@@ -14,14 +14,15 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   @impl true
   def join("channel:new", %{"data" => data, "state" => state}, socket) do
     with {:ok, editor_channel} <- EditorChannels.create_channel(Map.put(data, "creator_id", socket.assigns.user_id)) do
-      editor_channel = Repo.preload(editor_channel, :creator)
-      file = Repo.preload(editor_channel, :file)
+      editor_channel = editor_channel
+        |> Repo.preload(:creator)
+        |> Repo.preload(:file)
 
       # We assume that the user holds the truth about the channel state, so as such we simply load this into the server
       # state. To make sure that the state is in sync with the database (which it should usually be, but potentially
       # there a recent un-synced state), we should load the state into the database as well.
       EditorChannelState.force_set_state(editor_channel.id, state)
-      Files.change_content(file, %{content: state})
+      Files.change_content(editor_channel.file, %{content: state})
 
       send(self(), {:after_create, editor_channel: editor_channel, state: state})
       {:ok, socket}
@@ -40,6 +41,8 @@ defmodule SolardocPhoenixWeb.EditorChannel do
          {:authorised, true} <- {:authorised, authorized?(editor_channel, %{auth: auth})} do
       state = EditorChannelState.get_curr_state(channel_id)
       if state == nil do
+        editor_channel = editor_channel |> Repo.preload(:file)
+
         state = editor_channel.file.content
         EditorChannelState.force_set_state(channel_id, state)
       end
