@@ -97,8 +97,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
       body: "A new user has joined a channel",
       channel_id: editor_channel.id,
       user_id: socket.assigns.user_id,
-      state: state,
-      from: "system"
+      state: state
     })
     {:noreply, socket}
   end
