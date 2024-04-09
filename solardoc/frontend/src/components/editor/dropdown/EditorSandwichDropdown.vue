@@ -4,39 +4,40 @@ import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { ref } from 'vue'
-import { useFileStore } from '@/stores/file'
+import {useCurrentFileStore} from "@/stores/current-file";
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import {useCurrentUserStore} from "@/stores/current-user";
 
 const darkModeStore = useDarkModeStore()
+const currentUserStore = useCurrentUserStore()
 const overlayStateStore = useOverlayStateStore()
-const fileStore = useFileStore()
+const currentFileStore = useCurrentFileStore()
 
 const dropdown = ref(null)
 const $router = useRouter()
 
-function handleJoinChannel() {
-  overlayStateStore.setChannelView(true)
-  ;(
+function closeDropdown() {
+  (
     dropdown.value as {
       close: () => void
     } | null
   )?.close()
 }
+
+function handleJoinChannel() {
+  overlayStateStore.setChannelView(true)
+  closeDropdown()
+}
+
 function handleSaveButtonClick() {
-  try {
-    fileStore.storeOnServer()
-    ;(
-      dropdown.value as {
-        close: () => void
-      } | null
-    )?.close()
-  } catch (e) {
-    if (e instanceof Error && e.message === 'User is not logged in') {
-      $router.push('/login')
-    }
-    console.log(e.message)
+  if (!currentUserStore.bearer) {
+    $router.push('/login')
+    return
   }
+
+  currentFileStore.storeOnServer(currentUserStore.bearer)
+  closeDropdown()
 }
 </script>
 

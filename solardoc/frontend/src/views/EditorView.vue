@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {ref, type UnwrapRef} from 'vue'
 import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { handleRender } from '@/scripts/handle-render'
-import { useFileStore } from '@/stores/file'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { useWSClientStore } from '@/stores/ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
+import {useCurrentFileStore} from "@/stores/current-file";
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
@@ -26,15 +25,14 @@ import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
 
 const darkModeStore = useDarkModeStore()
-const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const overlayStateStore = useOverlayStateStore()
 const renderDataStore = useRenderDataStore()
-const fileStore = useFileStore()
 const lastModifiedStore = useLastModifiedStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 const wsClientStore = useWSClientStore()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
@@ -82,14 +80,15 @@ phoenixBackend
     )
   })
 
+
 // Ensure the render preview is updated whenever the editor content changes
-editorContentStore.$subscribe(
+currentFileStore.$subscribe(
   async (
-    mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
-    state: { editorContent: string },
+    _: SubscriptionCallbackMutation<typeof currentFileStore>,
+    state: UnwrapRef<typeof currentFileStore>["$state"]
   ) => {
-    const { editorContent } = state
-    const renderResp = await handleRender(fileStore.fileName, editorContent)
+    const { content: editorContent } = state
+    const renderResp = await handleRender(currentFileStore.fileName, editorContent)
     renderDataStore.setRenderData(renderResp)
     console.log(renderResp)
 
@@ -148,10 +147,10 @@ function unsecuredCopyToClipboard(text: string) {
 function handleCopyButtonClick() {
   if (navigator.clipboard) {
     // If normal copy method available, use it
-    navigator.clipboard.writeText(editorContentStore.editorContent)
+    navigator.clipboard.writeText(currentFileStore.content)
   } else {
     // Otherwise fallback to the above function
-    unsecuredCopyToClipboard(editorContentStore.editorContent)
+    unsecuredCopyToClipboard(currentFileStore.content)
   }
 
   copyButtonContent.value = 'Copied!'
@@ -164,8 +163,8 @@ function handleCopyButtonClick() {
 }
 
 function handleDownloadButtonClick() {
-  let text: string = editorContentStore.editorContent
-  let fileName: string = fileStore.fileName
+  let text: string = currentFileStore.content
+  let fileName: string = currentFileStore.fileName
   let fileType: string = 'text/asciidoc'
   let bloby: Blob = new Blob([text], { type: fileType })
 
@@ -207,7 +206,7 @@ setInterval(updateLastModified, 500)
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
         <div id="save-state">
-          <p>{{ fileStore.saveState }}</p>
+          <p>{{ currentFileStore.saveState }}</p>
         </div>
       </div>
       <div id="menu-center">
@@ -215,8 +214,7 @@ setInterval(updateLastModified, 500)
           <label for="file-name-input"></label>
           <input
             id="file-name-input"
-            v-model="fileStore.fileName"
-            @input="fileStore.storeLocally()"
+            v-model="currentFileStore.fileName"
           />
         </div>
       </div>
