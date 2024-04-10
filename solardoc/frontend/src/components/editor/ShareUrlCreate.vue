@@ -2,8 +2,11 @@
 import type {Vueform} from "@vueform/vueform";
 import {useOverlayStateStore} from "@/stores/overlay-state";
 import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue"
+import SDRouterLink from "@/components/SDRouterLink.vue";
+import {useCurrentUserStore} from "@/stores/current-user";
 
 const overlayStateStore = useOverlayStateStore()
+const currentUserStore = useCurrentUserStore()
 
 function submitForm() {
   // TODO!
@@ -13,11 +16,18 @@ function submitForm() {
 <template>
   <div id="full-screen-wrapper" class="full-screen" v-if="overlayStateStore.createShareUrl">
     <div id="share-url-view-create">
+
       <div id="share-url-view-header">
         <button id="close-button" @click="overlayStateStore.setShareUrlView(false)">
           <CloseButtonSVG/>
         </button>
         <h1>Create Share URL</h1>
+      </div>
+      <div id="channel-view-not-logged-in" v-if="!currentUserStore.loggedIn">
+        <p>
+          You need to be logged in to create a share url!
+          <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
+        </p>
       </div>
       <Vueform
           ref="form$"
@@ -25,6 +35,7 @@ function submitForm() {
           :display-errors="false"
           :endpoint="false"
           @submit="submitForm"
+          v-else
       >
         <TextElement
             name="text"
