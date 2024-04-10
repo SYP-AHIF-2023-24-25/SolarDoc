@@ -19,9 +19,16 @@ export interface RawDeleteOTTrans {
 /**
  * A raw operational transformation.
  */
-export interface RawOTTrans {
-  readonly id: string
-  readonly trans: RawInsertOTTrans | RawDeleteOTTrans
+export type RawOTTrans = RawInsertOTTrans | RawDeleteOTTrans
+
+/**
+ * A DTO for an operational transformation transaction.
+ */
+export interface OTTransDTO {
+  id: string
+  trans: RawOTTrans
+  timestamp: number
+  user_id: string
 }
 
 /**
@@ -29,7 +36,9 @@ export interface RawOTTrans {
  * @since 0.5.0
  */
 export interface OTTrans {
+  id: string
+  trans: RawOTTrans
   timestamp: number | undefined
+  user_id: string
   acknowledged: boolean
-  readonly rawTrans: RawOTTrans
 }

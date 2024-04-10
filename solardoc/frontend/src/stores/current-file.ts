@@ -90,18 +90,42 @@ export const useCurrentFileStore = defineStore('currentFile', {
         )
       }
     },
-    pushOTTrans(otTrans: OTTrans) {
-      // TODO! Apply the OTTrans to the content
+    initOTTransStack(initOTTrans: OTTrans) {
+      this.otTransStack = [initOTTrans]
     },
-    createOTTrans(insertOrDeleteTrans: RawInsertOTTrans | RawDeleteOTTrans): OTTrans {
-      return {
-        acknowledged: false,
-        timestamp: undefined,
-        rawTrans: {
-          id: uuidv4(),
-          trans: insertOrDeleteTrans
+    pushOTTrans(otTrans: OTTrans) {
+      // TODO! Insert transformation and compare to the latest transformations
+    },
+    /**
+     * Creates an OTTrans object which represents a change to the content.
+     * @param insertOrDeleteTrans The raw insert or delete OTTrans.
+     * @param authorId The id of the author.
+     * @returns The OTTrans object.
+     * @since 0.5.0
+     */
+    createOTTrans(insertOrDeleteTrans: RawInsertOTTrans | RawDeleteOTTrans, authorId: string): OTTrans {
+      // Ensure that the pos and length are within the bounds of the content
+      if (insertOrDeleteTrans.type === 'insert') {
+        if (insertOrDeleteTrans.pos < 0 || insertOrDeleteTrans.pos > this.content.length) {
+          throw new Error('[current-file.ts] Position or length are out of bounds of the current state')
         }
+      } else if (insertOrDeleteTrans.pos < 0 || insertOrDeleteTrans.pos + insertOrDeleteTrans.length > this.content.length) {
+        throw new Error('[current-file.ts] Position or length are out of bounds of the current state')
       }
+
+      return {
+        id: uuidv4(),
+        timestamp: undefined,
+        user_id: authorId,
+        trans: insertOrDeleteTrans,
+        acknowledged: false,
+      }
+    },
+    createInsertOTTrans(pos: number, content: string, userId: string): OTTrans {
+      return this.createOTTrans({type: 'insert', pos, content}, userId)
+    },
+    createDeleteOTTrans(pos: number, length: number, userId: string): OTTrans {
+      return this.createOTTrans({type: 'delete', pos, length}, userId)
     },
     closeFile() {
       this.clearFileId()

@@ -1,7 +1,6 @@
 defmodule SolardocPhoenixWeb.EditorChannel do
   use SolardocPhoenixWeb, :channel
 
-  alias Ecto.UUID
   alias SolardocPhoenix.Repo
   alias SolardocPhoenix.EditorChannels
   alias SolardocPhoenix.EditorChannels.EditorChannel
@@ -21,10 +20,10 @@ defmodule SolardocPhoenixWeb.EditorChannel do
       # We assume that the user holds the truth about the channel state, so as such we simply load this into the server
       # state. To make sure that the state is in sync with the database (which it should usually be, but potentially
       # there a recent un-synced state), we should load the state into the database as well.
-      EditorChannelState.force_set_state(editor_channel.id, state)
+      init_trans = EditorChannelState.init_with_state(editor_channel.id, state)
       Files.change_content(editor_channel.file, %{content: state})
 
-      send(self(), {:after_create, editor_channel: editor_channel, state: state})
+      send(self(), {:after_create, editor_channel: editor_channel, init_trans: init_trans})
       {:ok, socket}
     else
       {:error, changeset} -> {:error, %{
@@ -39,15 +38,16 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   def join("channel:" <> channel_id, %{"auth" => auth}, socket) do
     with {:exists, %EditorChannel{} = editor_channel} <- {:exists, EditorChannels.get_channel!(channel_id)},
          {:authorised, true} <- {:authorised, authorized?(editor_channel, %{auth: auth})} do
-      state = EditorChannelState.get_curr_state(channel_id)
+      state = EditorChannelState.get_text(channel_id)
       if state == nil do
         editor_channel = editor_channel |> Repo.preload(:file)
 
         state = editor_channel.file.content
-        EditorChannelState.force_set_state(channel_id, state)
+        EditorChannelState.init_with_state(channel_id, state)
       end
 
-      send(self(), {:after_join, editor_channel: editor_channel, state: state})
+      init_trans = EditorChannelState.get_init_trans(channel_id)
+      send(self(), {:after_join, editor_channel: editor_channel, state: state, init_trans: init_trans})
       {:ok, socket}
     else
       {:exists, _} -> {:error, %{
@@ -77,8 +77,8 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   @impl true
-  def handle_info({:after_create, editor_channel: editor_channel, state: state}, socket) do
-    IO.puts(EditorChannelState.get_curr_state(editor_channel.id))
+  def handle_info({:after_create, editor_channel: editor_channel, init_trans: init_trans}, socket) do
+    IO.puts(EditorChannelState.get_text(editor_channel.id))
     broadcast!(
       socket,
       "new_channel",
@@ -86,20 +86,21 @@ defmodule SolardocPhoenixWeb.EditorChannel do
         body: "A new channel has been created",
         editor_channel: EditorChannelJSON.show(%{editor_channel: editor_channel}),
         creator_id: socket.assigns.user_id,
-        state: state,
+        init_trans: init_trans,
       }
     )
     {:noreply, socket}
   end
 
   @impl true
-  def handle_info({:after_join, editor_channel: editor_channel, state: state}, socket) do
-    IO.puts(EditorChannelState.get_curr_state(editor_channel.id))
+  def handle_info({:after_join, editor_channel: editor_channel, state: state, init_trans: init_trans}, socket) do
+    IO.puts(EditorChannelState.get_text(editor_channel.id))
     broadcast!(socket, "user_join", %{
       body: "A new user has joined a channel",
       channel_id: editor_channel.id,
       user_id: socket.assigns.user_id,
-      state: state
+      state: state,
+      init_trans: init_trans
     })
     {:noreply, socket}
   end
@@ -110,7 +111,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
     # We will first push the new transformation, applying it to the editor state and then broadcast the same
     # transformation to all other users in the channel
-    EditorChannelState.push_new_trans(curr_channel_id(socket), trans.trans)
+    EditorChannelState.push_new_trans(curr_channel_id(socket), trans)
 
     # We simply broadcast the transformation itself
     broadcast!(socket, "state_trans", trans)
@@ -127,15 +128,10 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   """
   def handle_in(_state_trans = "state_trans", %{"id" => id, "trans" => trans}, socket) do
     case SolardocPhoenixWeb.EditorChannelTrans.validate_trans(trans) do
-      {:ok, p_trans} ->
+      {:ok, processed_trans} ->
         send(self(), {
           :process_state_trans,
-          trans: %EditorChannelTrans{
-            id: id,
-            trans: p_trans,
-            timestamp: NaiveDateTime.utc_now(),
-            user_id: socket.assigns.user_id
-          }
+          trans: EditorChannelTrans.create(%{id: id, trans: processed_trans}, socket.assigns.user_id)
         })
         {:noreply, socket}
       {:error, error_message} ->

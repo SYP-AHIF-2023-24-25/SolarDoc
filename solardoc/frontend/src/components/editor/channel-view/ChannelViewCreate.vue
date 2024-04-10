@@ -70,9 +70,10 @@ async function submitForm(
   }
 
   await editorUpdateWSClient.wsClient.createChannel(
-    async channel => {
+    async (channel, initTrans) => {
       console.log('[ChannelView] Channel created', channel)
       await joinNewChannel(channel)
+      currentFileStore.initOTTransStack({...initTrans, acknowledged: true})
     },
     errorResp => {
       console.error('[ChannelView] Error creating channel', errorResp)

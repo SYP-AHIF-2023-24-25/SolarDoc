@@ -8,6 +8,7 @@ import {
 import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
 import type { EditorUpdate } from '@/services/phoenix/editor-update'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
+import type {OTTrans, OTTransDTO, RawOTTrans} from "@/services/phoenix/ot-trans";
 
 /**
  * The SolarDoc Socket client (SDS) is a Phoenix Channels client that connects to the SolarDoc Phoenix server. It is
@@ -160,7 +161,7 @@ export class SDSClient {
 
   private async _handleCreateChannel(
     creatorId: string,
-    onJoin: (resp: EditorChannel) => void | Promise<void>,
+    onJoin: (resp: EditorChannel, initTrans: OTTransDTO) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
     resp: {} | { creator_id: string; editor_channel: EditorChannel },
   ) {
@@ -169,11 +170,14 @@ export class SDSClient {
       onError(new PhoenixInternalError('[ws-client.ts] Server did not return a valid response.'))
     }
 
-    const validResp = resp as { creator_id: string; editor_channel: EditorChannel }
-    await this._leaveChannelNew()
+    const validResp = resp as {
+      creator_id: string;
+      editor_channel: EditorChannel;
+      init_trans: OTTransDTO;
+    }
     if (validResp.creator_id === creatorId) {
-      console.log('[ws-client.ts] Channel successfully created!')
-      onJoin(validResp.editor_channel)
+      await this._leaveChannelNew()
+      onJoin(validResp.editor_channel, validResp.init_trans)
     }
   }
 
@@ -191,7 +195,7 @@ export class SDSClient {
    * @since 0.4.0
    */
   public async createChannel(
-    onJoin: (resp: EditorChannel) => void | Promise<void>,
+    onJoin: (resp: EditorChannel, initTrans: OTTransDTO) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
     editorChannel: CreateEditorChannel,
     editorState: string,
