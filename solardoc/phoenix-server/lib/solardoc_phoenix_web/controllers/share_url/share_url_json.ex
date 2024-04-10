@@ -1,6 +1,7 @@
 defmodule SolardocPhoenixWeb.ShareURLJSON do
   alias SolardocPhoenix.Share.ShareURL
   alias SolardocPhoenix.Utils
+  alias SolardocPhoenix.Files.File
 
   @doc """
   Renders a list of share_urls.
@@ -12,8 +13,19 @@ defmodule SolardocPhoenixWeb.ShareURLJSON do
   @doc """
   Renders a single share_url.
   """
-  def show(%{share_url: share_url}) do
-    %{data: data(share_url)}
+  def show(%{file: file}) do
+    %{data: file_data(file)}
+  end
+
+  defp file_data(%File{} = file) do
+    %{
+      id: file.id,
+      file_name: file.file_name,
+      last_edited: Utils.naive_datetime_to_unix_milliseconds(file.last_edited),
+      content: file.content,
+      created: file.created,
+      owner_id: file.owner_id
+    }
   end
 
   defp data(%ShareURL{} = share_url) do
