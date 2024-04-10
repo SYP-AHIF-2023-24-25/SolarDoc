@@ -61,10 +61,14 @@ phoenixBackend
     const authStatus =
       currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
     if (authStatus === 'authenticated') {
+      // Ensure that the user has the permissions to open the current file
+      currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
+
       console.log('[Editor] Attempting to connect to SDS')
       editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
     } else if (authStatus === 'expired-or-revoked') {
       await currentUserStore.logout()
+      currentFileStore.closeFile()
     } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
       console.error('[Editor] Auth status is unreachable or unknown')
     } else {
@@ -212,9 +216,11 @@ setInterval(updateLastModified, 500)
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
+          <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
           <input
             id="file-name-input"
             v-model="currentFileStore.fileName"
+            @input="(event) => currentFileStore.setFileName(event.target!.value)"
           />
         </div>
       </div>

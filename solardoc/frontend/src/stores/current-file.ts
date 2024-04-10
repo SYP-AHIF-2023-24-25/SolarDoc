@@ -5,27 +5,56 @@ import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors"
 import {v4 as uuidv4} from 'uuid'
 import {defineStore} from 'pinia'
 
+const DEFAULT_NAME = 'untitled.adoc'
 const DEFAULT_TEXT = '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
 
 export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
-    const storedFileId = localStorage.getItem(constants.localStorageFileIdKey);
+    const storedFileId = localStorage.getItem(constants.localStorageFileIdKey)
+    const storedFileOwner = localStorage.getItem(constants.localStorageFileOwnerKey)
+    let storedFileName = localStorage.getItem(constants.localStorageFileNameKey)
+    let storedFileContent = localStorage.getItem(constants.localStorageFileContentKey)
+
+    // Ensure the default is populated if the stored content is empty or the file name is empty
+    if (!storedFileName || storedFileName === '') {
+      storedFileName = DEFAULT_NAME
+      localStorage.setItem(constants.localStorageFileNameKey, DEFAULT_NAME)
+    }
+
+    if (!storedFileContent || storedFileContent === '') {
+      storedFileContent = DEFAULT_TEXT
+      localStorage.setItem(constants.localStorageFileContentKey, DEFAULT_TEXT)
+    }
+
     return {
       fileId: <string | undefined>storedFileId || undefined,
-      fileName: localStorage.getItem(constants.localStorageFileNameKey) || 'untitled.adoc',
+      fileName: storedFileName,
+      ownerId: storedFileOwner || undefined,
       saveState: storedFileId ? 'Saved Remotely' : 'Saved Locally',
-      content: localStorage.getItem(constants.localStorageTextKey) || DEFAULT_TEXT,
+      content: storedFileContent,
       otTransStack: <Array<OTTrans>>[],
     }
   },
   actions: {
+    ensureUserIsAuthorisedForFile(userId: string) {
+      if (!this.fileId || !this.ownerId) {
+        this.clearFileId()
+        this.clearOwnerId()
+        this.setOnlineSaveState(false) // For safety
+        return
+      }
+
+      if (this.ownerId !== userId) {
+        this.closeFile()
+      }
+    },
     async storeOnServer(bearer: string) {
       if (this.fileId === undefined) {
         await this.createFile(bearer)
       } else {
         await this.updateFile(bearer)
       }
-      this.saveState = 'Saved Remotely'
+      this.setOnlineSaveState(true)
     },
     async createFile(bearer: string) {
       let resp: Awaited<ReturnType<typeof phoenixRestService.postV1Files>>
@@ -45,6 +74,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
       if (resp.status === 201) {
         this.setFileId(resp.data.id!)
+        this.setOwnerId(resp.data.owner_id!)
       } else if (resp.status === 400) {
         throw new PhoenixRestError(
           'Server rejected request to logout. Cause: Bad request',
@@ -127,19 +157,24 @@ export const useCurrentFileStore = defineStore('currentFile', {
     createDeleteOTTrans(pos: number, length: number, userId: string): OTTrans {
       return this.createOTTrans({type: 'delete', pos, length}, userId)
     },
-    closeFile() {
-      this.clearFileId()
-      this.setFileName('untitled.adoc')
-      this.setContent(DEFAULT_TEXT)
-      this.saveState = 'Saved Locally'
+    setOnlineSaveState(value: boolean) {
+      this.saveState = value ? 'Saved Remotely' : 'Saved Locally'
     },
     setFileId(fileId: string) {
       this.fileId = fileId
       localStorage.setItem(constants.localStorageFileIdKey, fileId)
     },
+    setOwnerId(ownerId: string) {
+      this.ownerId = ownerId
+      localStorage.setItem(constants.localStorageFileOwnerKey, ownerId)
+    },
     clearFileId() {
       this.fileId = undefined
       localStorage.removeItem(constants.localStorageFileIdKey)
+    },
+    clearOwnerId() {
+      this.ownerId = undefined
+      localStorage.removeItem(constants.localStorageFileOwnerKey)
     },
     setFileName(fileName: string) {
       this.fileName = fileName
@@ -147,7 +182,14 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     setContent(content: string) {
       this.content = content
-      localStorage.setItem(constants.localStorageTextKey, content)
+      localStorage.setItem(constants.localStorageFileContentKey, content)
+    },
+    closeFile() {
+      this.clearFileId()
+      this.setFileName(DEFAULT_NAME)
+      this.setContent(DEFAULT_TEXT)
+      this.setOnlineSaveState(false)
+      this.clearOTTransStack()
     },
     clearOTTransStack() {
       this.otTransStack = []
