@@ -4,9 +4,11 @@ import {useOverlayStateStore} from "@/stores/overlay-state";
 import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue"
 import SDRouterLink from "@/components/SDRouterLink.vue";
 import {useCurrentUserStore} from "@/stores/current-user";
+import {useCurrentFileStore} from "@/stores/current-file";
 
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 
 function submitForm() {
   // TODO!
@@ -27,6 +29,11 @@ function submitForm() {
         <p>
           You need to be logged in to create a share url!
           <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
+        </p>
+      </div>
+      <div id="channel-view-not-logged-in" v-else-if="currentFileStore.fileId=== undefined">
+        <p>
+          You need to save your file to share it!
         </p>
       </div>
       <Vueform
@@ -58,16 +65,6 @@ function submitForm() {
             container: 1,
           }"
           :submits="true"
-        />
-        <ButtonElement
-          name="go-back"
-          button-label="Go Back"
-          :resets="true"
-          :columns="{
-            container: 3,
-          }"
-          :secondary="true"
-          align="center"
         />
       </Vueform>
     </div>
