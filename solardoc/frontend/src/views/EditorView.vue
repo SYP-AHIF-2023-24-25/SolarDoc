@@ -24,6 +24,7 @@ import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
 import * as backendAPI from '@/services/backend/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
+import ShareUrlCreate from "@/components/editor/ShareUrlCreate.vue"
 
 const darkModeStore = useDarkModeStore()
 const editorContentStore = useEditorContentStore()
@@ -182,6 +183,10 @@ function handleDownloadButtonClick() {
   }, 1500)
 }
 
+function handleShareButtonClick() {
+  overlayStateStore.setShareUrlView(true);
+}
+
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 function getLastModified(): string {
@@ -193,6 +198,7 @@ setInterval(updateLastModified, 500)
 </script>
 
 <template>
+  <ShareUrlCreate />
   <ChannelView />
   <FullScreenPreview />
   <div id="editor-page">
@@ -200,10 +206,8 @@ setInterval(updateLastModified, 500)
       <div id="menu-left-side">
         <EditorSandwichDropdown />
         <div id="button-menu">
-          <button class="editor-button" @click="handleCopyButtonClick()">
-            {{ copyButtonContent }}
-          </button>
-          <button class="editor-button">Share</button>
+          <button class="editor-button" @click="handleCopyButtonClick()">{{ copyButtonContent }}</button>
+          <button class="editor-button" @click="handleShareButtonClick()">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
       </div>

@@ -10,7 +10,6 @@ export const useFileStore = defineStore('fileName', {
   },
   actions: {
     async storeOnServer() {
-      // TODO! add liss stuff
       this.saveState = 'Saved Remotely'
     },
     storeLocally() {

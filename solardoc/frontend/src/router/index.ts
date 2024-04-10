@@ -59,6 +59,11 @@ const router = createRouter({
       name: 'test-editor',
       component: () => import('@/views/TestEditorView.vue'),
     },
+    {
+      path: '/share' + htmlExtMatcher,
+      name: 'share',
+      component: () => import('@/views/ShareURLView.vue'),
+    },
     // 404-page (reroutes in the view to the static 404.html)
     {
       path: '/:pathMatch(.*)*',
