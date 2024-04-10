@@ -33,6 +33,17 @@ defmodule SolardocPhoenixWeb.ShareURLController do
           perms :integer, "Byte-formatted Permissions", required: true
         end
       end,
+      File: swagger_schema do
+        title "File"
+        description "The file wich gets referenced by a share url"
+        properties do
+          id :string, "File UUID", required: false
+          file_name :string, "File name", required: true
+          owner_id :string, "Owner id", required: false
+          last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: false
+          created :integer, "Creation date in UNIX timestamp milliseconds", required: false
+        end
+      end,
       Error: swagger_schema do
         title "Error"
         description "An error"
@@ -104,18 +115,20 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     get "#{@api_path}/share/{id}"
     consumes "application/json"
     produces "application/json"
-    summary "Get a single share url"
+    summary "Get a file via a share url"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameters do
       id :path, :string, "Share Url ID", required: true
     end
-    response 200, "Ok", Schema.ref(:ShareUrl)
+    response 200, "Ok", Schema.ref(:File)
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
   def show(conn, %{"id" => id}) do
     share_url = Share.get_share_url!(id)
-    render(conn, :show, share_url: share_url)
+    with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(share_url.file_id)} do
+      render(conn, :show, file: file)
+    end
   end
 
   def delete(conn, %{"id" => id}) do
