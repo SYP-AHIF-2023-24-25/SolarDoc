@@ -1,9 +1,10 @@
 export default Object.freeze({
   githubURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc',
   githubVersionURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc/releases/tag',
-  localStorageTextKey: 'editor-text',
   localStorageLastModifiedKey: 'last-modified',
-  localStorageFileKey: 'file',
+  localStorageFileIdKey: 'file-id',
+  localStorageFileNameKey: 'file-name',
+  localStorageTextKey: 'editor-text',
   localStorageThemeKey: 'user-theme',
   localStorageAuthKey: 'user-auth',
   localStorageCurrUserKey: 'current-user',

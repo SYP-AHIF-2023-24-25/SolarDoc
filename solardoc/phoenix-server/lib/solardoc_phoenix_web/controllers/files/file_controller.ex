@@ -87,6 +87,7 @@ defmodule SolardocPhoenixWeb.FileController do
     end
     response 201, "Created", Schema.ref(:File)
     response 400, "Bad Request", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:Errors)
   end
 
   def create(conn, file_params) do

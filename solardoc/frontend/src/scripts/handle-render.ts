@@ -29,20 +29,20 @@ export interface RenderedPresentation {
 /**
  * Handles a render request by sending it to the backend and returning the download URL.
  * @param fileName The name of the file to render.
- * @param editorContent The content of the editor.
+ * @param content The content of the editor.
  * @returns The download URL of the rendered presentation.
  * @since 0.3.0
  */
 export async function handleRender(
   fileName: string,
-  editorContent: string,
+  content: string,
 ): Promise<RenderedPresentation> {
   initStateStore.setFalse()
   previewLoadingStore.setPreviewLoading(true)
 
   const renderPresentationDtoModel: RenderPresentationDtoModel = {
     fileName: fileName,
-    fileContent: editorContent,
+    fileContent: content,
     revealJSAssetsPath: REVEAL_JS_CDN_URL,
   }
 
