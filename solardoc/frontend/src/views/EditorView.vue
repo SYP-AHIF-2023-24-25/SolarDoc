@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, type UnwrapRef } from 'vue'
-import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
+import {ref} from 'vue'
+import { storeToRefs } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { handleRender } from '@/scripts/handle-render'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
@@ -83,18 +82,6 @@ phoenixBackend
       '[Editor] Phoenix Backend is not reachable. Please copy the logs and contact the developers.',
     )
   })
-
-// Ensure the render preview is updated whenever the editor content changes
-currentFileStore.$subscribe(
-  async (
-    _: SubscriptionCallbackMutation<typeof currentFileStore>,
-    state: UnwrapRef<typeof currentFileStore>['$state'],
-  ) => {
-    const { content: editorContent } = state
-    const renderResp = await handleRender(currentFileStore.fileName, editorContent)
-    renderDataStore.setRenderData(renderResp)
-  },
-)
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {

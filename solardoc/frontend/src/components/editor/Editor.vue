@@ -19,12 +19,15 @@ import { useLastModifiedStore } from '@/stores/last-modified'
 import { performErrorChecking } from '@/components/editor/error-checking'
 import { useCurrentFileStore } from '@/stores/current-file'
 import type { OTransReqDto } from '@/services/phoenix/ot-trans'
+import {handleRender} from "@/scripts/handle-render";
+import {useRenderDataStore} from "@/stores/render-data";
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const lastModifiedStore = useLastModifiedStore()
 const initStateStore = useInitStateStore()
+const renderDataStore = useRenderDataStore()
 
 /**
  * The timeout after which the editor will save the text to the local storage.
@@ -81,6 +84,7 @@ onMounted(() => {
         const pos = change.rangeOffset
         ot = currentFileStore.createInsertOTrans(pos, change.text)
       }
+      console.log(ot)
       currentFileStore.pushOTransReq(ot)
     }
   })
@@ -102,14 +106,18 @@ onMounted(() => {
     initStateStore.setFalse()
     previewLoadingStore.setPreviewLoading(true)
 
+    lastModifiedStore.setLastModified(new Date())
+    currentFileStore.setContent(editorInstance!.getValue())
+
     // If there is an active timeout, then cancel it and force the creation of a new one
     // (to avoid saving the text too often)
     if (activeTimeout) clearTimeout(activeTimeout)
 
-    activeTimeout = setTimeout(() => {
+    activeTimeout = setTimeout(async () => {
       console.log('[Editor] Broadcasting update')
-      currentFileStore.setContent(editorInstance!.getValue())
-      lastModifiedStore.setLastModified(new Date())
+      const newState = editorInstance!.getValue()
+      const renderResp = await handleRender(currentFileStore.fileName, newState)
+      renderDataStore.setRenderData(renderResp)
     }, EDITOR_UPDATE_TIMEOUT)
   })
 
@@ -118,17 +126,17 @@ onMounted(() => {
     performErrorChecking(editorInstance!)
   })
 
-  // Ensure that the editor content is always in sync with the current file content
-  currentFileStore.$subscribe(
-    (
-      mutation: SubscriptionCallbackMutation<{ content: string }>,
-      state: { content: string },
-    ) => {
-      if (editorInstance!.getValue() !== state.content) {
-        editorInstance!.setValue(state.content)
-      }
-    },
-  )
+  // // Ensure that the editor content is always in sync with the current file content
+  // currentFileStore.$subscribe(
+  //   (
+  //     mutation: SubscriptionCallbackMutation<{ content: string }>,
+  //     state: { content: string },
+  //   ) => {
+  //     if (editorInstance!.getValue() !== state.content) {
+  //       editorInstance!.setValue(state.content)
+  //     }
+  //   },
+  // )
 
   // Register an event listener to the darkModeStore to change the theme of the editor
   darkModeStore.$subscribe(
