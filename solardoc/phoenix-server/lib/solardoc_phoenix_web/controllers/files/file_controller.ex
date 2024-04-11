@@ -96,7 +96,7 @@ defmodule SolardocPhoenixWeb.FileController do
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/files/#{file}")
-      |> render(:show_share, file: file)
+      |> render(:show, file: file)
     end
   end
 
