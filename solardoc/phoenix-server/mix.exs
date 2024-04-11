@@ -55,7 +55,8 @@ defmodule SolardocPhoenix.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:phoenix_swagger, "~> 0.8.3"},
       {:ex_json_schema, "~> 0.7.1"},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:cors_plug, "~> 3.0"},
     ]
   end
 
