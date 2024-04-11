@@ -51,7 +51,7 @@ onMounted(() => {
   monaco.editor.defineTheme('asciiDocDarkTheme', <editor.IStandaloneThemeData>darkEditorTheme)
 
   // Creating the editor with desired theme and language
-  editorInstance = monaco.editor.create(editorRef.value!, {
+  editorInstance = monaco.editor.create(editorRef.value, {
     theme: darkModeStore.darkMode ? 'asciiDocDarkTheme' : 'asciiDocLightTheme',
     language: 'asciiDoc',
     value: currentFileStore.content,
@@ -65,7 +65,7 @@ onMounted(() => {
   })
 
   // Error checking on init
-  performErrorChecking(editorInstance!)
+  performErrorChecking(editorInstance)
 
   editorInstance.onDidChangeModelContent((event: editor.IModelContentChangedEvent) => {
     // We will create for every change a new OT operation
@@ -117,6 +117,18 @@ onMounted(() => {
   editorInstance.onDidChangeModelContent(() => {
     performErrorChecking(editorInstance!)
   })
+
+  // Ensure that the editor content is always in sync with the current file content
+  currentFileStore.$subscribe(
+    (
+      mutation: SubscriptionCallbackMutation<{ content: string }>,
+      state: { content: string },
+    ) => {
+      if (editorInstance!.getValue() !== state.content) {
+        editorInstance!.setValue(state.content)
+      }
+    },
+  )
 
   // Register an event listener to the darkModeStore to change the theme of the editor
   darkModeStore.$subscribe(
