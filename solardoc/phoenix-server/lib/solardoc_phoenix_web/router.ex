@@ -16,10 +16,12 @@ defmodule SolardocPhoenixWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_api_user
+    plug CORSPlug
   end
 
   pipeline :api_auth do
     plug :require_api_user
+    plug CORSPlug
   end
 
   # Enable LiveDashboard, Swagger Dashboard and Swoosh mailbox preview in development
@@ -60,11 +62,13 @@ defmodule SolardocPhoenixWeb.Router do
 
     # User registration and password reset routes
     post "/users", UserController, :create
+    options "/users", UserController, :options
     post "/users/reset_password", UserResetPasswordController, :create
     put "/users/reset_password/:token", UserResetPasswordController, :update
 
     # Solardoc Auth API - Bearer token authentication
     post "/auth/bearer", UserAuthController, :create
+    options "/auth/bearer", UserAuthController, :options
   end
 
   # User routes requiring authentication
@@ -75,9 +79,10 @@ defmodule SolardocPhoenixWeb.Router do
 
     # Get the current user
     get "/users/current", UserController, :current
-
+    options "/users/current", UserController, :options
     # User routes
     get "/users", UserController, :index
+    options "/users", UserController, :options
 
     # User confirmation routes
     # TODO! Finish the migration from the old user confirmation controller to the new API-only controller
@@ -91,15 +96,18 @@ defmodule SolardocPhoenixWeb.Router do
 
     # Channel routes
     resources "/editor_channels", EditorChannelController, only: [:index, :show, :update]
+    options "/editor_channels", EditorChannelController, :options
 
     # Solardoc Auth API - Logging out i.e. deleting the user bearer token
     delete "/auth/bearer", UserAuthController, :delete
 
     # File routes
     resources "/files", FileController, only: [:index,:create, :show, :update, :delete]
+    options "/files", FileController, :options
 
     # Share URL routes
     resources "/share", ShareURLController, only: [:index, :show, :create, :update, :delete]
+    options "/share", ShareURLController, :options
   end
 
   ########## - General API Info - ##########
