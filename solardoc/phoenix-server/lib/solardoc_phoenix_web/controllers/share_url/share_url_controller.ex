@@ -33,15 +33,16 @@ defmodule SolardocPhoenixWeb.ShareURLController do
           perms :integer, "Byte-formatted Permissions", required: true
         end
       end,
-      File: swagger_schema do
+      FileShare: swagger_schema do
         title "File"
         description "The file wich gets referenced by a share url"
         properties do
-          id :string, "File UUID", required: false
+          id :string, "File UUID", required: true
+          content :string, "The files contend", required: true
           file_name :string, "File name", required: true
-          owner_id :string, "Owner id", required: false
-          last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: false
-          created :integer, "Creation date in UNIX timestamp milliseconds", required: false
+          owner_id :string, "Owner id", required: true
+          last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: true
+          created :integer, "Creation date in UNIX timestamp milliseconds", required: true
         end
       end,
       Error: swagger_schema do
@@ -121,7 +122,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     parameters do
       id :path, :string, "Share Url ID", required: true
     end
-    response 200, "Ok", Schema.ref(:File)
+    response 200, "Ok", Schema.ref(:FileShare)
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
   def show(conn, %{"id" => id}) do
