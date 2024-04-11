@@ -65,10 +65,22 @@ export type Ping = {
 export type ShareUrl = {
     expired: boolean;
     expires_at: number;
-    file: File;
+    file_id: string;
     id: string;
     issued_at: number;
     perms: number;
+};
+export type CreateShareUrl = {
+    file_id: string;
+    perms: number;
+};
+export type File2 = {
+    content: string;
+    created: number;
+    file_name: string;
+    id: string;
+    last_edited: number;
+    owner_id: string;
 };
 export type UserPublic = {
     id: string;
@@ -292,6 +304,47 @@ export function getV1Share(authorization: string, opts?: Oazapfts.RequestOpts) {
         status: 401;
         data: Errors;
     }>("/v1/share", {
+        ...opts,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    });
+}
+/**
+ * Create a new share url
+ */
+export function postV1Share(authorization: string, createShareUrl: CreateShareUrl, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 201;
+        data: ShareUrl;
+    } | {
+        status: 400;
+        data: Errors;
+    } | {
+        status: 401;
+        data: Errors;
+    }>("/v1/share", oazapfts.json({
+        ...opts,
+        method: "POST",
+        body: createShareUrl,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    }));
+}
+/**
+ * Get a file via a share url
+ */
+export function getV1ShareById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: File2;
+    } | {
+        status: 401;
+        data: Errors;
+    }>(`/v1/share/${encodeURIComponent(id)}`, {
         ...opts,
         headers: {
             ...opts && opts.headers,
