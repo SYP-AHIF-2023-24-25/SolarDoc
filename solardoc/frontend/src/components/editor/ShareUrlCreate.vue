@@ -9,9 +9,47 @@ import {useCurrentFileStore} from "@/stores/current-file";
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
+import * as phoenixRestService from "@/services/phoenix/api-service";
+import {postV1Share} from "@/services/phoenix/api-service";
+import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
 
-function submitForm() {
-  // TODO!
+async function submitForm(
+    form$: Vueform & {
+      requestData: {
+        'write': boolean,
+        generatedLink: string
+      }
+    },
+) {
+  if(currentUserStore.bearer !== undefined){
+    if(currentFileStore.fileId !== undefined){
+      let perms: number = 1;
+      if(form$.requestData.write){
+        perms = 3;
+      }
+      let resp: Awaited<ReturnType<typeof phoenixRestService.postV1Share>>
+      try {
+        resp = await phoenixRestService.postV1Share( currentUserStore.bearer,{
+          file_id: currentFileStore.fileId,
+          perms: perms
+        });
+      } catch (e) {
+        throw new PhoenixInternalError(
+            'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+        )
+      }
+      if (resp.status === 401) {
+        throw new PhoenixRestError(
+            'Server rejected request to fetch current user. Cause: Unauthorized',
+            resp.status,
+        )
+      }
+      if(resp.status === 201){
+        form$.requestData.generatedLink = `${window.location.origin}/${resp.data.id}`
+      }
+    }
+  }
+
 }
 </script>
 
@@ -45,7 +83,7 @@ function submitForm() {
           v-else
       >
         <TextElement
-            name="text"
+            name="generatedLink"
             label="Generated Link:"
             :disabled="true"
         />
