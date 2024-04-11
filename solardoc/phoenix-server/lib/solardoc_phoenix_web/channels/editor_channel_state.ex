@@ -24,7 +24,7 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
     # Stack is a nested property of the map, so we need to first get the map by the channel_id and then the state
     Agent.get(__MODULE__, fn state ->
       editor_state = Map.get(state, channel_id, %{})
-      List.last(Map.get(editor_state, :text_state, []))
+      Map.get(editor_state, :text_state)
     end)
   end
 
@@ -39,8 +39,11 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
       iex> get_init_trans("456")
       nil
   """
-  def get_init_trans(channel_id) do
-    Agent.get(__MODULE__, fn state -> (Map.get(state, channel_id, %{}))[:last_applied] end)
+  def get_last_trans(channel_id) do
+    Agent.get(__MODULE__, fn state ->
+      editor_state = Map.get(state, channel_id, %{})
+      List.last(Map.get(editor_state, :trans_stack, []))
+    end)
   end
 
   @doc """

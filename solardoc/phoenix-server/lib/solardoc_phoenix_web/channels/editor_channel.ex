@@ -21,7 +21,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
       # state. To make sure that the state is in sync with the database (which it should usually be, but potentially
       # there a recent un-synced state), we should load the state into the database as well.
       init_trans = EditorChannelState.init_with_state(editor_channel.id, state)
-      Files.change_content(editor_channel.file, %{content: state})
+      sync_to_db(editor_channel, state)
 
       send(self(), {:after_create, editor_channel: editor_channel, init_trans: init_trans})
       {:ok, socket}
@@ -38,15 +38,11 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   def join("channel:" <> channel_id, %{"auth" => auth}, socket) do
     with {:exists, %EditorChannel{} = editor_channel} <- {:exists, EditorChannels.get_channel!(channel_id)},
          {:authorised, true} <- {:authorised, authorized?(editor_channel, %{auth: auth})} do
-      state = EditorChannelState.get_text(channel_id)
-      if state == nil do
-        editor_channel = editor_channel |> Repo.preload(:file)
+      editor_channel = editor_channel |> Repo.preload(:file)
+      state = EditorChannelState.get_text(editor_channel.id)
+        || init_channel_state_and_get(editor_channel.id, editor_channel.file.content)
 
-        state = editor_channel.file.content
-        EditorChannelState.init_with_state(channel_id, state)
-      end
-
-      init_trans = EditorChannelState.get_init_trans(channel_id)
+      init_trans = EditorChannelState.get_last_trans(channel_id)
       send(self(), {:after_join, editor_channel: editor_channel, state: state, init_trans: init_trans})
       {:ok, socket}
     else
@@ -60,9 +56,10 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   @impl true
-  def join("channel:" <> _channel_id, data, _socket) do
+  def join("channel:" <> channel_id, data, _socket) do
     {:error, %{
       message: "Invalid operation",
+      topic: "channel:" <> channel_id,
       data: data,
     }}
   end
@@ -95,11 +92,19 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   @impl true
   def handle_info({:after_join, editor_channel: editor_channel, state: state, init_trans: init_trans}, socket) do
     IO.puts(EditorChannelState.get_text(editor_channel.id))
+
     broadcast!(socket, "user_join", %{
       body: "A new user has joined a channel",
       channel_id: editor_channel.id,
       user_id: socket.assigns.user_id,
-      state: state,
+      file: %{
+        id: editor_channel.file.id,
+        file_name: editor_channel.file.file_name,
+        last_edited: editor_channel.file.last_edited,
+        creator_id: editor_channel.creator_id,
+        created: editor_channel.file.created,
+        content: state,
+      },
       init_trans: init_trans
     })
     {:noreply, socket}
@@ -154,6 +159,15 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   def onError(reason, socket) do
     IO.puts("Error in channel: #{inspect(reason)}")
     {:noreply, socket}
+  end
+
+  defp init_channel_state_and_get(channel_id, content) do
+    EditorChannelState.init_with_state(channel_id, content)
+    content
+  end
+
+  defp sync_to_db(editor_channel, state) do
+    Files.change_content(editor_channel.file, %{content: state})
   end
 
   defp curr_channel_id(socket) do

@@ -49,7 +49,7 @@ defmodule SolardocPhoenixWeb.EditorChannelTrans do
       {:ok, validated_transformation_object}
 
   """
-  def validate_trans(%{"type" => type, "pos" => pos, "content" => content} = trans) when type == "insert" do
+  def validate_trans(%{"type" => type, "pos" => pos, "content" => content}) when type == "insert" do
     if is_binary(content) and is_integer(pos) do
       {:ok, %{type: type, content: content, pos: pos}}
     else
