@@ -8,7 +8,6 @@ import * as phoenixRestService from '@/services/phoenix/api-service'
 import {useCurrentUserStore} from "@/stores/current-user";
 import {useRoute, useRouter} from "vue-router";
 import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
-import {getV1ShareById} from "@/services/phoenix/api-service";
 
 const currentFileStore = useCurrentFileStore();
 const currentUserStore = useCurrentUserStore();
@@ -19,8 +18,6 @@ const $router = useRouter()
 
 onMounted(async ()=>{
   const shareUrlId = $route.params.share_url_id;
-
-  // Check if it's a string
 
   if (typeof currentUserStore.bearer === 'string') {
     if(typeof shareUrlId === 'string'){
