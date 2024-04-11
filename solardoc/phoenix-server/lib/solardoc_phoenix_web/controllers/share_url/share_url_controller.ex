@@ -98,7 +98,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", ~p"/api/share_urls/#{share_url.id}")
-        |> render(:show, share_url: share_url)
+        |> render(:show_share, share_url: share_url)
       end
     else
       {:file_exists, _} -> {:error, :not_found}
@@ -128,7 +128,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
 
   def show_share(conn, %{"id"=> id}) do
     share_url = Share.get_share_url!(id)
-    render(conn, :show, share_url: share_url)
+    render(conn, :show_share, share_url: share_url)
   end
 
   swagger_path :show_file do

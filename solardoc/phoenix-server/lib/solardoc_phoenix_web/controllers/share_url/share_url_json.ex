@@ -28,7 +28,7 @@ defmodule SolardocPhoenixWeb.ShareURLJSON do
     }
   end
 
-  def show(%ShareURL{} = share_url) do
+  def show_share(%ShareURL{} = share_url) do
     %{data: share_data(share_url)}
   end
 
