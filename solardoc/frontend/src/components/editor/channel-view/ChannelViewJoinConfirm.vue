@@ -1,10 +1,16 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useChannelViewStore } from '@/stores/channel-view'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
-import { ref } from 'vue'
+import { useCurrentFileStore } from '@/stores/current-file'
 import type { EditorChannel, JoinChannelOptions } from '@/services/phoenix/editor-channel'
 import type { Vueform } from '@vueform/vueform'
+import type { OTransRespDto } from '@/services/phoenix/ot-trans'
+import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
+import { useCurrentUserStore } from '@/stores/current-user'
 
+const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 const channelState = useChannelViewStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
 const channelViewStore = useChannelViewStore()
@@ -34,7 +40,10 @@ async function submitForm(
   await editorUpdateWSClient.wsClient?.joinChannel(
     `channel:${props.channel.id}`,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async _ => {
+    async (initTrans: OTransRespDto, file: Required<File>) => {
+      currentFileStore.setFile(file)
+      currentFileStore.initOTransStackFromServerTrans(initTrans)
+
       channelViewStore.setChannelJoined(true)
       channelViewStore.setSelectedChannel(props.channel)
       console.log(`[ChannelView] Channel joined (Id: ${props.channel.id})`)
@@ -42,6 +51,7 @@ async function submitForm(
     errorResp => {
       console.error('[ChannelView] Error joining new channel', errorResp)
     },
+    currentUserStore.currentUser!.id,
     {
       auth: form$.requestData.password,
     } satisfies JoinChannelOptions,

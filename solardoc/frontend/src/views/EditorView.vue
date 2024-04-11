@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, type UnwrapRef} from 'vue'
+import { ref, type UnwrapRef } from 'vue'
 import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
@@ -11,7 +11,7 @@ import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
-import {useCurrentFileStore} from "@/stores/current-file";
+import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
@@ -84,34 +84,15 @@ phoenixBackend
     )
   })
 
-
 // Ensure the render preview is updated whenever the editor content changes
 currentFileStore.$subscribe(
   async (
     _: SubscriptionCallbackMutation<typeof currentFileStore>,
-    state: UnwrapRef<typeof currentFileStore>["$state"]
+    state: UnwrapRef<typeof currentFileStore>['$state'],
   ) => {
     const { content: editorContent } = state
     const renderResp = await handleRender(currentFileStore.fileName, editorContent)
     renderDataStore.setRenderData(renderResp)
-    console.log(renderResp)
-
-    // If there is a connection to the Phoenix backend, send the updated content to the channel
-    if (editorUpdateWSClient.hasActiveChannelConnection) {
-      console.log('[Editor] Sending editor update to channel')
-      await editorUpdateWSClient.wsClient?.sendEditorUpdate(
-        {
-          body: editorContent,
-          render_url: renderResp.previewURL,
-        },
-        resp => {
-          console.log(`[Editor] Editor update sent (Resp: `, resp, ')')
-        },
-        error => {
-          console.error(`[Editor] Error sending editor update: `, error)
-        },
-      )
-    }
   },
 )
 
@@ -220,7 +201,7 @@ setInterval(updateLastModified, 500)
           <input
             id="file-name-input"
             v-model="currentFileStore.fileName"
-            @input="(event) => currentFileStore.setFileName(event.target!.value)"
+            @input="event => currentFileStore.setFileName(event.target!.value)"
           />
         </div>
       </div>

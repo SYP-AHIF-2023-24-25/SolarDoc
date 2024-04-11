@@ -10,7 +10,7 @@ import SDRouterLink from '@/components/SDRouterLink.vue'
 import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreate.vue'
 import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue'
-import {useCurrentFileStore} from "@/stores/current-file";
+import { useCurrentFileStore } from '@/stores/current-file'
 
 const overlayStateStore = useOverlayStateStore()
 const channelViewStore = useChannelViewStore()
@@ -65,7 +65,11 @@ refreshChannels()
           class="highlighted-button"
           @click="channelViewStore.setCreatingChannel(true)"
           :disabled="!currentFileStore.fileId"
-          v-tooltip="!currentFileStore.fileId ? 'You need to save the file before creating a channel' : undefined"
+          v-tooltip="
+            !currentFileStore.fileId
+              ? 'You need to save the file before creating a channel'
+              : undefined
+          "
         >
           Create
         </button>

@@ -6,9 +6,9 @@ import {
   type PhoenixSocket as SDSClientBare,
 } from '@solardoc/phoenix'
 import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
-import type { EditorUpdate } from '@/services/phoenix/editor-update'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
-import type {OTTrans, OTTransDTO, RawOTTrans} from "@/services/phoenix/ot-trans";
+import type { OTransRespDto } from '@/services/phoenix/ot-trans'
+import type { File } from '@/services/phoenix/api-service'
 
 /**
  * The SolarDoc Socket client (SDS) is a Phoenix Channels client that connects to the SolarDoc Phoenix server. It is
@@ -123,6 +123,27 @@ export class SDSClient {
     }
   }
 
+  private async _handleJoinChannel(
+    currUserId: string,
+    onJoin: (initTrans: OTransRespDto, file: Required<File>) => void | Promise<void>,
+    onError: (resp: any) => void | Promise<void>,
+    resp: {},
+  ) {
+    if (!('user_id' in resp)) {
+      this._leaveChannelAndEnsureDestruction()
+      onError(new PhoenixInternalError('[ws-client.ts] Server did not return a valid response.'))
+    }
+
+    const validResp = resp as {
+      user_id: string
+      init_trans: OTransRespDto
+      file: Required<File>
+    }
+    if (validResp.user_id === currUserId) {
+      onJoin(validResp.init_trans, validResp.file)
+    }
+  }
+
   /**
    * Attempts to join the specified channel with the given parameters.
    *
@@ -130,6 +151,7 @@ export class SDSClient {
    * behaviour is not used here. If the channel is successfully joined, the `onJoin` function will be called with the
    * response from the server.
    * @param topic The topic of the channel to join.
+   * @param currUserId The current user's ID.
    * @param params The parameters to pass to the channel.
    * @param onJoin The function to call when the channel is successfully joined.
    * @param onError The function to call when the channel fails to join.
@@ -138,15 +160,20 @@ export class SDSClient {
    */
   public async joinChannel<T extends {} | undefined = undefined>(
     topic: string,
-    onJoin: (resp: any) => void | Promise<void>,
+    onJoin: (initTrans: OTransRespDto, file: Required<File>) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
+    currUserId: string,
     params?: T,
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
     this._currentChannel = this.socket.channel(topic, params)
+    this._currentChannel.on('user_join', resp => {
+      this._handleJoinChannel(currUserId, onJoin, onError, resp)
+    })
     this._currentChannel
       .join()
-      .receive('ok', onJoin)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .receive('ok', _ => console.log('[ws-client.ts] Channel successfully joined!'))
       .receive('error', resp => {
         onError(resp)
         this._leaveChannelAndEnsureDestruction()
@@ -161,9 +188,9 @@ export class SDSClient {
 
   private async _handleCreateChannel(
     creatorId: string,
-    onJoin: (resp: EditorChannel, initTrans: OTTransDTO) => void | Promise<void>,
+    onJoin: (resp: EditorChannel, initTrans: OTransRespDto) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
-    resp: {} | { creator_id: string; editor_channel: EditorChannel },
+    resp: {},
   ) {
     if (!('creator_id' in resp)) {
       this._leaveChannelAndEnsureDestruction()
@@ -171,9 +198,9 @@ export class SDSClient {
     }
 
     const validResp = resp as {
-      creator_id: string;
-      editor_channel: EditorChannel;
-      init_trans: OTTransDTO;
+      creator_id: string
+      editor_channel: EditorChannel
+      init_trans: OTransRespDto
     }
     if (validResp.creator_id === creatorId) {
       await this._leaveChannelNew()
@@ -195,15 +222,18 @@ export class SDSClient {
    * @since 0.4.0
    */
   public async createChannel(
-    onJoin: (resp: EditorChannel, initTrans: OTTransDTO) => void | Promise<void>,
+    onJoin: (resp: EditorChannel, initTrans: OTransRespDto) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
     editorChannel: CreateEditorChannel,
     editorState: string,
     currUserId: string,
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
-    this._currentChannel = this.socket.channel('channel:new', { data: editorChannel, state: editorState })
-    this._currentChannel?.on('new_channel', resp =>
+    this._currentChannel = this.socket.channel('channel:new', {
+      data: editorChannel,
+      state: editorState,
+    })
+    this._currentChannel.on('new_channel', resp =>
       this._handleCreateChannel(currUserId, onJoin, onError, resp),
     )
     this._currentChannel
@@ -217,22 +247,22 @@ export class SDSClient {
   }
 
   /**
-   * Sends an editor update to the server.
-   * @param update The editor update
+   * Sends an operational transformation to the server.
+   * @param update The transformation to be sent to the server.
    * @param onSuccess The function to call when the server successfully receives the update.
    * @param onError The function to call when the server fails to receive the update.
    * @throws PhoenixInvalidOperationError If the socket is not healthy.
    * @throws PhoenixInvalidOperationError If the channel is not healthy.
    * @since 0.4.0
    */
-  public async sendEditorUpdate(
-    update: EditorUpdate,
+  public async sendOTrans(
+    update: OTransRespDto,
     onSuccess: (resp: any) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
     await this._ensureChannelIsHealthy()
-    this._currentChannel!.push('editor_update', update)
+    this._currentChannel!.push('state_trans', update)
       .receive('ok', onSuccess)
       .receive('error', onError)
       .send()

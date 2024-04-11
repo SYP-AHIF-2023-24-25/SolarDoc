@@ -1,8 +1,8 @@
 /**
  * A raw operational transformation which inserts text.
  */
-export interface RawInsertOTTrans {
-  readonly type: "insert"
+export interface RawInsertOTrans {
+  readonly type: 'insert'
   readonly pos: number
   readonly content: string
 }
@@ -10,8 +10,8 @@ export interface RawInsertOTTrans {
 /**
  * A raw operational transformation which deletes text.
  */
-export interface RawDeleteOTTrans {
-  readonly type: "delete"
+export interface RawDeleteOTrans {
+  readonly type: 'delete'
   readonly pos: number
   readonly length: number
 }
@@ -19,14 +19,26 @@ export interface RawDeleteOTTrans {
 /**
  * A raw operational transformation.
  */
-export type RawOTTrans = RawInsertOTTrans | RawDeleteOTTrans
+export type RawOTrans = RawInsertOTrans | RawDeleteOTrans
 
 /**
- * A DTO for an operational transformation transaction.
+ * A DTO for an operational transformation transaction request.
+ *
+ * This will be sent to the server and then returned as a full transaction in form of {@link OTransRespDTO}.
  */
-export interface OTTransDTO {
+export interface OTransReqDto {
   id: string
-  trans: RawOTTrans
+  trans: RawOTrans
+}
+
+/**
+ * A DTO for an operational transformation transaction response.
+ *
+ * This will be sent to the client and then stored in the local database.
+ */
+export interface OTransRespDto {
+  id: string
+  trans: RawOTrans
   timestamp: number
   user_id: string
 }
@@ -35,9 +47,9 @@ export interface OTTransDTO {
  * An operational transformation transaction.
  * @since 0.5.0
  */
-export interface OTTrans {
+export interface OTrans {
   id: string
-  trans: RawOTTrans
+  trans: RawOTrans
   timestamp: number | undefined
   user_id: string
   acknowledged: boolean

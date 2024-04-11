@@ -9,7 +9,7 @@ import { ref } from 'vue'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Vueform } from '@vueform/vueform'
-import {useCurrentFileStore} from "@/stores/current-file";
+import { useCurrentFileStore } from '@/stores/current-file'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
@@ -73,7 +73,7 @@ async function submitForm(
     async (channel, initTrans) => {
       console.log('[ChannelView] Channel created', channel)
       await joinNewChannel(channel)
-      currentFileStore.initOTTransStack({...initTrans, acknowledged: true})
+      currentFileStore.initOTransStackFromServerTrans(initTrans)
     },
     errorResp => {
       console.error('[ChannelView] Error creating channel', errorResp)

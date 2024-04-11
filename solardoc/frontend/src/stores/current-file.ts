@@ -1,9 +1,16 @@
-import type {OTTrans, RawDeleteOTTrans, RawInsertOTTrans} from "@/services/phoenix/ot-trans"
+import type {
+  OTrans,
+  OTransReqDto,
+  OTransRespDto,
+  RawDeleteOTrans,
+  RawInsertOTrans,
+} from '@/services/phoenix/ot-trans'
+import type { File } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
-import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors"
-import {v4 as uuidv4} from 'uuid'
-import {defineStore} from 'pinia'
+import { v4 as uuidv4 } from 'uuid'
+import { defineStore } from 'pinia'
 
 const DEFAULT_NAME = 'untitled.adoc'
 const DEFAULT_TEXT = '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
@@ -32,7 +39,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
       ownerId: storedFileOwner || undefined,
       saveState: storedFileId ? 'Saved Remotely' : 'Saved Locally',
       content: storedFileContent,
-      otTransStack: <Array<OTTrans>>[],
+      oTransStack: <Array<OTrans>>[],
+      oTransNotAcked: <Array<OTransReqDto>>[],
     }
   },
   actions: {
@@ -59,13 +67,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
     async createFile(bearer: string) {
       let resp: Awaited<ReturnType<typeof phoenixRestService.postV1Files>>
       try {
-        resp = await phoenixRestService.postV1Files(
-          bearer,
-          {
-            file_name: this.fileName,
-            content: this.content,
-          },
-        )
+        resp = await phoenixRestService.postV1Files(bearer, {
+          file_name: this.fileName,
+          content: this.content,
+        })
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
@@ -94,14 +99,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
       let resp: Awaited<ReturnType<typeof phoenixRestService.putV1FilesById>>
       try {
-        resp = await phoenixRestService.putV1FilesById(
-          bearer,
-          this.fileId,
-          {
-            file_name: this.fileName,
-            content: this.content,
-          },
-        )
+        resp = await phoenixRestService.putV1FilesById(bearer, this.fileId, {
+          file_name: this.fileName,
+          content: this.content,
+        })
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
@@ -120,45 +121,56 @@ export const useCurrentFileStore = defineStore('currentFile', {
         )
       }
     },
-    initOTTransStack(initOTTrans: OTTrans) {
-      this.otTransStack = [initOTTrans]
+    initOTransStackFromServerTrans(initOTrans: OTransRespDto) {
+      this.oTransStack = [{ ...initOTrans, acknowledged: true }]
     },
-    pushOTTrans(otTrans: OTTrans) {
+    /**
+     * Pushes an OTrans to the stack of transformations.
+     *
+     * This will check whether a current transformation is waiting to be acknowledged and if so, it will update that
+     * transaction with the timestamp and then push the new transformation to the stack.
+     * @param oTrans The OTrans object to
+     * @since 0.5.0
+     */
+    pushOTransResp(oTrans: OTransRespDto) {
       // TODO! Insert transformation and compare to the latest transformations
     },
     /**
-     * Creates an OTTrans object which represents a change to the content.
-     * @param insertOrDeleteTrans The raw insert or delete OTTrans.
-     * @param authorId The id of the author.
-     * @returns The OTTrans object.
+     * Pushes an OTrans to the stack of transformations which are not yet acknowledged, but have been already applied
+     * to the content.
+     * @param oTrans The OTrans object to push.
      * @since 0.5.0
      */
-    createOTTrans(insertOrDeleteTrans: RawInsertOTTrans | RawDeleteOTTrans, authorId: string): OTTrans {
-      // Ensure that the pos and length are within the bounds of the content
-      if (insertOrDeleteTrans.type === 'insert') {
-        if (insertOrDeleteTrans.pos < 0 || insertOrDeleteTrans.pos > this.content.length) {
-          throw new Error('[current-file.ts] Position or length are out of bounds of the current state')
-        }
-      } else if (insertOrDeleteTrans.pos < 0 || insertOrDeleteTrans.pos + insertOrDeleteTrans.length > this.content.length) {
-        throw new Error('[current-file.ts] Position or length are out of bounds of the current state')
-      }
-
+    pushOTransReq(oTrans: OTransReqDto) {
+      this.oTransNotAcked.push(oTrans)
+    },
+    /**
+     * Creates an OTrans object which represents a change to the content.
+     * @param insertOrDeleteTrans The raw insert or delete OTrans.
+     * @returns The OTrans object.
+     * @since 0.5.0
+     */
+    createOTrans(insertOrDeleteTrans: RawInsertOTrans | RawDeleteOTrans): OTransReqDto {
       return {
         id: uuidv4(),
-        timestamp: undefined,
-        user_id: authorId,
         trans: insertOrDeleteTrans,
-        acknowledged: false,
       }
     },
-    createInsertOTTrans(pos: number, content: string, userId: string): OTTrans {
-      return this.createOTTrans({type: 'insert', pos, content}, userId)
+    createInsertOTrans(pos: number, content: string): OTransReqDto {
+      return this.createOTrans({ type: 'insert', pos, content })
     },
-    createDeleteOTTrans(pos: number, length: number, userId: string): OTTrans {
-      return this.createOTTrans({type: 'delete', pos, length}, userId)
+    createDeleteOTrans(pos: number, length: number): OTransReqDto {
+      return this.createOTrans({ type: 'delete', pos, length })
     },
     setOnlineSaveState(value: boolean) {
       this.saveState = value ? 'Saved Remotely' : 'Saved Locally'
+    },
+    setFile(file: Required<File>) {
+      this.setFileId(file.id)
+      this.setOwnerId(file.owner_id)
+      this.setFileName(file.file_name)
+      this.setContent(file.content)
+      this.setOnlineSaveState(true)
     },
     setFileId(fileId: string) {
       this.fileId = fileId
@@ -189,10 +201,11 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setFileName(DEFAULT_NAME)
       this.setContent(DEFAULT_TEXT)
       this.setOnlineSaveState(false)
-      this.clearOTTransStack()
+      this.clearOTransStack()
     },
-    clearOTTransStack() {
-      this.otTransStack = []
-    }
+    clearOTransStack() {
+      this.oTransStack = []
+      this.oTransNotAcked = []
+    },
   },
 })

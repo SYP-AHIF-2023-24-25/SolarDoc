@@ -17,7 +17,8 @@ import { useInitStateStore } from '@/stores/init-state'
 import { KeyCode } from 'monaco-editor'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { performErrorChecking } from '@/components/editor/error-checking'
-import {useCurrentFileStore} from "@/stores/current-file";
+import { useCurrentFileStore } from '@/stores/current-file'
+import type { OTransReqDto } from '@/services/phoenix/ot-trans'
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()
@@ -65,6 +66,24 @@ onMounted(() => {
 
   // Error checking on init
   performErrorChecking(editorInstance!)
+
+  editorInstance.onDidChangeModelContent((event: editor.IModelContentChangedEvent) => {
+    // We will create for every change a new OT operation
+    // To do this though we will need to translate the monaco editor changes to OT operations
+    // This is simple if we simply assume that empty text means deletion and non-empty text means insertion
+    for (const change of event.changes) {
+      let ot: OTransReqDto
+      if (change.text === '') {
+        const length = change.rangeLength
+        const pos = change.rangeOffset + length
+        ot = currentFileStore.createDeleteOTrans(pos, length)
+      } else {
+        const pos = change.rangeOffset
+        ot = currentFileStore.createInsertOTrans(pos, change.text)
+      }
+      currentFileStore.pushOTransReq(ot)
+    }
+  })
 
   // This is an ID of the timeout
   let activeTimeout: ReturnType<typeof setTimeout>
