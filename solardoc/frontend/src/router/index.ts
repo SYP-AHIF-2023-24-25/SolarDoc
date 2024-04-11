@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useLoadingStore } from '@/stores/loading'
 import HomeView from '../views/HomeView.vue'
+import ShareURLView from "@/views/ShareURLView.vue";
 
 const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
@@ -59,10 +60,11 @@ const router = createRouter({
       name: 'test-editor',
       component: () => import('@/views/TestEditorView.vue'),
     },
+    // dynamic segments start with a colon
     {
-      path: '/share' + htmlExtMatcher,
-      name: 'share',
+      path: '/share-url/:share_url_id',
       component: () => import('@/views/ShareURLView.vue'),
+      name: 'share-url'
     },
     // 404-page (reroutes in the view to the static 404.html)
     {
