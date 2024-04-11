@@ -7,13 +7,13 @@ defmodule SolardocPhoenixWeb.ShareURLJSON do
   Renders a list of share_urls.
   """
   def index(%{share_urls: share_urls}) do
-    %{data: for(share_url <- share_urls, do: data(share_url))}
+    %{data: for(share_url <- share_urls, do: share_data(share_url))}
   end
 
   @doc """
   Renders a single share_url.
   """
-  def show(%{file: file}) do
+  def show_file(%{file: file}) do
     %{data: file_data(file)}
   end
 
@@ -28,7 +28,11 @@ defmodule SolardocPhoenixWeb.ShareURLJSON do
     }
   end
 
-  defp data(%ShareURL{} = share_url) do
+  def show(%ShareURL{} = share_url) do
+    %{data: share_data(share_url)}
+  end
+
+  defp share_data(%ShareURL{} = share_url) do
     %{
       id: share_url.id,
       file_id: share_url.file_id,

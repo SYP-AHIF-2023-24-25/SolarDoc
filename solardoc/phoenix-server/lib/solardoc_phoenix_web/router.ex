@@ -106,7 +106,10 @@ defmodule SolardocPhoenixWeb.Router do
     options "/files", FileController, :options
 
     # Share URL routes
-    resources "/share", ShareURLController, only: [:index, :show, :create, :update, :delete]
+    get "/share", ShareURLController, :show_share
+    get "/share/:id/file", ShareURLController, :show_file
+    delete "/share/:id", ShareURLController, :delete
+    post "/share", ShareURLController, :create
     options "/share", ShareURLController, :options
   end
 

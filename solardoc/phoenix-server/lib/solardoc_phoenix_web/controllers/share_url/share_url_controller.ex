@@ -90,8 +90,8 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     response 400, "Bad Request", Schema.ref(:Errors)
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
-  def create(conn, share_url_params) do
 
+  def create(conn, share_url_params) do
     with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(share_url_params["file_id"])},
          {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)} do
       with {:ok, %ShareURL{} = share_url} <- Share.create_share_url(share_url_params) do
@@ -112,8 +112,27 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     end
   end
 
-  swagger_path :show do
+  swagger_path :show_share do
     get "#{@api_path}/share/{id}"
+    consumes "application/json"
+    produces "application/json"
+    summary "Get a single share url"
+    deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
+    parameters do
+      id :path, :string, "Share Url ID", required: true
+    end
+    response 200, "Ok", Schema.ref(:ShareUrl)
+    response 401, "Unauthorized", Schema.ref(:Errors)
+  end
+
+  def show_share(conn, %{"id"=> id}) do
+    share_url = Share.get_share_url!(id)
+    render(conn, :show, share_url: share_url)
+  end
+
+  swagger_path :show_file do
+    get "#{@api_path}/share/{id}/file"
     consumes "application/json"
     produces "application/json"
     summary "Get a file via a share url"
@@ -125,10 +144,11 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     response 200, "Ok", Schema.ref(:FileShare)
     response 401, "Unauthorized", Schema.ref(:Errors)
   end
-  def show(conn, %{"id" => id}) do
+
+  def show_file(conn, %{"id" => id}) do
     share_url = Share.get_share_url!(id)
     with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(share_url.file_id)} do
-      render(conn, :show, file: file)
+      render(conn, :show_file, file: file)
     end
   end
 

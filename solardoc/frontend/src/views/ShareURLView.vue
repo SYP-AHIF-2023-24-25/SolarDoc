@@ -8,6 +8,7 @@ import * as phoenixRestService from '@/services/phoenix/api-service'
 import {useCurrentUserStore} from "@/stores/current-user";
 import {useRoute, useRouter} from "vue-router";
 import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
+import {getV1ShareByIdFile} from "@/services/phoenix/api-service";
 
 const currentFileStore = useCurrentFileStore();
 const currentUserStore = useCurrentUserStore();
@@ -23,9 +24,9 @@ onMounted(async ()=>{
     if(typeof shareUrlId === 'string'){
 
 
-      let resp: Awaited<ReturnType<typeof phoenixRestService.getV1ShareById>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.getV1ShareByIdFile>>
       try {
-        resp = await phoenixRestService.getV1ShareById( currentUserStore.bearer,shareUrlId)
+        resp = await phoenixRestService.getV1ShareByIdFile( currentUserStore.bearer,shareUrlId)
       } catch (e) {
         throw new PhoenixInternalError(
             'Critically failed to fetch current user. Cause: ' + (<Error>e).message,

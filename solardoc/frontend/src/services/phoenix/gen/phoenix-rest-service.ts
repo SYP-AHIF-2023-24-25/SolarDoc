@@ -62,16 +62,16 @@ export type Ping = {
     ip: string;
     url: string;
 };
+export type CreateShareUrl = {
+    file_id: string;
+    perms: number;
+};
 export type ShareUrl = {
     expired: boolean;
     expires_at: number;
     file_id: string;
     id: string;
     issued_at: number;
-    perms: number;
-};
-export type CreateShareUrl = {
-    file_id: string;
     perms: number;
 };
 export type File2 = {
@@ -294,24 +294,6 @@ export function getV1Ping(opts?: Oazapfts.RequestOpts) {
     });
 }
 /**
- * List all share urls
- */
-export function getV1Share(authorization: string, opts?: Oazapfts.RequestOpts) {
-    return oazapfts.fetchJson<{
-        status: 200;
-        data: ShareUrl;
-    } | {
-        status: 401;
-        data: Errors;
-    }>("/v1/share", {
-        ...opts,
-        headers: {
-            ...opts && opts.headers,
-            Authorization: authorization
-        }
-    });
-}
-/**
  * Create a new share url
  */
 export function postV1Share(authorization: string, createShareUrl: CreateShareUrl, opts?: Oazapfts.RequestOpts) {
@@ -335,16 +317,34 @@ export function postV1Share(authorization: string, createShareUrl: CreateShareUr
     }));
 }
 /**
- * Get a file via a share url
+ * Get a single share url
  */
 export function getV1ShareById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: ShareUrl;
+    } | {
+        status: 401;
+        data: Errors;
+    }>(`/v1/share/${encodeURIComponent(id)}`, {
+        ...opts,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    });
+}
+/**
+ * Get a file via a share url
+ */
+export function getV1ShareByIdFile(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
         data: File2;
     } | {
         status: 401;
         data: Errors;
-    }>(`/v1/share/${encodeURIComponent(id)}`, {
+    }>(`/v1/share/${encodeURIComponent(id)}/file`, {
         ...opts,
         headers: {
             ...opts && opts.headers,
