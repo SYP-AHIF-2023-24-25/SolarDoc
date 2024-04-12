@@ -9,4 +9,4 @@ export const PHOENIX_URL = isDev
     }`
 export const SDSCLIENT_URL = `ws${
   PHOENIX_URL.startsWith('https') ? 's' : ''
-}://${PHOENIX_URL.replace(/^https?:\/\//, '')}/sds`
+}://${PHOENIX_URL.replace(/^https?:\/\//, '')}${import.meta.env.PHX_WS_PATH}`
