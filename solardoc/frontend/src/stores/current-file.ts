@@ -39,8 +39,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
       ownerId: storedFileOwner || undefined,
       saveState: storedFileId ? 'Saved Remotely' : 'Saved Locally',
       content: storedFileContent,
-      oTransStack: <Array<OTrans>>[],
+      oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: <Array<OTransReqDto>>[],
+      oTransNotPerf: <Array<OTransRespDto>>[],
     }
   },
   actions: {
@@ -78,8 +79,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
 
       if (resp.status === 201) {
-        this.setFileId(resp.data.id!)
-        this.setOwnerId(resp.data.owner_id!)
+        this.setFileId(resp.data.id)
+        this.setOwnerId(resp.data.owner_id)
       } else if (resp.status === 400) {
         throw new PhoenixRestError(
           'Server rejected request to logout. Cause: Bad request',
@@ -122,18 +123,34 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
     },
     initOTransStackFromServerTrans(initOTrans: OTransRespDto) {
-      this.oTransStack = [{ ...initOTrans, acknowledged: true }]
+      this.oTransStack = new Map<string, OTrans>()
+      this.oTransStack.set(initOTrans.id, {...initOTrans, acknowledged: true})
     },
     /**
      * Pushes an OTrans to the stack of transformations.
      *
      * This will check whether a current transformation is waiting to be acknowledged and if so, it will update that
      * transaction with the timestamp and then push the new transformation to the stack.
-     * @param oTrans The OTrans object to
+     * @param oTrans The OTrans object to push.
      * @since 0.5.0
      */
     pushOTransResp(oTrans: OTransRespDto) {
-      // TODO! Insert transformation and compare to the latest transformations
+      const oTransWaiting = this.oTransStack.get(oTrans.id)
+      if (oTransWaiting) {
+        oTransWaiting.timestamp = oTrans.timestamp
+        oTransWaiting.acknowledged = true
+        this.oTransStack.set(oTrans.id, oTransWaiting)
+      } else {
+        // This is a new transformation
+        this.oTransStack.set(oTrans.id, {...oTrans, acknowledged: true})
+
+        // Perform the transformation on the current content
+        if (oTrans.trans.type === 'insert') {
+          this.content = this.content.slice(0, oTrans.trans.pos) + oTrans.trans.content + this.content.slice(oTrans.trans.pos);
+        } else if (oTrans.trans.type === 'delete') {
+          this.content = this.content.slice(0, oTrans.trans.pos) + this.content.slice(oTrans.trans.pos + oTrans.trans.length);
+        }
+      }
     },
     /**
      * Pushes an OTrans to the stack of transformations which are not yet acknowledged, but have been already applied
@@ -204,7 +221,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.clearOTransStack()
     },
     clearOTransStack() {
-      this.oTransStack = []
+      this.oTransStack = new Map<string, OTrans>()
       this.oTransNotAcked = []
     },
   },

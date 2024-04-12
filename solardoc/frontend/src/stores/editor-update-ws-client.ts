@@ -1,9 +1,14 @@
 import { defineStore } from 'pinia'
 import { SDSClient } from '@/services/phoenix/ws-client'
+import {UpdateCycleHandler} from "@/services/phoenix/update-cycle-handler";
+
 
 export const useEditorUpdateWSClient = defineStore('editorUpdateWSClient', {
   state: () => {
-    return { wsClient: null as null | SDSClient }
+    return {
+      wsClient: null as null | SDSClient,
+      updateCycleHandler: null as null | UpdateCycleHandler,
+    }
   },
   getters: {
     hasActiveChannelConnection(): boolean {

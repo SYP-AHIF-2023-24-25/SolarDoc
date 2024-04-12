@@ -8,6 +8,7 @@ import type { Vueform } from '@vueform/vueform'
 import type { OTransRespDto } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
 import { useCurrentUserStore } from '@/stores/current-user'
+import {handleOTUpdates} from "@/scripts/handle-ot";
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
@@ -47,6 +48,9 @@ async function submitForm(
       channelViewStore.setChannelJoined(true)
       channelViewStore.setSelectedChannel(props.channel)
       console.log(`[ChannelView] Channel joined (Id: ${props.channel.id})`)
+
+      // Start the ot update handler
+      handleOTUpdates()
     },
     errorResp => {
       console.error('[ChannelView] Error joining new channel', errorResp)

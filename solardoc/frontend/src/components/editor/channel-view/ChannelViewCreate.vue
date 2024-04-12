@@ -10,6 +10,7 @@ import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Vueform } from '@vueform/vueform'
 import { useCurrentFileStore } from '@/stores/current-file'
+import {handleOTUpdates} from "@/scripts/handle-ot";
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
@@ -59,10 +60,14 @@ async function submitForm(
         channelViewStore.setChannelJoined(true)
         channelViewStore.setSelectedChannel(channel)
         console.log(`[ChannelView] Channel joined (Id: ${channel.id})`)
+
+        // Start the ot update handler
+        handleOTUpdates()
       },
       errorResp => {
         console.error('[ChannelView] Error joining new channel', errorResp)
       },
+      currentUserStore.currentUser!.id,
       {
         auth: newChannel.password,
       } satisfies JoinChannelOptions,

@@ -7,7 +7,7 @@ import {
 } from '@solardoc/phoenix'
 import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
-import type { OTransRespDto } from '@/services/phoenix/ot-trans'
+import type {OTransReqDto, OTransRespDto} from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/api-service'
 
 /**
@@ -247,6 +247,24 @@ export class SDSClient {
   }
 
   /**
+   * Listens for operational transformations from the server.
+   * @param onReceive The function to call when an operational transformation is received.
+   * @throws PhoenixInvalidOperationError If the socket is not healthy.
+   * @throws PhoenixInvalidOperationError If the channel is not healthy.
+   * @since 0.5.0
+   */
+  public async listenForOTrans(
+    onReceive: (update: OTransRespDto) => void | Promise<void>,
+  ): Promise<void> {
+    await this._ensureSocketIsHealthy()
+    await this._ensureChannelIsHealthy()
+    this._currentChannel?.on('state_trans', resp => {
+      console.log(`[ws-client.ts] Received OT update: ${resp}`)
+      onReceive(resp)
+    })
+  }
+
+  /**
    * Sends an operational transformation to the server.
    * @param update The transformation to be sent to the server.
    * @param onSuccess The function to call when the server successfully receives the update.
@@ -256,7 +274,7 @@ export class SDSClient {
    * @since 0.4.0
    */
   public async sendOTrans(
-    update: OTransRespDto,
+    update: OTransReqDto,
     onSuccess: (resp: any) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
   ): Promise<void> {
