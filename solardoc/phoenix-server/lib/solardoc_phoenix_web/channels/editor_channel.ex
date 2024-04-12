@@ -120,6 +120,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
     # We simply broadcast the transformation itself
     broadcast!(socket, "state_trans", trans)
+    {:noreply, socket}
   end
 
   @impl true
@@ -136,7 +137,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
       {:ok, processed_trans} ->
         send(self(), {
           :process_state_trans,
-          trans: EditorChannelTrans.create(%{id: id, trans: processed_trans}, socket.assigns.user_id)
+          trans: EditorChannelTrans.create(%{"id" => id, "trans" => processed_trans}, socket.assigns.user_id)
         })
         {:noreply, socket}
       {:error, error_message} ->
