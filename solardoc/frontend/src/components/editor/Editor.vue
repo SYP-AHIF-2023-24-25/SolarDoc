@@ -4,13 +4,13 @@
 
 <script setup lang="ts">
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
-import type { SubscriptionCallbackMutation } from 'pinia'
-import type { Ref } from 'vue'
+import type { OTransReqDto } from '@/services/phoenix/ot-trans'
+import {type Ref, watch} from 'vue'
+import {storeToRefs, type SubscriptionCallbackMutation} from 'pinia'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { ref, onMounted } from 'vue'
-import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
@@ -18,9 +18,9 @@ import { KeyCode } from 'monaco-editor'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { performErrorChecking } from '@/components/editor/error-checking'
 import { useCurrentFileStore } from '@/stores/current-file'
-import type { OTransReqDto } from '@/services/phoenix/ot-trans'
 import {handleRender} from "@/scripts/handle-render";
-import {useRenderDataStore} from "@/stores/render-data";
+import {useRenderDataStore} from "@/stores/render-data"
+import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()
@@ -28,6 +28,8 @@ const previewLoadingStore = usePreviewLoadingStore()
 const lastModifiedStore = useLastModifiedStore()
 const initStateStore = useInitStateStore()
 const renderDataStore = useRenderDataStore()
+
+const { content } = storeToRefs(currentFileStore)
 
 /**
  * The timeout after which the editor will save the text to the local storage.
@@ -126,17 +128,12 @@ onMounted(() => {
     performErrorChecking(editorInstance!)
   })
 
-  // // Ensure that the editor content is always in sync with the current file content
-  // currentFileStore.$subscribe(
-  //   (
-  //     mutation: SubscriptionCallbackMutation<{ content: string }>,
-  //     state: { content: string },
-  //   ) => {
-  //     if (editorInstance!.getValue() !== state.content) {
-  //       editorInstance!.setValue(state.content)
-  //     }
-  //   },
-  // )
+  // Ensure that the editor content is always in sync with the current file content
+  watch(content, (newContent) => {
+    if (editorInstance) {
+      editorInstance.setValue(newContent)
+    }
+  })
 
   // Register an event listener to the darkModeStore to change the theme of the editor
   darkModeStore.$subscribe(
