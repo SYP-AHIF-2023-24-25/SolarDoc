@@ -1,7 +1,8 @@
 version: '3'
 services:
   frontend:
-    image: ghcr.io/syp-ahif-2023-24-25/solardoc-frontend:latest
+    image: ghcr.io/syp-ahif-2023-24-25/solardoc-frontend:$VERSION
+    build: !reset null
     ports: !override
       - "8081:80"
     volumes:
@@ -15,7 +16,8 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=solardocresolver"
   rest-api:
-    image: ghcr.io/syp-ahif-2023-24-25/solardoc-rest-api:latest
+    image: ghcr.io/syp-ahif-2023-24-25/solardoc-rest-api:$VERSION
+    build: !reset null
     ports: !override
       - "3000:3000"
     networks:
@@ -26,11 +28,13 @@ services:
       - "traefik.http.routers.rest-api.entrypoints=websecure"
       - "traefik.http.routers.rest-api.tls.certresolver=solardocresolver"
   redis-db:
-    image: ghcr.io/syp-ahif-2023-24-25/solardoc-redis-db:latest
+    image: ghcr.io/syp-ahif-2023-24-25/solardoc-redis-db:$VERSION
+    build: !reset null
     networks:
       - solardocnet
   phoenix-server:
-    image: ghcr.io/syp-ahif-2023-24-25/solardoc-phoenix-server:latest
+    image: ghcr.io/syp-ahif-2023-24-25/solardoc-phoenix-server:$VERSION
+    build: !reset null
     networks:
       - solardocnet
     environment:
@@ -41,7 +45,8 @@ services:
       - "traefik.http.routers.phoenix-server.entrypoints=websecure"
       - "traefik.http.routers.phoenix-server.tls.certresolver=solardocresolver"
   postgresql-db:
-    image: ghcr.io/syp-ahif-2023-24-25/solardoc-postgresql-db:latest
+    image: ghcr.io/syp-ahif-2023-24-25/solardoc-postgresql-db:$VERSION
+    build: !reset null
     networks:
       - solardocnet
   postgres-adminer:
