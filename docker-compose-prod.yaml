@@ -7,7 +7,7 @@ services:
       - "8081:80"
     volumes:
       - frontend:/usr/share/nginx/html
-      - ./solardoc/frontend/nginx/nginx-dev.conf:/etc/nginx/conf.d/nginx.conf
+      - ./solardoc/frontend/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
     networks:
       - solardocnet
     labels:
