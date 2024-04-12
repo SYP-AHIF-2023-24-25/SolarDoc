@@ -101,7 +101,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
         id: editor_channel.file.id,
         file_name: editor_channel.file.file_name,
         last_edited: editor_channel.file.last_edited,
-        creator_id: editor_channel.creator_id,
+        owner_id: editor_channel.file.owner_id,
         created: editor_channel.file.created,
         content: state,
       },
