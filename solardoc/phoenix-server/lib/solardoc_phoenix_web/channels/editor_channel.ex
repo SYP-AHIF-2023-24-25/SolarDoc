@@ -111,7 +111,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   @impl true
-  def handle_info({:process_state_trans, %EditorChannelTrans{} = trans}, socket) do
+  def handle_info({:process_state_trans, trans: %EditorChannelTrans{} = trans}, socket) do
     IO.puts("Processing transformation received from #{trans.user_id} (#{trans.timestamp})")
 
     # We will first push the new transformation, applying it to the editor state and then broadcast the same
