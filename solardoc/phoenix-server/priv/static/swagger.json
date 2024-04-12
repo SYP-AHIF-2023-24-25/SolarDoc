@@ -1,6 +1,6 @@
 {
   "info": {
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "The Solardoc Phoenix Rest API and SDS (Solardoc Socket)",
     "title": "@solardoc/phoenix",
     "license": {
