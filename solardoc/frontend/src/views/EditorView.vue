@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, type UnwrapRef} from 'vue'
+import { ref, type UnwrapRef } from 'vue'
 import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
@@ -11,7 +11,7 @@ import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { useWSClientStore } from '@/stores/ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
-import {useCurrentFileStore} from "@/stores/current-file";
+import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
@@ -23,7 +23,7 @@ import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
 import * as backendAPI from '@/services/backend/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
-import ShareUrlCreate from "@/components/editor/ShareUrlCreate.vue"
+import ShareUrlCreate from '@/components/editor/ShareUrlCreate.vue'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -81,12 +81,11 @@ phoenixBackend
     )
   })
 
-
 // Ensure the render preview is updated whenever the editor content changes
 currentFileStore.$subscribe(
   async (
     _: SubscriptionCallbackMutation<typeof currentFileStore>,
-    state: UnwrapRef<typeof currentFileStore>["$state"]
+    state: UnwrapRef<typeof currentFileStore>['$state'],
   ) => {
     const { content: editorContent } = state
     const renderResp = await handleRender(currentFileStore.fileName, editorContent)
@@ -183,7 +182,7 @@ function handleDownloadButtonClick() {
 }
 
 function handleShareButtonClick() {
-  overlayStateStore.setShareUrlView(true);
+  overlayStateStore.setShareUrlView(true)
 }
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
@@ -205,7 +204,9 @@ setInterval(updateLastModified, 500)
       <div id="menu-left-side">
         <EditorSandwichDropdown />
         <div id="button-menu">
-          <button class="editor-button" @click="handleCopyButtonClick()">{{ copyButtonContent }}</button>
+          <button class="editor-button" @click="handleCopyButtonClick()">
+            {{ copyButtonContent }}
+          </button>
           <button class="editor-button" @click="handleShareButtonClick()">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
@@ -216,10 +217,7 @@ setInterval(updateLastModified, 500)
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
-          <input
-            id="file-name-input"
-            v-model="currentFileStore.fileName"
-          />
+          <input id="file-name-input" v-model="currentFileStore.fileName" />
         </div>
       </div>
       <div id="menu-right-side">

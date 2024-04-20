@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useLoadingStore } from '@/stores/loading'
 import HomeView from '../views/HomeView.vue'
-import ShareURLView from "@/views/ShareURLView.vue";
+import ShareURLView from '@/views/ShareURLView.vue'
 
 const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
@@ -64,7 +64,7 @@ const router = createRouter({
     {
       path: '/share-url/:share_url_id',
       component: () => import('@/views/ShareURLView.vue'),
-      name: 'share-url'
+      name: 'share-url',
     },
     // 404-page (reroutes in the view to the static 404.html)
     {

@@ -4,10 +4,10 @@ import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import {useCurrentFileStore} from "@/stores/current-file";
+import { useCurrentFileStore } from '@/stores/current-file'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-import {useCurrentUserStore} from "@/stores/current-user";
+import { useCurrentUserStore } from '@/stores/current-user'
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
@@ -18,7 +18,7 @@ const dropdown = ref(null)
 const $router = useRouter()
 
 function closeDropdown() {
-  (
+  ;(
     dropdown.value as {
       close: () => void
     } | null

@@ -17,7 +17,7 @@ import { useInitStateStore } from '@/stores/init-state'
 import { KeyCode } from 'monaco-editor'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { performErrorChecking } from '@/components/editor/error-checking'
-import {useCurrentFileStore} from "@/stores/current-file";
+import { useCurrentFileStore } from '@/stores/current-file'
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()

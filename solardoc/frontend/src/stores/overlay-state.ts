@@ -17,7 +17,7 @@ export const useOverlayStateStore = defineStore('fullScreenPreview', {
       this.resetAll()
       this.channelView = channelView
     },
-    setShareUrlView(createShareUrl: boolean){
+    setShareUrlView(createShareUrl: boolean) {
       this.resetAll()
       this.createShareUrl = createShareUrl
     },
@@ -25,6 +25,6 @@ export const useOverlayStateStore = defineStore('fullScreenPreview', {
       this.channelView = false
       this.createShareUrl = false
       this.fullScreenPreview = false
-    }
+    },
   },
 })

@@ -1,65 +1,63 @@
 <script setup lang="ts">
-import type {Vueform} from "@vueform/vueform";
-import {useOverlayStateStore} from "@/stores/overlay-state";
-import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue"
-import SDRouterLink from "@/components/SDRouterLink.vue";
-import {useCurrentUserStore} from "@/stores/current-user";
-import {useCurrentFileStore} from "@/stores/current-file";
+import type { Vueform } from '@vueform/vueform'
+import { useOverlayStateStore } from '@/stores/overlay-state'
+import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
+import SDRouterLink from '@/components/SDRouterLink.vue'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useCurrentFileStore } from '@/stores/current-file'
 
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
-import * as phoenixRestService from "@/services/phoenix/api-service";
-import {postV1Share} from "@/services/phoenix/api-service";
-import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
+import * as phoenixRestService from '@/services/phoenix/api-service'
+import { postV1Share } from '@/services/phoenix/api-service'
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 
 async function submitForm(
-    form$: Vueform & {
-      requestData: {
-        'write': boolean,
-        generatedLink: string
-      }
-    },
+  form$: Vueform & {
+    requestData: {
+      write: boolean
+      generatedLink: string
+    }
+  },
 ) {
-  if(currentUserStore.bearer !== undefined){
-    if(currentFileStore.fileId !== undefined){
-      let perms: number = 1;
-      if(form$.requestData.write){
-        perms = 3;
+  if (currentUserStore.bearer !== undefined) {
+    if (currentFileStore.fileId !== undefined) {
+      let perms: number = 1
+      if (form$.requestData.write) {
+        perms = 3
       }
       let resp: Awaited<ReturnType<typeof phoenixRestService.postV1Share>>
       try {
-        resp = await phoenixRestService.postV1Share( currentUserStore.bearer,{
+        resp = await phoenixRestService.postV1Share(currentUserStore.bearer, {
           file_id: currentFileStore.fileId,
-          perms: perms
-        });
+          perms: perms,
+        })
       } catch (e) {
         throw new PhoenixInternalError(
-            'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+          'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
         )
       }
       if (resp.status === 401) {
         throw new PhoenixRestError(
-            'Server rejected request to fetch current user. Cause: Unauthorized',
-            resp.status,
+          'Server rejected request to fetch current user. Cause: Unauthorized',
+          resp.status,
         )
       }
-      if(resp.status === 201){
+      if (resp.status === 201) {
         form$.requestData.generatedLink = `${window.location.origin}/${resp.data.id}`
       }
     }
   }
-
 }
 </script>
 
 <template>
   <div id="full-screen-wrapper" class="full-screen" v-if="overlayStateStore.createShareUrl">
     <div id="share-url-view-create">
-
       <div id="share-url-view-header">
         <button id="close-button" @click="overlayStateStore.setShareUrlView(false)">
-          <CloseButtonSVG/>
+          <CloseButtonSVG />
         </button>
         <h1>Create Share URL</h1>
       </div>
@@ -69,24 +67,18 @@ async function submitForm(
           <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
         </p>
       </div>
-      <div id="channel-view-not-logged-in" v-else-if="currentFileStore.fileId=== undefined">
-        <p>
-          You need to save your file to share it!
-        </p>
+      <div id="channel-view-not-logged-in" v-else-if="currentFileStore.fileId === undefined">
+        <p>You need to save your file to share it!</p>
       </div>
       <Vueform
-          ref="form$"
-          add-class="solardoc-style-form"
-          :display-errors="false"
-          :endpoint="false"
-          @submit="submitForm"
-          v-else
+        ref="form$"
+        add-class="solardoc-style-form"
+        :display-errors="false"
+        :endpoint="false"
+        @submit="submitForm"
+        v-else
       >
-        <TextElement
-            name="generatedLink"
-            label="Generated Link:"
-            :disabled="true"
-        />
+        <TextElement name="generatedLink" label="Generated Link:" :disabled="true" />
         <CheckboxElement
           name="write"
           text="Write access"
@@ -117,7 +109,6 @@ async function submitForm(
   @include align-center;
 
   #share-url-view-create {
-
     position: relative;
     flex: 0 1 auto;
     height: max-content;

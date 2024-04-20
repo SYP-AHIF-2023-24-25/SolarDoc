@@ -1,13 +1,13 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 import constants from '@/plugins/constants'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 
 const DEFAULT_TEXT = '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
 
 export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
-    const storedFileId = localStorage.getItem(constants.localStorageFileIdKey);
+    const storedFileId = localStorage.getItem(constants.localStorageFileIdKey)
     return {
       fileId: <string | undefined>storedFileId || undefined,
       fileName: localStorage.getItem(constants.localStorageFileNameKey) || 'untitled.adoc',
@@ -27,13 +27,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
     async createFile(bearer: string) {
       let resp: Awaited<ReturnType<typeof phoenixRestService.postV1Files>>
       try {
-        resp = await phoenixRestService.postV1Files(
-          bearer,
-          {
-            file_name: this.fileName,
-            content: this.content,
-          },
-        )
+        resp = await phoenixRestService.postV1Files(bearer, {
+          file_name: this.fileName,
+          content: this.content,
+        })
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
@@ -61,14 +58,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
       let resp: Awaited<ReturnType<typeof phoenixRestService.putV1FilesById>>
       try {
-        resp = await phoenixRestService.putV1FilesById(
-          bearer,
-          this.fileId,
-          {
-            file_name: this.fileName,
-            content: this.content,
-          },
-        )
+        resp = await phoenixRestService.putV1FilesById(bearer, this.fileId, {
+          file_name: this.fileName,
+          content: this.content,
+        })
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
