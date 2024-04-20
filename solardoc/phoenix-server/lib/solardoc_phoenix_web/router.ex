@@ -15,13 +15,14 @@ defmodule SolardocPhoenixWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :put_secure_browser_headers
     plug :fetch_api_user
   end
 
   pipeline :api_auth do
     plug :require_api_user
   end
-
+Plug.Static
   # Enable LiveDashboard, Swagger Dashboard and Swoosh mailbox preview in development
   if Application.compile_env(:solardoc_phoenix, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
