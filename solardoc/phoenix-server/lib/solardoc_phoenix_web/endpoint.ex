@@ -10,15 +10,16 @@ defmodule SolardocPhoenixWeb.Endpoint do
     signing_salt: "Kn5OzD52",
     same_site: "Lax"
   ]
+
   # Serve socket at "/sds" (can be then accessed by the client through "ws://<DOMAIN>:4000/sd/websocket")
-  socket "/sds", SolardocPhoenixWeb.UserSocket,
+  socket "/phx/sds", SolardocPhoenixWeb.UserSocket,
     websocket: [
       error_handler: {SolardocPhoenixWeb.UserSocket, :handle_error, []}
     ],
     longpoll: false
 
   # Serve live server with longpolling at "/live"
-  socket "/live", Phoenix.LiveView.Socket,
+  socket "/phx/live", Phoenix.LiveView.Socket,
      websocket: [connect_info: [session: @session_options]]
 
   # The session will be stored in the cookie and signed,
@@ -36,7 +37,7 @@ defmodule SolardocPhoenixWeb.Endpoint do
   # You should set gzip to true if you are running phx.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/",
+    at: "/phx",
     from: :solardoc_phoenix,
     gzip: false,
     only: SolardocPhoenixWeb.static_paths()
@@ -64,6 +65,14 @@ defmodule SolardocPhoenixWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
+
+  # CORS
+  plug Corsica,
+    origins: "*",
+    allow_methods: ~w[GET POST PUT PATCH DELETE],
+    allow_headers: ~w[Authorization Content-Type],
+    max_age: 86400
+
   plug Plug.Session, @session_options
   plug SolardocPhoenixWeb.Router
 end

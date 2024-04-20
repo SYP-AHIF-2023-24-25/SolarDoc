@@ -32,7 +32,6 @@ defmodule SolardocPhoenix.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:timex, "~> 3.7"},
       {:argon2_elixir, "~> 3.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:phoenix, "~> 1.7.10"},
@@ -57,7 +56,8 @@ defmodule SolardocPhoenix.MixProject do
       {:phoenix_swagger, "~> 0.8.3"},
       {:ex_json_schema, "~> 0.7.1"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:cors_plug, "~> 3.0"},
+      {:timex, "~> 3.7"},
+      {:corsica, "~> 2.1.3"}
     ]
   end
 

@@ -15,6 +15,7 @@ defmodule SolardocPhoenixWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :put_secure_browser_headers
     plug :fetch_api_user
     plug CORSPlug
   end
@@ -23,7 +24,7 @@ defmodule SolardocPhoenixWeb.Router do
     plug :require_api_user
     plug CORSPlug
   end
-
+Plug.Static
   # Enable LiveDashboard, Swagger Dashboard and Swoosh mailbox preview in development
   if Application.compile_env(:solardoc_phoenix, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put
@@ -40,13 +41,13 @@ defmodule SolardocPhoenixWeb.Router do
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
 
-    scope "/api/swagger" do
+    scope "/phx/api/swagger" do
       forward "/", PhoenixSwagger.Plug.SwaggerUI, otp_app: :solardoc_phoenix, swagger_file: "swagger.json"
     end
   end
 
   # Index page with a simple message
-  scope "/", SolardocPhoenixWeb do
+  scope "/phx", SolardocPhoenixWeb do
     pipe_through :api
 
     get "/", HomeController, :index
@@ -54,7 +55,7 @@ defmodule SolardocPhoenixWeb.Router do
 
   ########## - v1 API - ##########
 
-  scope "/api/v1/", SolardocPhoenixWeb do
+  scope "/phx/api/v1/", SolardocPhoenixWeb do
     pipe_through :api
 
     # Ping route
@@ -74,7 +75,7 @@ defmodule SolardocPhoenixWeb.Router do
   # User routes requiring authentication
   # (This may also include routes which actually don't need authentication, but are only accessible to authenticated
   # users to avoid spam or other abuse)
-  scope "/api/v1/", SolardocPhoenixWeb do
+  scope "/phx/api/v1/", SolardocPhoenixWeb do
     pipe_through [:api, :api_auth]
 
     # Get the current user
