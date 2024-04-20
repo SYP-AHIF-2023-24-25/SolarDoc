@@ -1,24 +1,30 @@
 <script setup lang="ts">
-//{{ $route.params.id }}
-import ProgressSpinner from '@/App.vue'
+import ProgressSpinner from '@/components/ProgressSpinner.vue'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { onMounted } from 'vue'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRoute, useRouter } from 'vue-router'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
-import { getV1ShareByIdFile } from '@/services/phoenix/api-service'
+import {useLoadingStore} from "@/stores/loading";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
+const loadingStore = useLoadingStore()
 
 const $route = useRoute()
 const $router = useRouter()
 
-onMounted(async () => {
-  const shareUrlId = $route.params.share_url_id
+loadingStore.setLoading(true)
 
-  if (typeof shareUrlId === 'string' && currentUserStore.loggedIn) {
+async function handleShareURLReq(shareUrlId: unknown): Promise<void> {
+  if (typeof shareUrlId !== 'string' || !shareUrlId) {
+    loadingStore.setLoading(false)
+    await $router.push('/404')
+  } else if (!currentUserStore.loggedIn) {
+    loadingStore.setLoading(false)
+    await $router.push('/login')
+  } else {
     let resp: Awaited<ReturnType<typeof phoenixRestService.getV1ShareByIdFile>>
     try {
       resp = await phoenixRestService.getV1ShareByIdFile(currentUserStore.bearer!, shareUrlId)
@@ -37,10 +43,20 @@ onMounted(async () => {
       currentFileStore.setFileId(resp.data.id)
       currentFileStore.setFileName(resp.data.file_name)
 
+      loadingStore.setLoading(false)
       await $router.push('/editor')
     }
-  } else {
-    await $router.push('/login')
+  }
+}
+
+onMounted(async () => {
+  const shareUrlId = $route.params.shareUrlId
+
+  try {
+    await handleShareURLReq(shareUrlId)
+  } catch (e) {
+    loadingStore.setLoading(false)
+    throw e
   }
 })
 </script>

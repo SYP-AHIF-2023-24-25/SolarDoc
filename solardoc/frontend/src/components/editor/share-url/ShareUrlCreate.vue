@@ -1,17 +1,26 @@
 <script setup lang="ts">
 import type { Vueform } from '@vueform/vueform'
-import { useOverlayStateStore } from '@/stores/overlay-state'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
+import {handleCopy} from "@/scripts/handle-copy";
+import { useOverlayStateStore } from '@/stores/overlay-state'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
+import * as phoenixRestService from '@/services/phoenix/api-service'
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import {ref} from "vue";
 
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
-import * as phoenixRestService from '@/services/phoenix/api-service'
-import { postV1Share } from '@/services/phoenix/api-service'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+
+const generatedLink = ref('')
+
+async function handleGeneratedLinkCopyButtonClick() {
+  if (generatedLink.value) {
+    await handleCopy(generatedLink.value)
+  }
+}
 
 async function submitForm(
   form$: Vueform & {
@@ -45,7 +54,7 @@ async function submitForm(
         )
       }
       if (resp.status === 201) {
-        form$.requestData.generatedLink = `${window.location.origin}/${resp.data.id}`
+        generatedLink.value = `${window.location.origin}/share/${resp.data.id}`
       }
     }
   }
@@ -70,33 +79,38 @@ async function submitForm(
       <div id="channel-view-not-logged-in" v-else-if="currentFileStore.fileId === undefined">
         <p>You need to save your file to share it!</p>
       </div>
-      <Vueform
-        ref="form$"
-        add-class="solardoc-style-form"
-        :display-errors="false"
-        :endpoint="false"
-        @submit="submitForm"
-        v-else
-      >
-        <TextElement name="generatedLink" label="Generated Link:" :disabled="true" />
-        <CheckboxElement
-          name="write"
-          text="Write access"
-          info="(Currently unavailable!) Gives the participant write access to your presentation (read is always present)"
-          size="lg"
-          disabled
-        />
-
-        <ButtonElement
-          name="create"
-          button-label="Create"
-          disabled
-          :columns="{
+      <template v-else>
+        <div id="generated-link-display">
+          <i
+            @click="handleGeneratedLinkCopyButtonClick()"
+            :class="'pi pi-clipboard' + (generatedLink ? '' : ' disabled')"
+          ></i>
+          <p>{{ generatedLink || "Your generated link~ °^°" }}</p>
+        </div>
+        <Vueform
+          ref="form$"
+          add-class="solardoc-style-form"
+          :display-errors="false"
+          :endpoint="false"
+          @submit="submitForm"
+        >
+          <CheckboxElement
+              name="write"
+              text="Write access"
+              info="(Currently unavailable!) Gives the participant write access to your presentation (read is always present)"
+              size="lg"
+              disabled
+          />
+          <ButtonElement
+              name="create"
+              button-label="Create"
+              :columns="{
             container: 1,
           }"
-          :submits="true"
-        />
-      </Vueform>
+              :submits="true"
+          />
+        </Vueform>
+      </template>
     </div>
   </div>
 </template>
@@ -104,6 +118,7 @@ async function submitForm(
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/mixins/align-horizontal-center' as *;
 
 #full-screen-wrapper {
   @include align-center;
@@ -148,6 +163,49 @@ async function submitForm(
 
     p {
       margin-bottom: 1rem;
+    }
+
+    .solardoc-style-form {
+      margin-bottom: 1rem;
+    }
+
+    #generated-link-display {
+      @include align-horizontal-center;
+      position: relative;
+      padding: 0.6rem 1rem;
+      color: var.$text-color;
+      border: 1px solid var.$vueform-highlighted-box-border-color;
+      background-color: var.$vueform-highlighted-box-background-color;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+
+      p {
+        margin: 0;
+        padding: 0;
+      }
+
+      .pi.pi-clipboard {
+        position: absolute;
+        z-index: 101;
+        right: 0.6rem;
+        margin: 0;
+        padding: 0.4rem;
+        border-radius: 0.5rem;
+        background-color: transparent;
+
+        &:not(.disabled):hover {
+          cursor: pointer;
+          background-color: var.$vueform-highlighted-box-background-color-hover;
+        }
+
+        &:not(.disabled):active {
+          background-color: var.$vueform-highlighted-box-background-color-active;
+        }
+
+        &.disabled {
+          cursor: not-allowed;
+        }
+      }
     }
   }
 }

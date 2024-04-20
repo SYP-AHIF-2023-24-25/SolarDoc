@@ -62,7 +62,7 @@ const router = createRouter({
     },
     // dynamic segments start with a colon
     {
-      path: '/share-url/:share_url_id',
+      path: '/share/:shareUrlId',
       component: () => import('@/views/ShareURLView.vue'),
       name: 'share-url',
     },

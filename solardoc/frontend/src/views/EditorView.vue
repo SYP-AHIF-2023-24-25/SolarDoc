@@ -7,6 +7,7 @@ import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { handleRender } from '@/scripts/handle-render'
+import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { useWSClientStore } from '@/stores/ws-client'
@@ -20,10 +21,10 @@ import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
 import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
+import ShareUrlCreate from '@/components/editor/share-url/ShareUrlCreate.vue'
 import * as backendAPI from '@/services/backend/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
-import ShareUrlCreate from '@/components/editor/ShareUrlCreate.vue'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -120,39 +121,8 @@ function handlePreviewButtonPress() {
 let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
 const copyButtonContent = ref('Copy')
 
-let unsecureWarningShown: boolean = false
-function unsecuredCopyToClipboard(text: string) {
-  if (!unsecureWarningShown) {
-    console.warn(
-      "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
-    )
-    unsecureWarningShown = true
-  }
-
-  const textArea = document.createElement('textarea')
-  textArea.value = text
-  document.body.appendChild(textArea)
-  textArea.focus()
-  textArea.select()
-  try {
-    // Deprecated, but there is no alternative for HTTP-only contexts
-    document.execCommand('copy')
-  } catch (err) {
-    document.body.removeChild(textArea)
-    throw new Error('[Editor] Unable to copy to clipboard. Cause: ' + err)
-  }
-  document.body.removeChild(textArea)
-}
-
 function handleCopyButtonClick() {
-  if (navigator.clipboard) {
-    // If normal copy method available, use it
-    navigator.clipboard.writeText(currentFileStore.content)
-  } else {
-    // Otherwise fallback to the above function
-    unsecuredCopyToClipboard(currentFileStore.content)
-  }
-
+  handleCopy(currentFileStore.content)
   copyButtonContent.value = 'Copied!'
   if (copyButtonTimeout) {
     clearTimeout(copyButtonTimeout)

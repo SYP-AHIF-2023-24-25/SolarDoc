@@ -1,6 +1,7 @@
 // Import the global style which is used for the whole app
 import '@vueform/vueform/dist/vueform.css'
 import 'vue-final-modal/style.css'
+import 'primeicons/primeicons.css'
 import './assets/main.scss'
 
 import { createApp } from 'vue'

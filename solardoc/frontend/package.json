@@ -54,7 +54,8 @@
     "vue-router": "4.2.5",
     "v-dropdown": "3.0.0",
     "vue-final-modal": "4.5.4",
-    "dotenv": "16.3.1"
+    "dotenv": "16.3.1",
+    "primeicons": "7.0.0"
   },
   "devDependencies": {
     "@import-meta-env/unplugin": "0.5.1",
