@@ -36,7 +36,9 @@ export class RenderController {
   private _ensureHostHeader(req: Request): string {
     const hostHeader = req.headers.host
     if (hostHeader === undefined) {
-      throw new Error('Host header is missing. Client may be using HTTP 1.0, HTTP >=1.1 is required!')
+      throw new Error(
+        'Host header is missing. Client may be using HTTP 1.0, HTTP >=1.1 is required!',
+      )
     }
     return hostHeader
   }

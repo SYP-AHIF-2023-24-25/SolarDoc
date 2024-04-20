@@ -1,6 +1,7 @@
 defmodule SolardocPhoenixWeb.EditorChannelJSON do
   alias SolardocPhoenix.EditorChannels.EditorChannel
   alias SolardocPhoenix.Accounts.User
+  alias SolardocPhoenix.Utils
 
   @doc """
   Renders a list of editor_channels.
@@ -22,11 +23,7 @@ defmodule SolardocPhoenixWeb.EditorChannelJSON do
       name: editor_channel.name,
       description: editor_channel.description,
       creator: data(editor_channel.creator),
-      active_since: if editor_channel.active_since do
-        editor_channel.active_since |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_unix(:millisecond)
-      else
-        nil
-      end,
+      active_since: Utils.naive_datetime_to_unix_milliseconds(editor_channel.active_since),
     }
   end
 

@@ -1,4 +1,5 @@
 /.idea
+postgresql-db/postgres-data
 dist
 node_modules
 tsconfig.tsbuildinfo
@@ -7,4 +8,5 @@ coverage
 .env
 openapi.json
 *.rdb
-postgresql-db/postgres-data
+temp
+swagger.json

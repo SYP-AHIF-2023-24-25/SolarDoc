@@ -3,7 +3,6 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
   use PhoenixSwagger, except: [:delete]
 
   alias SolardocPhoenix.EditorChannels
-  alias SolardocPhoenix.EditorChannels.EditorChannel
 
   action_fallback SolardocPhoenixWeb.FallbackController
 
@@ -27,7 +26,7 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
         name :string, "Editor channel name", required: true
         description :string, "Editor channel description", required: true
         creator Schema.ref(:UserTrusted), "Editor channel creator", required: true
-        active_since :integer, "Editor channel active since in milliseconds", required: true
+        active_since :integer, "Editor channel active since in UNIX timestamp milliseconds", required: true
       end
     end,
     EditorChannels: swagger_schema do
@@ -68,13 +67,13 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
   end
 
   swagger_path :show do
-    get "#{@api_path}/editor_channels/:id"
+    get "#{@api_path}/editor_channels/{id}"
     produces "application/json"
     summary "Get a single editor channel"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameters do
-      id :path, :integer, "Editor channel ID", required: true
+      id :path, :string, "Editor channel ID", required: true
     end
     response 200, "OK", Schema.ref(:EditorChannel)
     response 401, "Unauthorized", Schema.ref(:Errors)

@@ -3,6 +3,8 @@ defmodule SolardocPhoenix.Accounts.UserNotifier do
 
   alias SolardocPhoenix.Mailer
 
+  # TODO! Needs an integration with an email service provider.
+
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
     email =
