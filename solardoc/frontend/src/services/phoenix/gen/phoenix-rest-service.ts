@@ -41,11 +41,12 @@ export type EditorChannel = {
 };
 export type EditorChannels = EditorChannel[];
 export type File = {
-    created?: number;
+    content: string;
+    created: number;
     file_name: string;
-    id?: string;
-    last_edited?: number;
-    owner_id?: string;
+    id: string;
+    last_edited: number;
+    owner_id: string;
 };
 export type Files = File[];
 export type CreateFile = {
@@ -73,14 +74,6 @@ export type ShareUrl = {
     id: string;
     issued_at: number;
     perms: number;
-};
-export type FileShare = {
-    content: string;
-    created: number;
-    file_name: string;
-    id: string;
-    last_edited: number;
-    owner_id: string;
 };
 export type UserPublic = {
     id: string;
@@ -340,7 +333,7 @@ export function getV1ShareById(authorization: string, id: string, opts?: Oazapft
 export function getV1ShareByIdFile(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
-        data: FileShare;
+        data: File;
     } | {
         status: 401;
         data: Errors;
