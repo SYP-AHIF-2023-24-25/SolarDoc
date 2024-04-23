@@ -74,7 +74,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
         })
       } catch (e) {
         throw new PhoenixInternalError(
-          'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+          'Critically failed to create file. Cause: ' + (<Error>e).message,
         )
       }
 
@@ -83,12 +83,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
         this.setOwnerId(resp.data.owner_id)
       } else if (resp.status === 400) {
         throw new PhoenixRestError(
-          'Server rejected request to logout. Cause: Bad request',
+          `Server rejected request to create file. Cause: Bad request`,
           resp.status,
         )
       } else if (resp.status === 401) {
         throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
+          'Server rejected request to create file. Cause: Unauthorized',
           resp.status,
         )
       }
@@ -106,18 +106,18 @@ export const useCurrentFileStore = defineStore('currentFile', {
         })
       } catch (e) {
         throw new PhoenixInternalError(
-          'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+          'Critically failed to update file. Cause: ' + (<Error>e).message,
         )
       }
 
       if (resp.status === 400) {
         throw new PhoenixRestError(
-          'Server rejected request to logout. Cause: Bad request',
+          'Server rejected request to put file. Cause: Bad request',
           resp.status,
         )
       } else if (resp.status === 401) {
         throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
+          'Server rejected request to put file. Cause: Unauthorized',
           resp.status,
         )
       }
