@@ -4,7 +4,8 @@ export default Object.freeze({
   localStorageLastModifiedKey: 'last-modified',
   localStorageFileIdKey: 'file-id',
   localStorageFileNameKey: 'file-name',
-  localStorageTextKey: 'editor-text',
+  localStorageFileOwnerKey: 'file-owner',
+  localStorageFileContentKey: 'file-content',
   localStorageThemeKey: 'user-theme',
   localStorageAuthKey: 'user-auth',
   localStorageCurrUserKey: 'current-user',
@@ -13,5 +14,5 @@ export default Object.freeze({
     'heading-space-missing-error': 'Error: Heading should have a space after the equal sign/s',
     'list-inconsistent-error': 'Error: Lists should be consistent (use either "." or "*")',
   },
-  version: 'v0.4.2',
+  version: 'v0.5.0-dev',
 })

@@ -16,11 +16,12 @@ defmodule SolardocPhoenixWeb.FileController do
       title "File"
       description "A file which is owned by a user"
       properties do
-        id :string, "File UUID", required: false
+        id :string, "File UUID", required: true
         file_name :string, "File name", required: true
-        owner_id :string, "Owner id", required: false
-        last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: false
-        created :integer, "Creation date in UNIX timestamp milliseconds", required: false
+        owner_id :string, "Owner id", required: true
+        content :string, "File content", required: true
+        last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: true
+        created :integer, "Creation date in UNIX timestamp milliseconds", required: true
       end
     end,
     Files: swagger_schema do

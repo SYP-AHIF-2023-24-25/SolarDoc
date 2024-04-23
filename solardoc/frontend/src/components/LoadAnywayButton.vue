@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { handleRender } from '@/scripts/handle-render'
 import { useRenderDataStore } from '@/stores/render-data'
-import {useCurrentFileStore} from "@/stores/current-file";
+import { useCurrentFileStore } from '@/stores/current-file'
 
 const props = defineProps(['colorMode'])
 

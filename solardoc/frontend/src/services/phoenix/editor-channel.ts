@@ -23,6 +23,7 @@ export interface CreateEditorChannel {
   readonly name: string
   readonly description: string
   readonly password: string
+  readonly file_id: string
 }
 
 /**
