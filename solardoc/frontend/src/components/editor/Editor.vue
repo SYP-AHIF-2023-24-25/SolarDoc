@@ -207,6 +207,8 @@ onMounted(() => {
       if (waiting.value) {
         clearTimeout(waiting.value)
       }
+      // @ts-ignore Weird mystery error (setTimeout return is first a number, now it's a Timeout for some reason. We
+      // can't handle that here, so we'll just ignore it)
       waiting.value = setTimeout(handleUpdate, 100)
     }
 
