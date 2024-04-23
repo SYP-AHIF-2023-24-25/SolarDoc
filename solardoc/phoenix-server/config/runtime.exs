@@ -57,9 +57,11 @@ if config_env() == :prod do
     # reverse proxy on the deployment server to handle HTTPS.
     url: [port: port, scheme: "http"],
     check_origin: [
-      "http://127.0.0.1",
-      "http://localhost",
-      "//0.0.0.0",
+      "//127.0.0.1:5173",
+      "//localhost:5173",
+      "//0.0.0.0:80",
+      "//*:5173",
+      "//*:80",
       "https://solardoc.htl-leonding.ac.at",
       "https://*.htl-leonding.ac.at"
     ],
