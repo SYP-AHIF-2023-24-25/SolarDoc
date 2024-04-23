@@ -259,7 +259,7 @@ export class SDSClient {
     await this._ensureSocketIsHealthy()
     await this._ensureChannelIsHealthy()
     this._currentChannel?.on('state_trans', resp => {
-      console.log(`[ws-client.ts] Received OT update: ${resp}`)
+      console.log(`[ws-client.ts] Received OT update:`, resp)
       onReceive(resp)
     })
   }
@@ -283,7 +283,6 @@ export class SDSClient {
     this._currentChannel!.push('state_trans', update)
       .receive('ok', onSuccess)
       .receive('error', onError)
-      .send()
   }
 
   /**
