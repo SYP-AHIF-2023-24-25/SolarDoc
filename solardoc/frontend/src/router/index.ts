@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useLoadingStore } from '@/stores/loading'
 import HomeView from '../views/HomeView.vue'
-import ShareURLView from '@/views/ShareURLView.vue'
 
 const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
