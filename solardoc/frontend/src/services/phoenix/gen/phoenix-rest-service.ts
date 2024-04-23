@@ -41,11 +41,12 @@ export type EditorChannel = {
 }
 export type EditorChannels = EditorChannel[]
 export type File = {
-  created?: number
+  content: string
+  created: number
   file_name: string
-  id?: string
-  last_edited?: number
-  owner_id?: string
+  id: string
+  last_edited: number
+  owner_id: string
 }
 export type Files = File[]
 export type CreateFile = {

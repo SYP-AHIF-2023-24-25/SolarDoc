@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import type { EditorChannel } from '@/services/phoenix/editor-channel'
-import { useWSClientStore } from '@/stores/ws-client'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { useChannelViewStore } from '@/stores/channel-view'
@@ -10,10 +10,10 @@ const props = defineProps<{
   channel: EditorChannel
 }>()
 
-const wsClientStore = useWSClientStore()
+const editorUpdateWSClient = useEditorUpdateWSClient()
 const channelViewStore = useChannelViewStore()
 
-const { wsClient } = storeToRefs(wsClientStore)
+const { wsClient } = storeToRefs(editorUpdateWSClient)
 
 const loadingState = ref(false)
 

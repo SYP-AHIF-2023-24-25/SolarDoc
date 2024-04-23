@@ -29,6 +29,9 @@ dependencies:
   primeicons:
     specifier: 7.0.0
     version: 7.0.0
+  uuid:
+    specifier: 9.0.1
+    version: 9.0.1
   v-dropdown:
     specifier: 3.0.0
     version: 3.0.0(vue@3.3.7)
@@ -67,6 +70,9 @@ devDependencies:
   '@types/node':
     specifier: ^18.17.17
     version: 18.18.8
+  '@types/uuid':
+    specifier: 9.0.8
+    version: 9.0.8
   '@vitejs/plugin-vue':
     specifier: ^4.3.4
     version: 4.4.0(vite@4.5.0)(vue@3.3.7)
@@ -707,6 +713,10 @@ packages:
 
   /@types/tough-cookie@4.0.4:
     resolution: {integrity: sha512-95Sfz4nvMAb0Nl9DTxN3j64adfwfbBPEYq14VN7zT5J5O2M9V6iZMIIQU1U+pJyl9agHYHNCqhCXgyEtIRRa5A==}
+    dev: true
+
+  /@types/uuid@9.0.8:
+    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
     dev: true
 
   /@types/web-bluetooth@0.0.18:
@@ -3778,6 +3788,11 @@ packages:
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
+
+  /uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    hasBin: true
+    dev: false
 
   /v-dropdown@3.0.0(vue@3.3.7):
     resolution: {integrity: sha512-sDBiHhTjm0/eLmC83vUbOIHXNTlQD30w+usrh779OG+aNc/5vqyFQbSBPGekvD7pQPbWSPc5esVT8jcqfLRnrg==}

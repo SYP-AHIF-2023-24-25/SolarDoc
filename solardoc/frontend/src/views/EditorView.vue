@@ -10,7 +10,7 @@ import { handleRender } from '@/scripts/handle-render'
 import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
-import { useWSClientStore } from '@/stores/ws-client'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
@@ -35,7 +35,7 @@ const lastModifiedStore = useLastModifiedStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
-const wsClientStore = useWSClientStore()
+const editorUpdateWSClient = useEditorUpdateWSClient()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
@@ -63,10 +63,14 @@ phoenixBackend
     const authStatus =
       currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
     if (authStatus === 'authenticated') {
+      // Ensure that the user has the permissions to open the current file
+      currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
+
       console.log('[Editor] Attempting to connect to SDS')
-      wsClientStore.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
+      editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
     } else if (authStatus === 'expired-or-revoked') {
       await currentUserStore.logout()
+      currentFileStore.closeFile()
     } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
       console.error('[Editor] Auth status is unreachable or unknown')
     } else {
@@ -81,36 +85,6 @@ phoenixBackend
       '[Editor] Phoenix Backend is not reachable. Please copy the logs and contact the developers.',
     )
   })
-
-// Ensure the render preview is updated whenever the editor content changes
-currentFileStore.$subscribe(
-  async (
-    _: SubscriptionCallbackMutation<typeof currentFileStore>,
-    state: UnwrapRef<typeof currentFileStore>['$state'],
-  ) => {
-    const { content: editorContent } = state
-    const renderResp = await handleRender(currentFileStore.fileName, editorContent)
-    renderDataStore.setRenderData(renderResp)
-    console.log(renderResp)
-
-    // If there is a connection to the Phoenix backend, send the updated content to the channel
-    if (wsClientStore.hasActiveChannelConnection) {
-      console.log('[Editor] Sending editor update to channel')
-      await wsClientStore.wsClient?.sendEditorUpdate(
-        {
-          body: editorContent,
-          render_url: renderResp.previewURL,
-        },
-        resp => {
-          console.log(`[Editor] Editor update sent (Resp: `, resp, ')')
-        },
-        error => {
-          console.error(`[Editor] Error sending editor update: `, error)
-        },
-      )
-    }
-  },
-)
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
@@ -187,7 +161,12 @@ setInterval(updateLastModified, 500)
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
-          <input id="file-name-input" v-model="currentFileStore.fileName" />
+          <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
+          <input
+            id="file-name-input"
+            v-model="currentFileStore.fileName"
+            @input="event => currentFileStore.setFileName(event.target!.value)"
+          />
         </div>
       </div>
       <div id="menu-right-side">
