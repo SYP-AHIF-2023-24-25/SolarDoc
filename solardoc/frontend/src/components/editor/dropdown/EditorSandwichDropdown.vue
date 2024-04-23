@@ -58,7 +58,7 @@ function handleSaveButtonClick() {
     </template>
     <div id="dropdown-elements">
       <div class="dropdown-element" @click="handleJoinChannel()">Channels</div>
-      <div class="dropdown-element" @click="handleSaveButtonClick">
+      <div class="dropdown-element" @click="handleSaveButtonClick()">
         Save in profile (In work...)
       </div>
       <div class="dropdown-element">Settings (In work...)</div>

@@ -76,7 +76,6 @@ defmodule SolardocPhoenixWeb.Router do
 
     # Get the current user
     get "/users/current", UserController, :current
-
     # User routes
     get "/users", UserController, :index
 
@@ -100,7 +99,10 @@ defmodule SolardocPhoenixWeb.Router do
     resources "/files", FileController, only: [:index,:create, :show, :update, :delete]
 
     # Share URL routes
-    resources "/share", ShareURLController, only: [:index, :show, :create, :update, :delete]
+    get "/share/:id", ShareURLController, :show_share
+    get "/share/:id/file", ShareURLController, :show_file
+    delete "/share/:id", ShareURLController, :delete
+    post "/share", ShareURLController, :create
   end
 
   ########## - General API Info - ##########
