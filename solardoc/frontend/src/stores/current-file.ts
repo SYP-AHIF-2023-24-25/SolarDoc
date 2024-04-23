@@ -1,3 +1,4 @@
+import { defineStore } from 'pinia'
 import type {
   OTrans,
   OTransReqDto,
@@ -10,7 +11,6 @@ import * as phoenixRestService from '@/services/phoenix/api-service'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
 import { v4 as uuidv4 } from 'uuid'
-import { defineStore } from 'pinia'
 
 const DEFAULT_NAME = 'untitled.adoc'
 const DEFAULT_TEXT = '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
@@ -32,7 +32,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       storedFileContent = DEFAULT_TEXT
       localStorage.setItem(constants.localStorageFileContentKey, DEFAULT_TEXT)
     }
-
+    
     return {
       fileId: <string | undefined>storedFileId || undefined,
       fileName: storedFileName,
@@ -74,7 +74,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
         })
       } catch (e) {
         throw new PhoenixInternalError(
-          'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+          'Critically failed to create file. Cause: ' + (<Error>e).message,
         )
       }
 
@@ -83,12 +83,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
         this.setOwnerId(resp.data.owner_id)
       } else if (resp.status === 400) {
         throw new PhoenixRestError(
-          'Server rejected request to logout. Cause: Bad request',
+          `Server rejected request to create file. Cause: Bad request`,
           resp.status,
         )
       } else if (resp.status === 401) {
         throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
+          'Server rejected request to create file. Cause: Unauthorized',
           resp.status,
         )
       }
@@ -106,18 +106,18 @@ export const useCurrentFileStore = defineStore('currentFile', {
         })
       } catch (e) {
         throw new PhoenixInternalError(
-          'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+          'Critically failed to update file. Cause: ' + (<Error>e).message,
         )
       }
 
       if (resp.status === 400) {
         throw new PhoenixRestError(
-          'Server rejected request to logout. Cause: Bad request',
+          'Server rejected request to put file. Cause: Bad request',
           resp.status,
         )
       } else if (resp.status === 401) {
         throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
+          'Server rejected request to put file. Cause: Unauthorized',
           resp.status,
         )
       }

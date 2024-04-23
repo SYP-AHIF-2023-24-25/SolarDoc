@@ -4,7 +4,7 @@ defmodule SolardocPhoenix.Repo.Migrations.CreateShareUrls do
   def change do
     create table(:share_urls, primary_key: false) do
       add :id, :uuid, primary_key: true
-      add :file, references(:files, type: :uuid, on_delete: :delete_all), null: false
+      add :file_id, references(:files, type: :uuid, on_delete: :delete_all), null: false
       add :issued_at, :naive_datetime
       add :perms, :integer
       add :expires_at, :naive_datetime

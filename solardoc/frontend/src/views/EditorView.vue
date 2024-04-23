@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-import { storeToRefs } from 'pinia'
+import { ref, type UnwrapRef } from 'vue'
+import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
+import { handleRender } from '@/scripts/handle-render'
+import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useLastModifiedStore } from '@/stores/last-modified'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
@@ -19,6 +21,7 @@ import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
 import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
+import ShareUrlCreate from '@/components/editor/share-url/ShareUrlCreate.vue'
 import * as backendAPI from '@/services/backend/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
@@ -92,39 +95,8 @@ function handlePreviewButtonPress() {
 let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
 const copyButtonContent = ref('Copy')
 
-let unsecureWarningShown: boolean = false
-function unsecuredCopyToClipboard(text: string) {
-  if (!unsecureWarningShown) {
-    console.warn(
-      "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
-    )
-    unsecureWarningShown = true
-  }
-
-  const textArea = document.createElement('textarea')
-  textArea.value = text
-  document.body.appendChild(textArea)
-  textArea.focus()
-  textArea.select()
-  try {
-    // Deprecated, but there is no alternative for HTTP-only contexts
-    document.execCommand('copy')
-  } catch (err) {
-    document.body.removeChild(textArea)
-    throw new Error('[Editor] Unable to copy to clipboard. Cause: ' + err)
-  }
-  document.body.removeChild(textArea)
-}
-
 function handleCopyButtonClick() {
-  if (navigator.clipboard) {
-    // If normal copy method available, use it
-    navigator.clipboard.writeText(currentFileStore.content)
-  } else {
-    // Otherwise fallback to the above function
-    unsecuredCopyToClipboard(currentFileStore.content)
-  }
-
+  handleCopy(currentFileStore.content)
   copyButtonContent.value = 'Copied!'
   if (copyButtonTimeout) {
     clearTimeout(copyButtonTimeout)
@@ -153,6 +125,10 @@ function handleDownloadButtonClick() {
   }, 1500)
 }
 
+function handleShareButtonClick() {
+  overlayStateStore.setShareUrlView(true)
+}
+
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 function getLastModified(): string {
@@ -164,6 +140,7 @@ setInterval(updateLastModified, 500)
 </script>
 
 <template>
+  <ShareUrlCreate />
   <ChannelView />
   <FullScreenPreview />
   <div id="editor-page">
@@ -174,7 +151,7 @@ setInterval(updateLastModified, 500)
           <button class="editor-button" @click="handleCopyButtonClick()">
             {{ copyButtonContent }}
           </button>
-          <button class="editor-button">Share</button>
+          <button class="editor-button" @click="handleShareButtonClick()">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
         <div id="save-state">

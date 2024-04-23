@@ -3,6 +3,8 @@ import '@vueform/vueform/dist/vueform.css'
 import '@/assets/main.scss'
 import '@/assets/tooltip.scss'
 import 'vue-final-modal/style.css'
+import 'primeicons/primeicons.css'
+import './assets/main.scss'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
