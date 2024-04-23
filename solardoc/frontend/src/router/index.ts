@@ -60,11 +60,10 @@ const router = createRouter({
       name: 'test-editor',
       component: () => import('@/views/TestEditorView.vue'),
     },
-    // dynamic segments start with a colon
     {
       path: '/share/:shareUrlId',
-      component: () => import('@/views/ShareURLView.vue'),
       name: 'share-url',
+      component: () => import('@/views/ShareURLView.vue'),
     },
     // 404-page (reroutes in the view to the static 404.html)
     {
