@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import constants from '@/plugins/constants'
 import type {
   OTrans,
   OTransReqDto,
