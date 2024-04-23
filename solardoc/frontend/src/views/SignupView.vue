@@ -65,7 +65,7 @@ async function submitForm(
         :endpoint="false"
         @submit="submitForm"
       >
-        <TextElement name="username" label="Username" :rules="['required', 'min:6']" />
+        <TextElement name="username" label="Username" :rules="['required', 'min:6', 'max:20']" />
         <TextElement
           name="email"
           input-type="email"
