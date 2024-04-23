@@ -34,7 +34,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
         end
       end,
       FileShare: swagger_schema do
-        title "File"
+        title "FileShare"
         description "The file wich gets referenced by a share url"
         properties do
           id :string, "File UUID", required: true
