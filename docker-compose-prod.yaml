@@ -2,11 +2,9 @@ version: '3'
 services:
   frontend:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-frontend:$VERSION
-    build: !reset null
     ports: !override
       - "8081:80"
     volumes:
-      - frontend:/usr/share/nginx/html
       - ./solardoc/frontend/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
     networks:
       - solardocnet
@@ -54,9 +52,6 @@ services:
       - "8082:8080"
     networks:
       - solardocnet
-
-volumes:
-  frontend:
 
 networks:
   solardocnet:
