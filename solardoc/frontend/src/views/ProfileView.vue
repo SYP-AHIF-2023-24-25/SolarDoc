@@ -39,6 +39,16 @@ async function fetchFiles(bearer: string) {
   }
 }
 
+async function deleteFileById(id : string) {
+  let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1FilesById>>
+  try {
+    resp = await phoenixRestService.deleteV1FilesById(currentUserStore.bearer!,id)
+  } catch (e) {
+    throw new PhoenixInternalError(
+        'Critically failed to delete file. Cause: ' + (<Error>e).message,
+    )
+  }
+}
 
 async function logout() {
   try {
@@ -76,18 +86,19 @@ async function logout() {
           <p><span>Organisation:</span> {{ currentUserStore.currentUser?.organisation || '' }}</p>
           <p><span>Files:</span></p>
           <v-table :data="files">
-            <thead slot="head">
+            <thead>
             <th>FileName</th>
             <th>Last Edited</th>
             <th>Created</th>
             <th>Actions</th>
             </thead>
-            <tbody slot="body" slot-scope="{displayData}">
+            <tbody>
             <tr v-for="row in files" :key="row.id">
               <td>{{ row.file_name }}</td>
               <td>{{ getHumanReadableTimeInfo(row?.last_edited || new Date())}}</td>
               <td>{{ getHumanReadableTimeInfo(row?.created || new Date()) }}</td>
-              <td><button class="highlighted-button" >Edit</button></td>
+              <td><button  id="editor-button" class="highlighted-button" >Edit</button>
+                  <button @click="deleteFileById(row.id || '')" class="highlighted-button">Delete</button></td>
             </tr>
             </tbody>
           </v-table>
@@ -111,6 +122,10 @@ tr, th, td {
   border: 0.01em solid black;
   padding: 0.5rem;
 
+}
+
+#editor-button {
+  margin-right: 1rem;
 }
 
 #profile-container {
