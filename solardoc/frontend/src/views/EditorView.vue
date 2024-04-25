@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, type UnwrapRef } from 'vue'
+import { ref } from 'vue'
 import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
