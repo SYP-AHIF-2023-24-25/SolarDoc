@@ -11,55 +11,47 @@ defmodule SolardocPhoenixWeb.FileController do
   @api_path SolardocPhoenixWeb.v1_api_path()
 
   def swagger_definitions do
-  %{
-    File: swagger_schema do
-      title "File"
-      description "A file which is owned by a user"
-      properties do
-        id :string, "File UUID", required: true
-        file_name :string, "File name", required: true
-        owner_id :string, "Owner id", required: true
-        content :string, "File content", required: true
-        last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: true
-        created :integer, "Creation date in UNIX timestamp milliseconds", required: true
+    %{
+      File: swagger_schema do
+        title "File"
+        description "A file which is owned by a user"
+        properties do
+          id :string, "File UUID", required: true
+          file_name :string, "File name", required: true
+          owner_id :string, "Owner id", required: true
+          content :string, "File content", required: true
+          last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: true
+          created :integer, "Creation date in UNIX timestamp milliseconds", required: true
+        end
+      end,
+      Files: swagger_schema do
+        title "Files"
+        description "A list of files"
+        type :array
+        items Schema.ref(:File)
+      end,
+      CreateFile: swagger_schema do
+        title "CreateFile"
+        description "Arguments for creating a file"
+        properties do
+          file_name :string, "File name", required: true
+          content :string, "File content", required: false
+        end
+      end,
+      UpdateFile: swagger_schema do
+        title "UpdateFile"
+        description "Arguments for updating a file"
+        properties do
+          file_name :string, "File name", required: false
+          content :string, "File content", required: false
+        end
+      end,
+      ErrorResp: swagger_schema do
+        title "ErrorsResp"
+        description "A list of errors"
+        properties do end
       end
-    end,
-    Files: swagger_schema do
-      title "Files"
-      description "A list of files"
-      type :array
-      items Schema.ref(:File)
-    end,
-    CreateFile: swagger_schema do
-      title "CreateFile"
-      description "Arguments for creating a file"
-      properties do
-        file_name :string, "File name", required: true
-        content :string, "File content", required: false
-      end
-    end,
-    UpdateFile: swagger_schema do
-      title "UpdateFile"
-      description "Arguments for updating a file"
-      properties do
-        file_name :string, "File name", required: false
-        content :string, "File content", required: false
-      end
-    end,
-    Error: swagger_schema do
-      title "Error"
-      description "An error"
-      properties do
-        detail :string, "Error message", required: true
-      end
-    end,
-    Errors: swagger_schema do
-      title "Errors"
-      description "A list of errors"
-      type :array
-      items Schema.ref(:Error)
-    end
-  }
+    }
   end
 
   swagger_path :index do
@@ -69,7 +61,7 @@ defmodule SolardocPhoenixWeb.FileController do
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     response 200, "OK", Schema.ref(:Files)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def index(conn, _params) do
@@ -87,8 +79,8 @@ defmodule SolardocPhoenixWeb.FileController do
       file :body, Schema.ref(:CreateFile), "Arguments for creating a file", required: true
     end
     response 201, "Created", Schema.ref(:File)
-    response 400, "Bad Request", Schema.ref(:Errors)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 400, "Bad Request", Schema.ref(:ErrorResp)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def create(conn, file_params) do
@@ -111,7 +103,7 @@ defmodule SolardocPhoenixWeb.FileController do
       id :path, :string, "File ID", required: true
     end
     response 200, "OK", Schema.ref(:File)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def show(conn, %{"id" => id}) do
@@ -135,8 +127,8 @@ defmodule SolardocPhoenixWeb.FileController do
       file :body, Schema.ref(:UpdateFile), "Arguments for updating a file", required: true
     end
     response 200, "OK", Schema.ref(:File)
-    response 400, "Bad Request", Schema.ref(:Errors)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 400, "Bad Request", Schema.ref(:ErrorResp)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def update(conn, file_params) do
@@ -163,8 +155,8 @@ defmodule SolardocPhoenixWeb.FileController do
       id :path, :string, "File ID", required: true
     end
     response 204, "No Content"
-    response 400, "Bad Request", Schema.ref(:Errors)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 400, "Bad Request", Schema.ref(:ErrorResp)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def delete(conn, params) do
