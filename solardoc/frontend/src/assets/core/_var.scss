@@ -46,8 +46,11 @@
   --vueform-button-color: var(--scheme-cs-2);
   --vueform-button-color-hover: var(--scheme-cs-1);
 
+  // Button presets
+  --stylised-button-disabled-color: var(--scheme-gray-500);
+
   // Font-size presets
-  --home-button-font-size: 20px;
+  --button-font-size: 20px;
   --editor-button-font-size: 16px;
   --highlighted-button-font-size: 16px;
 
@@ -178,7 +181,7 @@ $vueform-button-color: var(--vueform-button-color);
 $vueform-button-color-hover: var(--vueform-button-color-hover);
 
 // Font-size presets
-$home-button-font-size: var(--home-button-font-size);
+$button-font-size: var(--button-font-size);
 $editor-button-font-size: var(--editor-button-font-size);
 $highlighted-button-font-size: var(--highlighted-button-font-size);
 
@@ -264,11 +267,15 @@ html[data-theme='light'] {
   --text-color-inverted: white;
   --overlay-background-color: white;
   --overlay-background-color-subtle: var(--scheme-neutral-gray);
-  --home-button-transparent-background-color: var(--scheme-cs-2);
-  --home-button-transparent-hover-text-color: white;
   --box-shadow-color: rgba(0, 0, 0, 0.1);
   --vueform-background: white;
   --vueform-background-hover: var(--scheme-gray-100);
+  --vueform-highlighted-box-background: var(--scheme-gray-100);
+  --vueform-highlighted-box-background-color-hover: var(--scheme-gray-200);
+  --vueform-highlighted-box-background-color-active: var(--scheme-gray-300);
+  --vueform-highlighted-box-border-color: var(--scheme-gray-300);
+  --stylised-button-background-color: var(--scheme-cs-2);
+  --stylised-button-hover-text-color: white;
   --dot-dot-dot-color: var(--scheme-cs-2);
   --dot-dot-dot-color-subtle: var(--scheme-cs-2-subtle);
   --scheme-background: transparent;
@@ -282,8 +289,14 @@ html[data-theme='dark'] {
   --box-shadow-color: transparent;
   --vueform-background: var(--scheme-gray-900);
   --vueform-background-hover: var(--scheme-gray-700);
+  --vueform-highlighted-box-background-color: var(--scheme-gray-700);
+  --vueform-highlighted-box-background-color-hover: var(--scheme-gray-800);
+  --vueform-highlighted-box-background-color-active: var(--scheme-gray-900);
+  --vueform-highlighted-box-border-color: var(--scheme-gray-800);
   --home-button-transparent-background-color: white;
   --home-button-transparent-hover-text-color: black;
+  --stylised-button-background-color: white;
+  --stylised-button-hover-text-color: black;
   --dot-dot-dot-color: white;
   --dot-dot-dot-color-subtle: var(--scheme-white-subtle);
   --scheme-background: var(--scheme-background-black);
@@ -296,8 +309,15 @@ $overlay-background-color-subtle: var(--overlay-background-color-subtle);
 $box-shadow-color: var(--box-shadow-color);
 $vueform-background: var(--vueform-background);
 $vueform-background-hover: var(--vueform-background-hover);
+$vueform-highlighted-box-background-color: var(--vueform-highlighted-box-background-color);
+$vueform-highlighted-box-background-color-hover: var(--vueform-highlighted-box-background-color-hover);
+$vueform-highlighted-box-background-color-active: var(--vueform-highlighted-box-background-color-active);
+$vueform-highlighted-box-border-color: var(--vueform-highlighted-box-border-color);
 $home-button-transparent-text-color: var(--home-button-transparent-background-color);
 $home-button-transparent-hover-text-color: var(--home-button-transparent-hover-text-color);
+$stylised-button-text-color: var(--stylised-button-background-color);
+$stylised-button-hover-text-color: var(--stylised-button-hover-text-color);
+$stylised-button-disabled-color: var(--stylised-button-disabled-color);
 $dot-dot-dot-color: var(--dot-dot-dot-color);
 $dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);
 $scheme-background: var(--scheme-background);

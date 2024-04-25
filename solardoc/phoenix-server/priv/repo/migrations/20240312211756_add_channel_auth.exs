@@ -1,4 +1,4 @@
-defmodule SolardocPhoenix.Repo.Migrations.AddedChannelAuth do
+defmodule SolardocPhoenix.Repo.Migrations.AddChannelAuth do
   use Ecto.Migration
 
   def change do

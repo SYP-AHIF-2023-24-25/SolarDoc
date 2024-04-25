@@ -15,6 +15,7 @@ defmodule SolardocPhoenixWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :put_secure_browser_headers
     plug :fetch_api_user
   end
 
@@ -75,7 +76,6 @@ defmodule SolardocPhoenixWeb.Router do
 
     # Get the current user
     get "/users/current", UserController, :current
-
     # User routes
     get "/users", UserController, :index
 
@@ -94,6 +94,15 @@ defmodule SolardocPhoenixWeb.Router do
 
     # Solardoc Auth API - Logging out i.e. deleting the user bearer token
     delete "/auth/bearer", UserAuthController, :delete
+
+    # File routes
+    resources "/files", FileController, only: [:index,:create, :show, :update, :delete]
+
+    # Share URL routes
+    get "/share/:id", ShareURLController, :show_share
+    get "/share/:id/file", ShareURLController, :show_file
+    delete "/share/:id", ShareURLController, :delete
+    post "/share", ShareURLController, :create
   end
 
   ########## - General API Info - ##########
@@ -129,6 +138,9 @@ defmodule SolardocPhoenixWeb.Router do
         %{name: "UserAuth", description: "User authentication resources"},
         %{name: "UserConfirmation", description: "User confirmation resources"},
         %{name: "UserSettings", description: "User settings resources"},
+        %{name: "EditorChannel", description: "Editor channel resources"},
+        %{name: "File", description: "File resources"},
+        %{name: "ShareURL", description: "Share URL resources"},
       ]
     }
   end

@@ -3,7 +3,6 @@ import { ApplicationConfig, SolardocRestApiApplication } from './application'
 import { getEnv, isProd } from './env'
 export * from './application'
 
-
 /**
  * The latest version of the API.
  *
