@@ -13,19 +13,20 @@ import App from './App.vue'
 import router from './router'
 import Vueform from '@vueform/vueform'
 import tooltip from './directives/tooltip'
-
+import Notifications from '@kyvg/vue3-notification'
 import vueformConfig from '../vueform.config'
+import velocity from 'velocity-animate'
 
+const vfm = createVfm()
 const app = createApp(App)
 
 console.log(`[main.ts] Running in '${import.meta.env.MODE}' mode`)
 
-app.use(createPinia())
-app.use(Vueform, vueformConfig)
-app.use(router)
-
-const vfm = createVfm()
-app.use(vfm)
-
-app.directive('tooltip', tooltip)
-app.mount('#app')
+app
+  .use(router)
+  .use(createPinia())
+  .use(Vueform, vueformConfig)
+  .use(vfm)
+  .use(Notifications, { velocity })
+  .directive('tooltip', tooltip)
+  .mount('#app')
