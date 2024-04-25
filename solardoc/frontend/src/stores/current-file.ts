@@ -89,15 +89,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
         this.setFileId(resp.data.id)
         this.setOwnerId(resp.data.owner_id)
       } else if (resp.status === 400) {
-        throw new PhoenixRestError(
-          `Server rejected request to create file`,
-          resp.status,
-        )
+        throw new PhoenixRestError(`Server rejected request to create file`, resp.status)
       } else if (resp.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to create file',
-          resp.status,
-        )
+        throw new PhoenixRestError('Server rejected request to create file', resp.status)
       }
     },
     async updateFile(bearer: string) {
@@ -118,15 +112,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
 
       if (resp.status === 400) {
-        throw new PhoenixRestError(
-          'Server rejected request to put file',
-          resp.status,
-        )
+        throw new PhoenixRestError('Server rejected request to put file', resp.status)
       } else if (resp.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to put file',
-          resp.status,
-        )
+        throw new PhoenixRestError('Server rejected request to put file', resp.status)
       }
     },
     initOTransStackFromServerTrans(initOTransDto: OTransRespDto) {
@@ -180,9 +168,14 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
         // Perform the transformation on the current content
         if (oTrans.trans.type === 'insert') {
-          this.content = this.content.slice(0, oTrans.trans.pos) + oTrans.trans.content + this.content.slice(oTrans.trans.pos);
+          this.content =
+            this.content.slice(0, oTrans.trans.pos) +
+            oTrans.trans.content +
+            this.content.slice(oTrans.trans.pos)
         } else if (oTrans.trans.type === 'delete') {
-          this.content = this.content.slice(0, oTrans.trans.pos) + this.content.slice(oTrans.trans.pos + oTrans.trans.length);
+          this.content =
+            this.content.slice(0, oTrans.trans.pos) +
+            this.content.slice(oTrans.trans.pos + oTrans.trans.length)
         }
       }
     },

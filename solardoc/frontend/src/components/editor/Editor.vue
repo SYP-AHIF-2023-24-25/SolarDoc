@@ -4,9 +4,9 @@
 
 <script setup lang="ts">
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
-import type {OTrans, OTransReqDto} from '@/services/phoenix/ot-trans'
-import {type Ref, watch} from 'vue'
-import {storeToRefs, type SubscriptionCallbackMutation} from 'pinia'
+import type { OTrans, OTransReqDto } from '@/services/phoenix/ot-trans'
+import { type Ref, watch } from 'vue'
+import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
@@ -17,13 +17,13 @@ import { useInitStateStore } from '@/stores/init-state'
 import { KeyCode } from 'monaco-editor'
 import { performErrorChecking } from '@/components/editor/error-checking'
 import { useCurrentFileStore } from '@/stores/current-file'
-import {handleRender} from "@/scripts/handle-render";
-import {useRenderDataStore} from "@/stores/render-data"
+import { handleRender } from '@/scripts/handle-render'
+import { useRenderDataStore } from '@/stores/render-data'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
-import {handleOutgoingUpdate} from "@/scripts/handle-ot";
-import {useEditorUpdateWSClient} from "@/stores/editor-update-ws-client";
-import {useCurrentUserStore} from "@/stores/current-user";
-import {interceptErrors} from "@/errors/error-handler";
+import { handleOutgoingUpdate } from '@/scripts/handle-ot'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { interceptErrors } from '@/errors/error-handler'
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()
@@ -58,30 +58,36 @@ function calculateUpdates(
   // We need to translate the single dimension OT operation to monaco editor edits using ranges
   // We will need to split the operation into multiple operations if it spans multiple lines
   if (oTrans.trans.type === 'insert') {
-    const position = model.getPositionAt(oTrans.trans.pos);
+    const position = model.getPositionAt(oTrans.trans.pos)
     edits.push({
-      range: new monaco.Range(position.lineNumber, position.column, position.lineNumber, position.column),
+      range: new monaco.Range(
+        position.lineNumber,
+        position.column,
+        position.lineNumber,
+        position.column,
+      ),
       text: oTrans.trans.content,
-      forceMoveMarkers: true
-    });
+      forceMoveMarkers: true,
+    })
   } else {
-    const start = model.getPositionAt(oTrans.trans.pos - oTrans.trans.length);
-    const end = model.getPositionAt(oTrans.trans.pos);
+    const start = model.getPositionAt(oTrans.trans.pos - oTrans.trans.length)
+    const end = model.getPositionAt(oTrans.trans.pos)
 
     if (start.lineNumber === end.lineNumber) {
       edits.push({
         range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
         text: null,
-      });
+      })
     } else {
       for (let lineNumber = start.lineNumber; lineNumber <= end.lineNumber; lineNumber++) {
-        let startColumn = (lineNumber === start.lineNumber) ? start.column : 1;
-        let endColumn = (lineNumber === end.lineNumber) ? end.column : model.getLineMaxColumn(lineNumber);
+        let startColumn = lineNumber === start.lineNumber ? start.column : 1
+        let endColumn =
+          lineNumber === end.lineNumber ? end.column : model.getLineMaxColumn(lineNumber)
 
         edits.push({
           range: new monaco.Range(lineNumber, startColumn, lineNumber, endColumn),
           text: null,
-        });
+        })
       }
     }
   }

@@ -18,9 +18,10 @@ export default Object.freeze({
   notifMessages: {
     welcome: {
       title: 'Welcome to SolarDoc!',
-      description: 'This is a collaborative editor for creating presentations. Try it out by typing something ' +
-        'and viewing your newly generated presentation!'
-    }
+      description:
+        'This is a collaborative editor for creating presentations. Try it out by typing something ' +
+        'and viewing your newly generated presentation!',
+    },
   },
   version: 'v0.5.0-dev',
 })

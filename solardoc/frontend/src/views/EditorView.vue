@@ -23,9 +23,9 @@ import ShareUrlCreate from '@/components/editor/share-url/ShareUrlCreate.vue'
 import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
-import {showWelcomeIfNeverShownBefore} from "@/scripts/show-welcome";
-import {interceptErrors} from "@/errors/error-handler";
-import {showWarnNotif} from "@/scripts/show-notif";
+import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
+import { interceptErrors } from '@/errors/error-handler'
+import { showWarnNotif } from '@/scripts/show-notif'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -48,24 +48,27 @@ showWelcomeIfNeverShownBefore()
 // ---------------------------------------------------------------------------------------------------------------------
 interceptErrors(currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid())
 interceptErrors(backendAPI.ensureRenderBackendIsReachable())
-interceptErrors((async () => {
-  await phoenixBackend.ensurePhoenixBackendIsReachable()
-  const authStatus = currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
-  if (authStatus === 'authenticated') {
-    // Ensure that the user has the permissions to open the current file
-    currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
+interceptErrors(
+  (async () => {
+    await phoenixBackend.ensurePhoenixBackendIsReachable()
+    const authStatus =
+      currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
+    if (authStatus === 'authenticated') {
+      // Ensure that the user has the permissions to open the current file
+      currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
 
-    console.log('[Editor] Attempting to connect to SDS')
-    editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
-  } else if (authStatus === 'expired-or-revoked') {
-    await currentUserStore.logout()
-    currentFileStore.closeFile()
-  } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
-    showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')
-  } else {
-    console.log('[Editor] Skipping connection to SDS. Not logged in!')
-  }
-})())
+      console.log('[Editor] Attempting to connect to SDS')
+      editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
+    } else if (authStatus === 'expired-or-revoked') {
+      await currentUserStore.logout()
+      currentFileStore.closeFile()
+    } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
+      showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')
+    } else {
+      console.log('[Editor] Skipping connection to SDS. Not logged in!')
+    }
+  })(),
+)
 // ---------------------------------------------------------------------------------------------------------------------
 
 // Enable loading spinner for preview if the button is clicked

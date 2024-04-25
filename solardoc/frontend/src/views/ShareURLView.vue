@@ -6,7 +6,7 @@ import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRoute, useRouter } from 'vue-router'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
-import {useLoadingStore} from "@/stores/loading";
+import { useLoadingStore } from '@/stores/loading'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -29,14 +29,13 @@ async function handleShareURLReq(shareUrlId: unknown): Promise<void> {
     try {
       resp = await phoenixRestService.getV1ShareByIdFile(currentUserStore.bearer!, shareUrlId)
     } catch (e) {
-      throw new PhoenixInternalError('Critically failed to fetch current user. Cause: ' + (<Error>e).message)
+      throw new PhoenixInternalError(
+        'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+      )
     }
 
     if (resp.status === 401) {
-      throw new PhoenixRestError(
-          'Server rejected request to fetch current user',
-          resp.status,
-      )
+      throw new PhoenixRestError('Server rejected request to fetch current user', resp.status)
     } else if (resp.status === 200) {
       // TODO! Merge with new file API introduced by #98 once merged into dev-sprint-5
       currentFileStore.setContent(resp.data.content)

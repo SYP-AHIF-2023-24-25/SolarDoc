@@ -1,6 +1,6 @@
-import {SolardocError} from "@/errors/solardoc-error";
-import type {ErrorsResp} from "@/services/phoenix/gen/phoenix-rest-service";
-import {titlecase} from "@/scripts/titlecase";
+import { SolardocError } from '@/errors/solardoc-error'
+import type { ErrorsResp } from '@/services/phoenix/gen/phoenix-rest-service'
+import { titlecase } from '@/scripts/titlecase'
 
 export type ActualPhxErrorResp = {
   errors: { detail: string } | { [key: string]: Array<string> }
@@ -17,7 +17,7 @@ export class PhoenixRestError extends SolardocError {
     public readonly errorDescription?: string,
     public readonly name: string = 'PhoenixRestError',
     options?: {
-      hideErrorCode: boolean,
+      hideErrorCode: boolean
     },
   ) {
     super(
@@ -25,7 +25,7 @@ export class PhoenixRestError extends SolardocError {
       message,
       'Error',
       `${message}${options?.hideErrorCode ? '' : ` (Code: ${errorCode ?? 'Unknown'})`}`,
-      errorDescription ?? 'No description provided. Check the console for more information.'
+      errorDescription ?? 'No description provided. Check the console for more information.',
     )
   }
 }
@@ -40,14 +40,14 @@ export class PhoenixBadRequestError extends PhoenixRestError {
     public readonly message: string,
     errorDescription?: string | ActualPhxErrorResp,
     options?: {
-      hideErrorCode: boolean,
+      hideErrorCode: boolean
     },
   ) {
     super(
       message,
       400,
-      errorDescription ?
-        PhoenixBadRequestError.parseErrorDescription(errorDescription)
+      errorDescription
+        ? PhoenixBadRequestError.parseErrorDescription(errorDescription)
         : 'Invalid request data. Please check your input and try again.',
       'PhoenixBadRequestError',
       options,
@@ -57,12 +57,14 @@ export class PhoenixBadRequestError extends PhoenixRestError {
   private static parseErrorDescription(errorDescription: string | ActualPhxErrorResp): string {
     if (typeof errorDescription === 'string') {
       return errorDescription
-    } else if ("detail" in errorDescription.errors) {
+    } else if ('detail' in errorDescription.errors) {
       return (errorDescription.errors as { detail: string }).detail
     } else {
-      return Object.entries(errorDescription.errors).map(([key, value]) => {
-        return `${titlecase(key)}: ${titlecase(value.join(', '))}`
-      }).join('\n')
+      return Object.entries(errorDescription.errors)
+        .map(([key, value]) => {
+          return `${titlecase(key)}: ${titlecase(value.join(', '))}`
+        })
+        .join('\n')
     }
   }
 }
@@ -76,16 +78,10 @@ export class PhoenixNotAuthorisedError extends PhoenixRestError {
     public readonly message: string,
     public readonly errorDescription: string = 'You are not authorised to perform this action. Please log in.',
     options?: {
-      hideErrorCode: boolean,
+      hideErrorCode: boolean
     },
   ) {
-    super(
-      message,
-      401,
-      errorDescription,
-      'PhoenixNotAuthorisedError',
-      options,
-    )
+    super(message, 401, errorDescription, 'PhoenixNotAuthorisedError', options)
   }
 }
 
@@ -95,17 +91,11 @@ export class PhoenixNotAuthorisedError extends PhoenixRestError {
  * @since 0.6.0
  */
 export class PhoenixInvalidCredentialsError extends PhoenixRestError {
-constructor(
+  constructor(
     public readonly message: string = 'Invalid credentials',
     public readonly errorDescription: string = 'Invalid credentials. Please check your email and password.',
   ) {
-    super(
-      message,
-      401,
-      errorDescription,
-      'PhoenixInvalidCredentialsError',
-      {hideErrorCode: true}
-    )
+    super(message, 401, errorDescription, 'PhoenixInvalidCredentialsError', { hideErrorCode: true })
   }
 }
 
@@ -119,16 +109,10 @@ export class PhoenixForbiddenError extends PhoenixRestError {
     public readonly message: string,
     public readonly errorDescription: string = 'You are not authorised to perform this action. Insufficient permissions.',
     options?: {
-      hideErrorCode: boolean,
+      hideErrorCode: boolean
     },
   ) {
-    super(
-      message,
-      403,
-      errorDescription,
-      'PhoenixForbiddenError',
-      options,
-    )
+    super(message, 403, errorDescription, 'PhoenixForbiddenError', options)
   }
 }
 
@@ -147,7 +131,8 @@ export class PhoenixInternalError extends SolardocError {
       message,
       'Internal Error',
       message,
-      errorDescription ?? 'An error occurred in the Phoenix backend service. Check the console for more information.',
+      errorDescription ??
+        'An error occurred in the Phoenix backend service. Check the console for more information.',
     )
   }
 }
@@ -180,7 +165,8 @@ export class PhoenixSDSError extends SolardocError {
       message,
       'SDS Error',
       message,
-      errorDescription ?? 'An error occurred in the Phoenix SDS. Check the console for more information.'
+      errorDescription ??
+        'An error occurred in the Phoenix SDS. Check the console for more information.',
     )
   }
 }

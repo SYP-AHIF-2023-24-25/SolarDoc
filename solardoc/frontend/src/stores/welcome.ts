@@ -1,5 +1,5 @@
-import {defineStore} from "pinia";
-import constants from "@/plugins/constants";
+import { defineStore } from 'pinia'
+import constants from '@/plugins/constants'
 
 export const useWelcomeStore = defineStore('welcomeState', {
   state: () => {
@@ -12,6 +12,6 @@ export const useWelcomeStore = defineStore('welcomeState', {
     setWelcomeShown(value: boolean) {
       this.showWelcome = value
       localStorage.setItem(constants.localStorageWelcomeShownKey, value ? 'true' : 'false')
-    }
-  }
+    },
+  },
 })

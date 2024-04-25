@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import constants from "@/plugins/constants";
+import constants from '@/plugins/constants'
 
 export const useDarkModeStore = defineStore('darkMode', {
   state: () => {
@@ -9,7 +9,7 @@ export const useDarkModeStore = defineStore('darkMode', {
   getters: {
     theme(): string {
       return this.darkMode ? 'dark' : 'light'
-    }
+    },
   },
   actions: {
     setThemeOnHTMLRoot() {
@@ -25,6 +25,6 @@ export const useDarkModeStore = defineStore('darkMode', {
       this.darkMode = value
       localStorage.setItem(constants.localStorageThemeKey, this.theme)
       this.setThemeOnHTMLRoot()
-    }
+    },
   },
 })

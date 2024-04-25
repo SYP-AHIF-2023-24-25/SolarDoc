@@ -7,9 +7,9 @@ import {
   type ActualPhxErrorResp,
   PhoenixBadRequestError,
   PhoenixInvalidCredentialsError,
-} from "@/services/phoenix/errors";
-import {SolardocUnreachableError} from "@/errors/unreachable-error";
-import {interceptErrors} from "@/errors/error-handler";
+} from '@/services/phoenix/errors'
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
+import { interceptErrors } from '@/errors/error-handler'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
@@ -42,7 +42,7 @@ async function submitForm(
   try {
     resp = await phoenixBackend.postV1AuthBearer(loginUser)
   } catch (e) {
-    console.error("[Login] Encountered network error during login", e)
+    console.error('[Login] Encountered network error during login', e)
     throw new SolardocUnreachableError('Encountered network error during login')
   }
 
@@ -53,16 +53,17 @@ async function submitForm(
     await currentUserStore.fetchCurrentUser()
     await $router.push('/profile')
   } else if (resp.status === 400) {
-    throw new PhoenixBadRequestError(
-      'Server rejected sign in',
-      resp.data as ActualPhxErrorResp,
-      {hideErrorCode: true}
-    )
+    throw new PhoenixBadRequestError('Server rejected sign in', resp.data as ActualPhxErrorResp, {
+      hideErrorCode: true,
+    })
   } else if (resp.status === 401) {
     throw new PhoenixInvalidCredentialsError()
   } else {
     console.error('[Login] Server rejected sign in. Cause: Unknown error', resp)
-    throw new SolardocUnreachableError('Server rejected sign in.', 'Unknown error. Please try again.')
+    throw new SolardocUnreachableError(
+      'Server rejected sign in.',
+      'Unknown error. Please try again.',
+    )
   }
 }
 </script>

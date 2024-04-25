@@ -7,7 +7,7 @@ import {
 } from '@solardoc/phoenix'
 import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
-import type {OTransReqDto, OTransRespDto} from '@/services/phoenix/ot-trans'
+import type { OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/api-service'
 
 /**
@@ -28,7 +28,7 @@ export class SDSClient {
     this.socket = socket(url, userToken)
     this.socket.onOpen(() => {
       this._active = true
-      console.log("[ws-client.ts] SDS Connection established!")
+      console.log('[ws-client.ts] SDS Connection established!')
     })
     this.socket.onMessage(message => {
       console.log('[ws-client.ts] Received message:', message)

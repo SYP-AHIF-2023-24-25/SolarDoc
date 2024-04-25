@@ -109,10 +109,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
       } else if (resp.status === 401) {
         this.unsetCurrentUser()
         this.unsetCurrentAuth()
-        throw new PhoenixRestError(
-          'Server rejected request to fetch current user',
-          resp.status,
-        )
+        throw new PhoenixRestError('Server rejected request to fetch current user', resp.status)
       }
     },
     /**
@@ -136,16 +133,10 @@ export const useCurrentUserStore = defineStore('currentUser', {
         this.clean()
       } else if (resp.status === 400) {
         this.clean()
-        throw new PhoenixRestError(
-          'Server rejected request to logout',
-          resp.status,
-        )
+        throw new PhoenixRestError('Server rejected request to logout', resp.status)
       } else if (resp.status === 401) {
         this.clean()
-        throw new PhoenixRestError(
-          'Server rejected request to logout',
-          resp.status,
-        )
+        throw new PhoenixRestError('Server rejected request to logout', resp.status)
       }
     },
     setCurrentUser(currentUser: UserPrivate) {

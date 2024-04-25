@@ -10,9 +10,9 @@ import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Vueform } from '@vueform/vueform'
 import { useCurrentFileStore } from '@/stores/current-file'
-import {handleOTUpdates} from "@/scripts/handle-ot";
-import {PhoenixNotAuthorisedError, PhoenixSDSError} from "@/services/phoenix/errors";
-import {interceptErrors} from "@/errors/error-handler";
+import { handleOTUpdates } from '@/scripts/handle-ot'
+import { PhoenixNotAuthorisedError, PhoenixSDSError } from '@/services/phoenix/errors'
+import { interceptErrors } from '@/errors/error-handler'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
@@ -37,14 +37,11 @@ async function submitForm(
   if (!form$?.requestData) {
     return
   } else if (!currentUserStore.loggedIn || !currentUserStore.bearer) {
-    throw new PhoenixNotAuthorisedError(
-      'User is not logged in.',
-      'Please log in and try again.'
-    )
+    throw new PhoenixNotAuthorisedError('User is not logged in.', 'Please log in and try again.')
   } else if (!editorUpdateWSClient.wsClient || !editorUpdateWSClient.wsClient.healthy) {
     throw new PhoenixSDSError(
       'Websocket client is not active or healthy. Can not join channel!',
-      'Please reload page and try again later. If the problem persists, contact the developers.'
+      'Please reload page and try again later. If the problem persists, contact the developers.',
     )
   }
 
@@ -72,7 +69,7 @@ async function submitForm(
         console.error('[ChannelView] Failed to join new channel', errorResp)
         throw new PhoenixSDSError(
           'Failed to join new channel',
-          'Please try again. If the problem persists, check the logs and contact the developers.'
+          'Please try again. If the problem persists, check the logs and contact the developers.',
         )
       },
       currentUserStore.currentUser!.id,
@@ -92,7 +89,7 @@ async function submitForm(
       console.error('[ChannelView] Failed to create new channel', errorResp)
       throw new PhoenixSDSError(
         'Failed to create new channel',
-        'Please try again. If the problem persists, check the logs and contact the developers.'
+        'Please try again. If the problem persists, check the logs and contact the developers.',
       )
     },
     newChannel,

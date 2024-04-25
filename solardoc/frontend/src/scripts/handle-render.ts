@@ -2,8 +2,8 @@ import type { RenderPresentationDtoModel } from '@/services/render/gen/backend-r
 import * as backendAPI from '@/services/render/api-service'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
-import {SolardocUnreachableError} from "@/errors/unreachable-error";
-import {RenderBackendRestUnknownError} from "@/services/render/errors";
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
+import { RenderBackendRestUnknownError } from '@/services/render/errors'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
@@ -45,16 +45,26 @@ export async function handleRender(
     revealJSAssetsPath: REVEAL_JS_CDN_URL,
   }
   let error: Error | undefined = undefined
-  let renderResp: Awaited<ReturnType<typeof backendAPI.postV1RenderPresentationRjsHtml>> | undefined = undefined
+  let renderResp:
+    | Awaited<ReturnType<typeof backendAPI.postV1RenderPresentationRjsHtml>>
+    | undefined = undefined
   try {
     renderResp = await backendAPI.postV1RenderPresentationRjsHtml(renderPresentationDtoModel)
   } catch (e) {
     error = <Error>e
   }
-  if (error instanceof TypeError && error.message.includes("NetworkError when attempting to fetch resource")) {
-    throw new SolardocUnreachableError('Encountered network error during render request to the backend')
+  if (
+    error instanceof TypeError &&
+    error.message.includes('NetworkError when attempting to fetch resource')
+  ) {
+    throw new SolardocUnreachableError(
+      'Encountered network error during render request to the backend',
+    )
   } else if (!renderResp || renderResp.status !== 200) {
-    throw new RenderBackendRestUnknownError('Failed to render presentation due to unknown error', renderResp?.status)
+    throw new RenderBackendRestUnknownError(
+      'Failed to render presentation due to unknown error',
+      renderResp?.status,
+    )
   }
 
   previewLoadingStore.setPreviewLoading(false)

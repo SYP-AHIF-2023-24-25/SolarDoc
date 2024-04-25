@@ -2,7 +2,7 @@
 import { handleRender } from '@/scripts/handle-render'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useCurrentFileStore } from '@/stores/current-file'
-import {interceptErrors} from "@/errors/error-handler";
+import { interceptErrors } from '@/errors/error-handler'
 
 const props = defineProps(['colorMode'])
 
@@ -10,7 +10,9 @@ const renderDataStore = useRenderDataStore()
 const currentFileStore = useCurrentFileStore()
 
 async function loadAnyway(): Promise<void> {
-  const renderResp = await interceptErrors(handleRender(currentFileStore.fileName, currentFileStore.content))
+  const renderResp = await interceptErrors(
+    handleRender(currentFileStore.fileName, currentFileStore.content),
+  )
   renderDataStore.setRenderData(renderResp)
 }
 

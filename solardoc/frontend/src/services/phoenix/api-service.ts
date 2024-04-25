@@ -1,6 +1,6 @@
 import * as api from './gen/phoenix-rest-service'
 import { PHOENIX_URL, SDSCLIENT_URL } from './config'
-import {SolardocUnreachableError} from "@/errors/unreachable-error";
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
 
 // Overwrite the default configuration depending on the environment
 api.defaults.baseUrl = PHOENIX_URL
@@ -22,7 +22,9 @@ export async function ensurePhoenixBackendIsReachable(): Promise<void> {
   let ping: Awaited<ReturnType<typeof api.getV1Ping>> | undefined = undefined
   try {
     ping = await api.getV1Ping()
-  } catch (_ignore) { /* empty */ }
+  } catch (_ignore) {
+    /* empty */
+  }
   if (!ping || ping.status !== 200) {
     throw new SolardocUnreachableError(`Phoenix Backend is not reachable`)
   }

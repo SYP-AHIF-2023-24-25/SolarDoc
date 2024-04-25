@@ -11,7 +11,7 @@ import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreat
 import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue'
 import { useCurrentFileStore } from '@/stores/current-file'
-import {interceptErrors} from "@/errors/error-handler";
+import { interceptErrors } from '@/errors/error-handler'
 
 const overlayStateStore = useOverlayStateStore()
 const channelViewStore = useChannelViewStore()

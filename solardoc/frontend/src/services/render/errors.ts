@@ -1,4 +1,4 @@
-import {SolardocError} from "@/errors/solardoc-error";
+import { SolardocError } from '@/errors/solardoc-error'
 
 /**
  * An error that is thrown when the backend render service encounters an error.
@@ -16,7 +16,7 @@ export class RenderBackendRestError extends SolardocError {
       message,
       'Error',
       `${message} (Code: ${errorCode ?? 'Unknown'})`,
-      errorDescription ?? 'No description provided. Check the console for more information.'
+      errorDescription ?? 'No description provided. Check the console for more information.',
     )
   }
 }
@@ -30,10 +30,6 @@ export class RenderBackendRestUnknownError extends RenderBackendRestError {
     public readonly message: string,
     public readonly errorCode?: number,
   ) {
-    super(
-      message,
-      errorCode,
-      'Unknown error. Checks logs for more information'
-    )
+    super(message, errorCode, 'Unknown error. Checks logs for more information')
   }
 }

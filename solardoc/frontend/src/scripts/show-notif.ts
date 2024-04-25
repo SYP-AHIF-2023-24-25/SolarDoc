@@ -1,12 +1,12 @@
-import {type NotificationsOptions, useNotification} from "@kyvg/vue3-notification"
-import type {NotifiableError} from "@/errors/solardoc-error";
+import { type NotificationsOptions, useNotification } from '@kyvg/vue3-notification'
+import type { NotifiableError } from '@/errors/solardoc-error'
 
-export type NotificationType = Exclude<NotificationsOptions["type"], undefined>
+export type NotificationType = Exclude<NotificationsOptions['type'], undefined>
 const duration: Record<NotificationType, number> = {
-  'error': 20000,
-  'warn': 15000,
-  'info': 10000,
-  'success': 5000,
+  error: 20000,
+  warn: 15000,
+  info: 10000,
+  success: 5000,
 }
 const { notify } = useNotification()
 
@@ -30,11 +30,7 @@ export function showSuccessNotif(title: string, text: string): void {
   showNotif('success', title, text)
 }
 
-export function showNotif(
-  type: NotificationType,
-  title: string,
-  text: string,
-): void {
+export function showNotif(type: NotificationType, title: string, text: string): void {
   notify({
     type: type,
     title: title,

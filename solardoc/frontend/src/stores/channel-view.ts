@@ -41,10 +41,7 @@ export const useChannelViewStore = defineStore('channels', {
       if (resp.status === 200) {
         this.setChannels(resp.data)
       } else if (resp.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to fetch current user',
-          resp.status,
-        )
+        throw new PhoenixRestError('Server rejected request to fetch current user', resp.status)
       }
     },
     setSelectedChannel(channel: EditorChannel) {

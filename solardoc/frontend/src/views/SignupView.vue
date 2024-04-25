@@ -3,9 +3,9 @@ import type { Vueform } from '@vueform/vueform'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
-import {SolardocUnreachableError} from "@/errors/unreachable-error";
-import {type ActualPhxErrorResp, PhoenixBadRequestError} from "@/services/phoenix/errors";
-import {interceptErrors} from "@/errors/error-handler";
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
+import { type ActualPhxErrorResp, PhoenixBadRequestError } from '@/services/phoenix/errors'
+import { interceptErrors } from '@/errors/error-handler'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
@@ -46,11 +46,9 @@ async function submitForm(
     currentUserStore.setCurrentUser(resp.data)
     await $router.push('login')
   } else if (resp.status === 400) {
-    throw new PhoenixBadRequestError(
-      'Server rejected sign up',
-      resp.data as ActualPhxErrorResp,
-      {hideErrorCode: true},
-    )
+    throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp, {
+      hideErrorCode: true,
+    })
   } else {
     throw new SolardocUnreachableError('Encountered network error during sign up')
   }

@@ -8,8 +8,8 @@ import type { Vueform } from '@vueform/vueform'
 import type { OTransRespDto } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
 import { useCurrentUserStore } from '@/stores/current-user'
-import {handleOTUpdates} from "@/scripts/handle-ot";
-import {PhoenixSDSError} from "@/services/phoenix/errors";
+import { handleOTUpdates } from '@/scripts/handle-ot'
+import { PhoenixSDSError } from '@/services/phoenix/errors'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
@@ -35,7 +35,7 @@ async function submitForm(
   } else if (!editorUpdateWSClient.wsClient || !editorUpdateWSClient.wsClient.healthy) {
     throw new PhoenixSDSError(
       'Websocket client is not active or healthy. Can not join channel!',
-      'Please reload page and try again later. If the problem persists, contact the developers.'
+      'Please reload page and try again later. If the problem persists, contact the developers.',
     )
   }
 
@@ -58,7 +58,7 @@ async function submitForm(
       console.error('[ChannelView] Error joining channel:', errorResp)
       throw new PhoenixSDSError(
         'Error joining channel',
-        'Please try again later. If the problem persists, contact the developers.'
+        'Please try again later. If the problem persists, contact the developers.',
       )
     },
     currentUserStore.currentUser!.id,

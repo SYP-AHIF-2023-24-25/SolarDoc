@@ -3,9 +3,9 @@
  * @since 0.6.0
  */
 export interface NotifiableError {
-  notifName: string,
-  notifMessage: string,
-  notifDescription: string,
+  notifName: string
+  notifMessage: string
+  notifDescription: string
 }
 
 /**

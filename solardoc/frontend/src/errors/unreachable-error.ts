@@ -1,4 +1,4 @@
-import {SolardocError} from "@/errors/solardoc-error";
+import { SolardocError } from '@/errors/solardoc-error'
 
 /**
  * Error class for when the Solardoc API is unreachable.
@@ -11,7 +11,8 @@ export class SolardocUnreachableError extends SolardocError {
       message,
       'Network Error',
       message,
-      description ?? `Please check your internet connection and try again. If the problem persists, the service may be down.`,
+      description ??
+        `Please check your internet connection and try again. If the problem persists, the service may be down.`,
     )
   }
 }
