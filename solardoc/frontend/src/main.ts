@@ -9,13 +9,13 @@ import './assets/main.scss'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createVfm } from 'vue-final-modal'
+import Vueform from '@vueform/vueform'
+import Notifications from '@kyvg/vue3-notification'
+import velocity from 'velocity-animate'
 import App from './App.vue'
 import router from './router'
-import Vueform from '@vueform/vueform'
 import tooltip from './directives/tooltip'
-import Notifications from '@kyvg/vue3-notification'
 import vueformConfig from '../vueform.config'
-import velocity from 'velocity-animate'
 
 const vfm = createVfm()
 const app = createApp(App)
