@@ -13,6 +13,7 @@
 
 // Other dependencies
 @use './vueform' as *;
+@use './notif' as *;
 
 // Make app take up whole screen
 body #app {

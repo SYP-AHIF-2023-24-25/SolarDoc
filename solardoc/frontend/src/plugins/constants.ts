@@ -9,10 +9,18 @@ export default Object.freeze({
   localStorageThemeKey: 'user-theme',
   localStorageAuthKey: 'user-auth',
   localStorageCurrUserKey: 'current-user',
+  localStorageWelcomeShownKey: 'welcome-shown',
   sessionStorageChannelKey: 'cached-channels',
   errorMessages: {
     'heading-space-missing-error': 'Error: Heading should have a space after the equal sign/s',
     'list-inconsistent-error': 'Error: Lists should be consistent (use either "." or "*")',
+  },
+  notifMessages: {
+    welcome: {
+      title: 'Welcome to SolarDoc!',
+      description: 'This is a collaborative editor for creating presentations. Try it out by typing something ' +
+        'and viewing your newly generated presentation!'
+    }
   },
   version: 'v0.5.0-dev',
 })

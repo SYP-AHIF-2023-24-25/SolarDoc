@@ -31,13 +31,15 @@ async function refreshChannels() {
   loadingState.value = false
 }
 
-// Fetch channels again when the user returns from one of the forms
-watch([selectedChannel, creatingChannel], () => {
-  if (!selectedChannel.value || !creatingChannel.value) {
-    refreshChannels()
-  }
-})
-refreshChannels()
+if (currentUserStore.loggedIn) {
+  // Fetch channels again when the user returns from one of the forms
+  watch([selectedChannel, creatingChannel], () => {
+    if (!selectedChannel.value || !creatingChannel.value) {
+      refreshChannels()
+    }
+  })
+  refreshChannels()
+}
 </script>
 
 <template>

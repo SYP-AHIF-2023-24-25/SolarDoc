@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, type UnwrapRef } from 'vue'
-import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
+import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { handleRender } from '@/scripts/handle-render'
 import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
@@ -24,6 +23,7 @@ import ShareUrlCreate from '@/components/editor/share-url/ShareUrlCreate.vue'
 import * as backendAPI from '@/services/backend/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
+import {showWelcomeIfNeverShownBefore} from "@/scripts/show-welcome";
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -38,6 +38,7 @@ const editorUpdateWSClient = useEditorUpdateWSClient()
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
 
+showWelcomeIfNeverShownBefore();
 currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
 
 // Ensure the backend is running and reachable

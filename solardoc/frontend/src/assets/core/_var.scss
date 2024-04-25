@@ -23,13 +23,20 @@
   --scheme-background-blue-subtle: #0f2555;
   --scheme-editor-black: var(--scheme-background-black);
   --scheme-editor-blue: var(--scheme-background-blue);
+  --scheme-friendly-blue: #44a4fc;
+  --scheme-friendly-deep-blue: #187fe7;
   --scheme-white-subtle: rgba(255, 255, 255, 0.2);
   --scheme-link-hover-color: var(--scheme-cs-2);
   --scheme-starting-green: #8be19c;
+  --scheme-starting-green-intense: #68cd86;
   --scheme-healthy-green: #00b834;
+  --scheme-healthy-green-intense: #378d4f;
   --scheme-warning-yellow: #ffcc00;
+  --scheme-warning-yellow-intense: #f48a06;
   --scheme-danger-red: #ff0000;
+  --scheme-danger-red-intense: #b82e24;
   --scheme-catastrophic-red: #940027;
+  --scheme-catastrophic-red-intense: #6b1c1c;
 
   // Universal gray tones
   --scheme-gray-100: #f3f4f6;
@@ -157,13 +164,20 @@ $scheme-neutral-gray: var(--scheme-neutral-gray);
 $scheme-background-black: var(--scheme-background-black);
 $scheme-editor-black: var(--scheme-background-black);
 $scheme-editor-blue: var(--scheme-editor-blue);
+$scheme-friendly-blue: var(--scheme-friendly-blue);
+$scheme-friendly-deep-blue: var(--scheme-friendly-deep-blue);
 $scheme-white-subtle: var(--scheme-white-subtle);
 $scheme-link-hover-color: var(--scheme-cs-2);
 $scheme-starting-green: var(--scheme-starting-green);
+$scheme-starting-green-intense: var(--scheme-starting-green-intense);
 $scheme-healthy-green: var(--scheme-healthy-green);
+$scheme-healthy-green-intense: var(--scheme-healthy-green-intense);
 $scheme-warning-yellow: var(--scheme-warning-yellow);
+$scheme-warning-yellow-intense: var(--scheme-warning-yellow-intense);
 $scheme-danger-red: var(--scheme-danger-red);
+$scheme-danger-red-intense: var(--scheme-danger-red-intense);
 $scheme-catastrophic-red: var(--scheme-catastrophic-red);
+$scheme-catastrophic-red-intense: var(--scheme-catastrophic-red-intense);
 
 // Universal gray tones
 $scheme-gray-100: var(--scheme-gray-100);
