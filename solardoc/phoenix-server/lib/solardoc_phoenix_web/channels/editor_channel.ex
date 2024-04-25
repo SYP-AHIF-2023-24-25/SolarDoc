@@ -9,6 +9,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   alias SolardocPhoenixWeb.EditorChannelJSON
   alias SolardocPhoenixWeb.EditorChannelState
   alias SolardocPhoenixWeb.EditorChannelTrans
+  alias SolardocPhoenix.Utils
 
   @impl true
   def join("channel:new", %{"data" => data, "state" => state}, socket) do
@@ -20,7 +21,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
       # We assume that the user holds the truth about the channel state, so as such we simply load this into the server
       # state. To make sure that the state is in sync with the database (which it should usually be, but potentially
       # there a recent un-synced state), we should load the state into the database as well.
-      init_trans = EditorChannelState.init_with_state(editor_channel.id, state)
+      init_trans = EditorChannelState.init_with_state(editor_channel.id, editor_channel.file_id, state)
       sync_to_db(editor_channel, state)
 
       send(self(), {:after_create, editor_channel: editor_channel, init_trans: init_trans})
@@ -39,8 +40,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     with {:exists, %EditorChannel{} = editor_channel} <- {:exists, EditorChannels.get_channel!(channel_id)},
          {:authorised, true} <- {:authorised, authorized?(editor_channel, %{auth: auth})} do
       editor_channel = editor_channel |> Repo.preload(:file)
-      state = EditorChannelState.get_text(editor_channel.id)
-        || init_channel_state_and_get(editor_channel.id, editor_channel.file.content)
+      state = get_state_or_create(editor_channel.id, editor_channel.file_id, editor_channel.file.content)
 
       init_trans = EditorChannelState.get_last_trans(channel_id)
       send(self(), {:after_join, editor_channel: editor_channel, state: state, init_trans: init_trans})
@@ -75,7 +75,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def handle_info({:after_create, editor_channel: editor_channel, init_trans: init_trans}, socket) do
-    IO.puts(EditorChannelState.get_text(editor_channel.id))
     broadcast!(
       socket,
       "new_channel",
@@ -91,8 +90,6 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
   @impl true
   def handle_info({:after_join, editor_channel: editor_channel, state: state, init_trans: init_trans}, socket) do
-    IO.puts(EditorChannelState.get_text(editor_channel.id))
-
     broadcast!(socket, "user_join", %{
       body: "A new user has joined a channel",
       channel_id: editor_channel.id,
@@ -100,7 +97,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
       file: %{
         id: editor_channel.file.id,
         file_name: editor_channel.file.file_name,
-        last_edited: editor_channel.file.last_edited,
+        last_edited: Utils.naive_datetime_to_unix_milliseconds(editor_channel.file.last_edited),
         owner_id: editor_channel.file.owner_id,
         created: editor_channel.file.created,
         content: state,
@@ -116,7 +113,12 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
     # We will first push the new transformation, applying it to the editor state and then broadcast the same
     # transformation to all other users in the channel
-    EditorChannelState.push_new_trans(curr_channel_id(socket), trans)
+    channel_id = curr_channel_id(socket)
+    EditorChannelState.push_new_trans(channel_id, trans)
+
+    # For testing
+    content = EditorChannelState.get_text(channel_id)
+    IO.puts("[channel:#{channel_id}] Pushed transformation to channel state. New state:\n#{content}")
 
     # We simply broadcast the transformation itself
     broadcast!(socket, "state_trans", trans)
@@ -162,8 +164,17 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     {:noreply, socket}
   end
 
-  defp init_channel_state_and_get(channel_id, content) do
-    EditorChannelState.init_with_state(channel_id, content)
+  defp get_state_or_create(channel_id, file_id, content) do
+    state = EditorChannelState.get_text(channel_id)
+    if state != nil do
+      state
+    else
+      init_channel_state_and_get(channel_id, file_id, content)
+    end
+  end
+
+  defp init_channel_state_and_get(channel_id, file_id, content) do
+    EditorChannelState.init_with_state(channel_id, file_id, content)
     content
   end
 

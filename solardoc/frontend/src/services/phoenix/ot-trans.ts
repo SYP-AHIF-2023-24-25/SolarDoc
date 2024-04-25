@@ -53,4 +53,5 @@ export interface OTrans {
   timestamp: number | undefined
   user_id: string
   acknowledged: boolean
+  init: boolean
 }

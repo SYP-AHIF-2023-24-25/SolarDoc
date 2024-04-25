@@ -9,7 +9,6 @@ import { useOverlayStateStore } from '@/stores/overlay-state'
 import { handleRender } from '@/scripts/handle-render'
 import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
-import { useLastModifiedStore } from '@/stores/last-modified'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
@@ -31,7 +30,6 @@ const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const overlayStateStore = useOverlayStateStore()
 const renderDataStore = useRenderDataStore()
-const lastModifiedStore = useLastModifiedStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
@@ -132,7 +130,7 @@ function handleShareButtonClick() {
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 function getLastModified(): string {
-  return getHumanReadableTimeInfo(lastModifiedStore.lastModified)
+  return getHumanReadableTimeInfo(currentFileStore.lastModified)
 }
 
 const updateLastModified = () => (lastModified.value = getLastModified())
