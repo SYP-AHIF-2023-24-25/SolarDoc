@@ -16,10 +16,7 @@ export const servers = {
     server3: "ws://localhost:4000/api",
     server4: "wss://localhost:4000/api"
 };
-export type Error = {
-    detail: string;
-};
-export type Errors = Error[];
+export type ErrorsResp = object;
 export type UserLogin = {
     email: string;
     password: string;
@@ -104,10 +101,10 @@ export function deleteV1AuthBearer(authorization: string, opts?: Oazapfts.Reques
         status: 204;
     } | {
         status: 400;
-        data: Errors;
+        data: ErrorsResp;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>("/v1/auth/bearer", {
         ...opts,
         method: "DELETE",
@@ -126,10 +123,10 @@ export function postV1AuthBearer(userLogin: UserLogin, opts?: Oazapfts.RequestOp
         data: UserToken;
     } | {
         status: 400;
-        data: Errors;
+        data: ErrorsResp;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>("/v1/auth/bearer", oazapfts.json({
         ...opts,
         method: "POST",
@@ -145,7 +142,7 @@ export function getV1EditorChannels(authorization: string, opts?: Oazapfts.Reque
         data: EditorChannels;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>("/v1/editor_channels", {
         ...opts,
         headers: {
@@ -163,7 +160,7 @@ export function getV1EditorChannelsById(authorization: string, id: string, opts?
         data: EditorChannel;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>(`/v1/editor_channels/${encodeURIComponent(id)}`, {
         ...opts,
         headers: {
@@ -181,7 +178,7 @@ export function getV1Files(authorization: string, opts?: Oazapfts.RequestOpts) {
         data: Files;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>("/v1/files", {
         ...opts,
         headers: {
@@ -199,10 +196,10 @@ export function postV1Files(authorization: string, createFile: CreateFile, opts?
         data: File;
     } | {
         status: 400;
-        data: Errors;
+        data: ErrorsResp;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>("/v1/files", oazapfts.json({
         ...opts,
         method: "POST",
@@ -221,10 +218,10 @@ export function deleteV1FilesById(authorization: string, id: string, opts?: Oaza
         status: 204;
     } | {
         status: 400;
-        data: Errors;
+        data: ErrorsResp;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>(`/v1/files/${encodeURIComponent(id)}`, {
         ...opts,
         method: "DELETE",
@@ -243,7 +240,7 @@ export function getV1FilesById(authorization: string, id: string, opts?: Oazapft
         data: File;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>(`/v1/files/${encodeURIComponent(id)}`, {
         ...opts,
         headers: {
@@ -261,10 +258,10 @@ export function putV1FilesById(authorization: string, id: string, updateFile: Up
         data: File;
     } | {
         status: 400;
-        data: Errors;
+        data: ErrorsResp;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>(`/v1/files/${encodeURIComponent(id)}`, oazapfts.json({
         ...opts,
         method: "PUT",
@@ -295,10 +292,10 @@ export function postV1Share(authorization: string, createShareUrl: CreateShareUr
         data: ShareUrl;
     } | {
         status: 400;
-        data: Errors;
+        data: ErrorsResp;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>("/v1/share", oazapfts.json({
         ...opts,
         method: "POST",
@@ -318,7 +315,7 @@ export function getV1ShareById(authorization: string, id: string, opts?: Oazapft
         data: ShareUrl;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>(`/v1/share/${encodeURIComponent(id)}`, {
         ...opts,
         headers: {
@@ -336,7 +333,7 @@ export function getV1ShareByIdFile(authorization: string, id: string, opts?: Oaz
         data: File;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>(`/v1/share/${encodeURIComponent(id)}/file`, {
         ...opts,
         headers: {
@@ -369,7 +366,7 @@ export function postV1Users(createUser: CreateUser, opts?: Oazapfts.RequestOpts)
         data: UserPrivate;
     } | {
         status: 400;
-        data: Errors;
+        data: ErrorsResp;
     }>("/v1/users", oazapfts.json({
         ...opts,
         method: "POST",
@@ -385,7 +382,7 @@ export function getV1UsersCurrent(authorization: string, opts?: Oazapfts.Request
         data: UserPrivate;
     } | {
         status: 401;
-        data: Errors;
+        data: ErrorsResp;
     }>("/v1/users/current", {
         ...opts,
         headers: {

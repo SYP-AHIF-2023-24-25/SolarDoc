@@ -42,7 +42,7 @@ export const useChannelViewStore = defineStore('channels', {
         this.setChannels(resp.data)
       } else if (resp.status === 401) {
         throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
+          'Server rejected request to fetch current user',
           resp.status,
         )
       }

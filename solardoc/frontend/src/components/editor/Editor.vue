@@ -23,6 +23,7 @@ import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import {handleOutgoingUpdate} from "@/scripts/handle-ot";
 import {useEditorUpdateWSClient} from "@/stores/editor-update-ws-client";
 import {useCurrentUserStore} from "@/stores/current-user";
+import {interceptErrors} from "@/errors/error-handler";
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()
@@ -175,7 +176,7 @@ onMounted(() => {
     activeTimeout = setTimeout(async () => {
       console.log('[Editor] Broadcasting update')
       const newState = editorInstance!.getValue()
-      const renderResp = await handleRender(currentFileStore.fileName, newState)
+      const renderResp = await interceptErrors(handleRender(currentFileStore.fileName, newState))
       renderDataStore.setRenderData(renderResp)
     }, EDITOR_UPDATE_TIMEOUT)
   })

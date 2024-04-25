@@ -24,9 +24,12 @@ export class SDSClient {
   private _currentChannel: Channel | undefined
 
   constructor(url: string, userToken?: string) {
+    this._active = false
     this.socket = socket(url, userToken)
-    this._active = true
-
+    this.socket.onOpen(() => {
+      this._active = true
+      console.log("[ws-client.ts] SDS Connection established!")
+    })
     this.socket.onMessage(message => {
       console.log('[ws-client.ts] Received message:', message)
     })

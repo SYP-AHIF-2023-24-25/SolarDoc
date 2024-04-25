@@ -90,12 +90,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
         this.setOwnerId(resp.data.owner_id)
       } else if (resp.status === 400) {
         throw new PhoenixRestError(
-          `Server rejected request to create file. Cause: Bad request`,
+          `Server rejected request to create file`,
           resp.status,
         )
       } else if (resp.status === 401) {
         throw new PhoenixRestError(
-          'Server rejected request to create file. Cause: Unauthorized',
+          'Server rejected request to create file',
           resp.status,
         )
       }
@@ -119,12 +119,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
       if (resp.status === 400) {
         throw new PhoenixRestError(
-          'Server rejected request to put file. Cause: Bad request',
+          'Server rejected request to put file',
           resp.status,
         )
       } else if (resp.status === 401) {
         throw new PhoenixRestError(
-          'Server rejected request to put file. Cause: Unauthorized',
+          'Server rejected request to put file',
           resp.status,
         )
       }

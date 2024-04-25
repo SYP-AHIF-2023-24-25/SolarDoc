@@ -34,7 +34,7 @@ async function handleShareURLReq(shareUrlId: unknown): Promise<void> {
 
     if (resp.status === 401) {
       throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
+          'Server rejected request to fetch current user',
           resp.status,
       )
     } else if (resp.status === 200) {

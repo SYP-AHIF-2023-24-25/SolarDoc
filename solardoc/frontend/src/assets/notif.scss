@@ -40,5 +40,9 @@
   &.error {
     background: var.$scheme-danger-red;
     border-left-color: var.$scheme-danger-red-intense;
+
+    &, & * {
+      color: white;
+    }
   }
 }

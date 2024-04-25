@@ -110,7 +110,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
         this.unsetCurrentUser()
         this.unsetCurrentAuth()
         throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
+          'Server rejected request to fetch current user',
           resp.status,
         )
       }
@@ -137,13 +137,13 @@ export const useCurrentUserStore = defineStore('currentUser', {
       } else if (resp.status === 400) {
         this.clean()
         throw new PhoenixRestError(
-          'Server rejected request to logout. Cause: Bad request',
+          'Server rejected request to logout',
           resp.status,
         )
       } else if (resp.status === 401) {
         this.clean()
         throw new PhoenixRestError(
-          'Server rejected request to logout. Cause: Unauthorized',
+          'Server rejected request to logout',
           resp.status,
         )
       }

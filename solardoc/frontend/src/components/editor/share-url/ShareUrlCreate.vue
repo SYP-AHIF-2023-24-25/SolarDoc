@@ -49,7 +49,7 @@ async function submitForm(
       }
       if (resp.status === 401) {
         throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
+          'Server rejected request to fetch current user',
           resp.status,
         )
       }
