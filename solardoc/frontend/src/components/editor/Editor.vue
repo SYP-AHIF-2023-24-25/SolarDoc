@@ -55,6 +55,7 @@ onMounted(() => {
   monaco.editor.defineTheme('asciiDocLightTheme', <editor.IStandaloneThemeData>lightEditorTheme)
   monaco.editor.defineTheme('asciiDocDarkTheme', <editor.IStandaloneThemeData>darkEditorTheme)
 
+
   // Creating the editor with desired theme and language
   editorInstance = monaco.editor.create(editorRef.value, {
     theme: darkModeStore.darkMode ? 'asciiDocDarkTheme' : 'asciiDocLightTheme',
@@ -68,7 +69,11 @@ onMounted(() => {
     automaticLayout: true,
     scrollBeyondLastLine: false,
   })
-
+  if (currentFileStore.getPermissions() === 1){
+    editorInstance!.updateOptions({
+      readOnly: true
+    })
+  }
   // Error checking on init
   performErrorChecking(editorInstance)
 
