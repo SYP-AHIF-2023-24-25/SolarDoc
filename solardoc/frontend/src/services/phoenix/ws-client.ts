@@ -251,7 +251,7 @@ export class SDSClient {
    * @param onReceive The function to call when an operational transformation is received.
    * @throws PhoenixInvalidOperationError If the socket is not healthy.
    * @throws PhoenixInvalidOperationError If the channel is not healthy.
-   * @since 0.5.0
+   * @since 0.6.0-dev
    */
   public async listenForOTrans(
     onReceive: (update: OTransRespDto) => void | Promise<void>,
