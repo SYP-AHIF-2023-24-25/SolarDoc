@@ -45,7 +45,7 @@ export interface OTransRespDto {
 
 /**
  * An operational transformation transaction.
- * @since 0.6.0-dev
+ * @since 0.5.0
  */
 export interface OTrans {
   id: string

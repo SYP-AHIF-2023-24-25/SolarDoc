@@ -132,7 +132,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * This will check whether a current transformation is waiting to be acknowledged and if so, it will update that
      * transaction with the timestamp and then push the new transformation to the stack.
      * @param oTrans The OTrans object to push.
-     * @since 0.6.0-dev
+     * @since 0.5.0
      */
     pushOTransResp(oTrans: OTransRespDto) {
       const oTransWaiting = this.oTransStack.get(oTrans.id)
@@ -161,7 +161,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * Pushes an OTrans to the stack of transformations which are not yet acknowledged, but have been already applied
      * to the content.
      * @param oTrans The OTrans object to push.
-     * @since 0.6.0-dev
+     * @since 0.5.0
      */
     pushOTransReq(oTrans: OTransReqDto) {
       this.oTransNotAcked.push(oTrans)
@@ -170,7 +170,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * Creates an OTrans object which represents a change to the content.
      * @param insertOrDeleteTrans The raw insert or delete OTrans.
      * @returns The OTrans object.
-     * @since 0.6.0-dev
+     * @since 0.5.0
      */
     createOTrans(insertOrDeleteTrans: RawInsertOTrans | RawDeleteOTrans): OTransReqDto {
       return {
