@@ -39,6 +39,11 @@ function handleSaveButtonClick() {
   currentFileStore.storeOnServer(currentUserStore.bearer)
   closeDropdown()
 }
+
+function handleNewFileButtonClick() {
+  currentFileStore.closeFile()
+  closeDropdown()
+}
 </script>
 
 <template>
@@ -61,6 +66,7 @@ function handleSaveButtonClick() {
       <div class="dropdown-element" @click="handleSaveButtonClick()">
         Save in profile (In work...)
       </div>
+      <div class="dropdown-element" @click="handleNewFileButtonClick()">New File</div>
       <div class="dropdown-element">Settings (In work...)</div>
     </div>
   </Dropdown>

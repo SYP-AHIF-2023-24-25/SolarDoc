@@ -1,12 +1,12 @@
-# To allow injecting dependencies from monorepo structure of PNPM, this Dockerfile should be executed from the root of
-# the repository
-FROM docker.io/library/node:16-slim AS base
+FROM node:20.12.2-alpine3.19 AS base
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+ENV PNPM_VERSION=8.9.2
 
-# Set PNPM version 7 to ensure compatibility with source code lockfiles
-RUN pnpm i -g pnpm@8.9.2
+RUN corepack enable
+RUN corepack use pnpm@$PNPM_VERSION
+RUN corepack install --global pnpm@$PNPM_VERSION
 
 # Set to a non-root built-in user `node`
 USER node
