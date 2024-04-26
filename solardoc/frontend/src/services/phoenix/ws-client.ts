@@ -7,7 +7,7 @@ import {
 } from '@solardoc/phoenix'
 import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
-import type {OTransReqDto, OTransRespDto} from '@/services/phoenix/ot-trans'
+import type { OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/api-service'
 
 /**

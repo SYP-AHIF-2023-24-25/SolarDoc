@@ -310,8 +310,12 @@ $box-shadow-color: var(--box-shadow-color);
 $vueform-background: var(--vueform-background);
 $vueform-background-hover: var(--vueform-background-hover);
 $vueform-highlighted-box-background-color: var(--vueform-highlighted-box-background-color);
-$vueform-highlighted-box-background-color-hover: var(--vueform-highlighted-box-background-color-hover);
-$vueform-highlighted-box-background-color-active: var(--vueform-highlighted-box-background-color-active);
+$vueform-highlighted-box-background-color-hover: var(
+  --vueform-highlighted-box-background-color-hover
+);
+$vueform-highlighted-box-background-color-active: var(
+  --vueform-highlighted-box-background-color-active
+);
 $vueform-highlighted-box-border-color: var(--vueform-highlighted-box-border-color);
 $home-button-transparent-text-color: var(--home-button-transparent-background-color);
 $home-button-transparent-hover-text-color: var(--home-button-transparent-hover-text-color);

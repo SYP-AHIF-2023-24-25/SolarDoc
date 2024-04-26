@@ -32,7 +32,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       storedFileContent = DEFAULT_TEXT
       localStorage.setItem(constants.localStorageFileContentKey, DEFAULT_TEXT)
     }
-    
+
     return {
       fileId: <string | undefined>storedFileId || undefined,
       fileName: storedFileName,
@@ -124,7 +124,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     initOTransStackFromServerTrans(initOTrans: OTransRespDto) {
       this.oTransStack = new Map<string, OTrans>()
-      this.oTransStack.set(initOTrans.id, {...initOTrans, acknowledged: true})
+      this.oTransStack.set(initOTrans.id, { ...initOTrans, acknowledged: true })
     },
     /**
      * Pushes an OTrans to the stack of transformations.
@@ -142,13 +142,18 @@ export const useCurrentFileStore = defineStore('currentFile', {
         this.oTransStack.set(oTrans.id, oTransWaiting)
       } else {
         // This is a new transformation
-        this.oTransStack.set(oTrans.id, {...oTrans, acknowledged: true})
+        this.oTransStack.set(oTrans.id, { ...oTrans, acknowledged: true })
 
         // Perform the transformation on the current content
         if (oTrans.trans.type === 'insert') {
-          this.content = this.content.slice(0, oTrans.trans.pos) + oTrans.trans.content + this.content.slice(oTrans.trans.pos);
+          this.content =
+            this.content.slice(0, oTrans.trans.pos) +
+            oTrans.trans.content +
+            this.content.slice(oTrans.trans.pos)
         } else if (oTrans.trans.type === 'delete') {
-          this.content = this.content.slice(0, oTrans.trans.pos) + this.content.slice(oTrans.trans.pos + oTrans.trans.length);
+          this.content =
+            this.content.slice(0, oTrans.trans.pos) +
+            this.content.slice(oTrans.trans.pos + oTrans.trans.length)
         }
       }
     },
