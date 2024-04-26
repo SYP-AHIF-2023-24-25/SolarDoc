@@ -23,7 +23,7 @@ async function handleOutgoingUpdate(toSend: OTransReqDto): Promise<void> {
 
 /**
  * Starts the process which will handle the incoming and outgoing OT updates.
- * @since 0.5.0
+ * @since 0.6.0-dev
  */
 export function handleOTUpdates() {
   if (updateCycleHandler.running) {
