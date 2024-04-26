@@ -1,6 +1,6 @@
 /**
  * @solardoc/rest-api
- * 0.4.2
+ * 0.5.0
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */

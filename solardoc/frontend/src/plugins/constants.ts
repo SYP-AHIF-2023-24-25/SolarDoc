@@ -23,5 +23,5 @@ export default Object.freeze({
         'and viewing your newly generated presentation!',
     },
   },
-  version: 'v0.5.0-dev',
+  version: 'v0.5.0',
 })
