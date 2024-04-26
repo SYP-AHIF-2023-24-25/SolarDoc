@@ -21,8 +21,8 @@ function getColorModeClass(): string {
     ? props.colorMode === 'dark'
       ? 'dark-mode-overwrite'
       : props.colorMode === 'light'
-      ? 'light-mode-overwrite'
-      : ''
+        ? 'light-mode-overwrite'
+        : ''
     : ''
 }
 </script>
