@@ -44,7 +44,6 @@ function handleNewFileButtonClick() {
   currentFileStore.closeFile()
   closeDropdown()
 }
-
 </script>
 
 <template>
