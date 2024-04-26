@@ -2,7 +2,7 @@ defmodule SolardocPhoenix.Utils do
   @moduledoc """
   This module contains utility functions for the SolardocPhoenix application.
   """
-  @moduledoc since: "0.6.0-dev"
+  @moduledoc since: "0.5.0"
 
   @doc """
   Converts a naive datetime to UNIX timestamp in milliseconds.
