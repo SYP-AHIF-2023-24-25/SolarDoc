@@ -11,7 +11,6 @@ import * as phoenixRestService from '@/services/phoenix/api-service'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
 import { v4 as uuidv4 } from 'uuid'
-import {boolean, numeric} from "@vueform/vueform";
 
 const DEFAULT_NAME = 'untitled.adoc'
 const DEFAULT_TEXT = '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
@@ -22,7 +21,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     const storedFileOwner = localStorage.getItem(constants.localStorageFileOwnerKey)
     let storedFileName = localStorage.getItem(constants.localStorageFileNameKey)
     let storedFileContent = localStorage.getItem(constants.localStorageFileContentKey)
-
+    let storedPermissions = localStorage.getItem(constants.localStorageFilePermissionsKey)
     // Ensure the default is populated if the stored content is empty or the file name is empty
     if (!storedFileName || storedFileName === '') {
       storedFileName = DEFAULT_NAME
@@ -40,7 +39,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       ownerId: storedFileOwner || undefined,
       saveState: storedFileId ? 'Saved Remotely' : 'Saved Locally',
       content: storedFileContent,
-      permissions: numeric||null,
+      permissions: storedPermissions ? parseInt(storedPermissions) : null,
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: <Array<OTransReqDto>>[],
       oTransNotPerf: <Array<OTransRespDto>>[],
