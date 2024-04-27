@@ -69,6 +69,7 @@ onMounted(() => {
     automaticLayout: true,
     scrollBeyondLastLine: false,
   })
+  //console.log(currentFileStore.getPermissions())
   if (currentFileStore.getPermissions() === 1){
     editorInstance!.updateOptions({
       readOnly: true

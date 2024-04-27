@@ -126,6 +126,7 @@ function handleDownloadButtonClick() {
 }
 
 function handleShareButtonClick() {
+  console.log(currentFileStore.getPermissions())
   overlayStateStore.setShareUrlView(true)
 }
 
