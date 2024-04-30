@@ -22,7 +22,7 @@ export function showErrorNotif(title: string, text: string): void {
   showNotif('error', title, text)
 }
 
-export function showWarnNotifFrom(error: NotifiableError & { warn: true }): void {
+export function showWarnNotifFrom(error: NotifiableError & { isWarn: true }): void {
   showWarnNotif(`${error.notifName}: ${error.notifMessage}`, error.notifDescription)
 }
 

@@ -1,4 +1,4 @@
-import { SolardocError } from '@/errors/solardoc-error'
+import {type NotifiableError, SolardocError} from '@/errors/solardoc-error'
 import {showErrorNotifFrom, showWarnNotif, showWarnNotifFrom} from '@/scripts/show-notif'
 
 /**
@@ -25,7 +25,7 @@ export async function interceptErrors<FuncT extends Promise<any>>(
   } catch (e) {
     if (e instanceof SolardocError) {
       if (e.isWarn) {
-        showWarnNotifFrom(e)
+        showWarnNotifFrom(<SolardocError & {isWarn: true}>e)
       } else {
         showErrorNotifFrom(e)
       }
