@@ -1,5 +1,5 @@
 import { SolardocError } from '@/errors/solardoc-error'
-import { showErrorNotifFrom } from '@/scripts/show-notif'
+import {showErrorNotifFrom, showWarnNotif, showWarnNotifFrom} from '@/scripts/show-notif'
 
 /**
  * An error handler wrapper which runs await a promise and catches any error and displays it to the user.
@@ -24,7 +24,11 @@ export async function interceptErrors<FuncT extends Promise<any>>(
     return await func
   } catch (e) {
     if (e instanceof SolardocError) {
-      showErrorNotifFrom(e)
+      if (e.isWarn) {
+        showWarnNotifFrom(e)
+      } else {
+        showErrorNotifFrom(e)
+      }
     }
     throw e
   }

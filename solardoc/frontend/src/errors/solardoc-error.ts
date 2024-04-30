@@ -6,6 +6,7 @@ export interface NotifiableError {
   notifName: string
   notifMessage: string
   notifDescription: string
+  isWarn: boolean
 }
 
 /**
@@ -19,6 +20,7 @@ export class SolardocError extends Error implements NotifiableError {
     public notifName: string,
     public notifMessage: string,
     public notifDescription: string,
+    public isWarn: boolean = false,
   ) {
     super(message)
     this.name = name ?? 'SolardocError'
