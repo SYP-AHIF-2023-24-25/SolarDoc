@@ -6,8 +6,13 @@ import type {File} from "@/services/phoenix/api-service";
 import {ref} from "vue";
 import * as phoenixRestService from "@/services/phoenix/api-service";
 import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
+import {useCurrentFileStore} from "@/stores/current-file";
+import {useRouter} from "vue-router";
 
 const currentUserStore = useCurrentUserStore()
+const fileStore = useCurrentFileStore()
+const router = useRouter()
+
 
 let files = ref([] as File[])
 fetchFiles(currentUserStore.bearer!)
@@ -29,6 +34,11 @@ async function fetchFiles(bearer: string) {
         resp.status,
     )
   }
+}
+
+async function openFileInEditor(file: File): Promise<void> {
+  fileStore.setFile(file)
+  await router.push('/editor')
 }
 
 async function deleteFileById(id: string) {
@@ -53,7 +63,7 @@ async function deleteFileById(id: string) {
 
 <template>
 <div id="profile-file-overview-files">
-  <div v-for="file in files" :key="file.id" class="profile-file-overview-file">
+  <div  @click="openFileInEditor(file!)" v-for="file in files" :key="file.id" class="profile-file-overview-file">
     <div class="slide-placeholder"></div>
     <div id="file-infos">
       <p><span>Filename:</span><code>{{file.file_name}}</code></p>
@@ -100,6 +110,10 @@ async function deleteFileById(id: string) {
       flex-flow: column wrap;
       gap: 0.4rem;
     }
+  }
+
+  .profile-file-overview-file:hover {
+    cursor: pointer;
   }
 
 </style>
