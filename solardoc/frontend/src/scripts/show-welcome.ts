@@ -1,6 +1,6 @@
 import { useWelcomeStore } from '@/stores/welcome'
 import constants from '@/plugins/constants'
-import { showInfoNotif } from '@/scripts/show-notif'
+import {showInfoNotifFromObj} from '@/scripts/show-notif'
 
 const welcomeStore = useWelcomeStore()
 
@@ -9,6 +9,6 @@ export function showWelcomeIfNeverShownBefore(): void {
     return
   }
 
-  showInfoNotif(constants.notifMessages.welcome.title, constants.notifMessages.welcome.description)
+  showInfoNotifFromObj(constants.notifMessages.welcome)
   welcomeStore.setWelcomeShown(true)
 }

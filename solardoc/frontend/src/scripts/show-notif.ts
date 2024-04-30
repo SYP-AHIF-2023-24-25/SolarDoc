@@ -14,12 +14,24 @@ export function showErrorNotifFrom(error: NotifiableError): void {
   showErrorNotif(`${error.notifName}: ${error.notifMessage}`, error.notifDescription)
 }
 
+export function showErrorNotifFromObj(obj: { title: string; text: string }): void {
+  showErrorNotif(obj.title, obj.text)
+}
+
 export function showErrorNotif(title: string, text: string): void {
   showNotif('error', title, text)
 }
 
+export function showWarnNotifFrom(error: NotifiableError & { warn: true }): void {
+  showWarnNotif(`${error.notifName}: ${error.notifMessage}`, error.notifDescription)
+}
+
 export function showWarnNotif(title: string, text: string): void {
   showNotif('warn', title, text)
+}
+
+export function showInfoNotifFromObj(obj: { title: string; text: string }): void {
+  showInfoNotif(obj.title, obj.text)
 }
 
 export function showInfoNotif(title: string, text: string): void {
