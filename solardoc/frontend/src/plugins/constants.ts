@@ -18,10 +18,14 @@ export default Object.freeze({
   notifMessages: {
     welcome: {
       title: 'Welcome to SolarDoc!',
-      description:
+      text:
         'This is a collaborative editor for creating presentations. Try it out by typing something ' +
         'and viewing your newly generated presentation!',
     },
-  },
+    fileSaved: {
+      title: 'File saved',
+      text: 'Your file has been saved successfully.',
+    },
+  } satisfies { [key: string]: {title: string, text: string}},
   version: 'v0.5.0',
 })
