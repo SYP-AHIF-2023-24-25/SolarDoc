@@ -46,9 +46,7 @@ async function submitForm(
     currentUserStore.setCurrentUser(resp.data)
     await $router.push('login')
   } else if (resp.status === 400) {
-    throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp, {
-      hideErrorCode: true,
-    })
+    throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp)
   } else {
     throw new SolardocUnreachableError('Encountered network error during sign up')
   }

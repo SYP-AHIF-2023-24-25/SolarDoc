@@ -53,9 +53,7 @@ async function submitForm(
     await currentUserStore.fetchCurrentUser()
     await $router.push('/profile')
   } else if (resp.status === 400) {
-    throw new PhoenixBadRequestError('Server rejected sign in', resp.data as ActualPhxErrorResp, {
-      hideErrorCode: true,
-    })
+    throw new PhoenixBadRequestError('Server rejected sign in', resp.data as ActualPhxErrorResp)
   } else if (resp.status === 401) {
     throw new PhoenixInvalidCredentialsError()
   } else {

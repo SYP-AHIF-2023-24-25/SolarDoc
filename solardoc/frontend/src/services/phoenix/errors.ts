@@ -39,8 +39,10 @@ export class PhoenixBadRequestError extends PhoenixRestError {
   constructor(
     public readonly message: string,
     errorDescription?: string | ActualPhxErrorResp,
-    options?: {
+    options: {
       hideErrorCode: boolean
+    } = {
+      hideErrorCode: true,
     },
   ) {
     super(
@@ -77,8 +79,10 @@ export class PhoenixNotAuthorisedError extends PhoenixRestError {
   constructor(
     public readonly message: string,
     public readonly errorDescription: string = 'You are not authorised to perform this action. Please log in.',
-    options?: {
+    options: {
       hideErrorCode: boolean
+    } = {
+      hideErrorCode: true,
     },
   ) {
     super(message, 401, errorDescription, 'PhoenixNotAuthorisedError', options)

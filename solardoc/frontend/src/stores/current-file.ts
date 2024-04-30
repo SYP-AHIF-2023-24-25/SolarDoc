@@ -8,7 +8,13 @@ import type {
 } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixForbiddenError,
+  PhoenixInternalError, PhoenixNotAuthorisedError,
+  PhoenixRestError
+} from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -89,9 +95,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
         this.setFileId(resp.data.id)
         this.setOwnerId(resp.data.owner_id)
       } else if (resp.status === 400) {
-        throw new PhoenixRestError(`Server rejected request to create file`, resp.status)
+        throw new PhoenixBadRequestError(
+          `Server rejected request to create and upload file`,
+          resp.data as ActualPhxErrorResp,
+        )
       } else if (resp.status === 401) {
-        throw new PhoenixRestError('Server rejected request to create file', resp.status)
+        throw new PhoenixNotAuthorisedError('Server rejected request to create and upload file')
       }
     },
     async updateFile(bearer: string) {
@@ -112,9 +121,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
 
       if (resp.status === 400) {
-        throw new PhoenixRestError('Server rejected request to put file', resp.status)
+        throw new PhoenixBadRequestError(
+          'Server rejected request to save file',
+          resp.data as ActualPhxErrorResp,
+          )
       } else if (resp.status === 401) {
-        throw new PhoenixRestError('Server rejected request to put file', resp.status)
+        throw new PhoenixNotAuthorisedError('Server rejected request to save file')
       }
     },
     initOTransStackFromServerTrans(initOTransDto: OTransRespDto) {

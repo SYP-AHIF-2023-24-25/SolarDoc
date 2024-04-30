@@ -12,11 +12,14 @@ import {showInfoNotifFromObj} from "@/scripts/show-notif";
 import {ensureLoggedIn} from "@/scripts/ensure-logged-in";
 import {interceptErrors} from "@/errors/error-handler";
 import constants from "@/plugins/constants";
+import {showDummyLoading} from "@/scripts/show-dummy-loading";
+import {useLoadingStore} from "@/stores/loading";
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
+const loadingStore = useLoadingStore()
 
 const dropdown = ref(null)
 const $router = useRouter()
@@ -35,15 +38,28 @@ function handleJoinChannel() {
 }
 
 async function handleSaveButtonClick() {
-  await interceptErrors(ensureLoggedIn($router))
-  await currentFileStore.storeOnServer(currentUserStore.bearer!)
-  showInfoNotifFromObj(constants.notifMessages.fileSaved)
+  const wasAlreadyUploaded = !!currentFileStore.fileId
   closeDropdown()
+  showDummyLoading()
+  try {
+    await interceptErrors(ensureLoggedIn($router))
+    await interceptErrors(currentFileStore.storeOnServer(currentUserStore.bearer!))
+    if (wasAlreadyUploaded) {
+      showInfoNotifFromObj(constants.notifMessages.fileSaved)
+    } else {
+      showInfoNotifFromObj(constants.notifMessages.fileUploaded)
+    }
+  } catch (e) {
+    loadingStore.setLoading(false)
+    throw e
+  }
 }
 
 function handleNewFileButtonClick() {
-  currentFileStore.closeFile()
   closeDropdown()
+  showDummyLoading()
+  currentFileStore.closeFile()
+  showInfoNotifFromObj(constants.notifMessages.newFile)
 }
 </script>
 
@@ -63,9 +79,9 @@ function handleNewFileButtonClick() {
       </button>
     </template>
     <div id="dropdown-elements">
-      <div class="dropdown-element" @click="handleJoinChannel()">Channels</div>
-      <div class="dropdown-element" @click="handleSaveButtonClick()">Save in profile</div>
       <div class="dropdown-element" @click="handleNewFileButtonClick()">New File</div>
+      <div class="dropdown-element" @click="handleSaveButtonClick()">Save in profile</div>
+      <div class="dropdown-element" @click="handleJoinChannel()">Channels</div>
       <div class="dropdown-element">Settings (In work...)</div>
     </div>
   </Dropdown>

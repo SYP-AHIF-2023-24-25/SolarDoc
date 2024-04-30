@@ -26,6 +26,15 @@ export default Object.freeze({
       title: 'File saved',
       text: 'Your file has been saved successfully.',
     },
+    fileUploaded: {
+      title: 'File uploaded and saved',
+      text: 'Your file has been uploaded successfully. To save a new version, click \'Save in profile\'.',
+    },
+    newFile: {
+      title: 'New file created',
+      text: 'A new file has been created in your local storage! Please click \'Save in profile\' to save this file ' +
+        'on the server if you wish to do so!',
+    },
   } satisfies { [key: string]: {title: string, text: string}},
   version: 'v0.6.0-dev',
 })
