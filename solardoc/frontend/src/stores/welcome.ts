@@ -10,7 +10,7 @@ export const useWelcomeStore = defineStore('welcomeState', {
   },
   actions: {
     setWelcomeShown(value: boolean) {
-      this.showWelcome = value
+      this.showWelcome = !value
       localStorage.setItem(constants.localStorageWelcomeShownKey, value ? 'true' : 'false')
     },
   },
