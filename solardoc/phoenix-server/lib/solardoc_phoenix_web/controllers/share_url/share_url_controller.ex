@@ -85,7 +85,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
 
   def create(conn, share_url_params) do
     with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(share_url_params["file_id"])},
-         {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)} do
+         {:is_owner, true} <- {:is_owner, owner?(conn.assigns.current_user, file)} do
       with {:ok, %ShareURL{} = share_url} <- Share.create_share_url(share_url_params) do
         conn
         |> put_status(:created)
@@ -98,7 +98,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     end
   end
 
-  defp is_owner(user, file) do
+  defp owner?(user, file) do
     with %File{} <- file, %User{} <- user do
       user.id == file.owner_id
     end

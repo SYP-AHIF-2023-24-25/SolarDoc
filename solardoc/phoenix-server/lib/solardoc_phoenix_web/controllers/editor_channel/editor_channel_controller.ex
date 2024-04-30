@@ -76,6 +76,7 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
     render(conn, :show, editor_channel: editor_channel)
   end
 
+# credo:disable-for-next-line
 # TODO! Implement and check whether the use is the creator of the channel
 #  swagger_path :update do
 #    put "#{@api_path}/editor_channels/:id"

@@ -108,7 +108,7 @@ defmodule SolardocPhoenixWeb.FileController do
 
   def show(conn, %{"id" => id}) do
     with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
-         {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)} do
+         {:is_owner, true} <- {:is_owner, owner?(conn.assigns.current_user, file)} do
       render(conn, :show, file: file)
     else
       {:file_exists, _} -> {:error, :not_found}
@@ -134,7 +134,7 @@ defmodule SolardocPhoenixWeb.FileController do
   def update(conn, file_params) do
     with {:id, id} <- {:id, file_params["id"]},
          {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
-         {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)},
+         {:is_owner, true} <- {:is_owner, owner?(conn.assigns.current_user, file)},
          {:ok, %File{} = file} <- Files.update_file(file, file_params) do
       render(conn, :show, file: file)
     else
@@ -162,7 +162,7 @@ defmodule SolardocPhoenixWeb.FileController do
   def delete(conn, params) do
     with {:id, id} <- {:id, params["id"]},
          {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
-         {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)},
+         {:is_owner, true} <- {:is_owner, owner?(conn.assigns.current_user, file)},
          {:ok, %File{}} <- Files.delete_file(file) do
         send_resp(conn, :no_content, "")
     else
@@ -173,7 +173,7 @@ defmodule SolardocPhoenixWeb.FileController do
     end
   end
 
-  defp is_owner(user, file) do
+  defp owner?(user, file) do
     with %File{} <- file, %User{} <- user do
       user.id == file.owner_id
     end

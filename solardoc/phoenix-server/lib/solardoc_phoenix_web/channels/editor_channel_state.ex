@@ -1,4 +1,5 @@
 defmodule SolardocPhoenixWeb.EditorChannelState do
+  @moduledoc false
   use Agent
   require Logger
 

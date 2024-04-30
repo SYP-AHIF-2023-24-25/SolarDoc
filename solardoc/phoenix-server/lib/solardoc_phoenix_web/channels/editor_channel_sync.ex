@@ -1,4 +1,5 @@
 defmodule SolardocPhoenixWeb.EditorChannelSync do
+  @moduledoc false
   use GenServer
   require Logger
 
