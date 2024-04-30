@@ -27,5 +27,5 @@ export default Object.freeze({
       text: 'Your file has been saved successfully.',
     },
   } satisfies { [key: string]: {title: string, text: string}},
-  version: 'v0.5.0',
+  version: 'v0.6.0-dev',
 })

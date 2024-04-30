@@ -24,7 +24,6 @@ jobs:
         path: deps
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
         restore-keys: ${{ runner.os }}-mix-
-    - name: Switch to Phoenix project
     - name: Install dependencies
       run: |
         cd ./solardoc/phoenix-server
