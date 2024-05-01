@@ -1,5 +1,5 @@
-import {useCurrentFileStore} from "@/stores/current-file";
-import type {OTransReqDto, OTransRespDto} from "@/services/phoenix/ot-trans";
+import { useCurrentFileStore } from '@/stores/current-file'
+import type { OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
 
 /**
  * The update cycle handler is a simple process that manages the incoming and outcoming OT updates.
@@ -17,7 +17,7 @@ export class UpdateCycleHandler {
 
   public constructor(
     handleIn: (received: OTransRespDto) => Promise<void>,
-    handleOut: (sent: OTransReqDto) => Promise<void>
+    handleOut: (sent: OTransReqDto) => Promise<void>,
   ) {
     this._handleIn = handleIn
     this._handleOut = handleOut

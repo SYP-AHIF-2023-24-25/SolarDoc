@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { SDSClient } from '@/services/phoenix/ws-client'
-import {UpdateCycleHandler} from "@/services/phoenix/update-cycle-handler";
-
+import { UpdateCycleHandler } from '@/services/phoenix/update-cycle-handler'
 
 export const useEditorUpdateWSClient = defineStore('editorUpdateWSClient', {
   state: () => {

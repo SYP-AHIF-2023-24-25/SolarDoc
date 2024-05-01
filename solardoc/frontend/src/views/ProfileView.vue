@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import {useCurrentUserStore} from '@/stores/current-user'
 import {useCurrentFileStore} from "@/stores/current-file";
 import {useRouter} from 'vue-router'
@@ -28,27 +29,25 @@ async function fetchFiles(bearer: string) {
     resp = await phoenixRestService.getV1Files(bearer)
   } catch (e) {
     throw new PhoenixInternalError(
-        'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
+      'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
     )
   }
   if (resp.status === 200) {
-    files.value = resp.data;
+    files.value = resp.data
   } else if (resp.status === 401) {
     throw new PhoenixRestError(
-        'Server rejected request to fetch current user. Cause: Unauthorized',
-        resp.status,
+      'Server rejected request to fetch current user. Cause: Unauthorized',
+      resp.status,
     )
   }
 }
 
-async function deleteFileById(id : string) {
+async function deleteFileById(id: string) {
   let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1FilesById>>
   try {
-    resp = await phoenixRestService.deleteV1FilesById(currentUserStore.bearer!,id)
+    resp = await phoenixRestService.deleteV1FilesById(currentUserStore.bearer!, id)
   } catch (e) {
-    throw new PhoenixInternalError(
-        'Critically failed to delete file. Cause: ' + (<Error>e).message,
-    )
+    throw new PhoenixInternalError('Critically failed to delete file. Cause: ' + (<Error>e).message)
   }
 }
 
@@ -59,7 +58,7 @@ async function logout() {
   } catch (e) {
     if (e instanceof PhoenixRestError && e.errorCode === 401) {
       console.warn(
-          '[Profile] User is not logged in (Token gone or expired, user deleted or other reason), redirecting to login page.',
+        '[Profile] User is not logged in (Token gone or expired, user deleted or other reason), redirecting to login page.',
       )
     } else {
       throw e
@@ -90,19 +89,23 @@ async function logout() {
           <p><span>Files:</span></p>
           <v-table :data="files">
             <thead>
-            <th>FileName</th>
-            <th>Last Edited</th>
-            <th>Created</th>
-            <th>Actions</th>
+              <th>FileName</th>
+              <th>Last Edited</th>
+              <th>Created</th>
+              <th>Actions</th>
             </thead>
             <tbody>
-            <tr v-for="row in files" :key="row.id">
-              <td>{{ row.file_name }}</td>
-              <td>{{ getHumanReadableTimeInfo(row?.last_edited || new Date())}}</td>
-              <td>{{ getHumanReadableTimeInfo(row?.created || new Date()) }}</td>
-              <td><button  id="editor-button" class="highlighted-button" >Edit</button>
-                  <button @click="deleteFileById(row.id || '')" class="highlighted-button">Delete</button></td>
-            </tr>
+              <tr v-for="row in files" :key="row.id">
+                <td>{{ row.file_name }}</td>
+                <td>{{ getHumanReadableTimeInfo(row?.last_edited || new Date()) }}</td>
+                <td>{{ getHumanReadableTimeInfo(row?.created || new Date()) }}</td>
+                <td>
+                  <button id="editor-button" class="highlighted-button">Edit</button>
+                  <button @click="deleteFileById(row.id || '')" class="highlighted-button">
+                    Delete
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </v-table>
         </div>
@@ -121,10 +124,11 @@ v-table {
   font-size: 1.5rem;
 }
 
-tr, th, td {
+tr,
+th,
+td {
   border: 0.01em solid black;
   padding: 0.5rem;
-
 }
 
 #editor-button {

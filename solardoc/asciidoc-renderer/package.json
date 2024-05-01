@@ -1,6 +1,6 @@
 {
   "name": "@solardoc/asciidoc-renderer",
-  "version": "0.5.0-dev",
+  "version": "0.6.0-dev",
   "description": "AsciiDoc Rendered for SolarDoc, which generates PDFs and reveal.js presentations",
   "main": "dist/index.js",
   "keywords": [
@@ -14,29 +14,29 @@
   "dependencies": {
     "@asciidoctor/core": "2.2.6",
     "@asciidoctor/reveal.js": "5.0.1",
-    "tslib": "2.6.2",
     "decktape": "3.10.0",
+    "fonteditor-core": "2.1.11",
     "pdf-lib": "1.17.1",
     "puppeteer": "21.6.1",
     "puppeteer-core": "21.6.1",
-    "fonteditor-core": "2.1.11"
+    "tslib": "2.6.2"
   },
   "devDependencies": {
+    "@babel/preset-env": "7.23.3",
+    "@types/babelify": "7.3.10",
+    "@types/browserify": "12.0.40",
+    "@types/node": "^18.19.31",
     "@typescript-eslint/eslint-plugin": "6.12.0",
     "@typescript-eslint/parser": "6.12.0",
-    "@types/node": "^18.17.17",
-    "@types/browserify": "12.0.40",
-    "@types/babelify": "7.3.10",
-    "@babel/preset-env": "7.23.3",
-    "eslint": "8.48.0",
-    "urijs": "1.19.11",
-    "tsify": "4.0.2",
-    "ts-node": "10.9.1",
-    "uglify-js": "3.17.4",
-    "prettier": "^3.0.3",
     "babelify": "10.0.0",
     "copyfiles": "2.4.1",
-    "typescript": "5.2.2"
+    "eslint": "8.48.0",
+    "prettier": "^3.2.5",
+    "ts-node": "10.9.1",
+    "tsify": "4.0.2",
+    "typescript": "5.2.2",
+    "uglify-js": "3.17.4",
+    "urijs": "1.19.11"
   },
   "engines": {
     "node": "16 || 18 || 20",

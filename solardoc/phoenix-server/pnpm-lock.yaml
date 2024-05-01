@@ -7,7 +7,7 @@ settings:
 dependencies:
   phoenix:
     specifier: ~1.7.11
-    version: 1.7.11
+    version: 1.7.12
 
 devDependencies:
   '@types/phoenix':
@@ -23,8 +23,8 @@ packages:
     resolution: {integrity: sha512-B34A7uot1Cv0XtaHRYDATltAdKx0BvVKNgYNqE4WjtPUa4VQJM7kxeXcVKaH+KS+kCmZ+6w+QaUdcljiheiBJA==}
     dev: true
 
-  /phoenix@1.7.11:
-    resolution: {integrity: sha512-aeikMR/Qh6gAygY45d5p/B7srqH60h0GbCIauEAStAtRUq4hvlkzDTyDj1NJidJEV9IKFhZe7f9L+zosUJdF/g==}
+  /phoenix@1.7.12:
+    resolution: {integrity: sha512-jo8sK7mVYTFSa5FITmL/1lAbARIJMcEMJrMPZtUdss1zE37VZBnCowpakH8sEzH0ezs+hIaXSyYPCwlzrvph+g==}
     dev: false
 
   /typescript@5.2.2:

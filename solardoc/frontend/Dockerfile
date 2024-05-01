@@ -1,12 +1,12 @@
-FROM node:18.10.0-alpine3.15 AS base
+FROM node:20.12.2-alpine3.19 AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV PNPM_VERSION=8.9.2
 
 RUN corepack enable
-
-# Set PNPM version 7 to ensure compatibility with source code lockfiles
-RUN pnpm i -g pnpm@8.9.2
+RUN corepack use pnpm@$PNPM_VERSION
+RUN corepack install --global pnpm@$PNPM_VERSION
 
 # Set to a non-root built-in user `node`
 USER node

@@ -1,6 +1,6 @@
 {
   "name": "solardoc",
-  "version": "0.5.0-dev",
+  "version": "0.6.0-dev",
   "description": "The SolarDoc project containing all the project code and documentation",
   "engines": {
     "node": "16 || 18 || 20",

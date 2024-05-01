@@ -1,7 +1,7 @@
-import {useCurrentFileStore} from "@/stores/current-file";
-import {UpdateCycleHandler} from "@/services/phoenix/update-cycle-handler";
-import type {OTransReqDto, OTransRespDto} from "@/services/phoenix/ot-trans";
-import {useEditorUpdateWSClient} from "@/stores/editor-update-ws-client";
+import { useCurrentFileStore } from '@/stores/current-file'
+import { UpdateCycleHandler } from '@/services/phoenix/update-cycle-handler'
+import type { OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 
 const currentFileStore = useCurrentFileStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
@@ -15,8 +15,9 @@ async function handleIncomingUpdate(received: OTransRespDto): Promise<void> {
 async function handleOutgoingUpdate(toSend: OTransReqDto): Promise<void> {
   await editorUpdateWSClient.wsClient?.sendOTrans(
     toSend,
-    () => console.log("[handle-ot.ts] Successfully sent OT request to remote"),
-    resp => console.error(`[handle-ot.ts] Received error response in response to OT request: ${resp}`),
+    () => console.log('[handle-ot.ts] Successfully sent OT request to remote'),
+    resp =>
+      console.error(`[handle-ot.ts] Received error response in response to OT request: ${resp}`),
   )
 }
 

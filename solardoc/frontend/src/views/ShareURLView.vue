@@ -6,7 +6,7 @@ import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRoute, useRouter } from 'vue-router'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
-import {useLoadingStore} from "@/stores/loading";
+import { useLoadingStore } from '@/stores/loading'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()

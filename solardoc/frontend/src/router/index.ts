@@ -74,7 +74,7 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'fallback-not-found',
       redirect: { name: 'not-found' },
-    }
+    },
   ],
 })
 
