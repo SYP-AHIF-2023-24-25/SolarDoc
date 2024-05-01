@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import SandwichMenuDarkModeSVG from "@/components/icons/SandwichMenuDarkModeSVG.vue";
-import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
-import {useDarkModeStore} from "@/stores/dark-mode";
+import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
+import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
+import { useDarkModeStore } from '@/stores/dark-mode'
 
 const darkModeStore = useDarkModeStore()
 const input = ref('')
@@ -11,10 +11,7 @@ const input = ref('')
 <template>
   <div id="file-searchbar">
     <input type="text" v-model="input" placeholder="Search..." />
-    <button
-      id="sandwich-menu-button"
-      class="sandwich-button"
-    >
+    <button id="sandwich-menu-button" class="sandwich-button">
       <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
       <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
     </button>

@@ -219,10 +219,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.content = content
       localStorage.setItem(constants.localStorageFileContentKey, content)
     },
-    setPermissions(permissions:number|null) {
+    setPermissions(permissions: number | null) {
       this.permissions = permissions
     },
-    getPermissions(): number|null{
+    getPermissions(): number | null {
       return this.permissions
     },
     closeFile() {

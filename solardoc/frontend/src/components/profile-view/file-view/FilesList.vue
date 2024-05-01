@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { File } from '@/services/phoenix/api-service'
-import { useCurrentUserStore } from '@/stores/current-user'
 import * as phoenixRestService from '@/services/phoenix/api-service'
+import { useCurrentUserStore } from '@/stores/current-user'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
-import FileCard from "@/components/profile-view/file-view/FileCard.vue";
+import FileCard from '@/components/profile-view/file-view/FileCard.vue'
 import { ref } from 'vue'
 
 const currentUserStore = useCurrentUserStore()
@@ -36,11 +36,7 @@ async function fetchFiles(bearer: string) {
 
 <template>
   <div id="profile-file-overview-files">
-    <FileCard
-      v-for="file in files"
-      :file="file"
-      :key="file.id"
-    />
+    <FileCard v-for="file in files" :file="file" :key="file.id" />
   </div>
 </template>
 

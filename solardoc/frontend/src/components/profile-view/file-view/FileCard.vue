@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {getHumanReadableTimeInfo} from "@/scripts/format-date"
-import type {File} from "@/services/phoenix/gen/phoenix-rest-service";
-import * as phoenixRestService from "@/services/phoenix/api-service";
-import {PhoenixInternalError, PhoenixRestError} from "@/services/phoenix/errors";
-import {useCurrentUserStore} from "@/stores/current-user";
-import {useCurrentFileStore} from "@/stores/current-file";
-import {useRouter} from "vue-router";
-import {ref} from "vue";
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
+import * as phoenixRestService from '@/services/phoenix/api-service'
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const props = defineProps<{ file: File }>()
 const deleted = ref(false)
@@ -30,16 +30,16 @@ async function deleteFileById() {
   if (resp.status === 204) {
     deleted.value = true
   } else if (resp.status === 401) {
-    throw new PhoenixRestError('Server rejected request to delete file. Cause: Unauthorized', resp.status)
+    throw new PhoenixRestError(
+      'Server rejected request to delete file. Cause: Unauthorized',
+      resp.status,
+    )
   }
 }
 </script>
 
 <template>
-  <div
-    class="profile-file-overview-file"
-    v-if="!deleted"
-  >
+  <div class="profile-file-overview-file" v-if="!deleted">
     <div id="slide-placeholder" @click="openFileInEditor()"></div>
     <div id="file-infos">
       <p>
@@ -111,7 +111,7 @@ async function deleteFileById() {
     &:hover::after {
       z-index: 99;
       position: absolute;
-      content: "";
+      content: '';
       top: calc(-1 * $border-width);
       left: calc(-1 * $border-width);
       width: calc(100% + $border-width * 2);
