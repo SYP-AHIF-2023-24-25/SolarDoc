@@ -21,7 +21,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     const storedFileOwner = localStorage.getItem(constants.localStorageFileOwnerKey)
     let storedFileName = localStorage.getItem(constants.localStorageFileNameKey)
     let storedFileContent = localStorage.getItem(constants.localStorageFileContentKey)
-
+    let storedPermissions = localStorage.getItem(constants.localStorageFilePermissionsKey)
     // Ensure the default is populated if the stored content is empty or the file name is empty
     if (!storedFileName || storedFileName === '') {
       storedFileName = DEFAULT_NAME
@@ -39,6 +39,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       ownerId: storedFileOwner || undefined,
       saveState: storedFileId ? 'Saved Remotely' : 'Saved Locally',
       content: storedFileContent,
+      permissions: storedPermissions ? parseInt(storedPermissions) : null,
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: <Array<OTransReqDto>>[],
       oTransNotPerf: <Array<OTransRespDto>>[],
@@ -218,12 +219,19 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.content = content
       localStorage.setItem(constants.localStorageFileContentKey, content)
     },
+    setPermissions(permissions:number|null) {
+      this.permissions = permissions
+    },
+    getPermissions(): number|null{
+      return this.permissions
+    },
     closeFile() {
       this.clearFileId()
       this.setFileName(DEFAULT_NAME)
       this.setContent(DEFAULT_TEXT)
       this.setOnlineSaveState(false)
       this.clearOTransStack()
+      this.setPermissions(null)
     },
     clearOTransStack() {
       this.oTransStack = new Map<string, OTrans>()

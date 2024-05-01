@@ -6,6 +6,7 @@ export default Object.freeze({
   localStorageFileNameKey: 'file-name',
   localStorageFileOwnerKey: 'file-owner',
   localStorageFileContentKey: 'file-content',
+  localStorageFilePermissionsKey: 'file-permissions',
   localStorageThemeKey: 'user-theme',
   localStorageAuthKey: 'user-auth',
   localStorageCurrUserKey: 'current-user',
