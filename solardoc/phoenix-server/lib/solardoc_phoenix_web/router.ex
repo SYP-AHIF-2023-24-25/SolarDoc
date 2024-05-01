@@ -112,7 +112,7 @@ defmodule SolardocPhoenixWeb.Router do
 
   def swagger_info do
     %{
-      basePath: "/api",
+      basePath: "/phx/api",
       schemes: ["http", "https", "ws", "wss"],
       info: %{
         version: SolardocPhoenixWeb.version(),

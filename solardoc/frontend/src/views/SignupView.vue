@@ -54,8 +54,8 @@ async function submitForm(
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-form-wrapper">
-    <div id="profile-container" class="page-form-container">
+  <div id="profile-wrapper" class="page-content-wrapper">
+    <div id="profile-container" class="page-content-container">
       <div id="already-have-an-account">
         <p>Already have an account?</p>
         <a class="emphasised-link" @click="$router.push('login')">→ Log in</a>
@@ -152,7 +152,7 @@ async function submitForm(
 
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
-@use '@/assets/page-form' as *;
+@use '@/assets/page-content' as *;
 
 #profile-wrapper {
   #login-signup-title {

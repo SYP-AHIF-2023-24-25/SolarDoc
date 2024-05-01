@@ -1,6 +1,6 @@
 import { useWelcomeStore } from '@/stores/welcome'
 import constants from '@/plugins/constants'
-import {showInfoNotifFromObj} from '@/scripts/show-notif'
+import { showInfoNotifFromObj } from '@/scripts/show-notif'
 
 const welcomeStore = useWelcomeStore()
 

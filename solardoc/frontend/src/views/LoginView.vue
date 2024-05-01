@@ -67,8 +67,8 @@ async function submitForm(
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-form-wrapper">
-    <div id="profile-container" class="page-form-container">
+  <div id="profile-wrapper" class="page-content-wrapper">
+    <div id="profile-container" class="page-content-container">
       <div id="do-not-have-an-account">
         <p>Don't have an account yet?</p>
         <RouterLink class="emphasised-link" to="/signup">→ Sign up</RouterLink>
@@ -119,7 +119,7 @@ async function submitForm(
 
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
-@use '@/assets/page-form' as *;
+@use '@/assets/page-content' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
 
 #profile-wrapper {

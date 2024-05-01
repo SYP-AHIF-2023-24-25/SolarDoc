@@ -4,7 +4,7 @@ import {
   PhoenixBadRequestError,
   PhoenixInternalError,
   PhoenixInvalidCredentialsError,
-  PhoenixRestError
+  PhoenixRestError,
 } from '@/services/phoenix/errors'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import constants from '@/plugins/constants'
@@ -137,7 +137,10 @@ export const useCurrentUserStore = defineStore('currentUser', {
       }
       this.clean()
       if (resp.status === 400) {
-        throw new PhoenixBadRequestError('Server rejected request to logout', resp.data as ActualPhxErrorResp)
+        throw new PhoenixBadRequestError(
+          'Server rejected request to logout',
+          resp.data as ActualPhxErrorResp,
+        )
       } else if (resp.status === 401) {
         throw new PhoenixInvalidCredentialsError(
           'Server rejected request to logout',
@@ -161,6 +164,10 @@ export const useCurrentUserStore = defineStore('currentUser', {
       this.currentAuth = null
       localStorage.removeItem(constants.localStorageAuthKey)
     },
+    /**
+     * Forcefully clears the current user and auth token from the store and local storage.
+     * @since 0.4.0
+     */
     clean() {
       this.currentUser = null
       this.currentAuth = null

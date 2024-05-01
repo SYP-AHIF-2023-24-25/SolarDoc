@@ -78,9 +78,26 @@
   --main-body-padding: 0;
   --main-body-margin: 0;
 
-  // Login/Signup presets
-  --login-signup-wrapper-height: calc(100vh - var(--nav-bar-height));
-  --login-signup-wrapper-width: 100%;
+  // Searchbar presets
+  --searchbar-height: 2rem;
+  --searchbar-padding: 0 1rem;
+  --searchbar-inner-padding: 0.5rem 1rem;
+  --searchbar-sandwich-size: 2.5rem;
+  --searchbar-sandwich-svg-size: 1.5rem;
+  --searchbar-sandwich-padding: 0.5rem;
+  --searchbar-sandwich-margin: 0 0 0 1rem;
+  --searchbar-border-radius: 0.5rem;
+
+  // Profile File Card presets
+  --profile-file-card-height: 18rem;
+  --profile-file-card-width: 16rem;
+  --profile-file-card-padding: 1rem;
+
+  // Page Content presets
+  --page-content-wrapper-height: calc(100vh - var(--nav-bar-height));
+  --page-content-wrapper-width: 100%;
+  --page-content-container-margin: 2rem 0;
+  --page-content-container-padding: 20px;
 
   // Editor body presets
   --editor-body-height: var(--main-body-height);
@@ -216,9 +233,26 @@ $main-body-width: var(--main-body-width);
 $main-body-padding: var(--main-body-padding);
 $main-body-margin: var(--main-body-margin);
 
-// Login/Signup presets
-$login-signup-wrapper-height: var(--login-signup-wrapper-height);
-$login-signup-wrapper-width: var(--login-signup-wrapper-width);
+// Searchbar presets
+$searchbar-height: var(--searchbar-height);
+$searchbar-padding: var(--searchbar-padding);
+$searchbar-inner-padding: var(--searchbar-inner-padding);
+$searchbar-sandwich-size: var(--searchbar-sandwich-size);
+$searchbar-sandwich-svg-size: var(--searchbar-sandwich-svg-size);
+$searchbar-sandwich-padding: var(--searchbar-sandwich-padding);
+$searchbar-sandwich-margin: var(--searchbar-sandwich-margin);
+$searchbar-border-radius: var(--searchbar-border-radius);
+
+// Profile File Card presets
+$profile-file-card-height: var(--profile-file-card-height);
+$profile-file-card-width: var(--profile-file-card-width);
+$profile-file-card-padding: var(--profile-file-card-padding);
+
+// Page Content presets
+$page-content-wrapper-height: var(--page-content-wrapper-height);
+$page-content-wrapper-width: var(--page-content-wrapper-width);
+$page-content-container-margin: var(--page-content-container-margin);
+$page-content-container-padding: var(--page-content-container-padding);
 
 // Editor body presets
 $editor-body-height: var(--editor-body-height);
@@ -282,12 +316,14 @@ html[data-theme='light'] {
   --overlay-background-color: white;
   --overlay-background-color-subtle: var(--scheme-neutral-gray);
   --box-shadow-color: rgba(0, 0, 0, 0.1);
+  --searchbar-background: var(--scheme-gray-100);
   --vueform-background: white;
   --vueform-background-hover: var(--scheme-gray-100);
   --vueform-highlighted-box-background: var(--scheme-gray-100);
   --vueform-highlighted-box-background-color-hover: var(--scheme-gray-200);
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-300);
   --vueform-highlighted-box-border-color: var(--scheme-gray-300);
+  --placeholder-background: var(--scheme-gray-100);
   --stylised-button-background-color: var(--scheme-cs-2);
   --stylised-button-hover-text-color: white;
   --dot-dot-dot-color: var(--scheme-cs-2);
@@ -301,14 +337,14 @@ html[data-theme='dark'] {
   --overlay-background-color: var(--scheme-background-black-subtle);
   --overlay-background-color-subtle: var(--scheme-background-blue-subtle);
   --box-shadow-color: transparent;
+  --searchbar-background: rgba(0, 0, 0, 0.2);
   --vueform-background: var(--scheme-gray-900);
   --vueform-background-hover: var(--scheme-gray-700);
   --vueform-highlighted-box-background-color: var(--scheme-gray-700);
   --vueform-highlighted-box-background-color-hover: var(--scheme-gray-800);
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-900);
   --vueform-highlighted-box-border-color: var(--scheme-gray-800);
-  --home-button-transparent-background-color: white;
-  --home-button-transparent-hover-text-color: black;
+  --placeholder-background: var(--scheme-gray-900);
   --stylised-button-background-color: white;
   --stylised-button-hover-text-color: black;
   --dot-dot-dot-color: white;
@@ -321,6 +357,7 @@ $text-color-inverted: var(--text-color-inverted);
 $overlay-background-color: var(--overlay-background-color);
 $overlay-background-color-subtle: var(--overlay-background-color-subtle);
 $box-shadow-color: var(--box-shadow-color);
+$searchbar-background: var(--searchbar-background);
 $vueform-background: var(--vueform-background);
 $vueform-background-hover: var(--vueform-background-hover);
 $vueform-highlighted-box-background-color: var(--vueform-highlighted-box-background-color);
@@ -331,8 +368,7 @@ $vueform-highlighted-box-background-color-active: var(
   --vueform-highlighted-box-background-color-active
 );
 $vueform-highlighted-box-border-color: var(--vueform-highlighted-box-border-color);
-$home-button-transparent-text-color: var(--home-button-transparent-background-color);
-$home-button-transparent-hover-text-color: var(--home-button-transparent-hover-text-color);
+$placeholder-background: var(--placeholder-background);
 $stylised-button-text-color: var(--stylised-button-background-color);
 $stylised-button-hover-text-color: var(--stylised-button-hover-text-color);
 $stylised-button-disabled-color: var(--stylised-button-disabled-color);

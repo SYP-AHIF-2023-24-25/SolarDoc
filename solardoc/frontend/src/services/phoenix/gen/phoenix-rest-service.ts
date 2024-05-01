@@ -7,14 +7,14 @@
 import * as Oazapfts from 'oazapfts/lib/runtime'
 import * as QS from 'oazapfts/lib/runtime/query'
 export const defaults: Oazapfts.RequestOpts = {
-  baseUrl: 'http://localhost:4000/api',
+  baseUrl: 'http://localhost:4000/phx/api',
 }
 const oazapfts = Oazapfts.runtime(defaults)
 export const servers = {
-  server1: 'http://localhost:4000/api',
-  server2: 'https://localhost:4000/api',
-  server3: 'ws://localhost:4000/api',
-  server4: 'wss://localhost:4000/api',
+  server1: 'http://localhost:4000/phx/api',
+  server2: 'https://localhost:4000/phx/api',
+  server3: 'ws://localhost:4000/phx/api',
+  server4: 'wss://localhost:4000/phx/api',
 }
 export type ErrorsResp = object
 export type UserLogin = {

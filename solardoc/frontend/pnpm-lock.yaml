@@ -53,6 +53,9 @@ dependencies:
   vue-router:
     specifier: 4.2.5
     version: 4.2.5(vue@3.3.7)
+  vue-search-input:
+    specifier: 1.1.14
+    version: 1.1.14
 
 devDependencies:
   '@import-meta-env/typescript':
@@ -3468,6 +3471,10 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.6.1
       vue: 3.3.7(typescript@5.2.2)
+    dev: false
+
+  /vue-search-input@1.1.14:
+    resolution: {integrity: sha512-oqhtPcHViMa5gKw+c/3QttBhMx/GTU01NOvKhjYQ8yM7dacWHGqmCo7BYgJkDFfw0zmKynkvp5T+932VQNRvHg==}
     dev: false
 
   /vue-template-compiler@2.7.16:

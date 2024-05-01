@@ -8,12 +8,12 @@ import { useCurrentFileStore } from '@/stores/current-file'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useCurrentUserStore } from '@/stores/current-user'
-import {showInfoNotifFromObj} from "@/scripts/show-notif";
-import {ensureLoggedIn} from "@/scripts/ensure-logged-in";
-import {interceptErrors} from "@/errors/error-handler";
-import constants from "@/plugins/constants";
-import {showDummyLoading} from "@/scripts/show-dummy-loading";
-import {useLoadingStore} from "@/stores/loading";
+import { showInfoNotifFromObj } from '@/scripts/show-notif'
+import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
+import { interceptErrors } from '@/errors/error-handler'
+import constants from '@/plugins/constants'
+import { showDummyLoading } from '@/scripts/show-dummy-loading'
+import { useLoadingStore } from '@/stores/loading'
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()

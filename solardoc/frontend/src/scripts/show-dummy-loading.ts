@@ -1,4 +1,4 @@
-import {useLoadingStore} from "@/stores/loading";
+import { useLoadingStore } from '@/stores/loading'
 
 const loadingStore = useLoadingStore()
 

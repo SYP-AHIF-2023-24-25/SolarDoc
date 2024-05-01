@@ -1,16 +1,11 @@
-<template>
-  <div id="editor" ref="editorRef"></div>
-</template>
-
 <script setup lang="ts">
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
 import type { OTrans, OTransReqDto } from '@/services/phoenix/ot-trans'
-import { type Ref, watch } from 'vue'
+import { onMounted, ref, type Ref, watch } from 'vue'
 import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
-import { ref, onMounted } from 'vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
@@ -19,11 +14,11 @@ import { performErrorChecking } from '@/components/editor/error-checking'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { handleRender } from '@/scripts/handle-render'
 import { useRenderDataStore } from '@/stores/render-data'
-import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 import { handleOutgoingUpdate } from '@/scripts/handle-ot'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { interceptErrors } from '@/errors/error-handler'
+import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()
@@ -121,6 +116,12 @@ onMounted(() => {
     automaticLayout: true,
     scrollBeyondLastLine: false,
   })
+
+  if (currentFileStore.permissions === 1) {
+    editorInstance!.updateOptions({
+      readOnly: true,
+    })
+  }
 
   // Error checking on init
   performErrorChecking(editorInstance)
@@ -252,6 +253,10 @@ onMounted(() => {
   )
 })
 </script>
+
+<template>
+  <div id="editor" ref="editorRef"></div>
+</template>
 
 <style scoped>
 #editor {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
+import { storeToRefs } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
@@ -136,7 +136,13 @@ setInterval(updateLastModified, 500)
           <button class="editor-button" @click="handleCopyButtonClick()">
             {{ copyButtonContent }}
           </button>
-          <button class="editor-button" @click="handleShareButtonClick()">Share</button>
+          <button
+            v-if="currentFileStore.permissions === null"
+            class="editor-button"
+            @click="handleShareButtonClick()"
+          >
+            Share
+          </button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
         <div id="save-state">

@@ -1,4 +1,4 @@
-import {SolardocError} from "@/errors/solardoc-error";
+import { SolardocError } from '@/errors/solardoc-error'
 
 export class NotLoggedInWarn extends SolardocError {
   constructor() {
