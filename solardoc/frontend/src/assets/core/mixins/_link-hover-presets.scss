@@ -1,4 +1,5 @@
 @use '../var' as *;
+@use './hover-background' as *;
 
 @mixin link-hover-presets {
   &:hover {
@@ -43,8 +44,5 @@
 
 @mixin link-hover-presets-with-background {
   @include link-hover-presets;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
+  @include hover-background;
 }

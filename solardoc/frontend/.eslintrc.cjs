@@ -11,9 +11,12 @@ module.exports = {
   ],
   rules: {
     'vue/multi-word-component-names': 'off',
+    'vue/no-mutating-props': ['error', {
+      'shallowOnly': false
+    }]
   },
   parserOptions: {
-    parser: "@typescript-eslint/parser",
+    parser: '@typescript-eslint/parser',
     ecmaVersion: 'latest',
     ecmaFeatures : {
       jsx : false
