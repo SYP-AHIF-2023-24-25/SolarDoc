@@ -158,6 +158,9 @@
     var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
+
+  // Whole screen presets
+  --scrollbar-width: calc(100vw - 100%);
 }
 
 // Color-scheme presets
@@ -375,3 +378,6 @@ $stylised-button-disabled-color: var(--stylised-button-disabled-color);
 $dot-dot-dot-color: var(--dot-dot-dot-color);
 $dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);
 $scheme-background: var(--scheme-background);
+
+// Whole screen presets
+$scrollbar-width: var(--scrollbar-width);
