@@ -4,8 +4,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: var.$login-signup-wrapper-height;
-  width: var.$login-signup-wrapper-width;
+  height: var.$page-form-wrapper-height;
+  width: var.$page-form-wrapper-width;
 }
 
 .page-form-container {
@@ -27,7 +27,15 @@
 
   &.large {
     width: unset;
-    min-width: 30vw;
+    min-width: 60vw;
     max-width: 80vw;
+
+    @media screen and (max-width: var.$window-medium) {
+      & {
+        min-width: 80vw;
+        max-width: 95vw;
+
+      }
+    }
   }
 }

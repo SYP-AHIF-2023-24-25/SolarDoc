@@ -71,9 +71,9 @@
   --main-body-padding: 0;
   --main-body-margin: 0;
 
-  // Login/Signup presets
-  --login-signup-wrapper-height: calc(100vh - var(--nav-bar-height));
-  --login-signup-wrapper-width: 100%;
+  // Page form wrappers presets
+  --page-form-wrapper-height: calc(100vh - var(--nav-bar-height));
+  --page-form-wrapper-width: 100%;
 
   // Editor body presets
   --editor-body-height: var(--main-body-height);
@@ -203,8 +203,8 @@ $main-body-padding: var(--main-body-padding);
 $main-body-margin: var(--main-body-margin);
 
 // Login/Signup presets
-$login-signup-wrapper-height: var(--login-signup-wrapper-height);
-$login-signup-wrapper-width: var(--login-signup-wrapper-width);
+$page-form-wrapper-height: var(--page-form-wrapper-height);
+$page-form-wrapper-width: var(--page-form-wrapper-width);
 
 // Editor body presets
 $editor-body-height: var(--editor-body-height);
