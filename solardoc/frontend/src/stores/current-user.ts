@@ -1,5 +1,11 @@
 import type { UserPrivate, UserToken } from '@/services/phoenix/gen/phoenix-rest-service'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixInternalError,
+  PhoenixInvalidCredentialsError,
+  PhoenixRestError
+} from '@/services/phoenix/errors'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import constants from '@/plugins/constants'
 import { defineStore } from 'pinia'
@@ -109,7 +115,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
       } else if (resp.status === 401) {
         this.unsetCurrentUser()
         this.unsetCurrentAuth()
-        throw new PhoenixRestError('Server rejected request to fetch current user', resp.status)
+        throw new PhoenixInvalidCredentialsError()
       }
     },
     /**
@@ -129,14 +135,14 @@ export const useCurrentUserStore = defineStore('currentUser', {
       } catch (e) {
         throw new PhoenixInternalError('Critically failed to logout. Cause: ' + (<Error>e).message)
       }
-      if (resp.status === 204) {
-        this.clean()
-      } else if (resp.status === 400) {
-        this.clean()
-        throw new PhoenixRestError('Server rejected request to logout', resp.status)
+      this.clean()
+      if (resp.status === 400) {
+        throw new PhoenixBadRequestError('Server rejected request to logout', resp.data as ActualPhxErrorResp)
       } else if (resp.status === 401) {
-        this.clean()
-        throw new PhoenixRestError('Server rejected request to logout', resp.status)
+        throw new PhoenixInvalidCredentialsError(
+          'Server rejected request to logout',
+          'Your saved token is invalid or has already been revoked. Please log in again.',
+        )
       }
     },
     setCurrentUser(currentUser: UserPrivate) {

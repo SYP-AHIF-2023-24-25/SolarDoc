@@ -57,6 +57,15 @@ export const useCurrentFileStore = defineStore('currentFile', {
       lastModified: new Date(localStorageLastModified),
     }
   },
+  getters: {
+    /**
+     * Returns true if a remotely opened file is currently being edited.
+     * @since 0.6.0
+     */
+    remoteFileOpened(): boolean {
+      return this.fileId !== undefined
+    }
+  },
   actions: {
     ensureUserIsAuthorisedForFile(userId: string) {
       if (!this.fileId || !this.ownerId) {

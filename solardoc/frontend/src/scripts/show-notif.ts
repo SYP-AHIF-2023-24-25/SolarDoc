@@ -10,7 +10,20 @@ const duration: Record<NotificationType, number> = {
 }
 const { notify } = useNotification()
 
-export function showErrorNotifFrom(error: NotifiableError): void {
+/**
+ * Shows a notification based on an error.
+ * @param error The error to show a notification for.
+ * @since 0.6.0
+ */
+export function showNotifFromErr(error: NotifiableError): void {
+  if (error.isWarn) {
+    showWarnNotifFromErr(error as NotifiableError & { isWarn: true })
+  } else {
+    showErrorNotifFromErr(error)
+  }
+}
+
+function showErrorNotifFromErr(error: NotifiableError): void {
   showErrorNotif(`${error.notifName}: ${error.notifMessage}`, error.notifDescription)
 }
 
@@ -22,7 +35,7 @@ export function showErrorNotif(title: string, text: string): void {
   showNotif('error', title, text)
 }
 
-export function showWarnNotifFrom(error: NotifiableError & { isWarn: true }): void {
+function showWarnNotifFromErr(error: NotifiableError & { isWarn: true }): void {
   showWarnNotif(`${error.notifName}: ${error.notifMessage}`, error.notifDescription)
 }
 

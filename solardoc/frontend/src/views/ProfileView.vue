@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import {PhoenixInternalError, PhoenixInvalidCredentialsError} from '@/services/phoenix/errors'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import type { File } from '@/services/phoenix/api-service'
 import { ref } from 'vue'
 import { getHumanReadableTimeInfo } from '@solardoc/frontend/src/scripts/format-date'
+import {handleError} from "@/errors/error-handler";
+import {showInfoNotifFromObj} from "@/scripts/show-notif";
+import {useCurrentFileStore} from "@/stores/current-file";
+import constants from "@/plugins/constants";
 
 const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 const $router = useRouter()
 
 currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
@@ -17,8 +22,19 @@ if (!currentUserStore.loggedIn) {
   $router.push('/login')
 }
 
-let files = ref([] as File[])
-fetchFiles(currentUserStore.bearer!)
+const files = ref([] as File[])
+;(async () => {
+  try {
+    await fetchFiles(currentUserStore.bearer!)
+  } catch (e) {
+    if (e instanceof PhoenixInvalidCredentialsError) {
+      // The user is not logged in, redirect to login page
+      await $router.push('/login')
+      handleError(e)
+    }
+    throw e
+  }
+})()
 
 async function fetchFiles(bearer: string) {
   let resp: Awaited<ReturnType<typeof phoenixRestService.getV1Files>>
@@ -32,17 +48,13 @@ async function fetchFiles(bearer: string) {
   if (resp.status === 200) {
     files.value = resp.data
   } else if (resp.status === 401) {
-    throw new PhoenixRestError(
-      'Server rejected request to fetch current user. Cause: Unauthorized',
-      resp.status,
-    )
+    throw new PhoenixInvalidCredentialsError('Token seems to have expired or is invalid. Please login again.')
   }
 }
 
 async function deleteFileById(id: string) {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1FilesById>>
   try {
-    resp = await phoenixRestService.deleteV1FilesById(currentUserStore.bearer!, id)
+    await phoenixRestService.deleteV1FilesById(currentUserStore.bearer!, id)
   } catch (e) {
     throw new PhoenixInternalError('Critically failed to delete file. Cause: ' + (<Error>e).message)
   }
@@ -51,16 +63,19 @@ async function deleteFileById(id: string) {
 async function logout() {
   try {
     await currentUserStore.logout()
-  } catch (e) {
-    if (e instanceof PhoenixRestError && e.errorCode === 401) {
-      console.warn(
-        '[Profile] User is not logged in (Token gone or expired, user deleted or other reason), redirecting to login page.',
-      )
+    await $router.push('/login')
+
+    // If there is a currently remotely opened file, close it and reset the store
+    if (currentFileStore.remoteFileOpened) {
+      currentFileStore.closeFile()
+      showInfoNotifFromObj(constants.notifMessages.loggedOutAndFileCleared)
     } else {
-      throw e
+      showInfoNotifFromObj(constants.notifMessages.loggedOut)
     }
+  } catch (e) {
+    await $router.push('/login')
+    handleError(e)
   }
-  await $router.push('/login')
 }
 </script>
 

@@ -1,5 +1,19 @@
-import {type NotifiableError, SolardocError} from '@/errors/solardoc-error'
-import {showErrorNotifFrom, showWarnNotif, showWarnNotifFrom} from '@/scripts/show-notif'
+import {SolardocError} from '@/errors/solardoc-error'
+import {showNotifFromErr} from '@/scripts/show-notif'
+
+/**
+ * An error handler which displays a notification to the user in case the error is a {@link SolardocError}, otherwise
+ * it will simply re-throw the error.
+ * @param e The error to handle.
+ * @throws unknown The error, if it is not a {@link SolardocError}.
+ * @since 0.6.0
+ */
+export function handleError(e: unknown): void {
+  if (e instanceof SolardocError) {
+    showNotifFromErr(e)
+  }
+  throw e
+}
 
 /**
  * An error handler wrapper which runs await a promise and catches any error and displays it to the user.
@@ -23,13 +37,7 @@ export async function interceptErrors<FuncT extends Promise<any>>(
   try {
     return await func
   } catch (e) {
-    if (e instanceof SolardocError) {
-      if (e.isWarn) {
-        showWarnNotifFrom(<SolardocError & {isWarn: true}>e)
-      } else {
-        showErrorNotifFrom(e)
-      }
-    }
+    await handleError(e)
     throw e
   }
 }
