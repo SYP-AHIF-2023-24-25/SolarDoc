@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { useCurrentUserStore } from '@/stores/current-user'
-import { useRouter } from 'vue-router'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
-import * as phoenixRestService from '@/services/phoenix/api-service'
-import type { File } from '@/services/phoenix/api-service'
-import { ref } from 'vue'
-import { getHumanReadableTimeInfo } from '@solardoc/frontend/src/scripts/format-date'
+
+import {useCurrentUserStore} from '@/stores/current-user'
+import {useCurrentFileStore} from "@/stores/current-file";
+import {useRouter} from 'vue-router'
+import {PhoenixInternalError, PhoenixRestError} from '@/services/phoenix/errors'
+import * as phoenixRestService from "@/services/phoenix/api-service";
+import type {File} from "@/services/phoenix/api-service";
+import {ref} from "vue";
+import {getHumanReadableTimeInfo} from "@solardoc/frontend/src/scripts/format-date";
 
 const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 const $router = useRouter()
 
 currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
@@ -51,6 +54,7 @@ async function deleteFileById(id: string) {
 async function logout() {
   try {
     await currentUserStore.logout()
+    currentFileStore.closeFile()
   } catch (e) {
     if (e instanceof PhoenixRestError && e.errorCode === 401) {
       console.warn(
