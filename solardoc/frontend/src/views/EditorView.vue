@@ -152,7 +152,7 @@ setInterval(updateLastModified, 500)
           <button class="editor-button" @click="handleCopyButtonClick()">
             {{ copyButtonContent }}
           </button>
-          <button class="editor-button" @click="handleShareButtonClick()">Share</button>
+          <button v-if="currentFileStore.getPermissions()=== null" class="editor-button" @click="handleShareButtonClick()">Share</button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
         <div id="save-state">
