@@ -4,6 +4,7 @@ defmodule SolardocPhoenixWeb.UserAuthController do
 
   alias SolardocPhoenix.Accounts
   alias SolardocPhoenixWeb.UserAuth
+  alias SolardocPhoenixWeb.CommonParameters
 
   action_fallback SolardocPhoenixWeb.FallbackController
 
@@ -27,18 +28,10 @@ defmodule SolardocPhoenixWeb.UserAuthController do
           expires_at :integer, "Token expiration date in milliseconds", required: true
         end
       end,
-      Error: swagger_schema do
-        title "Error"
-        description "An error"
-        properties do
-          detail :string, "Error message", required: true
-        end
-      end,
-      Errors: swagger_schema do
-        title "Errors"
+      ErrorResp: swagger_schema do
+        title "ErrorsResp"
         description "A list of errors"
-        type :array
-        items Schema.ref(:Error)
+        properties do end
       end
     }
   end
@@ -52,18 +45,20 @@ defmodule SolardocPhoenixWeb.UserAuthController do
       user :body, Schema.ref(:UserLogin), "Arguments for a login", required: true
     end
     response 201, "Created", Schema.ref(:UserToken)
-    response 400, "Bad Request", Schema.ref(:Errors)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 400, "Bad Request", Schema.ref(:ErrorResp)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def create(conn, user_params) do
-    %{"email" => email, "password" => password} = user_params
-
-    with {:ok, user} <- Accounts.get_user_by_email_and_password(email, password) do
+    with {:valid_args, %{"email" => email, "password" => password}} <- {:valid_args, user_params},
+      {:ok, user} <- Accounts.get_user_by_email_and_password(email, password) do
       {token, expires_at} = UserAuth.create_user_token(user)
       conn
       |> put_status(:created)
       |> render(:create, %{token: token, expires_at: expires_at})
+    else
+      {:valid_args, _} -> {:error, :bad_request}
+      {:error, :unauthorized} -> {:error, :unauthorized}
     end
   end
 
@@ -72,10 +67,10 @@ defmodule SolardocPhoenixWeb.UserAuthController do
     produces "application/json"
     summary "Log out a user"
     deprecated false
-    parameter("Authorization", :header, :string, "Bearer", required: true)
+    CommonParameters.auth_bearer
     response 204, "No Content"
-    response 400, "Bad Request", Schema.ref(:Errors)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 400, "Bad Request", Schema.ref(:ErrorResp)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def delete(conn, _params) do

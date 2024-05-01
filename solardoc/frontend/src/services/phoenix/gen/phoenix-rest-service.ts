@@ -7,19 +7,16 @@
 import * as Oazapfts from 'oazapfts/lib/runtime'
 
 export const defaults: Oazapfts.RequestOpts = {
-  baseUrl: 'http://localhost:4000/api',
+  baseUrl: 'http://localhost:4000/phx/api',
 }
 const oazapfts = Oazapfts.runtime(defaults)
 export const servers = {
-  server1: 'http://localhost:4000/api',
-  server2: 'https://localhost:4000/api',
-  server3: 'ws://localhost:4000/api',
-  server4: 'wss://localhost:4000/api',
+  server1: 'http://localhost:4000/phx/api',
+  server2: 'https://localhost:4000/phx/api',
+  server3: 'ws://localhost:4000/phx/api',
+  server4: 'wss://localhost:4000/phx/api',
 }
-export type Error = {
-  detail: string
-}
-export type Errors = Error[]
+export type ErrorsResp = object
 export type UserLogin = {
   email: string
   password: string
@@ -106,11 +103,11 @@ export function deleteV1AuthBearer(authorization: string, opts?: Oazapfts.Reques
       }
     | {
         status: 400
-        data: Errors
+        data: ErrorsResp
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >('/v1/auth/bearer', {
     ...opts,
@@ -132,11 +129,11 @@ export function postV1AuthBearer(userLogin: UserLogin, opts?: Oazapfts.RequestOp
       }
     | {
         status: 400
-        data: Errors
+        data: ErrorsResp
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >(
     '/v1/auth/bearer',
@@ -158,7 +155,7 @@ export function getV1EditorChannels(authorization: string, opts?: Oazapfts.Reque
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >('/v1/editor_channels', {
     ...opts,
@@ -183,7 +180,7 @@ export function getV1EditorChannelsById(
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >(`/v1/editor_channels/${encodeURIComponent(id)}`, {
     ...opts,
@@ -204,7 +201,7 @@ export function getV1Files(authorization: string, opts?: Oazapfts.RequestOpts) {
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >('/v1/files', {
     ...opts,
@@ -229,11 +226,11 @@ export function postV1Files(
       }
     | {
         status: 400
-        data: Errors
+        data: ErrorsResp
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >(
     '/v1/files',
@@ -258,11 +255,11 @@ export function deleteV1FilesById(authorization: string, id: string, opts?: Oaza
       }
     | {
         status: 400
-        data: Errors
+        data: ErrorsResp
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >(`/v1/files/${encodeURIComponent(id)}`, {
     ...opts,
@@ -284,7 +281,7 @@ export function getV1FilesById(authorization: string, id: string, opts?: Oazapft
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >(`/v1/files/${encodeURIComponent(id)}`, {
     ...opts,
@@ -310,11 +307,11 @@ export function putV1FilesById(
       }
     | {
         status: 400
-        data: Errors
+        data: ErrorsResp
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >(
     `/v1/files/${encodeURIComponent(id)}`,
@@ -355,11 +352,11 @@ export function postV1Share(
       }
     | {
         status: 400
-        data: Errors
+        data: ErrorsResp
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >(
     '/v1/share',
@@ -385,7 +382,7 @@ export function getV1ShareById(authorization: string, id: string, opts?: Oazapft
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >(`/v1/share/${encodeURIComponent(id)}`, {
     ...opts,
@@ -406,7 +403,7 @@ export function getV1ShareByIdFile(authorization: string, id: string, opts?: Oaz
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >(`/v1/share/${encodeURIComponent(id)}/file`, {
     ...opts,
@@ -442,7 +439,7 @@ export function postV1Users(createUser: CreateUser, opts?: Oazapfts.RequestOpts)
       }
     | {
         status: 400
-        data: Errors
+        data: ErrorsResp
       }
   >(
     '/v1/users',
@@ -464,7 +461,7 @@ export function getV1UsersCurrent(authorization: string, opts?: Oazapfts.Request
       }
     | {
         status: 401
-        data: Errors
+        data: ErrorsResp
       }
   >('/v1/users/current', {
     ...opts,

@@ -24,9 +24,12 @@ export class SDSClient {
   private _currentChannel: Channel | undefined
 
   constructor(url: string, userToken?: string) {
+    this._active = false
     this.socket = socket(url, userToken)
-    this._active = true
-
+    this.socket.onOpen(() => {
+      this._active = true
+      console.log('[ws-client.ts] SDS Connection established!')
+    })
     this.socket.onMessage(message => {
       console.log('[ws-client.ts] Received message:', message)
     })
@@ -259,7 +262,7 @@ export class SDSClient {
     await this._ensureSocketIsHealthy()
     await this._ensureChannelIsHealthy()
     this._currentChannel?.on('state_trans', resp => {
-      console.log(`[ws-client.ts] Received OT update: ${resp}`)
+      console.log(`[ws-client.ts] Received OT update:`, resp)
       onReceive(resp)
     })
   }
@@ -283,7 +286,6 @@ export class SDSClient {
     this._currentChannel!.push('state_trans', update)
       .receive('ok', onSuccess)
       .receive('error', onError)
-      .send()
   }
 
   /**

@@ -1,8 +1,12 @@
 defmodule SolardocPhoenixWeb.EditorChannelState do
+  @moduledoc false
   use Agent
   require Logger
 
   alias SolardocPhoenixWeb.EditorChannelTrans
+
+  @db_sync_delay 5_000
+  @sync_module_name SolardocPhoenixWeb.EditorChannelSync
 
   def start_link(_) do
     Logger.info("EditorChannelState starting...")
@@ -53,8 +57,8 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
 
     * `EditorChannelTrans` - The created transformation.
   """
-  def init_with_state(channel_id, state) do
-    reset_state(channel_id)
+  def init_with_state(channel_id, file_id, state) do
+    reset_state(channel_id, file_id)
     trans = EditorChannelTrans.create(
       %{"trans" => %{type: "insert", pos: 0, content: state}},
       nil
@@ -63,10 +67,37 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
     trans
   end
 
-  defp reset_state(channel_id) do
+  defp schedule_db_sync(state, channel_id) do
+    editor_state = Map.get(state, channel_id, %{})
+
+    timer_ref = editor_state[:timer_ref]
+    if timer_ref do
+      Process.cancel_timer(timer_ref)
+    end
+
+    file_id = editor_state[:file_id]
+    content = editor_state[:text_state]
+    timer_ref = Process.send_after(
+      @sync_module_name,
+      {:sync_db, file_id: file_id, content: content},
+      @db_sync_delay
+    )
+    editor_state = Map.put(editor_state, :timer_ref, timer_ref)
+
+    # Update the state with the new timer reference and return the updated state
+    Map.put(state, channel_id, editor_state)
+  end
+
+  defp reset_state(channel_id, file_id) do
     Agent.update(
       __MODULE__,
-      fn state -> Map.put(state, channel_id, %{text_state: "", last_applied_trans: nil, trans_stack: []}) end
+      fn state -> Map.put(state, channel_id, %{
+        file_id: file_id,
+        channel_id: channel_id,
+        text_state: "",
+        trans_stack: [],
+        timer_ref: nil,
+      }) end
     )
   end
 
@@ -88,7 +119,10 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
       new_state_string = apply_trans_to_str(state_string, raw_trans)
 
       updated_channel_state = Map.put(updated_channel_state, :text_state, new_state_string)
-      Map.put(state, channel_id, updated_channel_state)
+      state = Map.put(state, channel_id, updated_channel_state)
+
+      # Schedule a sync to the database (returns the updated state)
+      schedule_db_sync(state, channel_id)
     end)
   end
 

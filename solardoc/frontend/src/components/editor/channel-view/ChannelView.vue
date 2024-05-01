@@ -11,6 +11,7 @@ import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreat
 import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue'
 import { useCurrentFileStore } from '@/stores/current-file'
+import { interceptErrors } from '@/errors/error-handler'
 
 const overlayStateStore = useOverlayStateStore()
 const channelViewStore = useChannelViewStore()
@@ -31,13 +32,15 @@ async function refreshChannels() {
   loadingState.value = false
 }
 
-// Fetch channels again when the user returns from one of the forms
-watch([selectedChannel, creatingChannel], () => {
-  if (!selectedChannel.value || !creatingChannel.value) {
-    refreshChannels()
-  }
-})
-refreshChannels()
+if (currentUserStore.loggedIn) {
+  // Fetch channels again when the user returns from one of the forms
+  watch([selectedChannel, creatingChannel], async () => {
+    if (!selectedChannel.value || !creatingChannel.value) {
+      await interceptErrors(refreshChannels())
+    }
+  })
+  interceptErrors(refreshChannels())
+}
 </script>
 
 <template>

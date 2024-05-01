@@ -2,14 +2,28 @@
 import type { File } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import { PhoenixInternalError, PhoenixInvalidCredentialsError } from '@/services/phoenix/errors'
 import FileCard from '@/components/profile-view/file-view/FileCard.vue'
+import { handleError } from '@/errors/error-handler'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
 const currentUserStore = useCurrentUserStore()
+const $router = useRouter()
 
 const files = ref<Array<File>>([])
-fetchFiles(currentUserStore.bearer!)
+;(async () => {
+  try {
+    await fetchFiles(currentUserStore.bearer!)
+  } catch (e) {
+    if (e instanceof PhoenixInvalidCredentialsError) {
+      // The user is not logged in, redirect to login page
+      await $router.push('/login')
+      handleError(e)
+    }
+    throw e
+  }
+})()
 
 async function fetchFiles(bearer: string) {
   let resp: Awaited<ReturnType<typeof phoenixRestService.getV1Files>>
@@ -17,18 +31,20 @@ async function fetchFiles(bearer: string) {
     resp = await phoenixRestService.getV1Files(bearer)
   } catch (e) {
     throw new PhoenixInternalError(
-      'Critically failed to fetch current user files. Cause: ' + (<Error>e).message,
+      'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
     )
   }
   if (resp.status === 200) {
     files.value = resp.data satisfies Array<File>
     files.value.sort((a, b) => {
-      return new Date(b.last_edited!).getTime() - new Date(a.last_edited!).getTime()
+      return new Date(b.last_edited).getTime() - new Date(a.last_edited).getTime()
     })
   } else if (resp.status === 401) {
-    throw new PhoenixRestError(
-      'Server rejected request to fetch current user files. Cause: Unauthorized',
-      resp.status,
+    currentUserStore.clean()
+    await $router.push('/login')
+    throw new PhoenixInvalidCredentialsError(
+      'Server rejected request to load profile',
+      'Your saved token is invalid or has already been revoked. Please log in again.',
     )
   }
 }
@@ -50,5 +66,7 @@ async function fetchFiles(bearer: string) {
   justify-content: space-around;
   flex-direction: row;
   row-gap: 2rem;
+  width: 100%;
+  max-width: unset;
 }
 </style>

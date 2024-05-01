@@ -16,6 +16,8 @@ defmodule SolardocPhoenix.Application do
       {Finch, name: SolardocPhoenix.Finch},
       # Editor Channel State
       SolardocPhoenixWeb.EditorChannelState,
+      # Editor Channel DB Sync
+      SolardocPhoenixWeb.EditorChannelSync,
       # Start a worker by calling: SolardocPhoenix.Worker.start_link(arg)
       # {SolardocPhoenix.Worker, arg},
       # Start to serve requests, typically the last entry

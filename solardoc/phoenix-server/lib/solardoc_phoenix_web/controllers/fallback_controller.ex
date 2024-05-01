@@ -8,6 +8,13 @@ defmodule SolardocPhoenixWeb.FallbackController do
     |> render(:error, changeset: changeset)
   end
 
+  def call(conn, {:error, :bad_request}) do
+    conn
+    |> put_status(400)
+    |> put_view(json: SolardocPhoenixWeb.ErrorJSON)
+    |> render(:"400")
+  end
+
   def call(conn, {:error, :unauthorized}) do
     conn
     |> put_status(401)

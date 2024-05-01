@@ -1,5 +1,6 @@
 import * as api from './gen/backend-rest-service'
 import { isDev } from '@/config/env'
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
 
 // Overwrite the default configuration depending on the environment
 api.defaults.baseUrl = isDev
@@ -20,10 +21,15 @@ if (!api.defaults.baseUrl.startsWith('http')) {
 // Log the base URL in case there is a problem
 console.log(`[backend/api-service.ts] Using render backend at '${api.defaults.baseUrl}'`)
 
-export async function checkIfRenderBackendIsReachable(): Promise<void> {
-  const ping = await api.getV1Ping()
-  if (ping.status !== 200) {
-    throw new Error(`Render Backend is not reachable. Response:\n${ping}`)
+export async function ensureRenderBackendIsReachable(): Promise<void> {
+  let ping: Awaited<ReturnType<typeof api.getV1Ping>> | undefined = undefined
+  try {
+    ping = await api.getV1Ping()
+  } catch (_ignore) {
+    /* empty */
+  }
+  if (!ping || ping.status !== 200) {
+    throw new SolardocUnreachableError('Render Backend is not reachable')
   }
 }
 

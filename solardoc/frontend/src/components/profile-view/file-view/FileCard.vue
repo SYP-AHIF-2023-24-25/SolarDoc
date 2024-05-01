@@ -2,25 +2,34 @@
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixInternalError,
+  PhoenixInvalidCredentialsError,
+} from '@/services/phoenix/errors'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+import { interceptErrors } from '@/errors/error-handler'
+import { useLoadingStore } from '@/stores/loading'
 
 const props = defineProps<{ file: File }>()
 const deleted = ref(false)
 
 const currentUserStore = useCurrentUserStore()
 const fileStore = useCurrentFileStore()
-const router = useRouter()
+const loadingStore = useLoadingStore()
+const $router = useRouter()
 
 async function openFileInEditor(): Promise<void> {
+  loadingStore.setLoading(true)
   fileStore.setFile(props.file)
-  await router.push('/editor')
+  await $router.push('/editor')
 }
 
-async function deleteFileById() {
+async function deleteFile() {
   let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1FilesById>>
   try {
     resp = await phoenixRestService.deleteV1FilesById(currentUserStore.bearer!, props.file.id)
@@ -29,10 +38,17 @@ async function deleteFileById() {
   }
   if (resp.status === 204) {
     deleted.value = true
+  } else if (resp.status === 400) {
+    throw new PhoenixBadRequestError(
+      'Server rejected request to delete file',
+      resp.data as ActualPhxErrorResp,
+    )
   } else if (resp.status === 401) {
-    throw new PhoenixRestError(
-      'Server rejected request to delete file. Cause: Unauthorized',
-      resp.status,
+    currentUserStore.clean()
+    await $router.push('/login')
+    throw new PhoenixInvalidCredentialsError(
+      'Server rejected request to delete file',
+      'Your saved token is invalid or has already been revoked. Please log in again.',
     )
   }
 }
@@ -46,13 +62,13 @@ async function deleteFileById() {
         <span>Filename:</span><code>{{ file.file_name }}</code>
       </p>
       <p>
-        <span>Created:</span><code>{{ getHumanReadableTimeInfo(file.created!) }}</code>
-      </p>
-      <p>
         <span>Last Edited:</span><code>{{ getHumanReadableTimeInfo(file.last_edited!) }}</code>
       </p>
+      <p>
+        <span>Created:</span><code>{{ getHumanReadableTimeInfo(file.created!) }}</code>
+      </p>
     </div>
-    <button class="highlighted-button" @click="deleteFileById()">Delete</button>
+    <button class="highlighted-button" @click="interceptErrors(deleteFile())">Delete</button>
   </div>
 </template>
 
@@ -87,12 +103,11 @@ async function deleteFileById() {
     width: 100%;
     padding-top: 50%;
     border-radius: $border-width;
-
-    // Show an X in the middle to serve as a placeholder
-    background-color: var.$scheme-gray-100;
+    background-color: var.$placeholder-background;
 
     &::before {
       content: '???';
+      color: var.$text-color;
       top: 0;
       left: 0;
       width: 100%;
@@ -105,7 +120,7 @@ async function deleteFileById() {
       z-index: 101;
       font-size: 0.75rem;
       border-radius: $border-width;
-      background-color: var.$scheme-gray-100;
+      background-color: var.$placeholder-background;
     }
 
     &:hover::after {
@@ -143,7 +158,28 @@ async function deleteFileById() {
   #file-infos {
     display: flex;
     flex-flow: column wrap;
+    width: calc(var(--profile-file-card-width) - 2 * 1rem);
+    overflow-x: scroll;
     gap: 0.4rem;
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+
+    p, p * {
+      display: flex;
+      white-space: nowrap;
+      margin: 0;
+    }
+
+    code {
+      padding: 0 0 0 0.5rem;
+    }
   }
 
   &:hover {

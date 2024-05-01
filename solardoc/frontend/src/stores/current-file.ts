@@ -8,7 +8,12 @@ import type {
 } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixInternalError,
+  PhoenixNotAuthorisedError,
+} from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -21,7 +26,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
     const storedFileOwner = localStorage.getItem(constants.localStorageFileOwnerKey)
     let storedFileName = localStorage.getItem(constants.localStorageFileNameKey)
     let storedFileContent = localStorage.getItem(constants.localStorageFileContentKey)
+    let localStorageLastModified = localStorage.getItem(constants.localStorageLastModifiedKey)
     let storedPermissions = localStorage.getItem(constants.localStorageFilePermissionsKey)
+
     // Ensure the default is populated if the stored content is empty or the file name is empty
     if (!storedFileName || storedFileName === '') {
       storedFileName = DEFAULT_NAME
@@ -33,6 +40,11 @@ export const useCurrentFileStore = defineStore('currentFile', {
       localStorage.setItem(constants.localStorageFileContentKey, DEFAULT_TEXT)
     }
 
+    if (!localStorageLastModified) {
+      localStorageLastModified = new Date().toISOString()
+      localStorage.setItem(constants.localStorageLastModifiedKey, localStorageLastModified)
+    }
+
     return {
       fileId: <string | undefined>storedFileId || undefined,
       fileName: storedFileName,
@@ -41,9 +53,19 @@ export const useCurrentFileStore = defineStore('currentFile', {
       content: storedFileContent,
       permissions: storedPermissions ? parseInt(storedPermissions) : null,
       oTransStack: new Map<string, OTrans>(),
-      oTransNotAcked: <Array<OTransReqDto>>[],
-      oTransNotPerf: <Array<OTransRespDto>>[],
+      oTransNotAcked: new Map<string, OTransReqDto>(),
+      lastTrans: <OTrans | undefined>undefined,
+      lastModified: new Date(localStorageLastModified),
     }
+  },
+  getters: {
+    /**
+     * Returns true if a remotely opened file is currently being edited.
+     * @since 0.6.0
+     */
+    remoteFileOpened(): boolean {
+      return this.fileId !== undefined
+    },
   },
   actions: {
     ensureUserIsAuthorisedForFile(userId: string) {
@@ -83,15 +105,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
         this.setFileId(resp.data.id)
         this.setOwnerId(resp.data.owner_id)
       } else if (resp.status === 400) {
-        throw new PhoenixRestError(
-          `Server rejected request to create file. Cause: Bad request`,
-          resp.status,
+        throw new PhoenixBadRequestError(
+          `Server rejected request to create and upload file`,
+          resp.data as ActualPhxErrorResp,
         )
       } else if (resp.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to create file. Cause: Unauthorized',
-          resp.status,
-        )
+        throw new PhoenixNotAuthorisedError('Server rejected request to create and upload file')
       }
     },
     async updateFile(bearer: string) {
@@ -107,28 +126,42 @@ export const useCurrentFileStore = defineStore('currentFile', {
         })
       } catch (e) {
         throw new PhoenixInternalError(
-          'Critically failed to update file. Cause: ' + (<Error>e).message,
+          'Critically failed to put file. Cause: ' + (<Error>e).message,
         )
       }
 
       if (resp.status === 400) {
-        throw new PhoenixRestError(
-          'Server rejected request to put file. Cause: Bad request',
-          resp.status,
+        throw new PhoenixBadRequestError(
+          'Server rejected request to save file',
+          resp.data as ActualPhxErrorResp,
         )
       } else if (resp.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to put file. Cause: Unauthorized',
-          resp.status,
-        )
+        throw new PhoenixNotAuthorisedError('Server rejected request to save file')
       }
     },
-    initOTransStackFromServerTrans(initOTrans: OTransRespDto) {
-      this.oTransStack = new Map<string, OTrans>()
-      this.oTransStack.set(initOTrans.id, { ...initOTrans, acknowledged: true })
+    initOTransStackFromServerTrans(initOTransDto: OTransRespDto) {
+      this.clearOTransStack()
+      this.pushOTrans({
+        ...initOTransDto,
+        acknowledged: true,
+        init: true,
+      })
     },
     /**
-     * Pushes an OTrans to the stack of transformations.
+     * "Pushes" an OTrans object to the {@link oTransStack stack of transformations}.
+     *
+     * This will also modify the {@link lastTrans}.
+     * @param oTrans The OTrans object to push.
+     * @since 0.5.0
+     * @see lastTrans
+     * @see oTransStack
+     */
+    pushOTrans(oTrans: OTrans) {
+      this.lastTrans = oTrans
+      this.oTransStack.set(oTrans.id, oTrans)
+    },
+    /**
+     * "Pushes" an OTrans to the {@link oTransStack stack of transformations}.
      *
      * This will check whether a current transformation is waiting to be acknowledged and if so, it will update that
      * transaction with the timestamp and then push the new transformation to the stack.
@@ -136,14 +169,24 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @since 0.5.0
      */
     pushOTransResp(oTrans: OTransRespDto) {
-      const oTransWaiting = this.oTransStack.get(oTrans.id)
+      const oTransWaiting = this.oTransNotAcked.get(oTrans.id)
       if (oTransWaiting) {
-        oTransWaiting.timestamp = oTrans.timestamp
-        oTransWaiting.acknowledged = true
-        this.oTransStack.set(oTrans.id, oTransWaiting)
+        const ackedTrans: OTrans = {
+          ...oTransWaiting,
+          user_id: oTrans.user_id,
+          timestamp: oTrans.timestamp,
+          acknowledged: true,
+          init: false,
+        }
+        this.pushOTrans(ackedTrans)
       } else {
         // This is a new transformation
-        this.oTransStack.set(oTrans.id, { ...oTrans, acknowledged: true })
+        const newTrans: OTrans = {
+          ...oTrans,
+          acknowledged: true,
+          init: false,
+        }
+        this.pushOTrans(newTrans)
 
         // Perform the transformation on the current content
         if (oTrans.trans.type === 'insert') {
@@ -165,7 +208,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @since 0.5.0
      */
     pushOTransReq(oTrans: OTransReqDto) {
-      this.oTransNotAcked.push(oTrans)
+      this.oTransNotAcked.set(oTrans.id, oTrans)
     },
     /**
      * Creates an OTrans object which represents a change to the content.
@@ -194,6 +237,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setFileName(file.file_name)
       this.setContent(file.content)
       this.setOnlineSaveState(true)
+      this.setLastModified(new Date(file.last_edited))
     },
     setFileId(fileId: string) {
       this.fileId = fileId
@@ -219,11 +263,15 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.content = content
       localStorage.setItem(constants.localStorageFileContentKey, content)
     },
+    setLastModified(lastModified: Date) {
+      this.lastModified = lastModified
+      localStorage.setItem(constants.localStorageLastModifiedKey, lastModified.toISOString())
+    },
+    resetLastModified() {
+      this.setLastModified(new Date())
+    },
     setPermissions(permissions: number | null) {
       this.permissions = permissions
-    },
-    getPermissions(): number | null {
-      return this.permissions
     },
     closeFile() {
       this.clearFileId()
@@ -235,7 +283,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     clearOTransStack() {
       this.oTransStack = new Map<string, OTrans>()
-      this.oTransNotAcked = []
+      this.oTransNotAcked = new Map<string, OTransReqDto>()
+      this.lastTrans = undefined
     },
   },
 })
