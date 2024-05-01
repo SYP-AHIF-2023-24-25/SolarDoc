@@ -27,15 +27,11 @@ const currentUserStore = useCurrentUserStore()
 
 <style scoped lang="scss">
 #profile-header {
-  #profile-header-text {
-    margin-right: 7.5rem;
-  }
-
+  margin-right: 2rem;
 
   h1 {
     // Avoid line break
     white-space: nowrap;
-    margin-right: 10rem;
   }
 
   p {

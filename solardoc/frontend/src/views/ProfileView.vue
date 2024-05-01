@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import {useCurrentUserStore} from '@/stores/current-user'
 import {useRouter} from 'vue-router'
-import {PhoenixInternalError, PhoenixRestError} from '@/services/phoenix/errors'
-import * as phoenixRestService from "@/services/phoenix/api-service";
-import type {File} from "@/services/phoenix/api-service";
-import {ref} from "vue";
-import {getHumanReadableTimeInfo} from "@solardoc/frontend/src/scripts/format-date";
 import ProfileHeader from "@/components/profile-view/header/ProfileHeader.vue";
-import ProfileFileOverview from "@/components/profile-view/ProfileFileOverview.vue";
+import ProfileFileOverview from "@/components/profile-view/file-view/ProfileFileOverview.vue";
 import ProfileViewHeaderButtons from "@/components/profile-view/header/ProfileViewHeaderButtons.vue";
 
 const currentUserStore = useCurrentUserStore()
@@ -20,38 +15,6 @@ if (!currentUserStore.loggedIn) {
   $router.push('/login')
 }
 
-let files = ref([] as File[])
-fetchFiles(currentUserStore.bearer!)
-
-async function fetchFiles(bearer: string) {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.getV1Files>>
-  try {
-    resp = await phoenixRestService.getV1Files(bearer)
-  } catch (e) {
-    throw new PhoenixInternalError(
-        'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
-    )
-  }
-  if (resp.status === 200) {
-    files.value = resp.data;
-  } else if (resp.status === 401) {
-    throw new PhoenixRestError(
-        'Server rejected request to fetch current user. Cause: Unauthorized',
-        resp.status,
-    )
-  }
-}
-
-async function deleteFileById(id : string) {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1FilesById>>
-  try {
-    resp = await phoenixRestService.deleteV1FilesById(currentUserStore.bearer!,id)
-  } catch (e) {
-    throw new PhoenixInternalError(
-        'Critically failed to delete file. Cause: ' + (<Error>e).message,
-    )
-  }
-}
 </script>
 
 <template>
