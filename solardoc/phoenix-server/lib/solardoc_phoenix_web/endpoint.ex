@@ -1,4 +1,5 @@
 defmodule SolardocPhoenixWeb.Endpoint do
+  @moduledoc false
   use Phoenix.Endpoint, otp_app: :solardoc_phoenix
 
   # The session will be stored in the cookie and signed,
@@ -71,7 +72,7 @@ defmodule SolardocPhoenixWeb.Endpoint do
     origins: "*",
     allow_methods: ~w[GET POST PUT PATCH DELETE],
     allow_headers: ~w[Authorization Content-Type],
-    max_age: 86400
+    max_age: 86_400
 
   plug Plug.Session, @session_options
   plug SolardocPhoenixWeb.Router

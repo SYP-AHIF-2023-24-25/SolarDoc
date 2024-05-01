@@ -3,6 +3,13 @@ import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useRouter } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Vueform } from '@vueform/vueform'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixInvalidCredentialsError,
+} from '@/services/phoenix/errors'
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
+import { interceptErrors } from '@/errors/error-handler'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
@@ -35,8 +42,8 @@ async function submitForm(
   try {
     resp = await phoenixBackend.postV1AuthBearer(loginUser)
   } catch (e) {
-    console.error('[Login] Signup rejected by backend. Cause: ' + e)
-    return
+    console.error('[Login] Encountered network error during login', e)
+    throw new SolardocUnreachableError('Encountered network error during login')
   }
 
   if (resp.status === 201) {
@@ -45,19 +52,23 @@ async function submitForm(
 
     await currentUserStore.fetchCurrentUser()
     await $router.push('/profile')
-  } else if (resp.status === 401) {
-    console.error('Server rejected sign up. Cause: Unauthorized')
   } else if (resp.status === 400) {
-    console.error('Server rejected sign up. Cause: Bad request')
+    throw new PhoenixBadRequestError('Server rejected sign in', resp.data as ActualPhxErrorResp)
+  } else if (resp.status === 401) {
+    throw new PhoenixInvalidCredentialsError()
   } else {
-    console.error('Server rejected sign up. Cause: Unknown error', resp)
+    console.error('[Login] Server rejected sign in. Cause: Unknown error', resp)
+    throw new SolardocUnreachableError(
+      'Server rejected sign in.',
+      'Unknown error. Please try again.',
+    )
   }
 }
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-form-wrapper">
-    <div id="profile-container" class="page-form-container">
+  <div id="profile-wrapper" class="page-content-wrapper">
+    <div id="profile-container" class="page-content-container">
       <div id="do-not-have-an-account">
         <p>Don't have an account yet?</p>
         <RouterLink class="emphasised-link" to="/signup">→ Sign up</RouterLink>
@@ -68,7 +79,7 @@ async function submitForm(
         add-class="solardoc-style-form"
         :display-errors="false"
         :endpoint="false"
-        @submit="submitForm"
+        @submit="(value: any) => interceptErrors(submitForm(value))"
       >
         <TextElement name="email" label="Email" :rules="['required', 'email']" />
         <TextElement
@@ -108,7 +119,7 @@ async function submitForm(
 
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
-@use '@/assets/page-form' as *;
+@use '@/assets/page-content' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
 
 #profile-wrapper {

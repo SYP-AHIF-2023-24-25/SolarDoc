@@ -1,4 +1,5 @@
 defmodule SolardocPhoenixWeb.UserSocket do
+  @moduledoc false
   use Phoenix.Socket
 
   alias SolardocPhoenixWeb.UserAuth

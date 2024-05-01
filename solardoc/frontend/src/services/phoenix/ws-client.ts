@@ -1,9 +1,9 @@
 import {
-  socket,
   Channel,
-  type ConnectionState,
   type ChannelState,
+  type ConnectionState,
   type PhoenixSocket as SDSClientBare,
+  socket,
 } from '@solardoc/phoenix'
 import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
@@ -24,9 +24,12 @@ export class SDSClient {
   private _currentChannel: Channel | undefined
 
   constructor(url: string, userToken?: string) {
+    this._active = false
     this.socket = socket(url, userToken)
-    this._active = true
-
+    this.socket.onOpen(() => {
+      this._active = true
+      console.log('[ws-client.ts] SDS Connection established!')
+    })
     this.socket.onMessage(message => {
       console.log('[ws-client.ts] Received message:', message)
     })

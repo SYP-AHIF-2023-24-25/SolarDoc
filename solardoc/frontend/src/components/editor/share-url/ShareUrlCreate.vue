@@ -48,10 +48,7 @@ async function submitForm(
         )
       }
       if (resp.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
-          resp.status,
-        )
+        throw new PhoenixRestError('Server rejected request to fetch current user', resp.status)
       }
       if (resp.status === 201) {
         generatedLink.value = `${window.location.origin}/share/${resp.data.id}`

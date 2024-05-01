@@ -1,4 +1,5 @@
 defmodule SolardocPhoenix.Share.ShareURL do
+  @moduledoc false
   use Ecto.Schema
   import Ecto.Changeset
   use Timex

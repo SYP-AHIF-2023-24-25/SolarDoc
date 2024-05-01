@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
+import { storeToRefs } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { handleRender } from '@/scripts/handle-render'
 import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
@@ -21,9 +20,12 @@ import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
 import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
 import ShareUrlCreate from '@/components/editor/share-url/ShareUrlCreate.vue'
-import * as backendAPI from '@/services/backend/api-service'
+import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
+import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
+import { interceptErrors } from '@/errors/error-handler'
+import { showWarnNotif } from '@/scripts/show-notif'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -38,26 +40,17 @@ const editorUpdateWSClient = useEditorUpdateWSClient()
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
 
-currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
+// We need to be friendly after all :D
+showWelcomeIfNeverShownBefore()
 
-// Ensure the backend is running and reachable
-// TODO! Implement proper popup in case of error
-backendAPI
-  .checkIfRenderBackendIsReachable()
-  .then(void 0)
-  .catch((error: Error) => {
-    if (error) {
-      console.error(error)
-    }
-    throw new Error(
-      '[Editor] Render Backend is not reachable. Please copy the logs and contact the developers.',
-    )
-  })
-
-// Ensure the Phoenix backend is running and reachable -> If yes establish a connection
-phoenixBackend
-  .checkIfPhoenixBackendIsReachable()
-  .then(async () => {
+// ---------------------------------------------------------------------------------------------------------------------
+// ESSENTIAL CONNECTIONS
+// ---------------------------------------------------------------------------------------------------------------------
+interceptErrors(currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid())
+interceptErrors(backendAPI.ensureRenderBackendIsReachable())
+interceptErrors(
+  (async () => {
+    await phoenixBackend.ensurePhoenixBackendIsReachable()
     const authStatus =
       currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
     if (authStatus === 'authenticated') {
@@ -70,19 +63,13 @@ phoenixBackend
       await currentUserStore.logout()
       currentFileStore.closeFile()
     } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
-      console.error('[Editor] Auth status is unreachable or unknown')
+      showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')
     } else {
       console.log('[Editor] Skipping connection to SDS. Not logged in!')
     }
-  })
-  .catch((error: Error) => {
-    if (error) {
-      console.error(`[Editor] ${error}`)
-    }
-    throw new Error(
-      '[Editor] Phoenix Backend is not reachable. Please copy the logs and contact the developers.',
-    )
-  })
+  })(),
+)
+// ---------------------------------------------------------------------------------------------------------------------
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
@@ -149,7 +136,13 @@ setInterval(updateLastModified, 500)
           <button class="editor-button" @click="handleCopyButtonClick()">
             {{ copyButtonContent }}
           </button>
-          <button class="editor-button" @click="handleShareButtonClick()">Share</button>
+          <button
+            v-if="currentFileStore.permissions === null"
+            class="editor-button"
+            @click="handleShareButtonClick()"
+          >
+            Share
+          </button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
         <div id="save-state">

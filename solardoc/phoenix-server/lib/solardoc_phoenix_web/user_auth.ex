@@ -1,4 +1,5 @@
 defmodule SolardocPhoenixWeb.UserAuth do
+  @moduledoc false
   use SolardocPhoenixWeb, :verified_routes
 
   import Plug.Conn
@@ -29,11 +30,9 @@ defmodule SolardocPhoenixWeb.UserAuth do
   Authenticates the user by checking the provided token.
   """
   def fetch_ws_user(token) do
-    with {:ok, user} <- Accounts.fetch_user_by_api_token(token) do
-      {:ok, user}
-    else
-      _ ->
-        {:error, :unauthorized}
+    case Accounts.fetch_user_by_api_token(token) do
+      {:ok, user} -> {:ok, user}
+      _ -> {:error, :unauthorized}
     end
   end
 

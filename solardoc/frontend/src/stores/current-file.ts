@@ -8,7 +8,12 @@ import type {
 } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixInternalError,
+  PhoenixNotAuthorisedError,
+} from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -22,6 +27,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     let storedFileName = localStorage.getItem(constants.localStorageFileNameKey)
     let storedFileContent = localStorage.getItem(constants.localStorageFileContentKey)
     let localStorageLastModified = localStorage.getItem(constants.localStorageLastModifiedKey)
+    let storedPermissions = localStorage.getItem(constants.localStorageFilePermissionsKey)
 
     // Ensure the default is populated if the stored content is empty or the file name is empty
     if (!storedFileName || storedFileName === '') {
@@ -45,11 +51,21 @@ export const useCurrentFileStore = defineStore('currentFile', {
       ownerId: storedFileOwner || undefined,
       saveState: storedFileId ? 'Saved Remotely' : 'Saved Locally',
       content: storedFileContent,
+      permissions: storedPermissions ? parseInt(storedPermissions) : null,
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,
       lastModified: new Date(localStorageLastModified),
     }
+  },
+  getters: {
+    /**
+     * Returns true if a remotely opened file is currently being edited.
+     * @since 0.6.0
+     */
+    remoteFileOpened(): boolean {
+      return this.fileId !== undefined
+    },
   },
   actions: {
     ensureUserIsAuthorisedForFile(userId: string) {
@@ -89,15 +105,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
         this.setFileId(resp.data.id)
         this.setOwnerId(resp.data.owner_id)
       } else if (resp.status === 400) {
-        throw new PhoenixRestError(
-          `Server rejected request to create file. Cause: Bad request`,
-          resp.status,
+        throw new PhoenixBadRequestError(
+          `Server rejected request to create and upload file`,
+          resp.data as ActualPhxErrorResp,
         )
       } else if (resp.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to create file. Cause: Unauthorized',
-          resp.status,
-        )
+        throw new PhoenixNotAuthorisedError('Server rejected request to create and upload file')
       }
     },
     async updateFile(bearer: string) {
@@ -118,15 +131,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
 
       if (resp.status === 400) {
-        throw new PhoenixRestError(
-          'Server rejected request to put file. Cause: Bad request',
-          resp.status,
+        throw new PhoenixBadRequestError(
+          'Server rejected request to save file',
+          resp.data as ActualPhxErrorResp,
         )
       } else if (resp.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to put file. Cause: Unauthorized',
-          resp.status,
-        )
+        throw new PhoenixNotAuthorisedError('Server rejected request to save file')
       }
     },
     initOTransStackFromServerTrans(initOTransDto: OTransRespDto) {
@@ -260,12 +270,16 @@ export const useCurrentFileStore = defineStore('currentFile', {
     resetLastModified() {
       this.setLastModified(new Date())
     },
+    setPermissions(permissions: number | null) {
+      this.permissions = permissions
+    },
     closeFile() {
       this.clearFileId()
       this.setFileName(DEFAULT_NAME)
       this.setContent(DEFAULT_TEXT)
       this.setOnlineSaveState(false)
       this.clearOTransStack()
+      this.setPermissions(null)
     },
     clearOTransStack() {
       this.oTransStack = new Map<string, OTrans>()

@@ -1,0 +1,49 @@
+@use './core/var' as var;
+
+.styled-notif {
+  margin: 0 1rem 1rem 0;
+  padding: 10px;
+  font-size: 1rem;
+  color: var.$text-color;
+  background: var.$text-color-inverted;
+
+  .notification-title {
+    font-size: 1.2rem;
+  }
+
+  // style for content
+  .notification-content {
+    font-size: 1rem;
+  }
+
+  // shadow
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  // border radius
+  border-radius: 0.25rem;
+  overflow: hidden;
+
+  // default (blue)
+  border-left: 5px solid var.$scheme-friendly-deep-blue;
+
+  // types (green, amber, red)
+  &.success {
+    background: var.$scheme-starting-green;
+    border-left-color: var.$scheme-healthy-green-intense;
+  }
+
+  &.warn {
+    background: var.$scheme-warning-yellow;
+    border-left-color: var.$scheme-warning-yellow-intense;
+  }
+
+  &.error {
+    background: var.$scheme-danger-red;
+    border-left-color: var.$scheme-danger-red-intense;
+
+    &,
+    & * {
+      color: white;
+    }
+  }
+}

@@ -5,6 +5,7 @@ import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { useChannelViewStore } from '@/stores/channel-view'
+import { interceptErrors } from '@/errors/error-handler'
 
 const props = defineProps<{
   channel: EditorChannel
@@ -14,7 +15,6 @@ const editorUpdateWSClient = useEditorUpdateWSClient()
 const channelViewStore = useChannelViewStore()
 
 const { wsClient } = storeToRefs(editorUpdateWSClient)
-
 const loadingState = ref(false)
 
 async function handleLeaveChannel() {
@@ -77,7 +77,9 @@ setInterval(updateLastModified, 500)
           </div>
         </div>
         <div id="current-channel-element-interaction">
-          <button class="highlighted-button" @click="handleLeaveChannel()">Leave</button>
+          <button class="highlighted-button" @click="interceptErrors(handleLeaveChannel())">
+            Leave
+          </button>
         </div>
       </div>
     </div>

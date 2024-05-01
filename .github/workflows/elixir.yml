@@ -24,12 +24,11 @@ jobs:
         path: deps
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
         restore-keys: ${{ runner.os }}-mix-
-    - name: Switch to Phoenix project
     - name: Install dependencies
       run: |
         cd ./solardoc/phoenix-server
         mix deps.get
-    - name: Run tests
+    - name: Run linter
       run: |
         cd ./solardoc/phoenix-server
-        mix test
+        mix credo --all
