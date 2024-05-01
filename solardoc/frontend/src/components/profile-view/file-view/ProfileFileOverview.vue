@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import Files from "@/components/profile-view/Files.vue";
+import Files from "@/components/profile-view/file-view/Files.vue";
+import SearchBar from "@/components/profile-view/file-view/SearchBar.vue";
 </script>
 
 <template>
   <div id="profile-file-overview">
     <h2>Files</h2>
+    <SearchBar />
     <Files />
   </div>
 </template>

@@ -28,6 +28,9 @@ async function fetchFiles(bearer: string) {
   }
   if (resp.status === 200) {
     files.value = resp.data;
+    files.value.sort((a, b) => {
+      return new Date(b.last_edited!).getTime() - new Date(a.last_edited!).getTime()
+    });
   } else if (resp.status === 401) {
     throw new PhoenixRestError(
         'Server rejected request to fetch current user files. Cause: Unauthorized',
@@ -76,6 +79,7 @@ async function deleteFileById(id: string) {
 </template>
 
 <style scoped lang="scss">
+@use '@/assets/core/var' as var;
 
 #profile-file-overview-files {
   display: flex;
@@ -88,7 +92,7 @@ async function deleteFileById(id: string) {
 
   .slide-placeholder {
     padding: 2.5rem;
-    border: 0.15rem solid mediumpurple;
+    border: 0.15rem solid var.$text-color;
   }
 
 
@@ -98,7 +102,7 @@ async function deleteFileById(id: string) {
     flex-flow: column wrap;
     justify-content: space-between;
     gap: 1rem;
-    border: 0.15rem solid mediumpurple;
+    border: 0.15rem solid var.$text-color;
     border-radius: 2rem;
 
     button {
@@ -114,6 +118,7 @@ async function deleteFileById(id: string) {
 
   .profile-file-overview-file:hover {
     cursor: pointer;
+    box-shadow: 0 0 2rem 0 var.$box-shadow-color;
   }
 
 </style>
