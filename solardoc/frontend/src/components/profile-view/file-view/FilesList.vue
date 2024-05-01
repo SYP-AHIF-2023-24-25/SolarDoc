@@ -2,11 +2,7 @@
 import type { File } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
-import {
-  PhoenixInternalError,
-  PhoenixInvalidCredentialsError,
-  PhoenixRestError,
-} from '@/services/phoenix/errors'
+import { PhoenixInternalError, PhoenixInvalidCredentialsError } from '@/services/phoenix/errors'
 import FileCard from '@/components/profile-view/file-view/FileCard.vue'
 import { handleError } from '@/errors/error-handler'
 import { useRouter } from 'vue-router'

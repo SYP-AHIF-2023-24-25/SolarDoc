@@ -1,4 +1,4 @@
-import { type Router, useRouter } from 'vue-router'
+import { type Router } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { NotLoggedInWarn } from '@/errors/not-logged-in-warn'
 

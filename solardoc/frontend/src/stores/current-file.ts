@@ -11,10 +11,8 @@ import * as phoenixRestService from '@/services/phoenix/api-service'
 import {
   type ActualPhxErrorResp,
   PhoenixBadRequestError,
-  PhoenixForbiddenError,
   PhoenixInternalError,
   PhoenixNotAuthorisedError,
-  PhoenixRestError,
 } from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
 import { v4 as uuidv4 } from 'uuid'

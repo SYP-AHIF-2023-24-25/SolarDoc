@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import type { OTrans, OTransReqDto } from '@/services/phoenix/ot-trans'
 import { onMounted, ref, type Ref, watch } from 'vue'
 import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
 import { useDarkModeStore } from '@/stores/dark-mode'

@@ -5,7 +5,7 @@
  * See https://www.npmjs.com/package/oazapfts
  */
 import * as Oazapfts from 'oazapfts/lib/runtime'
-import * as QS from 'oazapfts/lib/runtime/query'
+
 export const defaults: Oazapfts.RequestOpts = {
   baseUrl: 'http://localhost:4000/phx/api',
 }

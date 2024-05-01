@@ -1,5 +1,4 @@
 import { SolardocError } from '@/errors/solardoc-error'
-import type { ErrorsResp } from '@/services/phoenix/gen/phoenix-rest-service'
 import { titlecase } from '@/scripts/titlecase'
 
 export type ActualPhxErrorResp = {
