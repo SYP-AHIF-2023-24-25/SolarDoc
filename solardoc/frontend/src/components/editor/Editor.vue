@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import type { OTrans, OTransReqDto } from '@/services/phoenix/ot-trans'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { onMounted, ref, type Ref, watch } from 'vue'
 import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
