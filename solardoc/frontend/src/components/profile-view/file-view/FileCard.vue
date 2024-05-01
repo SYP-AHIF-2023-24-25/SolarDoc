@@ -158,7 +158,28 @@ async function deleteFile() {
   #file-infos {
     display: flex;
     flex-flow: column wrap;
+    width: calc(var(--profile-file-card-width) - 2 * 1rem);
+    overflow-x: scroll;
     gap: 0.4rem;
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+
+    p, p * {
+      display: flex;
+      white-space: nowrap;
+      margin: 0;
+    }
+
+    code {
+      padding: 0 0 0 0.5rem;
+    }
   }
 
   &:hover {

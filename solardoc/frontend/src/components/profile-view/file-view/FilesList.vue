@@ -66,5 +66,7 @@ async function fetchFiles(bearer: string) {
   justify-content: space-around;
   flex-direction: row;
   row-gap: 2rem;
+  width: 100%;
+  max-width: unset;
 }
 </style>
