@@ -29,34 +29,36 @@ async function handleShareURLReq(shareUrlId: unknown): Promise<void> {
     try {
       resp = await phoenixRestService.getV1ShareByIdFile(currentUserStore.bearer!, shareUrlId)
     } catch (e) {
-      throw new PhoenixInternalError('Critically failed to fetch file. Cause: ' + (<Error>e).message)
+      throw new PhoenixInternalError(
+        'Critically failed to fetch file. Cause: ' + (<Error>e).message,
+      )
     }
 
     if (resp.status === 401) {
       throw new PhoenixRestError(
-          'Server rejected request to fetch file. Cause: Unauthorized',
-          resp.status,
+        'Server rejected request to fetch file. Cause: Unauthorized',
+        resp.status,
       )
     } else if (resp.status === 200) {
-
       let getShare: Awaited<ReturnType<typeof phoenixRestService.getV1ShareById>>
-      try{
+      try {
         getShare = await phoenixRestService.getV1ShareById(currentUserStore.bearer!, shareUrlId)
       } catch (e) {
-        throw new PhoenixInternalError('Critically failed to fetch share URL. Cause: ' + (<Error>e).message)
+        throw new PhoenixInternalError(
+          'Critically failed to fetch share URL. Cause: ' + (<Error>e).message,
+        )
       }
-      if(getShare.status === 200){
+      if (getShare.status === 200) {
         currentFileStore.setContent(resp.data.content)
         currentFileStore.setFileId(resp.data.id)
         currentFileStore.setFileName(resp.data.file_name)
         currentFileStore.setPermissions(getShare.data.perms)
         loadingStore.setLoading(false)
         await $router.push('/editor')
-      }
-      else if(getShare.status === 401){
+      } else if (getShare.status === 401) {
         throw new PhoenixRestError(
-            'Server rejected request to fetch share URL. Cause: Unauthorized',
-            getShare.status,
+          'Server rejected request to fetch share URL. Cause: Unauthorized',
+          getShare.status,
         )
       }
     }

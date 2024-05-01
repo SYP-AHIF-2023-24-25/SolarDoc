@@ -4,13 +4,12 @@
 
 <script setup lang="ts">
 import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
-import type { OTransReqDto } from '@/services/phoenix/ot-trans'
-import { type Ref, watch } from 'vue'
-import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import type { OTransReqDto } from '@/services/phoenix/ot-trans'
+import { onMounted, ref, type Ref, watch } from 'vue'
+import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
 import { lightEditorTheme } from './monaco-config/light-editor-theme'
 import { darkEditorTheme } from './monaco-config/dark-editor-theme'
-import { ref, onMounted } from 'vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
@@ -55,7 +54,6 @@ onMounted(() => {
   monaco.editor.defineTheme('asciiDocLightTheme', <editor.IStandaloneThemeData>lightEditorTheme)
   monaco.editor.defineTheme('asciiDocDarkTheme', <editor.IStandaloneThemeData>darkEditorTheme)
 
-
   // Creating the editor with desired theme and language
   editorInstance = monaco.editor.create(editorRef.value, {
     theme: darkModeStore.darkMode ? 'asciiDocDarkTheme' : 'asciiDocLightTheme',
@@ -70,9 +68,9 @@ onMounted(() => {
     scrollBeyondLastLine: false,
   })
   //console.log(currentFileStore.getPermissions())
-  if (currentFileStore.getPermissions() === 1){
+  if (currentFileStore.getPermissions() === 1) {
     editorInstance!.updateOptions({
-      readOnly: true
+      readOnly: true,
     })
   }
   // Error checking on init
