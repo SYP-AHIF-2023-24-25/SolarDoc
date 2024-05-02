@@ -1,4 +1,5 @@
 defmodule SolardocPhoenixWeb.EditorChannelTrans do
+  @moduledoc false
   @derive {Jason.Encoder, only: [:id, :trans, :timestamp, :user_id]}
   defstruct id: nil, trans: nil, timestamp: nil, user_id: nil
 

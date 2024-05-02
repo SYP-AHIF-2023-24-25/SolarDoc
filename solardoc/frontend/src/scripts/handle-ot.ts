@@ -1,22 +1,22 @@
-import {useCurrentFileStore} from "@/stores/current-file";
-import {UpdateCycleHandler} from "@/services/phoenix/update-cycle-handler";
-import type {OTransReqDto, OTransRespDto} from "@/services/phoenix/ot-trans";
-import {useEditorUpdateWSClient} from "@/stores/editor-update-ws-client";
+import { useCurrentFileStore } from '@/stores/current-file'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import type { OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
 
+let enabled = false
 const currentFileStore = useCurrentFileStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
-const updateCycleHandler = new UpdateCycleHandler(handleIncomingUpdate, handleOutgoingUpdate)
 
-async function handleIncomingUpdate(received: OTransRespDto): Promise<void> {
-  // We will apply the transformation to the document
-  currentFileStore.pushOTransResp(received)
+async function handleIncomingUpdate(toProcess: OTransRespDto): Promise<void> {
+  currentFileStore.pushOTransResp(toProcess)
 }
 
-async function handleOutgoingUpdate(toSend: OTransReqDto): Promise<void> {
+export async function handleOutgoingUpdate(toSend: OTransReqDto): Promise<void> {
+  currentFileStore.pushOTransReq(toSend)
   await editorUpdateWSClient.wsClient?.sendOTrans(
     toSend,
-    () => console.log("[handle-ot.ts] Successfully sent OT request to remote"),
-    resp => console.error(`[handle-ot.ts] Received error response in response to OT request: ${resp}`),
+    () => console.log('[handle-ot.ts] Successfully sent OT request to remote'),
+    resp =>
+      console.error(`[handle-ot.ts] Received error response in response to OT request: ${resp}`),
   )
 }
 
@@ -25,12 +25,10 @@ async function handleOutgoingUpdate(toSend: OTransReqDto): Promise<void> {
  * @since 0.5.0
  */
 export function handleOTUpdates() {
-  if (updateCycleHandler.running) {
+  if (enabled) {
     return
   }
 
-  updateCycleHandler.start()
-  editorUpdateWSClient.wsClient?.listenForOTrans(oTransResp => {
-    currentFileStore.pushOTransResp(oTransResp)
-  })
+  editorUpdateWSClient.wsClient?.listenForOTrans(handleIncomingUpdate)
+  enabled = true
 }

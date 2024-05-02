@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useLoadingStore } from '@/stores/loading'
+import { useNotification } from '@kyvg/vue3-notification'
 import HomeView from '../views/HomeView.vue'
+
+const { notify } = useNotification()
 
 const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
@@ -74,7 +77,7 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'fallback-not-found',
       redirect: { name: 'not-found' },
-    }
+    },
   ],
 })
 
@@ -85,6 +88,10 @@ router.beforeResolve((to, from, next) => {
     const loadingStore = useLoadingStore()
     loadingStore.setLoading(true)
   }
+
+  // Ensure all notifications are closed
+  notify({ clean: true })
+
   next()
 })
 

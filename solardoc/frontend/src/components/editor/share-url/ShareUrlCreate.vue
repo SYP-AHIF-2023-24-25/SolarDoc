@@ -2,13 +2,13 @@
 import type { Vueform } from '@vueform/vueform'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
-import {handleCopy} from "@/scripts/handle-copy";
+import { handleCopy } from '@/scripts/handle-copy'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
-import {ref} from "vue";
+import { ref } from 'vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()
@@ -48,10 +48,7 @@ async function submitForm(
         )
       }
       if (resp.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to fetch current user. Cause: Unauthorized',
-          resp.status,
-        )
+        throw new PhoenixRestError('Server rejected request to fetch current user', resp.status)
       }
       if (resp.status === 201) {
         generatedLink.value = `${window.location.origin}/share/${resp.data.id}`
@@ -85,7 +82,7 @@ async function submitForm(
             @click="handleGeneratedLinkCopyButtonClick()"
             :class="'pi pi-clipboard' + (generatedLink ? '' : ' disabled')"
           ></i>
-          <p>{{ generatedLink || "Your generated link~ °^°" }}</p>
+          <p>{{ generatedLink || 'Your generated link~ °^°' }}</p>
         </div>
         <Vueform
           ref="form$"
@@ -95,19 +92,19 @@ async function submitForm(
           @submit="submitForm"
         >
           <CheckboxElement
-              name="write"
-              text="Write access"
-              info="(Currently unavailable!) Gives the participant write access to your presentation (read is always present)"
-              size="lg"
-              disabled
+            name="write"
+            text="Write access"
+            info="(Currently unavailable!) Gives the participant write access to your presentation (read is always present)"
+            size="lg"
+            disabled
           />
           <ButtonElement
-              name="create"
-              button-label="Create"
-              :columns="{
-            container: 1,
-          }"
-              :submits="true"
+            name="create"
+            button-label="Create"
+            :columns="{
+              container: 1,
+            }"
+            :submits="true"
           />
         </Vueform>
       </template>

@@ -10,13 +10,16 @@ import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Vueform } from '@vueform/vueform'
 import { useCurrentFileStore } from '@/stores/current-file'
-import {handleOTUpdates} from "@/scripts/handle-ot";
+import { handleOTUpdates } from '@/scripts/handle-ot'
+import { PhoenixNotAuthorisedError, PhoenixSDSError } from '@/services/phoenix/errors'
+import { interceptErrors } from '@/errors/error-handler'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
 const channelViewStore = useChannelViewStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
 
+const SAFETY_DELAY_MS = 1000
 const loadingState = ref(false)
 
 function handleGoBack() {
@@ -35,12 +38,11 @@ async function submitForm(
   if (!form$?.requestData) {
     return
   } else if (!currentUserStore.loggedIn || !currentUserStore.bearer) {
-    throw new Error(
-      "[ChannelView] User is not logged in! User shouldn't have been able to access this form",
-    )
+    throw new PhoenixNotAuthorisedError('User is not logged in.', 'Please log in and try again.')
   } else if (!editorUpdateWSClient.wsClient || !editorUpdateWSClient.wsClient.healthy) {
-    throw new Error(
-      '[ChannelView] Websocket client is not active or healthy. Can not join channel!',
+    throw new PhoenixSDSError(
+      'Websocket client is not active or healthy. Can not join channel!',
+      'Please reload page and try again later. If the problem persists, contact the developers.',
     )
   }
 
@@ -65,7 +67,11 @@ async function submitForm(
         handleOTUpdates()
       },
       errorResp => {
-        console.error('[ChannelView] Error joining new channel', errorResp)
+        console.error('[ChannelView] Failed to join new channel', errorResp)
+        throw new PhoenixSDSError(
+          'Failed to join new channel',
+          'Please try again. If the problem persists, check the logs and contact the developers.',
+        )
       },
       currentUserStore.currentUser!.id,
       {
@@ -77,11 +83,15 @@ async function submitForm(
   await editorUpdateWSClient.wsClient.createChannel(
     async (channel, initTrans) => {
       console.log('[ChannelView] Channel created', channel)
-      await joinNewChannel(channel)
       currentFileStore.initOTransStackFromServerTrans(initTrans)
+      setTimeout(() => joinNewChannel(channel), SAFETY_DELAY_MS)
     },
     errorResp => {
-      console.error('[ChannelView] Error creating channel', errorResp)
+      console.error('[ChannelView] Failed to create new channel', errorResp)
+      throw new PhoenixSDSError(
+        'Failed to create new channel',
+        'Please try again. If the problem persists, check the logs and contact the developers.',
+      )
     },
     newChannel,
     currentFileStore.content,
@@ -100,7 +110,7 @@ async function submitForm(
       add-class="solardoc-style-form"
       :display-errors="false"
       :endpoint="false"
-      @submit="submitForm"
+      @submit="(value: any) => interceptErrors(submitForm(value))"
     >
       <TextElement
         name="channel-name"

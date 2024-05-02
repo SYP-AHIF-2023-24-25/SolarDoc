@@ -45,18 +45,10 @@ defmodule SolardocPhoenixWeb.ShareURLController do
           created :integer, "Creation date in UNIX timestamp milliseconds", required: true
         end
       end,
-      Error: swagger_schema do
-        title "Error"
-        description "An error"
-        properties do
-          detail :string, "Error message", required: true
-        end
-      end,
-      Errors: swagger_schema do
-        title "Errors"
+      ErrorResp: swagger_schema do
+        title "ErrorsResp"
         description "A list of errors"
-        type :array
-        items Schema.ref(:Error)
+        properties do end
       end
     }
   end
@@ -68,7 +60,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     response 200, "OK", Schema.ref(:ShareUrl)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def index(conn, _params) do
@@ -87,13 +79,13 @@ defmodule SolardocPhoenixWeb.ShareURLController do
       share_url :body, Schema.ref(:CreateShareUrl), "Arguments for creating a share url", required: true
     end
     response 201, "Created", Schema.ref(:ShareUrl)
-    response 400, "Bad Request", Schema.ref(:Errors)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 400, "Bad Request", Schema.ref(:ErrorResp)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def create(conn, share_url_params) do
     with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(share_url_params["file_id"])},
-         {:is_owner, true} <- {:is_owner, is_owner(conn.assigns.current_user, file)} do
+         {:is_owner, true} <- {:is_owner, owner?(conn.assigns.current_user, file)} do
       with {:ok, %ShareURL{} = share_url} <- Share.create_share_url(share_url_params) do
         conn
         |> put_status(:created)
@@ -106,7 +98,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     end
   end
 
-  defp is_owner(user, file) do
+  defp owner?(user, file) do
     with %File{} <- file, %User{} <- user do
       user.id == file.owner_id
     end
@@ -123,7 +115,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
       id :path, :string, "Share Url ID", required: true
     end
     response 200, "Ok", Schema.ref(:ShareUrl)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def show_share(conn, %{"id"=> id}) do
@@ -142,7 +134,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
       id :path, :string, "Share Url ID", required: true
     end
     response 200, "Ok", Schema.ref(:File)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def show_file(conn, %{"id" => id}) do

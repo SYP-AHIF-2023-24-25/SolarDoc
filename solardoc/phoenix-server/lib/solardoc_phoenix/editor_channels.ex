@@ -43,6 +43,7 @@ defmodule SolardocPhoenix.EditorChannels do
 
 #  We don't implement update_channel/2 because it's not used in the application.
 #
+#  credo:disable-for-next-line
 #  TODO! Implement this with a proper changeset, where you can then change the description and potentially the password.
 #
 #  @doc """
