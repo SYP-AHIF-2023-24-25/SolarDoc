@@ -259,19 +259,6 @@ $right-menu-width: calc(40vw - 0.5rem);
 div#editor-page {
   @include view-presets;
 
-  #save-state {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    align-content: center;
-    padding: 0.5rem;
-    margin: 0;
-
-    p {
-      color: var.$scheme-gray-600;
-    }
-  }
-
   #menu {
     display: flex;
     flex-flow: row nowrap;
@@ -297,6 +284,27 @@ div#editor-page {
         flex-flow: row nowrap;
         padding: var.$editor-menu-button-menu-padding;
         margin: var.$editor-menu-button-menu-margin;
+      }
+
+      #save-state {
+        display: flex;
+        flex-flow: row nowrap;
+        height: 100%;
+        font-size: 0.8rem;
+        margin: 0;
+
+        & > p {
+          @include align-center;
+          height: 100%;
+          color: var.$scheme-gray-600;
+
+          padding: 0 0.25rem;
+          @media screen and (min-width: var.$window-large) {
+            & {
+              padding: 2px 0.5rem 0;
+            }
+          }
+        }
       }
     }
 
