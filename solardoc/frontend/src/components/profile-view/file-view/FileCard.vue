@@ -52,6 +52,23 @@ async function deleteFile() {
     )
   }
 }
+
+// Last modified and created are refs which is updated every 0.5 second to show the last modified time
+const lastModified = ref(getLastModified())
+const created = ref(getCreated())
+
+function getLastModified(): string {
+  return getHumanReadableTimeInfo(props.file.last_edited)
+}
+
+function getCreated(): string {
+  return getHumanReadableTimeInfo(props.file.created)
+}
+
+setInterval(() => {
+  lastModified.value = getLastModified()
+  created.value = getCreated()
+}, 500)
 </script>
 
 <template>
@@ -62,10 +79,10 @@ async function deleteFile() {
         <span>Filename:</span><code>{{ file.file_name }}</code>
       </p>
       <p>
-        <span>Last Edited:</span><code>{{ getHumanReadableTimeInfo(file.last_edited!) }}</code>
+        <span>Last Edited:</span><code>{{ lastModified }}</code>
       </p>
       <p>
-        <span>Created:</span><code>{{ getHumanReadableTimeInfo(file.created!) }}</code>
+        <span>Created:</span><code>{{ created }}</code>
       </p>
     </div>
     <button class="highlighted-button" @click="interceptErrors(deleteFile())">Delete</button>
