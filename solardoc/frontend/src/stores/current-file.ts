@@ -17,9 +17,6 @@ import {
 import constants from '@/plugins/constants'
 import { v4 as uuidv4 } from 'uuid'
 
-const DEFAULT_NAME = 'untitled.adoc'
-const DEFAULT_TEXT = '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
-
 export type Unknown = null
 export type NoPermissions = 0
 export type ReadPermission = 1
@@ -43,13 +40,13 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
     // Ensure the default is populated if the stored content is empty or the file name is empty
     if (!storedFileName || storedFileName === '') {
-      storedFileName = DEFAULT_NAME
-      localStorage.setItem(constants.localStorageFileNameKey, DEFAULT_NAME)
+      storedFileName = constants.defaultFileName
+      localStorage.setItem(constants.localStorageFileNameKey, constants.defaultFileName)
     }
 
     if (!storedFileContent || storedFileContent === '') {
-      storedFileContent = DEFAULT_TEXT
-      localStorage.setItem(constants.localStorageFileContentKey, DEFAULT_TEXT)
+      storedFileContent = constants.defaultFileContent
+      localStorage.setItem(constants.localStorageFileContentKey, constants.defaultFileContent)
     }
 
     if (!localStorageLastModified) {
@@ -296,8 +293,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     closeFile() {
       this.clearFileId()
-      this.setFileName(DEFAULT_NAME)
-      this.setContent(DEFAULT_TEXT)
+      this.setFileName(constants.defaultFileName)
+      this.setContent(constants.defaultFileContent)
       this.setOnlineSaveState(false)
       this.clearOTransStack()
       this.setPermissions(Permissions.Unknown)
