@@ -24,9 +24,9 @@ export type WritePermission = 3
 export type Permission = Unknown | NoPermissions | ReadPermission | WritePermission
 export const Permissions = {
   Unknown: null,
-  NoPermissions: 0,
-  ReadPermission: 1,
-  WritePermission: 3,
+  None: 0,
+  Read: 1,
+  Write: 3,
 } as const satisfies {[key: string]: Permission}
 
 export const useCurrentFileStore = defineStore('currentFile', {
@@ -63,9 +63,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
       fileId: <string | undefined>storedFileId || undefined,
       fileName: storedFileName,
       ownerId: storedFileOwner || undefined,
-      saveState: storedFileId ? 'Saved Remotely' : 'Saved Locally',
+      saveState: storedFileId ? constants.saveStates.server : constants.saveStates.local,
       content: storedFileContent,
-      permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : 0),
+      permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : null),
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,

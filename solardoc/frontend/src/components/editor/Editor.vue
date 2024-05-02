@@ -18,6 +18,7 @@ import { handleOutgoingUpdate } from '@/scripts/handle-ot'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { interceptErrors } from '@/errors/error-handler'
+import { Permissions } from '@/stores/current-file'
 import asciiDocLangMonarch from './monaco-config/asciidoc-lang-monarch'
 
 const darkModeStore = useDarkModeStore()
@@ -127,7 +128,7 @@ onMounted(() => {
     scrollBeyondLastLine: false,
   })
 
-  if (currentFileStore.permissions === 1) {
+  if (currentFileStore.permissions === Permissions.Read) {
     editorInstance!.updateOptions({
       readOnly: true,
     })

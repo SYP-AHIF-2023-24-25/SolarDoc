@@ -4,8 +4,6 @@
   margin: 0 1rem 1rem 0;
   padding: 10px;
   font-size: 1rem;
-  color: black;
-  background: var.$text-color-inverted;
 
   .notification-title {
     font-size: 1.2rem;
@@ -24,7 +22,16 @@
   overflow: hidden;
 
   // default (blue)
-  border-left: 5px solid var.$scheme-friendly-deep-blue;
+  &,
+  &.info {
+    border-left: 5px solid var.$scheme-friendly-deep-blue;
+    background: white;
+
+    &,
+    & * {
+      color: black;
+    }
+  }
 
   // types (green, amber, red)
   &.success {

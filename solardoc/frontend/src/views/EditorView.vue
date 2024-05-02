@@ -27,6 +27,7 @@ import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
 import { interceptErrors } from '@/errors/error-handler'
 import { showWarnNotif } from '@/scripts/show-notif'
 import { Permissions } from '@/stores/current-file'
+import constants from "@/plugins/constants";
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -147,7 +148,9 @@ setInterval(updateLastModified, 500)
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
         <div id="save-state">
-          <p>{{ currentFileStore.saveState }}</p>
+          <p
+            :class="currentFileStore.saveState === constants.saveStates.server ? 'saved' : 'error'"
+          >{{ currentFileStore.saveState }}</p>
         </div>
       </div>
       <div id="menu-center">
@@ -288,15 +291,15 @@ div#editor-page {
       }
 
       #save-state {
+        @include align-center;
         display: flex;
         flex-flow: row nowrap;
         height: 100%;
         font-size: 0.8rem;
-        margin: 0;
 
         & > p {
           @include align-center;
-          height: 100%;
+          height: 1.5rem;
           color: var.$scheme-gray-600;
 
           padding: 0 0.25rem;
@@ -304,6 +307,24 @@ div#editor-page {
             & {
               padding: 2px 0.5rem 0;
             }
+          }
+
+          background-color: var.$scheme-gray-300;
+          border-radius: 2px;
+
+          &.saved {
+            background-color: var.$save-state-background-saved;
+            color: white;
+          }
+
+          &.error {
+            background-color: var.$save-state-background-error;
+            color: white;
+          }
+
+          &.not-saved {
+            background-color: var.$save-state-background-not-saved;
+            color: white;
           }
         }
       }

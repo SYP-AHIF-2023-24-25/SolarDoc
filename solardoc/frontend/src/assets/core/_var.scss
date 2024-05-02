@@ -29,14 +29,19 @@
   --scheme-link-hover-color: var(--scheme-cs-2);
   --scheme-starting-green: #8be19c;
   --scheme-starting-green-intense: #68cd86;
+  --scheme-starting-green-soft: #aef691;
   --scheme-healthy-green: #00b834;
   --scheme-healthy-green-intense: #378d4f;
+  --scheme-healthy-green-soft: #35e58f;
   --scheme-warning-yellow: #ffcc00;
   --scheme-warning-yellow-intense: #f48a06;
+  --scheme-warning-yellow-soft: #fad850;
   --scheme-danger-red: #ff2c2c;
   --scheme-danger-red-intense: #b82e24;
+  --scheme-danger-red-soft: #fd4c4c;
   --scheme-catastrophic-red: #940027;
   --scheme-catastrophic-red-intense: #6b1c1c;
+  --scheme-catastrophic-red-soft: #da3a3a;
 
   // Universal gray tones
   --scheme-gray-100: #f3f4f6;
@@ -190,14 +195,19 @@ $scheme-white-subtle: var(--scheme-white-subtle);
 $scheme-link-hover-color: var(--scheme-cs-2);
 $scheme-starting-green: var(--scheme-starting-green);
 $scheme-starting-green-intense: var(--scheme-starting-green-intense);
+$scheme-starting-green-soft: var(--scheme-starting-green-soft);
 $scheme-healthy-green: var(--scheme-healthy-green);
 $scheme-healthy-green-intense: var(--scheme-healthy-green-intense);
+$scheme-healthy-green-soft: var(--scheme-healthy-green-soft);
 $scheme-warning-yellow: var(--scheme-warning-yellow);
 $scheme-warning-yellow-intense: var(--scheme-warning-yellow-intense);
+$scheme-warning-yellow-soft: var(--scheme-warning-yellow-soft);
 $scheme-danger-red: var(--scheme-danger-red);
 $scheme-danger-red-intense: var(--scheme-danger-red-intense);
+$scheme-danger-red-soft: var(--scheme-danger-red-soft);
 $scheme-catastrophic-red: var(--scheme-catastrophic-red);
 $scheme-catastrophic-red-intense: var(--scheme-catastrophic-red-intense);
+$scheme-catastrophic-red-soft: var(--scheme-catastrophic-red-soft);
 
 // Universal gray tones
 $scheme-gray-100: var(--scheme-gray-100);
@@ -327,6 +337,9 @@ html[data-theme='light'] {
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-300);
   --vueform-highlighted-box-border-color: var(--scheme-gray-300);
   --placeholder-background: var(--scheme-gray-100);
+  --save-state-background-saved: var(--scheme-healthy-green-soft);
+  --save-state-background-error: var(--scheme-danger-red-soft);
+  --save-state-background-not-saved: var(--scheme-warning-yellow-soft);
   --stylised-button-background-color: var(--scheme-cs-2);
   --stylised-button-hover-text-color: white;
   --dot-dot-dot-color: var(--scheme-cs-2);
@@ -348,6 +361,9 @@ html[data-theme='dark'] {
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-900);
   --vueform-highlighted-box-border-color: var(--scheme-gray-800);
   --placeholder-background: var(--scheme-gray-900);
+  --save-state-background-saved: var(--scheme-healthy-green);
+  --save-state-background-error: var(--scheme-danger-red);
+  --save-state-background-not-saved: var(--scheme-warning-yellow);
   --stylised-button-background-color: white;
   --stylised-button-hover-text-color: black;
   --dot-dot-dot-color: white;
@@ -372,6 +388,9 @@ $vueform-highlighted-box-background-color-active: var(
 );
 $vueform-highlighted-box-border-color: var(--vueform-highlighted-box-border-color);
 $placeholder-background: var(--placeholder-background);
+$save-state-background-saved: var(--save-state-background-saved);
+$save-state-background-error: var(--save-state-background-error);
+$save-state-background-not-saved: var(--save-state-background-not-saved);
 $stylised-button-text-color: var(--stylised-button-background-color);
 $stylised-button-hover-text-color: var(--stylised-button-hover-text-color);
 $stylised-button-disabled-color: var(--stylised-button-disabled-color);
