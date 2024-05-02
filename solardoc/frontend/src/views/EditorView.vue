@@ -26,6 +26,7 @@ import { SDSCLIENT_URL } from '@/services/phoenix/config'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
 import { interceptErrors } from '@/errors/error-handler'
 import { showWarnNotif } from '@/scripts/show-notif'
+import { Permissions } from '@/stores/current-file'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -137,7 +138,7 @@ setInterval(updateLastModified, 500)
             {{ copyButtonContent }}
           </button>
           <button
-            v-if="currentFileStore.permissions === null"
+            v-if="currentFileStore.permissions === Permissions.Unknown"
             class="editor-button"
             @click="handleShareButtonClick()"
           >

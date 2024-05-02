@@ -20,6 +20,18 @@ import { v4 as uuidv4 } from 'uuid'
 const DEFAULT_NAME = 'untitled.adoc'
 const DEFAULT_TEXT = '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°'
 
+export type Unknown = null
+export type NoPermissions = 0
+export type ReadPermission = 1
+export type WritePermission = 3
+export type Permission = Unknown | NoPermissions | ReadPermission | WritePermission
+export const Permissions = {
+  Unknown: null,
+  NoPermissions: 0,
+  ReadPermission: 1,
+  WritePermission: 3,
+} as const satisfies {[key: string]: Permission}
+
 export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
     const storedFileId = localStorage.getItem(constants.localStorageFileIdKey)
@@ -56,7 +68,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       ownerId: storedFileOwner || undefined,
       saveState: storedFileId ? 'Saved Remotely' : 'Saved Locally',
       content: storedFileContent,
-      permissions: storedPermissions ? parseInt(storedPermissions) : null,
+      permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : 0),
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,
@@ -238,7 +250,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     setOnlineSaveState(value: boolean) {
       this.saveState = value ? 'Saved Remotely' : 'Saved Locally'
     },
-    setFile(file: Required<File>, perm: number | null = null) {
+    setFile(file: Required<File>, perm: Permission = Permissions.Unknown) {
       this.setFileId(file.id)
       this.setOwnerId(file.owner_id)
       this.setFileName(file.file_name)
@@ -278,7 +290,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     resetLastModified() {
       this.setLastModified(new Date())
     },
-    setPermissions(permissions: number | null) {
+    setPermissions(permissions: Permission) {
       this.permissions = permissions
       localStorage.setItem(constants.localStorageFilePermissionsKey, permissions ? String(permissions) : "")
     },
@@ -288,7 +300,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setContent(DEFAULT_TEXT)
       this.setOnlineSaveState(false)
       this.clearOTransStack()
-      this.setPermissions(null)
+      this.setPermissions(Permissions.Unknown)
     },
     clearOTransStack() {
       this.oTransStack = new Map<string, OTrans>()
