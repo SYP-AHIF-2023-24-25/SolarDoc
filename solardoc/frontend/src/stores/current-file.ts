@@ -190,14 +190,16 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
         // Perform the transformation on the current content
         if (oTrans.trans.type === 'insert') {
-          this.content =
+          this.setContent(
             this.content.slice(0, oTrans.trans.pos) +
             oTrans.trans.content +
             this.content.slice(oTrans.trans.pos)
+          )
         } else if (oTrans.trans.type === 'delete') {
-          this.content =
+          this.setContent(
             this.content.slice(0, oTrans.trans.pos) +
             this.content.slice(oTrans.trans.pos + oTrans.trans.length)
+          )
         }
       }
     },

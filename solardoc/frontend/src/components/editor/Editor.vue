@@ -79,8 +79,18 @@ function calculateUpdates(
         let endColumn =
           lineNumber === end.lineNumber ? end.column : model.getLineMaxColumn(lineNumber)
 
+        let startLineNumber = lineNumber
+        let endLineNumber = lineNumber
+
+        // We also need to make sure if the line is completely deleted, we need to also delete the newline character
+        // We do this by checking if the line is not the first line and the start column is 1
+        if (lineNumber !== start.lineNumber && startColumn === 1) {
+          startLineNumber--
+          startColumn = model.getLineMaxColumn(startLineNumber)
+        }
+
         edits.push({
-          range: new monaco.Range(lineNumber, startColumn, lineNumber, endColumn),
+          range: new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn),
           text: null,
         })
       }
@@ -142,17 +152,25 @@ onMounted(() => {
     // To do this though we will need to translate the monaco editor changes to OT operations
     // This is simple if we simply assume that empty text means deletion and non-empty text means insertion
     for (const change of event.changes) {
-      let ot: OTransReqDto
+      const ot: Array<OTransReqDto> = []
       if (change.text === '') {
         const length = change.rangeLength
         const pos = change.rangeOffset + length
-        ot = currentFileStore.createDeleteOTrans(pos, length)
+        ot.push(currentFileStore.createDeleteOTrans(pos, length))
       } else {
         const pos = change.rangeOffset
-        ot = currentFileStore.createInsertOTrans(pos, change.text)
+        // Check if we potentially deleted text using the insert operation
+        if (change.rangeLength > 0) {
+          const length = change.rangeLength
+          const pos = change.rangeOffset + length
+          ot.push(currentFileStore.createDeleteOTrans(pos, length))
+        }
+        ot.push(currentFileStore.createInsertOTrans(pos, change.text))
       }
-      console.debug(`[Editor] Pushing OT operation:`, ot)
-      await handleOutgoingUpdate(ot)
+      for (const oTrans of ot) {
+        console.debug(`[Editor] Pushing OT operation:`, ot)
+        await handleOutgoingUpdate(oTrans)
+      }
     }
   })
 

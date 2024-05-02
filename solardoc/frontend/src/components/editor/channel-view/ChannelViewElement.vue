@@ -117,7 +117,7 @@ function handleJoinChannel() {
   }
 
   #channel-view-element-interaction {
-    padding-right: 1rem;
+    padding: 0 1rem;
   }
 }
 </style>

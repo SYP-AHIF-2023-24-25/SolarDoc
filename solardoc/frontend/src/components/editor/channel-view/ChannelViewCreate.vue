@@ -19,6 +19,7 @@ const currentFileStore = useCurrentFileStore()
 const channelViewStore = useChannelViewStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
 
+const SAFETY_DELAY_MS = 1000
 const loadingState = ref(false)
 
 function handleGoBack() {
@@ -82,8 +83,8 @@ async function submitForm(
   await editorUpdateWSClient.wsClient.createChannel(
     async (channel, initTrans) => {
       console.log('[ChannelView] Channel created', channel)
-      await joinNewChannel(channel)
       currentFileStore.initOTransStackFromServerTrans(initTrans)
+      setTimeout(() => joinNewChannel(channel), SAFETY_DELAY_MS)
     },
     errorResp => {
       console.error('[ChannelView] Failed to create new channel', errorResp)
