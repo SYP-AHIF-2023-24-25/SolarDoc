@@ -3,6 +3,9 @@ import type { Vueform } from '@vueform/vueform'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
+import { type ActualPhxErrorResp, PhoenixBadRequestError } from '@/services/phoenix/errors'
+import { interceptErrors } from '@/errors/error-handler'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
@@ -35,7 +38,7 @@ async function submitForm(
     resp = await phoenixBackend.postV1Users(newUser)
   } catch (e) {
     console.error('Signup rejected by backend. Cause: ', e)
-    return
+    throw new SolardocUnreachableError('Encountered network error during sign up')
   }
 
   if (resp.status === 201) {
@@ -43,16 +46,16 @@ async function submitForm(
     currentUserStore.setCurrentUser(resp.data)
     await $router.push('login')
   } else if (resp.status === 400) {
-    console.error('Server rejected sign up. Cause: Bad request', resp.data)
+    throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp)
   } else {
-    console.error('Server rejected sign up. Cause: Unknown error', resp)
+    throw new SolardocUnreachableError('Encountered network error during sign up')
   }
 }
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-form-wrapper">
-    <div id="profile-container" class="page-form-container">
+  <div id="profile-wrapper" class="page-content-wrapper">
+    <div id="profile-container" class="page-content-container">
       <div id="already-have-an-account">
         <p>Already have an account?</p>
         <a class="emphasised-link" @click="$router.push('login')">→ Log in</a>
@@ -63,9 +66,9 @@ async function submitForm(
         add-class="solardoc-style-form"
         :display-errors="false"
         :endpoint="false"
-        @submit="submitForm"
+        @submit="(value: any) => interceptErrors(submitForm(value))"
       >
-        <TextElement name="username" label="Username" :rules="['required', 'min:6']" />
+        <TextElement name="username" label="Username" :rules="['required', 'min:6', 'max:20']" />
         <TextElement
           name="email"
           input-type="email"
@@ -149,7 +152,7 @@ async function submitForm(
 
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
-@use '@/assets/page-form' as *;
+@use '@/assets/page-content' as *;
 
 #profile-wrapper {
   #login-signup-title {

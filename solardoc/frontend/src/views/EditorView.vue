@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { storeToRefs, type SubscriptionCallbackMutation } from 'pinia'
+import { storeToRefs } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import { useEditorContentStore } from '@/stores/editor-content'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { handleRender } from '@/scripts/handle-render'
-import { useFileNameStore } from '@/stores/file-name'
+import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
-import { useLastModifiedStore } from '@/stores/last-modified'
-import { useWSClientStore } from '@/stores/ws-client'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
+import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
@@ -21,96 +19,57 @@ import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
 import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
-import * as backendAPI from '@/services/backend/api-service'
+import ShareUrlCreate from '@/components/editor/share-url/ShareUrlCreate.vue'
+import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
+import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
+import { interceptErrors } from '@/errors/error-handler'
+import { showWarnNotif } from '@/scripts/show-notif'
 
 const darkModeStore = useDarkModeStore()
-const editorContentStore = useEditorContentStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const overlayStateStore = useOverlayStateStore()
 const renderDataStore = useRenderDataStore()
-const fileNameStore = useFileNameStore()
-const lastModifiedStore = useLastModifiedStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const currentUserStore = useCurrentUserStore()
-const wsClientStore = useWSClientStore()
+const currentFileStore = useCurrentFileStore()
+const editorUpdateWSClient = useEditorUpdateWSClient()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
 
-currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
+// We need to be friendly after all :D
+showWelcomeIfNeverShownBefore()
 
-// Ensure the backend is running and reachable
-// TODO! Implement proper popup in case of error
-backendAPI
-  .checkIfRenderBackendIsReachable()
-  .then(void 0)
-  .catch((error: Error) => {
-    if (error) {
-      console.error(error)
-    }
-    throw new Error(
-      '[Editor] Render Backend is not reachable. Please copy the logs and contact the developers.',
-    )
-  })
-
-// Ensure the Phoenix backend is running and reachable -> If yes establish a connection
-phoenixBackend
-  .checkIfPhoenixBackendIsReachable()
-  .then(async () => {
+// ---------------------------------------------------------------------------------------------------------------------
+// ESSENTIAL CONNECTIONS
+// ---------------------------------------------------------------------------------------------------------------------
+interceptErrors(currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid())
+interceptErrors(backendAPI.ensureRenderBackendIsReachable())
+interceptErrors(
+  (async () => {
+    await phoenixBackend.ensurePhoenixBackendIsReachable()
     const authStatus =
       currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
     if (authStatus === 'authenticated') {
+      // Ensure that the user has the permissions to open the current file
+      currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
+
       console.log('[Editor] Attempting to connect to SDS')
-      wsClientStore.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
+      editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
     } else if (authStatus === 'expired-or-revoked') {
       await currentUserStore.logout()
+      currentFileStore.closeFile()
     } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
-      console.error('[Editor] Auth status is unreachable or unknown')
+      showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')
     } else {
       console.log('[Editor] Skipping connection to SDS. Not logged in!')
     }
-  })
-  .catch((error: Error) => {
-    if (error) {
-      console.error(`[Editor] ${error}`)
-    }
-    throw new Error(
-      '[Editor] Phoenix Backend is not reachable. Please copy the logs and contact the developers.',
-    )
-  })
-
-// Ensure the render preview is updated whenever the editor content changes
-editorContentStore.$subscribe(
-  async (
-    mutation: SubscriptionCallbackMutation<{ editorContent: string }>,
-    state: { editorContent: string },
-  ) => {
-    const { editorContent } = state
-    const renderResp = await handleRender(fileNameStore.fileName, editorContent)
-    renderDataStore.setRenderData(renderResp)
-    console.log(renderResp)
-
-    // If there is a connection to the Phoenix backend, send the updated content to the channel
-    if (wsClientStore.hasActiveChannelConnection) {
-      console.log('[Editor] Sending editor update to channel')
-      await wsClientStore.wsClient?.sendEditorUpdate(
-        {
-          body: editorContent,
-          render_url: renderResp.previewURL,
-        },
-        resp => {
-          console.log(`[Editor] Editor update sent (Resp: `, resp, ')')
-        },
-        error => {
-          console.error(`[Editor] Error sending editor update: `, error)
-        },
-      )
-    }
-  },
+  })(),
 )
+// ---------------------------------------------------------------------------------------------------------------------
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
@@ -121,39 +80,8 @@ function handlePreviewButtonPress() {
 let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
 const copyButtonContent = ref('Copy')
 
-let unsecureWarningShown: boolean = false
-function unsecuredCopyToClipboard(text: string) {
-  if (!unsecureWarningShown) {
-    console.warn(
-      "Falling back to unsecure copy-to-clipboard function (Uses deprecated 'document.execCommand')",
-    )
-    unsecureWarningShown = true
-  }
-
-  const textArea = document.createElement('textarea')
-  textArea.value = text
-  document.body.appendChild(textArea)
-  textArea.focus()
-  textArea.select()
-  try {
-    // Deprecated, but there is not alternative for HTTP-only contexts
-    document.execCommand('copy')
-  } catch (err) {
-    document.body.removeChild(textArea)
-    throw new Error('[Editor] Unable to copy to clipboard. Cause: ' + err)
-  }
-  document.body.removeChild(textArea)
-}
-
 function handleCopyButtonClick() {
-  if (navigator.clipboard) {
-    // If normal copy method available, use it
-    navigator.clipboard.writeText(editorContentStore.editorContent)
-  } else {
-    // Otherwise fallback to the above function
-    unsecuredCopyToClipboard(editorContentStore.editorContent)
-  }
-
+  handleCopy(currentFileStore.content)
   copyButtonContent.value = 'Copied!'
   if (copyButtonTimeout) {
     clearTimeout(copyButtonTimeout)
@@ -164,8 +92,8 @@ function handleCopyButtonClick() {
 }
 
 function handleDownloadButtonClick() {
-  let text: string = editorContentStore.editorContent
-  let fileName: string = fileNameStore.fileName
+  let text: string = currentFileStore.content
+  let fileName: string = currentFileStore.fileName
   let fileType: string = 'text/asciidoc'
   let bloby: Blob = new Blob([text], { type: fileType })
 
@@ -182,10 +110,14 @@ function handleDownloadButtonClick() {
   }, 1500)
 }
 
+function handleShareButtonClick() {
+  overlayStateStore.setShareUrlView(true)
+}
+
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 function getLastModified(): string {
-  return getHumanReadableTimeInfo(lastModifiedStore.lastModified)
+  return getHumanReadableTimeInfo(currentFileStore.lastModified)
 }
 
 const updateLastModified = () => (lastModified.value = getLastModified())
@@ -193,6 +125,7 @@ setInterval(updateLastModified, 500)
 </script>
 
 <template>
+  <ShareUrlCreate />
   <ChannelView />
   <FullScreenPreview />
   <div id="editor-page">
@@ -203,17 +136,27 @@ setInterval(updateLastModified, 500)
           <button class="editor-button" @click="handleCopyButtonClick()">
             {{ copyButtonContent }}
           </button>
-          <button class="editor-button">Share</button>
+          <button
+            v-if="currentFileStore.permissions === null"
+            class="editor-button"
+            @click="handleShareButtonClick()"
+          >
+            Share
+          </button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
+        </div>
+        <div id="save-state">
+          <p>{{ currentFileStore.saveState }}</p>
         </div>
       </div>
       <div id="menu-center">
         <div>
           <label for="file-name-input"></label>
+          <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
           <input
             id="file-name-input"
-            v-model="fileNameStore.fileName"
-            @input="fileNameStore.storeLocally()"
+            v-model="currentFileStore.fileName"
+            @input="event => currentFileStore.setFileName(event.target!.value)"
           />
         </div>
       </div>
@@ -249,7 +192,9 @@ setInterval(updateLastModified, 500)
             <p id="init-msg">Start typing and see preview!</p>
             <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
           </div>
-          <h2 v-else-if="(previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL">
+          <h2
+            v-else-if="(previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL"
+          >
             <span class="dot-dot-dot-flashing"></span>
           </h2>
           <iframe
@@ -339,6 +284,27 @@ div#editor-page {
         flex-flow: row nowrap;
         padding: var.$editor-menu-button-menu-padding;
         margin: var.$editor-menu-button-menu-margin;
+      }
+
+      #save-state {
+        display: flex;
+        flex-flow: row nowrap;
+        height: 100%;
+        font-size: 0.8rem;
+        margin: 0;
+
+        & > p {
+          @include align-center;
+          height: 100%;
+          color: var.$scheme-gray-600;
+
+          padding: 0 0.25rem;
+          @media screen and (min-width: var.$window-large) {
+            & {
+              padding: 2px 0.5rem 0;
+            }
+          }
+        }
       }
     }
 
@@ -467,8 +433,16 @@ div#editor-page {
           flex-direction: column;
 
           #init-msg {
-            font-size: 2rem;
-            margin: 0 0 2rem 0;
+            margin: 0.5rem 0.5rem 2rem 0.5rem;
+
+            // Change font size depending on the screen width
+            font-size: 1.2rem;
+
+            @media screen and (min-width: var.$window-large) {
+              & {
+                font-size: 2rem;
+              }
+            }
           }
         }
 

@@ -13,5 +13,3 @@ export type ProductionEnv<Name extends string> = {
 export type DevelopmentEnv<Name extends string> = {
   [Key in keyof ImportMetaEnv]: Key extends `DEV_${Name}` ? ImportMetaEnv[Key] : undefined
 }[`DEV_${Name}`]
-
-console.log(`[env.ts] Running in '${envType}' mode`)

@@ -1,4 +1,5 @@
 defmodule SolardocPhoenixWeb.Router do
+  @moduledoc false
   use SolardocPhoenixWeb, :router
 
   import SolardocPhoenixWeb.UserAuth
@@ -15,6 +16,7 @@ defmodule SolardocPhoenixWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :put_secure_browser_headers
     plug :fetch_api_user
   end
 
@@ -75,16 +77,17 @@ defmodule SolardocPhoenixWeb.Router do
 
     # Get the current user
     get "/users/current", UserController, :current
-
     # User routes
     get "/users", UserController, :index
 
     # User confirmation routes
+    # credo:disable-for-next-line
     # TODO! Finish the migration from the old user confirmation controller to the new API-only controller
     # post "/users/confirm", UserConfirmationController, :create
     # post "/users/confirm/:token", UserConfirmationController, :update
 
     # User settings routes
+    # credo:disable-for-next-line
     # TODO! Finish the migration from the old user settings controller to the new API-only controller
     # put "/users/settings", UserSettingsController, :update
     # get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
@@ -94,13 +97,22 @@ defmodule SolardocPhoenixWeb.Router do
 
     # Solardoc Auth API - Logging out i.e. deleting the user bearer token
     delete "/auth/bearer", UserAuthController, :delete
+
+    # File routes
+    resources "/files", FileController, only: [:index, :create, :show, :update, :delete]
+
+    # Share URL routes
+    get "/share/:id", ShareURLController, :show_share
+    get "/share/:id/file", ShareURLController, :show_file
+    delete "/share/:id", ShareURLController, :delete
+    post "/share", ShareURLController, :create
   end
 
   ########## - General API Info - ##########
 
   def swagger_info do
     %{
-      basePath: "/api",
+      basePath: "/phx/api",
       schemes: ["http", "https", "ws", "wss"],
       info: %{
         version: SolardocPhoenixWeb.version(),
@@ -129,6 +141,9 @@ defmodule SolardocPhoenixWeb.Router do
         %{name: "UserAuth", description: "User authentication resources"},
         %{name: "UserConfirmation", description: "User confirmation resources"},
         %{name: "UserSettings", description: "User settings resources"},
+        %{name: "EditorChannel", description: "Editor channel resources"},
+        %{name: "File", description: "File resources"},
+        %{name: "ShareURL", description: "Share URL resources"},
       ]
     }
   end

@@ -1,4 +1,5 @@
 defmodule SolardocPhoenixWeb.Endpoint do
+  @moduledoc false
   use Phoenix.Endpoint, otp_app: :solardoc_phoenix
 
   # The session will be stored in the cookie and signed,
@@ -10,6 +11,7 @@ defmodule SolardocPhoenixWeb.Endpoint do
     signing_salt: "Kn5OzD52",
     same_site: "Lax"
   ]
+
   # Serve socket at "/sds" (can be then accessed by the client through "ws://<DOMAIN>:4000/sd/websocket")
   socket "/phx/sds", SolardocPhoenixWeb.UserSocket,
     websocket: [
@@ -64,6 +66,14 @@ defmodule SolardocPhoenixWeb.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
+
+  # CORS
+  plug Corsica,
+    origins: "*",
+    allow_methods: ~w[GET POST PUT PATCH DELETE],
+    allow_headers: ~w[Authorization Content-Type],
+    max_age: 86_400
+
   plug Plug.Session, @session_options
   plug SolardocPhoenixWeb.Router
 end

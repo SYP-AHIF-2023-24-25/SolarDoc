@@ -1,0 +1,5 @@
+@mixin hover-background {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}

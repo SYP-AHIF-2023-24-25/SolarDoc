@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useLoadingStore } from '@/stores/loading'
+import { useNotification } from '@kyvg/vue3-notification'
 import HomeView from '../views/HomeView.vue'
+
+const { notify } = useNotification()
 
 const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
@@ -59,11 +62,21 @@ const router = createRouter({
       name: 'test-editor',
       component: () => import('@/views/TestEditorView.vue'),
     },
+    {
+      path: '/share/:shareUrlId',
+      name: 'share-url',
+      component: () => import('@/views/ShareURLView.vue'),
+    },
     // 404-page (reroutes in the view to the static 404.html)
     {
-      path: '/:pathMatch(.*)*',
+      path: '/404',
       name: 'not-found',
       component: () => import('@/views/NotFoundView.vue'),
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'fallback-not-found',
+      redirect: { name: 'not-found' },
     },
   ],
 })
@@ -75,6 +88,10 @@ router.beforeResolve((to, from, next) => {
     const loadingStore = useLoadingStore()
     loadingStore.setLoading(true)
   }
+
+  // Ensure all notifications are closed
+  notify({ clean: true })
+
   next()
 })
 

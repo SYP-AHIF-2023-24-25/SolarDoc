@@ -1,5 +1,6 @@
 import * as api from './gen/phoenix-rest-service'
 import { PHOENIX_URL, SDSCLIENT_URL } from './config'
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
 
 // Overwrite the default configuration depending on the environment
 api.defaults.baseUrl = PHOENIX_URL
@@ -17,10 +18,15 @@ console.log(`[phoenix/api-service.ts] Using phoenix backend at '${api.defaults.b
 // Log the WS URL in case there is a problem
 console.log(`[phoenix/api-service.ts] Using SDS at '${SDSCLIENT_URL}'`)
 
-export async function checkIfPhoenixBackendIsReachable(): Promise<void> {
-  const ping = await api.getV1Ping()
-  if (ping.status !== 200) {
-    throw new Error(`Phoenix Backend is not reachable. Response:\n${ping}`)
+export async function ensurePhoenixBackendIsReachable(): Promise<void> {
+  let ping: Awaited<ReturnType<typeof api.getV1Ping>> | undefined = undefined
+  try {
+    ping = await api.getV1Ping()
+  } catch (_ignore) {
+    /* empty */
+  }
+  if (!ping || ping.status !== 200) {
+    throw new SolardocUnreachableError(`Phoenix Backend is not reachable`)
   }
 }
 

@@ -1,14 +1,14 @@
 @use './core/var' as var;
 
-.page-form-wrapper {
+.page-content-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: var.$login-signup-wrapper-height;
-  width: var.$login-signup-wrapper-width;
+  min-height: var.$page-content-wrapper-height;
+  width: var.$page-content-wrapper-width;
 }
 
-.page-form-container {
+.page-content-container {
   width: 80vw;
   min-width: min(30vw, 100px);
   max-width: min(80vw, 500px);
@@ -16,10 +16,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
   border-radius: 10px;
   background-color: var.$overlay-background-color;
   box-shadow: 0 0 10px 0 var.$box-shadow-color;
+  margin: var.$page-content-container-margin;
+  padding: var.$page-content-container-padding;
 
   &.small {
     max-width: 30vw;
@@ -27,7 +28,7 @@
 
   &.large {
     width: unset;
-    min-width: 30vw;
+    min-width: 60vw;
     max-width: 80vw;
   }
 }

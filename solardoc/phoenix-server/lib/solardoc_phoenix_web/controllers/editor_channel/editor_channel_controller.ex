@@ -3,53 +3,44 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
   use PhoenixSwagger, except: [:delete]
 
   alias SolardocPhoenix.EditorChannels
-  alias SolardocPhoenix.EditorChannels.EditorChannel
 
   action_fallback SolardocPhoenixWeb.FallbackController
 
   @api_path SolardocPhoenixWeb.v1_api_path()
 
   def swagger_definitions do
-  %{
-    UserTrusted: swagger_schema do
-      title "UserTrusted"
-      description "A user which data can be accessed by trusted users i.e. an in between of public and private data"
-      properties do
-        id :string, "User UUID", required: true
-        username :string, "User username", required: true
+    %{
+      UserTrusted: swagger_schema do
+        title "UserTrusted"
+        description "A user which data can be accessed by trusted users i.e. an in between of public and private data"
+        properties do
+          id :string, "User UUID", required: true
+          username :string, "User username", required: true
+        end
+      end,
+      EditorChannel: swagger_schema do
+        title "EditorChannel"
+        description "An editor channel"
+        properties do
+          id :string, "Editor channel UUID", required: true
+          name :string, "Editor channel name", required: true
+          description :string, "Editor channel description", required: true
+          creator Schema.ref(:UserTrusted), "Editor channel creator", required: true
+          active_since :integer, "Editor channel active since in UNIX timestamp milliseconds", required: true
+        end
+      end,
+      EditorChannels: swagger_schema do
+        title "EditorChannels"
+        description "A list of editor channels"
+        type :array
+        items Schema.ref(:EditorChannel)
+      end,
+      ErrorResp: swagger_schema do
+        title "ErrorsResp"
+        description "A list of errors"
+        properties do end
       end
-    end,
-    EditorChannel: swagger_schema do
-      title "EditorChannel"
-      description "An editor channel"
-      properties do
-        id :string, "Editor channel UUID", required: true
-        name :string, "Editor channel name", required: true
-        description :string, "Editor channel description", required: true
-        creator Schema.ref(:UserTrusted), "Editor channel creator", required: true
-        active_since :integer, "Editor channel active since in milliseconds", required: true
-      end
-    end,
-    EditorChannels: swagger_schema do
-      title "EditorChannels"
-      description "A list of editor channels"
-      type :array
-      items Schema.ref(:EditorChannel)
-    end,
-    Error: swagger_schema do
-      title "Error"
-      description "An error"
-      properties do
-        detail :string, "Error message", required: true
-      end
-    end,
-    Errors: swagger_schema do
-      title "Errors"
-      description "A list of errors"
-      type :array
-      items Schema.ref(:Error)
-    end
-  }
+    }
   end
 
   swagger_path :index do
@@ -59,7 +50,7 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     response 200, "OK", Schema.ref(:EditorChannels)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def index(conn, _params) do
@@ -68,16 +59,16 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
   end
 
   swagger_path :show do
-    get "#{@api_path}/editor_channels/:id"
+    get "#{@api_path}/editor_channels/{id}"
     produces "application/json"
     summary "Get a single editor channel"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameters do
-      id :path, :integer, "Editor channel ID", required: true
+      id :path, :string, "Editor channel ID", required: true
     end
     response 200, "OK", Schema.ref(:EditorChannel)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def show(conn, %{"id" => id}) do
@@ -85,6 +76,7 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
     render(conn, :show, editor_channel: editor_channel)
   end
 
+# credo:disable-for-next-line
 # TODO! Implement and check whether the use is the creator of the channel
 #  swagger_path :update do
 #    put "#{@api_path}/editor_channels/:id"

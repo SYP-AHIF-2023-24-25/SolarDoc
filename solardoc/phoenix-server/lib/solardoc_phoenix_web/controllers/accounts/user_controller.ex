@@ -54,18 +54,10 @@ defmodule SolardocPhoenixWeb.UserController do
           intended_use :integer, "Users intended use", required: false
         end
       end,
-      Error: swagger_schema do
-        title "Error"
-        description "An error"
-        properties do
-          detail :string, "Error message", required: true
-        end
-      end,
-      Errors: swagger_schema do
-        title "Errors"
+      ErrorResp: swagger_schema do
+        title "ErrorsResp"
         description "A list of errors"
-        type :array
-        items Schema.ref(:Error)
+        properties do end
       end
     }
   end
@@ -75,6 +67,7 @@ defmodule SolardocPhoenixWeb.UserController do
     produces "application/json"
     summary "List all users"
     deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
     response 200, "OK", Schema.ref(:UsersPublic)
   end
 
@@ -90,7 +83,7 @@ defmodule SolardocPhoenixWeb.UserController do
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     response 200, "OK", Schema.ref(:UserPrivate)
-    response 401, "Unauthorized", Schema.ref(:Errors)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
   def current(conn, _params) do
@@ -104,14 +97,15 @@ defmodule SolardocPhoenixWeb.UserController do
     produces "application/json"
     summary "Create a new user"
     parameters do
-      user :body, Schema.ref(:CreateUser), "user attributes"
+      user :body, Schema.ref(:CreateUser), "Arguments for creating a user", required: true
     end
     response 201, "Created", Schema.ref(:UserPrivate)
-    response 400, "Bad Request", Schema.ref(:Errors)
+    response 400, "Bad Request", Schema.ref(:ErrorResp)
   end
 
   def create(conn, user_params) do
     with {:ok, user} <- Accounts.register_user(user_params) do
+# credo:disable-for-next-line
 # TODO! Uncomment this when email is working
 #      {:ok, _} =
 #        Accounts.deliver_user_confirmation_instructions(

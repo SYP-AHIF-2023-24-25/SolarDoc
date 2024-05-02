@@ -10,10 +10,13 @@ import SDRouterLink from '@/components/SDRouterLink.vue'
 import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreate.vue'
 import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { interceptErrors } from '@/errors/error-handler'
 
 const overlayStateStore = useOverlayStateStore()
 const channelViewStore = useChannelViewStore()
 const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 
 const { creatingChannel, selectedChannel, channels } = storeToRefs(channelViewStore)
 
@@ -29,13 +32,15 @@ async function refreshChannels() {
   loadingState.value = false
 }
 
-// Fetch channels again when the user returns from one of the forms
-watch([selectedChannel, creatingChannel], () => {
-  if (!selectedChannel.value || !creatingChannel.value) {
-    refreshChannels()
-  }
-})
-refreshChannels()
+if (currentUserStore.loggedIn) {
+  // Fetch channels again when the user returns from one of the forms
+  watch([selectedChannel, creatingChannel], async () => {
+    if (!selectedChannel.value || !creatingChannel.value) {
+      await interceptErrors(refreshChannels())
+    }
+  })
+  interceptErrors(refreshChannels())
+}
 </script>
 
 <template>
@@ -62,6 +67,12 @@ refreshChannels()
           id="create-button"
           class="highlighted-button"
           @click="channelViewStore.setCreatingChannel(true)"
+          :disabled="!currentFileStore.fileId"
+          v-tooltip="
+            !currentFileStore.fileId
+              ? 'You need to save the file before creating a channel'
+              : undefined
+          "
         >
           Create
         </button>
@@ -111,12 +122,26 @@ refreshChannels()
   #channel-view {
     position: relative;
     flex: 0 1 auto;
-    width: 50vw;
     height: max-content;
     border-radius: 1rem;
     padding: 0.5rem 2rem;
     background-color: var.$overlay-background-color;
     box-shadow: 0 0 10px 0 var.$box-shadow-color;
+
+    // Adjust size depending on the screen width
+    width: 90vw;
+
+    @media screen and (min-width: var.$window-medium) {
+      & {
+        width: 60vw;
+      }
+    }
+
+    @media screen and (min-width: var.$window-large) {
+      & {
+        width: 50vw;
+      }
+    }
 
     #channel-view-list {
       display: flex;

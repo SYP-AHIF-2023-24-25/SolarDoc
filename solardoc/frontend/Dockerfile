@@ -1,12 +1,12 @@
-FROM node:18.10.0-alpine3.15 AS base
+FROM node:20.12.2-alpine3.19 AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV PNPM_VERSION=8.9.2
 
 RUN corepack enable
-
-# Set PNPM version 7 to ensure compatibility with source code lockfiles
-RUN pnpm i -g pnpm@8.9.2
+RUN corepack use pnpm@$PNPM_VERSION
+RUN corepack install --global pnpm@$PNPM_VERSION
 
 # Set to a non-root built-in user `node`
 USER node
@@ -130,6 +130,9 @@ RUN pnpm run --filter @solardoc/frontend deploy
 # Lastly set the env variables for the frontend (which will be injected at runtime using @import-meta-env/cli)
 RUN npx pkg ./solardoc/frontend/node_modules/@import-meta-env/cli/bin/import-meta-env.js -t node18-alpine-x64 -o import-meta-env
 
+# Get the version from the package.json and inject it into the frontend (we are simply using a text search)
+RUN cat ./package.json | grep version | head -n 1 | cut -d: -f2 | tr -d '",' | tr -d ' ' > ./version.txt
+
 # -- PRODUCTION STAGE --
 FROM nginx:stable-alpine as production-stage
 
@@ -146,6 +149,7 @@ RUN chmod +x /etc/nginx/init.sh
 # Copy the built frontend + .env.template files which will be injected into the frontend at runtime
 COPY --from=build-stage-3 /home/node/app/solardoc/frontend/dist /usr/share/nginx/html
 COPY --from=build-stage-3 /home/node/app/solardoc/frontend/.env.prod.template /usr/share/nginx/html/.env.prod.template
+COPY --from=build-stage-3 /home/node/app/version.txt /usr/share/nginx/html/version.txt
 
 # Copy the import-meta-env binary
 COPY --from=build-stage-3 /home/node/app/import-meta-env /etc/nginx/import-meta-env

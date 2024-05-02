@@ -50,10 +50,15 @@ The user stories and goals for the project are listed here in the https://github
 ** Phoenix Backend for Auth-API & WebSocket
 ** Login & register pages
 ** WebSocket backend with simple user pools to listen for changes
-* Sprint 5 (Planned 11.04.2024):
+* Sprint 5 (Finished 11.04.2024):
 ** Collaborative Editing
 ** Share Links
 ** File Storage
+* Sprint 6 (Planned 02.05.2024):
+** Stabilise Channel API and OT library
+** Proper file explorer in the user profile
+** Share URLs can be created, accessed and modified using read/write permissions
+** Error modals and notifications to display user and API errors
 
 == Development 🛠
 
@@ -143,3 +148,7 @@ To run the tests, run the following command:
 ----
 pnpm run test
 ----
+
+== Is it any good?
+
+https://news.ycombinator.com/item?id=3067434[Yes.]

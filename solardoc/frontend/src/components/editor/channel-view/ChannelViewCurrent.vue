@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import type { EditorChannel } from '@/services/phoenix/editor-channel'
-import { useWSClientStore } from '@/stores/ws-client'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { useChannelViewStore } from '@/stores/channel-view'
+import { interceptErrors } from '@/errors/error-handler'
 
 const props = defineProps<{
   channel: EditorChannel
 }>()
 
-const wsClientStore = useWSClientStore()
+const editorUpdateWSClient = useEditorUpdateWSClient()
 const channelViewStore = useChannelViewStore()
 
-const { wsClient } = storeToRefs(wsClientStore)
-
+const { wsClient } = storeToRefs(editorUpdateWSClient)
 const loadingState = ref(false)
 
 async function handleLeaveChannel() {
@@ -77,7 +77,9 @@ setInterval(updateLastModified, 500)
           </div>
         </div>
         <div id="current-channel-element-interaction">
-          <button class="highlighted-button" @click="handleLeaveChannel()">Leave</button>
+          <button class="highlighted-button" @click="interceptErrors(handleLeaveChannel())">
+            Leave
+          </button>
         </div>
       </div>
     </div>
@@ -206,6 +208,10 @@ setInterval(updateLastModified, 500)
         margin-left: 0.5rem;
         font-size: 1.1rem;
         line-height: 2rem;
+
+        &, & * {
+          background: transparent;
+        }
 
         textarea {
           border: none;

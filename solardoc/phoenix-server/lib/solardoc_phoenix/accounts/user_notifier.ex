@@ -1,7 +1,11 @@
 defmodule SolardocPhoenix.Accounts.UserNotifier do
+  @moduledoc false
   import Swoosh.Email
 
   alias SolardocPhoenix.Mailer
+
+  # credo:disable-for-next-line
+  # TODO! Needs an integration with an email service provider.
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do

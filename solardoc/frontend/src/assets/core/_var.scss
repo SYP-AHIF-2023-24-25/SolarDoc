@@ -23,13 +23,20 @@
   --scheme-background-blue-subtle: #0f2555;
   --scheme-editor-black: var(--scheme-background-black);
   --scheme-editor-blue: var(--scheme-background-blue);
+  --scheme-friendly-blue: #44a4fc;
+  --scheme-friendly-deep-blue: #187fe7;
   --scheme-white-subtle: rgba(255, 255, 255, 0.2);
   --scheme-link-hover-color: var(--scheme-cs-2);
   --scheme-starting-green: #8be19c;
+  --scheme-starting-green-intense: #68cd86;
   --scheme-healthy-green: #00b834;
+  --scheme-healthy-green-intense: #378d4f;
   --scheme-warning-yellow: #ffcc00;
-  --scheme-danger-red: #ff0000;
+  --scheme-warning-yellow-intense: #f48a06;
+  --scheme-danger-red: #ff2c2c;
+  --scheme-danger-red-intense: #b82e24;
   --scheme-catastrophic-red: #940027;
+  --scheme-catastrophic-red-intense: #6b1c1c;
 
   // Universal gray tones
   --scheme-gray-100: #f3f4f6;
@@ -46,8 +53,11 @@
   --vueform-button-color: var(--scheme-cs-2);
   --vueform-button-color-hover: var(--scheme-cs-1);
 
+  // Button presets
+  --stylised-button-disabled-color: var(--scheme-gray-500);
+
   // Font-size presets
-  --home-button-font-size: 20px;
+  --button-font-size: 20px;
   --editor-button-font-size: 16px;
   --highlighted-button-font-size: 16px;
 
@@ -68,9 +78,26 @@
   --main-body-padding: 0;
   --main-body-margin: 0;
 
-  // Login/Signup presets
-  --login-signup-wrapper-height: calc(100vh - var(--nav-bar-height));
-  --login-signup-wrapper-width: 100%;
+  // Searchbar presets
+  --searchbar-height: 2rem;
+  --searchbar-padding: 0 1rem;
+  --searchbar-inner-padding: 0.5rem 1rem;
+  --searchbar-sandwich-size: 2.5rem;
+  --searchbar-sandwich-svg-size: 1.5rem;
+  --searchbar-sandwich-padding: 0.5rem;
+  --searchbar-sandwich-margin: 0 0 0 1rem;
+  --searchbar-border-radius: 0.5rem;
+
+  // Profile File Card presets
+  --profile-file-card-height: 18rem;
+  --profile-file-card-width: 16rem;
+  --profile-file-card-padding: 1rem;
+
+  // Page Content presets
+  --page-content-wrapper-height: calc(100vh - var(--nav-bar-height));
+  --page-content-wrapper-width: 100%;
+  --page-content-container-margin: 2rem 0;
+  --page-content-container-padding: 20px;
 
   // Editor body presets
   --editor-body-height: var(--main-body-height);
@@ -131,6 +158,9 @@
     var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
+
+  // Whole screen presets
+  --scrollbar-width: calc(100vw - 100%);
 }
 
 // Color-scheme presets
@@ -154,13 +184,20 @@ $scheme-neutral-gray: var(--scheme-neutral-gray);
 $scheme-background-black: var(--scheme-background-black);
 $scheme-editor-black: var(--scheme-background-black);
 $scheme-editor-blue: var(--scheme-editor-blue);
+$scheme-friendly-blue: var(--scheme-friendly-blue);
+$scheme-friendly-deep-blue: var(--scheme-friendly-deep-blue);
 $scheme-white-subtle: var(--scheme-white-subtle);
 $scheme-link-hover-color: var(--scheme-cs-2);
 $scheme-starting-green: var(--scheme-starting-green);
+$scheme-starting-green-intense: var(--scheme-starting-green-intense);
 $scheme-healthy-green: var(--scheme-healthy-green);
+$scheme-healthy-green-intense: var(--scheme-healthy-green-intense);
 $scheme-warning-yellow: var(--scheme-warning-yellow);
+$scheme-warning-yellow-intense: var(--scheme-warning-yellow-intense);
 $scheme-danger-red: var(--scheme-danger-red);
+$scheme-danger-red-intense: var(--scheme-danger-red-intense);
 $scheme-catastrophic-red: var(--scheme-catastrophic-red);
+$scheme-catastrophic-red-intense: var(--scheme-catastrophic-red-intense);
 
 // Universal gray tones
 $scheme-gray-100: var(--scheme-gray-100);
@@ -178,7 +215,7 @@ $vueform-button-color: var(--vueform-button-color);
 $vueform-button-color-hover: var(--vueform-button-color-hover);
 
 // Font-size presets
-$home-button-font-size: var(--home-button-font-size);
+$button-font-size: var(--button-font-size);
 $editor-button-font-size: var(--editor-button-font-size);
 $highlighted-button-font-size: var(--highlighted-button-font-size);
 
@@ -199,9 +236,26 @@ $main-body-width: var(--main-body-width);
 $main-body-padding: var(--main-body-padding);
 $main-body-margin: var(--main-body-margin);
 
-// Login/Signup presets
-$login-signup-wrapper-height: var(--login-signup-wrapper-height);
-$login-signup-wrapper-width: var(--login-signup-wrapper-width);
+// Searchbar presets
+$searchbar-height: var(--searchbar-height);
+$searchbar-padding: var(--searchbar-padding);
+$searchbar-inner-padding: var(--searchbar-inner-padding);
+$searchbar-sandwich-size: var(--searchbar-sandwich-size);
+$searchbar-sandwich-svg-size: var(--searchbar-sandwich-svg-size);
+$searchbar-sandwich-padding: var(--searchbar-sandwich-padding);
+$searchbar-sandwich-margin: var(--searchbar-sandwich-margin);
+$searchbar-border-radius: var(--searchbar-border-radius);
+
+// Profile File Card presets
+$profile-file-card-height: var(--profile-file-card-height);
+$profile-file-card-width: var(--profile-file-card-width);
+$profile-file-card-padding: var(--profile-file-card-padding);
+
+// Page Content presets
+$page-content-wrapper-height: var(--page-content-wrapper-height);
+$page-content-wrapper-width: var(--page-content-wrapper-width);
+$page-content-container-margin: var(--page-content-container-margin);
+$page-content-container-padding: var(--page-content-container-padding);
 
 // Editor body presets
 $editor-body-height: var(--editor-body-height);
@@ -264,11 +318,17 @@ html[data-theme='light'] {
   --text-color-inverted: white;
   --overlay-background-color: white;
   --overlay-background-color-subtle: var(--scheme-neutral-gray);
-  --home-button-transparent-background-color: var(--scheme-cs-2);
-  --home-button-transparent-hover-text-color: white;
   --box-shadow-color: rgba(0, 0, 0, 0.1);
+  --searchbar-background: var(--scheme-gray-100);
   --vueform-background: white;
   --vueform-background-hover: var(--scheme-gray-100);
+  --vueform-highlighted-box-background: var(--scheme-gray-100);
+  --vueform-highlighted-box-background-color-hover: var(--scheme-gray-200);
+  --vueform-highlighted-box-background-color-active: var(--scheme-gray-300);
+  --vueform-highlighted-box-border-color: var(--scheme-gray-300);
+  --placeholder-background: var(--scheme-gray-100);
+  --stylised-button-background-color: var(--scheme-cs-2);
+  --stylised-button-hover-text-color: white;
   --dot-dot-dot-color: var(--scheme-cs-2);
   --dot-dot-dot-color-subtle: var(--scheme-cs-2-subtle);
   --scheme-background: transparent;
@@ -280,10 +340,16 @@ html[data-theme='dark'] {
   --overlay-background-color: var(--scheme-background-black-subtle);
   --overlay-background-color-subtle: var(--scheme-background-blue-subtle);
   --box-shadow-color: transparent;
+  --searchbar-background: rgba(0, 0, 0, 0.2);
   --vueform-background: var(--scheme-gray-900);
   --vueform-background-hover: var(--scheme-gray-700);
-  --home-button-transparent-background-color: white;
-  --home-button-transparent-hover-text-color: black;
+  --vueform-highlighted-box-background-color: var(--scheme-gray-700);
+  --vueform-highlighted-box-background-color-hover: var(--scheme-gray-800);
+  --vueform-highlighted-box-background-color-active: var(--scheme-gray-900);
+  --vueform-highlighted-box-border-color: var(--scheme-gray-800);
+  --placeholder-background: var(--scheme-gray-900);
+  --stylised-button-background-color: white;
+  --stylised-button-hover-text-color: black;
   --dot-dot-dot-color: white;
   --dot-dot-dot-color-subtle: var(--scheme-white-subtle);
   --scheme-background: var(--scheme-background-black);
@@ -294,10 +360,24 @@ $text-color-inverted: var(--text-color-inverted);
 $overlay-background-color: var(--overlay-background-color);
 $overlay-background-color-subtle: var(--overlay-background-color-subtle);
 $box-shadow-color: var(--box-shadow-color);
+$searchbar-background: var(--searchbar-background);
 $vueform-background: var(--vueform-background);
 $vueform-background-hover: var(--vueform-background-hover);
-$home-button-transparent-text-color: var(--home-button-transparent-background-color);
-$home-button-transparent-hover-text-color: var(--home-button-transparent-hover-text-color);
+$vueform-highlighted-box-background-color: var(--vueform-highlighted-box-background-color);
+$vueform-highlighted-box-background-color-hover: var(
+  --vueform-highlighted-box-background-color-hover
+);
+$vueform-highlighted-box-background-color-active: var(
+  --vueform-highlighted-box-background-color-active
+);
+$vueform-highlighted-box-border-color: var(--vueform-highlighted-box-border-color);
+$placeholder-background: var(--placeholder-background);
+$stylised-button-text-color: var(--stylised-button-background-color);
+$stylised-button-hover-text-color: var(--stylised-button-hover-text-color);
+$stylised-button-disabled-color: var(--stylised-button-disabled-color);
 $dot-dot-dot-color: var(--dot-dot-dot-color);
 $dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);
 $scheme-background: var(--scheme-background);
+
+// Whole screen presets
+$scrollbar-width: var(--scrollbar-width);

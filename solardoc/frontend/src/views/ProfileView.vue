@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
+import ProfileHeader from '@/components/profile-view/header/ProfileHeader.vue'
+import ProfileFileOverview from '@/components/profile-view/file-view/ProfileFileOverview.vue'
+import ProfileViewHeaderButtons from '@/components/profile-view/header/ProfileViewHeaderButtons.vue'
 
 const currentUserStore = useCurrentUserStore()
 const $router = useRouter()
@@ -11,40 +14,23 @@ currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
 if (!currentUserStore.loggedIn) {
   $router.push('/login')
 }
-
-async function logout() {
-  await currentUserStore.logout()
-  await $router.push('/login')
-}
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-form-wrapper">
-    <div id="profile-container" class="page-form-container large">
-      <button id="logout-button" class="highlighted-button" @click="logout()">Logout</button>
-      <div id="profile-form">
-        <h1>
-          Profile Page ~<code>{{ currentUserStore.currentUser?.username || '' }}</code>
-        </h1>
-        <div id="profile-description">
-          <p>
-            <span>Id:</span><code>{{ currentUserStore.currentUser?.id || '' }}</code>
-          </p>
-          <p><span>Email:</span> {{ currentUserStore.currentUser?.email || '' }}</p>
-          <p><span>Role:</span> {{ currentUserStore.currentUser?.role || '' }}</p>
-          <p>
-            <span>Confirmed At:</span> {{ currentUserStore.currentUser?.confirmed_at || 'NaN' }}
-          </p>
-          <p><span>Organisation:</span> {{ currentUserStore.currentUser?.organisation || '' }}</p>
-        </div>
+  <div id="profile-wrapper" class="page-content-wrapper">
+    <div id="profile-container" class="page-content-container large">
+      <div id="profile-body">
+        <ProfileHeader />
+        <ProfileViewHeaderButtons />
       </div>
+      <ProfileFileOverview />
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
-@use '@/assets/page-form' as *;
+@use '@/assets/page-content' as *;
 @use '@/assets/core/mixins/align-center' as *;
 
 #profile-container {
@@ -53,45 +39,12 @@ async function logout() {
   align-content: unset;
   justify-content: unset;
 
-  #logout-button {
-    position: absolute;
-    top: calc(0.5rem + 40px * 0.67 + 48px - 1.5rem - 4px);
-    right: 1.5rem;
-    z-index: 101;
-
-    svg {
-      width: 1.5rem;
-      height: 1.5rem;
-      fill: var.$text-color;
-    }
-  }
-
-  #profile-form {
+  #profile-body {
+    display: flex;
     flex: 1 1 auto;
-    flex-direction: column;
-    min-width: 100%;
-
-    h1 {
-      // Avoid line break
-      white-space: nowrap;
-      margin-right: 10rem;
-    }
-
-    p {
-      margin-bottom: 1rem;
-    }
-
-    small {
-      font-style: italic;
-    }
-
-    code {
-      padding: 0 0.25rem;
-    }
-
-    span {
-      font-weight: bold;
-    }
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
   }
 }
 </style>

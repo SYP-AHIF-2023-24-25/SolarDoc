@@ -1,4 +1,5 @@
 defmodule SolardocPhoenix.Accounts.User do
+  @moduledoc false
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -49,8 +50,15 @@ defmodule SolardocPhoenix.Accounts.User do
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password, :username, :role, :organisation, :intended_use])
+    |> validate_username()
     |> validate_email(opts)
     |> validate_password(opts)
+  end
+
+  defp validate_username(changeset) do
+    changeset
+    |> validate_required([:username])
+    |> validate_length(:username, max: 20)
   end
 
   defp validate_email(changeset, opts) do

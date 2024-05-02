@@ -4,20 +4,62 @@ import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useOverlayStateStore } from '@/stores/overlay-state'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { showInfoNotifFromObj } from '@/scripts/show-notif'
+import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
+import { interceptErrors } from '@/errors/error-handler'
+import constants from '@/plugins/constants'
+import { showDummyLoading } from '@/scripts/show-dummy-loading'
+import { useLoadingStore } from '@/stores/loading'
 
 const darkModeStore = useDarkModeStore()
+const currentUserStore = useCurrentUserStore()
 const overlayStateStore = useOverlayStateStore()
+const currentFileStore = useCurrentFileStore()
+const loadingStore = useLoadingStore()
 
 const dropdown = ref(null)
+const $router = useRouter()
 
-function handleJoinChannel() {
-  overlayStateStore.setChannelView(true)
+function closeDropdown() {
   ;(
     dropdown.value as {
       close: () => void
     } | null
   )?.close()
+}
+
+function handleJoinChannel() {
+  overlayStateStore.setChannelView(true)
+  closeDropdown()
+}
+
+async function handleSaveButtonClick() {
+  const wasAlreadyUploaded = !!currentFileStore.fileId
+  closeDropdown()
+  showDummyLoading()
+  try {
+    await interceptErrors(ensureLoggedIn($router))
+    await interceptErrors(currentFileStore.storeOnServer(currentUserStore.bearer!))
+    if (wasAlreadyUploaded) {
+      showInfoNotifFromObj(constants.notifMessages.fileSaved)
+    } else {
+      showInfoNotifFromObj(constants.notifMessages.fileUploaded)
+    }
+  } catch (e) {
+    loadingStore.setLoading(false)
+    throw e
+  }
+}
+
+function handleNewFileButtonClick() {
+  closeDropdown()
+  showDummyLoading()
+  currentFileStore.closeFile()
+  showInfoNotifFromObj(constants.notifMessages.newFile)
 }
 </script>
 
@@ -37,8 +79,8 @@ function handleJoinChannel() {
       </button>
     </template>
     <div id="dropdown-elements">
-      <div class="dropdown-element">Close file (In work...)</div>
-      <div class="dropdown-element">Save (In work...)</div>
+      <div class="dropdown-element" @click="handleNewFileButtonClick()">New File</div>
+      <div class="dropdown-element" @click="handleSaveButtonClick()">Save in profile</div>
       <div class="dropdown-element" @click="handleJoinChannel()">Channels</div>
       <div class="dropdown-element">Settings (In work...)</div>
     </div>

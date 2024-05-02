@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { useChannelViewStore } from '@/stores/channel-view'
-import { useWSClientStore } from '@/stores/ws-client'
 import { ref } from 'vue'
+import { useChannelViewStore } from '@/stores/channel-view'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import { useCurrentFileStore } from '@/stores/current-file'
 import type { EditorChannel, JoinChannelOptions } from '@/services/phoenix/editor-channel'
 import type { Vueform } from '@vueform/vueform'
+import type { OTransRespDto } from '@/services/phoenix/ot-trans'
+import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { handleOTUpdates } from '@/scripts/handle-ot'
+import { PhoenixSDSError } from '@/services/phoenix/errors'
 
+const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 const channelState = useChannelViewStore()
-const wsClientStore = useWSClientStore()
+const editorUpdateWSClient = useEditorUpdateWSClient()
 const channelViewStore = useChannelViewStore()
 
 const loadingState = ref(false)
@@ -24,24 +32,36 @@ async function submitForm(
 ) {
   if (!form$?.requestData) {
     return
-  } else if (!wsClientStore.wsClient || !wsClientStore.wsClient.healthy) {
-    throw new Error(
-      '[ChannelView] Websocket client is not active or healthy. Can not join channel!',
+  } else if (!editorUpdateWSClient.wsClient || !editorUpdateWSClient.wsClient.healthy) {
+    throw new PhoenixSDSError(
+      'Websocket client is not active or healthy. Can not join channel!',
+      'Please reload page and try again later. If the problem persists, contact the developers.',
     )
   }
 
   loadingState.value = true
-  await wsClientStore.wsClient?.joinChannel(
+  await editorUpdateWSClient.wsClient?.joinChannel(
     `channel:${props.channel.id}`,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async _ => {
+    async (initTrans: OTransRespDto, file: Required<File>) => {
+      currentFileStore.setFile(file)
+      currentFileStore.initOTransStackFromServerTrans(initTrans)
+
       channelViewStore.setChannelJoined(true)
       channelViewStore.setSelectedChannel(props.channel)
       console.log(`[ChannelView] Channel joined (Id: ${props.channel.id})`)
+
+      // Start the ot update handler
+      handleOTUpdates()
     },
     errorResp => {
-      console.error('[ChannelView] Error joining new channel', errorResp)
+      console.error('[ChannelView] Error joining channel:', errorResp)
+      throw new PhoenixSDSError(
+        'Error joining channel',
+        'Please try again later. If the problem persists, contact the developers.',
+      )
     },
+    currentUserStore.currentUser!.id,
     {
       auth: form$.requestData.password,
     } satisfies JoinChannelOptions,
