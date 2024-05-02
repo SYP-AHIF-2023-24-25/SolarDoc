@@ -295,12 +295,16 @@ div#editor-page {
         display: flex;
         flex-flow: row nowrap;
         height: 100%;
+        max-width: 100%;
         font-size: 0.8rem;
 
         & > p {
           @include align-center;
           height: 1.5rem;
           color: var.$scheme-gray-600;
+          max-width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
 
           padding: 0 0.25rem;
           @media screen and (min-width: var.$window-large) {
