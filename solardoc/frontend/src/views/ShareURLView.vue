@@ -49,7 +49,7 @@ async function handleShareURLReq(shareUrlId: unknown): Promise<void> {
         )
       }
       if (getShare.status === 200) {
-        currentFileStore.setFile(resp.data)
+        currentFileStore.setFile(resp.data, getShare.data.perms)
         loadingStore.setLoading(false)
         await $router.push('/editor')
       } else if (getShare.status === 401) {

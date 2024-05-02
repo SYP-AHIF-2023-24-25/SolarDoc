@@ -45,6 +45,11 @@ export const useCurrentFileStore = defineStore('currentFile', {
       localStorage.setItem(constants.localStorageLastModifiedKey, localStorageLastModified)
     }
 
+    if (!storedPermissions) {
+      storedPermissions = null
+      localStorage.setItem(constants.localStorageFilePermissionsKey, "")
+    }
+
     return {
       fileId: <string | undefined>storedFileId || undefined,
       fileName: storedFileName,
@@ -233,13 +238,14 @@ export const useCurrentFileStore = defineStore('currentFile', {
     setOnlineSaveState(value: boolean) {
       this.saveState = value ? 'Saved Remotely' : 'Saved Locally'
     },
-    setFile(file: Required<File>) {
+    setFile(file: Required<File>, perm: number | null = null) {
       this.setFileId(file.id)
       this.setOwnerId(file.owner_id)
       this.setFileName(file.file_name)
       this.setContent(file.content)
       this.setOnlineSaveState(true)
       this.setLastModified(new Date(file.last_edited))
+      this.setPermissions(perm)
     },
     setFileId(fileId: string) {
       this.fileId = fileId
@@ -274,6 +280,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     setPermissions(permissions: number | null) {
       this.permissions = permissions
+      localStorage.setItem(constants.localStorageFilePermissionsKey, permissions ? String(permissions) : "")
     },
     closeFile() {
       this.clearFileId()
