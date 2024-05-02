@@ -209,6 +209,10 @@ setInterval(updateLastModified, 500)
         font-size: 1.1rem;
         line-height: 2rem;
 
+        &, & * {
+          background: transparent;
+        }
+
         textarea {
           border: none;
           resize: none;
