@@ -50,5 +50,5 @@ export default Object.freeze({
         'Log in again to continue working!',
     },
   } satisfies { [key: string]: { title: string; text: string } },
-  version: 'v0.6.0-dev',
+  version: 'v0.6.0',
 })
