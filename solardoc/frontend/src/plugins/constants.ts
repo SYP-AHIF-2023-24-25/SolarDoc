@@ -58,4 +58,5 @@ export default Object.freeze({
     unsavedChanges: 'Unsaved Changes',
   },
   version: 'v0.6.0',
+  copyright: 'Solardoc © 2023-2024 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
 })
