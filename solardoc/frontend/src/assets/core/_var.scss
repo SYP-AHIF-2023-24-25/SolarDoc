@@ -66,11 +66,8 @@
   --editor-button-font-size: 16px;
   --highlighted-button-font-size: 16px;
 
-  // Window size presets
-  --window-xlarge: 1600px;
-  --window-large: 1280px;
-  --window-medium: 768px;
-  --window-small: 640px;
+  // Whole screen presets
+  --scrollbar-width: calc(100vw - 100%);
 
   // Nav-bar presets (Required to allow for easier dynamic resizing)
   --nav-bar-height: 60px;
@@ -164,9 +161,6 @@
     var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
-
-  // Whole screen presets
-  --scrollbar-width: calc(100vw - 100%);
 }
 
 // Color-scheme presets
@@ -188,8 +182,11 @@ $scheme-space-black: var(--scheme-space-black);
 $scheme-black: var(--scheme-space-black);
 $scheme-neutral-gray: var(--scheme-neutral-gray);
 $scheme-background-black: var(--scheme-background-black);
+$scheme-background-black-subtle: var(--scheme-background-black-subtle);
 $scheme-editor-black: var(--scheme-background-black);
 $scheme-editor-blue: var(--scheme-editor-blue);
+$scheme-footer-black-primary: var(--scheme-footer-black-primary);
+$scheme-footer-black-secondary: var(--scheme-footer-black-secondary);
 $scheme-friendly-blue: var(--scheme-friendly-blue);
 $scheme-friendly-deep-blue: var(--scheme-friendly-deep-blue);
 $scheme-white-subtle: var(--scheme-white-subtle);
@@ -231,10 +228,18 @@ $editor-button-font-size: var(--editor-button-font-size);
 $highlighted-button-font-size: var(--highlighted-button-font-size);
 
 // Window size presets
-$window-xlarge: 1600px;
-$window-large: 1280px;
+$window-2xlarge: 1500px;
+$window-xlarge: 1280px;
+$window-large: 1140px;
+$window-xmedium: 1024px;
 $window-medium: 768px;
 $window-small: 640px;
+$window-xsmall: 480px;
+$window-2xsmall: 320px;
+$window-3xsmall: 240px;
+
+// Whole screen presets
+$scrollbar-width: var(--scrollbar-width);
 
 // Nav-bar presets (Required to allow for easier dynamic resizing)
 $nav-bar-height: var(--nav-bar-height);
@@ -346,7 +351,11 @@ html[data-theme='light'] {
   --stylised-button-hover-text-color: white;
   --dot-dot-dot-color: var(--scheme-cs-2);
   --dot-dot-dot-color-subtle: var(--scheme-cs-2-subtle);
+  --scheme-footer-black-primary: #0f111a;
+  --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: transparent;
+  --scheme-home-content-background-primary: white;
+  --scheme-home-content-background-secondary: var(--scheme-gray-100);
 }
 
 html[data-theme='dark'] {
@@ -370,7 +379,11 @@ html[data-theme='dark'] {
   --stylised-button-hover-text-color: black;
   --dot-dot-dot-color: white;
   --dot-dot-dot-color-subtle: var(--scheme-white-subtle);
+  --scheme-footer-black-primary: #0f111a;
+  --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: var(--scheme-background-black);
+  --scheme-home-content-background-primary: var(--scheme-footer-black-primary);
+  --scheme-home-content-background-secondary: var(--scheme-footer-black-secondary);
 }
 
 $text-color: var(--text-color);
@@ -399,6 +412,5 @@ $stylised-button-disabled-color: var(--stylised-button-disabled-color);
 $dot-dot-dot-color: var(--dot-dot-dot-color);
 $dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);
 $scheme-background: var(--scheme-background);
-
-// Whole screen presets
-$scrollbar-width: var(--scrollbar-width);
+$scheme-home-content-background-primary: var(--scheme-home-content-background-primary);
+$scheme-home-content-background-secondary: var(--scheme-home-content-background-secondary);

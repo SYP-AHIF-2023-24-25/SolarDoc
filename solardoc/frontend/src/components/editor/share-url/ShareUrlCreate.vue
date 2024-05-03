@@ -138,7 +138,7 @@ async function submitForm(
       }
     }
 
-    @media screen and (min-width: var.$window-large) {
+    @media screen and (min-width: var.$window-xlarge) {
       & {
         width: 50vw;
       }

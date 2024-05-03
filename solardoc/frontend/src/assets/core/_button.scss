@@ -12,6 +12,14 @@ button {
   cursor: pointer;
   outline: inherit;
   text-decoration: none;
+
+  &.no-wrap-button {
+    &,
+    & * {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
 }
 
 button.home-button {

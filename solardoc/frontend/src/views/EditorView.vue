@@ -307,7 +307,7 @@ div#editor-page {
           overflow: hidden;
 
           padding: 0 0.25rem;
-          @media screen and (min-width: var.$window-large) {
+          @media screen and (min-width: var.$window-xlarge) {
             & {
               padding: 2px 0.5rem 0;
             }
@@ -405,9 +405,7 @@ div#editor-page {
       flex-direction: column;
       flex-grow: 1;
       height: var.$editor-preview-menu-height;
-
-      // Overflow if the content is too large on the y-axis
-      overflow: hidden scroll;
+      overflow: hidden;
 
       #preview-meta-info {
         @include align-center();
@@ -464,7 +462,7 @@ div#editor-page {
             // Change font size depending on the screen width
             font-size: 1.2rem;
 
-            @media screen and (min-width: var.$window-large) {
+            @media screen and (min-width: var.$window-xlarge) {
               & {
                 font-size: 2rem;
               }
