@@ -94,19 +94,25 @@ function handleGoBack() {
         name="confirm"
         button-label="Confirm"
         :columns="{
-          container: 1,
+          default: {container: 2},
+          sm: {container: 1},
+          md: {container: 1},
         }"
         :submits="true"
+        style="width: 10rem;"
       />
       <ButtonElement
         name="goBack"
         button-label="Go Back"
         @click="handleGoBack"
         :columns="{
-          container: 2,
+          default: {container: 2},
+          sm: {container: 3},
+          md: {container: 1},
         }"
         :secondary="true"
         align="center"
+        style="width: 10rem;"
       />
     </Vueform>
   </div>

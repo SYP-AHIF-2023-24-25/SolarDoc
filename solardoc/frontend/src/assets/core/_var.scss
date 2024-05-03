@@ -67,9 +67,10 @@
   --highlighted-button-font-size: 16px;
 
   // Window size presets
-  --window-large: 1200px;
-  --window-medium: 900px;
-  --window-small: 600px;
+  --window-xlarge: 1600px;
+  --window-large: 1280px;
+  --window-medium: 768px;
+  --window-small: 640px;
 
   // Nav-bar presets (Required to allow for easier dynamic resizing)
   --nav-bar-height: 60px;
@@ -230,9 +231,10 @@ $editor-button-font-size: var(--editor-button-font-size);
 $highlighted-button-font-size: var(--highlighted-button-font-size);
 
 // Window size presets
-$window-large: 1200px;
-$window-medium: 900px;
-$window-small: 600px;
+$window-xlarge: 1600px;
+$window-large: 1280px;
+$window-medium: 768px;
+$window-small: 640px;
 
 // Nav-bar presets (Required to allow for easier dynamic resizing)
 $nav-bar-height: var(--nav-bar-height);
