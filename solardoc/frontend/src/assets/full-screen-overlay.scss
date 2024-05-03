@@ -1,4 +1,5 @@
 @use './core/var' as var;
+@use './core/mixins/screen-size' as *;
 
 .full-screen-overlay,
 .blurred-background-full-screen-overlay {
@@ -20,25 +21,25 @@
   width: 90vw;
   margin: 2rem;
 
-  @media screen and (min-width: var.$window-medium) {
+  @include r-min(var.$window-medium) {
     & {
       margin: 0;
       width: 75vw;
     }
   }
 
-  @media screen and (min-width: var.$window-large) {
+  @include r-min(var.$window-large) {
     & {
       margin: 0;
       width: 60vw;
     }
   }
 
-    @media screen and (min-width: var.$window-xlarge) {
-      & {
-        margin: 0;
-        width: 55vw;
-        max-width: var.$window-xlarge;
-      }
+  @include r-min(var.$window-2xlarge) {
+    & {
+      margin: 0;
+      width: 55vw;
+      max-width: var.$window-2xlarge;
     }
+  }
 }
