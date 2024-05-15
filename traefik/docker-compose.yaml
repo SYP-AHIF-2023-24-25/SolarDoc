@@ -2,7 +2,7 @@ version: '3'
 
 services:
   traefik-reverse-proxy:
-    image: traefik:v2.10
+    image: traefik:$VERSION
     restart: always
     volumes:
       # So that Traefik can listen to the Docker events
@@ -27,7 +27,7 @@ services:
       - "8080"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik-api.rule=Host(`$DOMAIN`)"
+      - "traefik.http.routers.traefik-api.rule=Host(`$DOMAIN`) && PathPrefix(`/traefik/dashboard`)"
       - "traefik.http.routers.traefik-api.service=api@internal"
 
 networks:

@@ -22,8 +22,8 @@ entryPoints:
         certresolver: solardocresolver
 
 api:
-  insecure: false
-  dashboard: false
+  insecure: true
+  dashboard: true
 
 log:
   level: "DEBUG"

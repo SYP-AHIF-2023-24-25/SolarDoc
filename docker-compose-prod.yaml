@@ -10,9 +10,12 @@ services:
       - solardocnet
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`$DOMAIN`)"
+      - "traefik.http.routers.frontend.rule=Host(`$DOMAIN`) && !PathPrefix(`/api`) && !PathPrefix(`/phx`)"
+      - "traefik.http.routers.frontend.priority=10"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=solardocresolver"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+
   rest-api:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-rest-api:$VERSION
     build: !reset null
@@ -23,16 +26,25 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.rest-api.rule=Host(`$DOMAIN`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.rest-api.priority=5"
       - "traefik.http.routers.rest-api.entrypoints=websecure"
       - "traefik.http.routers.rest-api.tls.certresolver=solardocresolver"
+      - "traefik.http.services.rest-api.loadbalancer.server.port=3000"
+
   redis-db:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-redis-db:$VERSION
     build: !reset null
+    ports: !override
+      - "6379:6379"
+      - "8001:8001"
     networks:
       - solardocnet
+
   phoenix-server:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-phoenix-server:$VERSION
     build: !reset null
+    ports: !override
+      - "4000:4000"
     networks:
       - solardocnet
     environment:
@@ -40,16 +52,22 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.phoenix-server.rule=Host(`$DOMAIN`) && PathPrefix(`/phx`)"
+      - "traefik.http.routers.phoenix-server.priority=5"
       - "traefik.http.routers.phoenix-server.entrypoints=websecure"
       - "traefik.http.routers.phoenix-server.tls.certresolver=solardocresolver"
+      - "traefik.http.services.phoenix-server.loadbalancer.server.port=4000"
+
   postgresql-db:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-postgresql-db:$VERSION
     build: !reset null
+    ports: !override
+      - "5432:5432"
     networks:
       - solardocnet
+
   postgres-adminer:
     ports: !override
-      - "8082:8080"
+      - "127.0.0.1:8082:8080"
     networks:
       - solardocnet
 
