@@ -22,13 +22,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
-    expose:
-      - "8080"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik-api.rule=Host(`$DOMAIN`) && PathPrefix(`/traefik/dashboard`)"
-      - "traefik.http.routers.traefik-api.service=api@internal"
 
 networks:
   solardocnet:
