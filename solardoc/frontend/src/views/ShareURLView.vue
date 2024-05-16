@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import ProgressSpinner from '@/components/ProgressSpinner.vue'
-import { useCurrentFileStore } from '@/stores/current-file'
-import { onMounted } from 'vue'
+import {type Permission, useCurrentFileStore} from '@/stores/current-file'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
-import { useRoute, useRouter } from 'vue-router'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 import { useLoadingStore } from '@/stores/loading'
+import { useRoute, useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -17,8 +17,8 @@ const $router = useRouter()
 
 loadingStore.setLoading(true)
 
-async function handleShareURLReq(shareUrlId: unknown): Promise<void> {
-  if (typeof shareUrlId !== 'string' || !shareUrlId) {
+async function handleShareURLReq(shareUrlId: string): Promise<void> {
+  if (!shareUrlId) {
     loadingStore.setLoading(false)
     await $router.push('/404')
   } else if (!currentUserStore.loggedIn) {
@@ -49,7 +49,7 @@ async function handleShareURLReq(shareUrlId: unknown): Promise<void> {
         )
       }
       if (getShare.status === 200) {
-        currentFileStore.setFile(resp.data, getShare.data.perms)
+        currentFileStore.setFile(resp.data, <Permission>getShare.data.perms)
         loadingStore.setLoading(false)
         await $router.push('/editor')
       } else if (getShare.status === 401) {
@@ -63,7 +63,7 @@ async function handleShareURLReq(shareUrlId: unknown): Promise<void> {
 }
 
 onMounted(async () => {
-  const shareUrlId = $route.params.shareUrlId
+  const shareUrlId = `${$route.params.shareUrlId}`
 
   try {
     await handleShareURLReq(shareUrlId)

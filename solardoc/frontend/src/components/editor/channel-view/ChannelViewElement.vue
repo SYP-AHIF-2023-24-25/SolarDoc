@@ -97,9 +97,10 @@ function handleJoinChannel() {
       textarea {
         border: none;
         resize: none;
-        padding: 0;
+        padding: 0 0 0 0.25rem;
         margin: 0;
         width: 100%;
+        background-color: transparent;
 
         &:hover {
           cursor: text;
