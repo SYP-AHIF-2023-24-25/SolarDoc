@@ -1,5 +1,5 @@
 @use './mixins/header-presets' as header-presets;
-@use './var' as *;
+@use './var' as var;
 
 // Import required fonts
 @import url('https://fonts.googleapis.com/css?family=League+Spartan');
@@ -11,7 +11,7 @@ html {
   font-weight: normal;
 
   * {
-    color: $text-color;
+    color: var.$text-color;
   }
 }
 
@@ -47,6 +47,11 @@ h6,
 
 p {
   margin: 0;
+}
+
+input {
+  color: var.$text-color;
+  -webkit-text-fill-color: var.$text-color !important;
 }
 
 /* Code Block Formatting */

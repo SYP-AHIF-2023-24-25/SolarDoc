@@ -44,8 +44,12 @@ if (currentUserStore.loggedIn) {
 </script>
 
 <template>
-  <div id="full-screen-wrapper" class="full-screen" v-if="overlayStateStore.channelView">
-    <div id="channel-view">
+  <div
+    id="full-screen-wrapper"
+    class="page-content-wrapper blurred-background-full-screen-overlay"
+    v-if="overlayStateStore.channelView"
+  >
+    <div id="channel-view" class="page-content-container large full-screen-overlay-content">
       <div id="channel-view-header">
         <button id="close-button" @click="overlayStateStore.setChannelView(false)">
           <CloseButtonSVG />
@@ -106,6 +110,7 @@ if (currentUserStore.loggedIn) {
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/full-screen-overlay' as *;
 
 #full-screen-wrapper {
   @include align-center;
@@ -127,21 +132,6 @@ if (currentUserStore.loggedIn) {
     padding: 0.5rem 2rem;
     background-color: var.$overlay-background-color;
     box-shadow: 0 0 10px 0 var.$box-shadow-color;
-
-    // Adjust size depending on the screen width
-    width: 90vw;
-
-    @media screen and (min-width: var.$window-medium) {
-      & {
-        width: 60vw;
-      }
-    }
-
-    @media screen and (min-width: var.$window-large) {
-      & {
-        width: 50vw;
-      }
-    }
 
     #channel-view-list {
       display: flex;

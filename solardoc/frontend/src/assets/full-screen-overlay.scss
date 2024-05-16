@@ -1,0 +1,45 @@
+@use './core/var' as var;
+@use './core/mixins/screen-size' as *;
+
+.full-screen-overlay,
+.blurred-background-full-screen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.blurred-background-full-screen-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.full-screen-overlay-content {
+  width: 90vw;
+  margin: 2rem;
+
+  @include r-min(var.$window-medium) {
+    & {
+      margin: 0;
+      width: 75vw;
+    }
+  }
+
+  @include r-min(var.$window-large) {
+    & {
+      margin: 0;
+      width: 60vw;
+    }
+  }
+
+  @include r-min(var.$window-2xlarge) {
+    & {
+      margin: 0;
+      width: 55vw;
+      max-width: var.$window-2xlarge;
+    }
+  }
+}

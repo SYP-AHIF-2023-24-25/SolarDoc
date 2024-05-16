@@ -12,6 +12,14 @@ button {
   cursor: pointer;
   outline: inherit;
   text-decoration: none;
+
+  &.no-wrap-button {
+    &,
+    & * {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
 }
 
 button.home-button {
@@ -76,7 +84,7 @@ button.editor-button {
   font-size: $editor-button-font-size;
   text-decoration: none;
   background: transparent;
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 1rem;
   margin: 0;
 
   &:hover {

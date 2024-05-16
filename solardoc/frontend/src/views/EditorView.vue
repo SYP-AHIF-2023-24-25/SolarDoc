@@ -26,6 +26,8 @@ import { SDSCLIENT_URL } from '@/services/phoenix/config'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
 import { interceptErrors } from '@/errors/error-handler'
 import { showWarnNotif } from '@/scripts/show-notif'
+import { Permissions } from '@/stores/current-file'
+import constants from "@/plugins/constants";
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -137,7 +139,7 @@ setInterval(updateLastModified, 500)
             {{ copyButtonContent }}
           </button>
           <button
-            v-if="currentFileStore.permissions === null"
+            v-if="currentFileStore.permissions === Permissions.Unknown"
             class="editor-button"
             @click="handleShareButtonClick()"
           >
@@ -146,7 +148,9 @@ setInterval(updateLastModified, 500)
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
         <div id="save-state">
-          <p>{{ currentFileStore.saveState }}</p>
+          <p
+            :class="currentFileStore.saveState === constants.saveStates.server ? 'saved' : 'error'"
+          >{{ currentFileStore.saveState }}</p>
         </div>
       </div>
       <div id="menu-center">
@@ -287,22 +291,44 @@ div#editor-page {
       }
 
       #save-state {
+        @include align-center;
         display: flex;
         flex-flow: row nowrap;
         height: 100%;
+        max-width: 100%;
         font-size: 0.8rem;
-        margin: 0;
 
         & > p {
           @include align-center;
-          height: 100%;
+          height: 1.5rem;
           color: var.$scheme-gray-600;
+          max-width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
 
           padding: 0 0.25rem;
-          @media screen and (min-width: var.$window-large) {
+          @media screen and (min-width: var.$window-xlarge) {
             & {
               padding: 2px 0.5rem 0;
             }
+          }
+
+          background-color: var.$scheme-gray-300;
+          border-radius: 2px;
+
+          &.saved {
+            background-color: var.$save-state-background-saved;
+            color: white;
+          }
+
+          &.error {
+            background-color: var.$save-state-background-error;
+            color: white;
+          }
+
+          &.not-saved {
+            background-color: var.$save-state-background-not-saved;
+            color: white;
           }
         }
       }
@@ -379,9 +405,7 @@ div#editor-page {
       flex-direction: column;
       flex-grow: 1;
       height: var.$editor-preview-menu-height;
-
-      // Overflow if the content is too large on the y-axis
-      overflow: hidden scroll;
+      overflow: hidden;
 
       #preview-meta-info {
         @include align-center();
@@ -438,7 +462,7 @@ div#editor-page {
             // Change font size depending on the screen width
             font-size: 1.2rem;
 
-            @media screen and (min-width: var.$window-large) {
+            @media screen and (min-width: var.$window-xlarge) {
               & {
                 font-size: 2rem;
               }

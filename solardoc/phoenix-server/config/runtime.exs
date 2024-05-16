@@ -58,10 +58,11 @@ if config_env() == :prod do
     url: [port: port, scheme: "http"],
     check_origin: [
       "//127.0.0.1:5173",
+      "//127.0.0.1:80",
       "//localhost:5173",
-      "//0.0.0.0:80",
-      "//*:5173",
-      "//*:80",
+      "//localhost:80",
+      "//0.0.0.0:5173",
+      "//0.0.0.0",
       "https://solardoc.htl-leonding.ac.at",
       "https://*.htl-leonding.ac.at"
     ],
