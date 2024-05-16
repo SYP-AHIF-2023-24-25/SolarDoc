@@ -14,6 +14,8 @@ const props = defineProps<{
 const editorUpdateWSClient = useEditorUpdateWSClient()
 const channelViewStore = useChannelViewStore()
 
+const channelDescription = ref(props.channel.description || '<None provided>')
+
 const { wsClient } = storeToRefs(editorUpdateWSClient)
 const loadingState = ref(false)
 
@@ -73,7 +75,7 @@ setInterval(updateLastModified, 500)
             <p><span>Active Users:</span> NaN</p>
             <p><span>Description:</span></p>
             <!-- eslint-disable-next-line vue/no-mutating-props -->
-            <textarea disabled wrap="soft" v-model="channel.description"></textarea>
+            <textarea disabled wrap="soft" v-model="channelDescription"></textarea>
           </div>
         </div>
         <div id="current-channel-element-interaction">
@@ -216,7 +218,7 @@ setInterval(updateLastModified, 500)
         textarea {
           border: none;
           resize: none;
-          padding: 0;
+          padding: 0 0 0 0.25rem;
           margin: 0 0 0.5rem 0;
           width: 100%;
 
