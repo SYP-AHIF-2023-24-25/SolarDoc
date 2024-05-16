@@ -351,6 +351,7 @@ html[data-theme='light'] {
   --stylised-button-hover-text-color: white;
   --dot-dot-dot-color: var(--scheme-cs-2);
   --dot-dot-dot-color-subtle: var(--scheme-cs-2-subtle);
+  --scheme-pulse-color: rgba(0, 0, 0, 0.2);
   --scheme-footer-black-primary: #0f111a;
   --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: transparent;
@@ -379,6 +380,7 @@ html[data-theme='dark'] {
   --stylised-button-hover-text-color: black;
   --dot-dot-dot-color: white;
   --dot-dot-dot-color-subtle: var(--scheme-white-subtle);
+  --scheme-pulse-color: rgba(255, 255, 255, 0.4);
   --scheme-footer-black-primary: #0f111a;
   --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: var(--scheme-background-black);
@@ -411,6 +413,7 @@ $stylised-button-hover-text-color: var(--stylised-button-hover-text-color);
 $stylised-button-disabled-color: var(--stylised-button-disabled-color);
 $dot-dot-dot-color: var(--dot-dot-dot-color);
 $dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);
+$scheme-pulse-color: var(--scheme-pulse-color);
 $scheme-background: var(--scheme-background);
 $scheme-home-content-background-primary: var(--scheme-home-content-background-primary);
 $scheme-home-content-background-secondary: var(--scheme-home-content-background-secondary);

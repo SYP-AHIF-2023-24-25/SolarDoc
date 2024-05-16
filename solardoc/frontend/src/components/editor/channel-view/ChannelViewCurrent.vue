@@ -149,7 +149,7 @@ setInterval(updateLastModified, 500)
 
         &.healthy span {
           background: var.$scheme-healthy-green;
-          animation: pulse-animation 2s infinite;
+          animation: pulse-animation 1.75s infinite;
         }
 
         &.leaving span {
@@ -170,7 +170,7 @@ setInterval(updateLastModified, 500)
 
         @keyframes pulse-animation {
           0% {
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 0 0 var.$scheme-pulse-color;
           }
           100% {
             box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
