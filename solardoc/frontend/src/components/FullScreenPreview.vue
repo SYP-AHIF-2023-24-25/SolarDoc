@@ -22,7 +22,11 @@ function toggleFillWholeScreen() {
 </script>
 
 <template>
-  <div id="full-screen-wrapper" class="full-screen" v-if="overlayStateStore.fullScreenPreview">
+  <div
+    id="full-screen-wrapper"
+    class="blurred-background-full-screen-overlay"
+    v-if="overlayStateStore.fullScreenPreview"
+  >
     <button id="close-button" @click="overlayStateStore.setFullScreenPreview(false)">
       <CloseButtonSVG />
     </button>
@@ -45,6 +49,7 @@ function toggleFillWholeScreen() {
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/full-screen-overlay' as *;
 
 #full-screen-wrapper {
   #close-button {

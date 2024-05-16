@@ -121,7 +121,7 @@ const darkModeStore = useDarkModeStore()
         display: flex;
         justify-content: space-between;
 
-        @media screen and (max-width: var.$window-large) {
+        @media screen and (max-width: var.$window-xlarge) {
           & {
             max-width: 20rem;
             width: 40vw;

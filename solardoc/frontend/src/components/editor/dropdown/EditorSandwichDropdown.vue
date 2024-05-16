@@ -5,20 +5,20 @@ import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { useCurrentFileStore } from '@/stores/current-file'
-import { useRouter } from 'vue-router'
-import { ref } from 'vue'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
 import { interceptErrors } from '@/errors/error-handler'
-import constants from '@/plugins/constants'
 import { showDummyLoading } from '@/scripts/show-dummy-loading'
 import { useLoadingStore } from '@/stores/loading'
+import constants from '@/plugins/constants'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
-const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
+const overlayStateStore = useOverlayStateStore()
 const loadingStore = useLoadingStore()
 
 const dropdown = ref(null)

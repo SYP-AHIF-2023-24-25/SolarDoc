@@ -29,14 +29,19 @@
   --scheme-link-hover-color: var(--scheme-cs-2);
   --scheme-starting-green: #8be19c;
   --scheme-starting-green-intense: #68cd86;
+  --scheme-starting-green-soft: #aef691;
   --scheme-healthy-green: #00b834;
   --scheme-healthy-green-intense: #378d4f;
+  --scheme-healthy-green-soft: #35e58f;
   --scheme-warning-yellow: #ffcc00;
   --scheme-warning-yellow-intense: #f48a06;
+  --scheme-warning-yellow-soft: #fad850;
   --scheme-danger-red: #ff2c2c;
   --scheme-danger-red-intense: #b82e24;
+  --scheme-danger-red-soft: #fd4c4c;
   --scheme-catastrophic-red: #940027;
   --scheme-catastrophic-red-intense: #6b1c1c;
+  --scheme-catastrophic-red-soft: #da3a3a;
 
   // Universal gray tones
   --scheme-gray-100: #f3f4f6;
@@ -61,10 +66,8 @@
   --editor-button-font-size: 16px;
   --highlighted-button-font-size: 16px;
 
-  // Window size presets
-  --window-large: 1200px;
-  --window-medium: 900px;
-  --window-small: 600px;
+  // Whole screen presets
+  --scrollbar-width: calc(100vw - 100%);
 
   // Nav-bar presets (Required to allow for easier dynamic resizing)
   --nav-bar-height: 60px;
@@ -158,9 +161,6 @@
     var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
-
-  // Whole screen presets
-  --scrollbar-width: calc(100vw - 100%);
 }
 
 // Color-scheme presets
@@ -182,22 +182,30 @@ $scheme-space-black: var(--scheme-space-black);
 $scheme-black: var(--scheme-space-black);
 $scheme-neutral-gray: var(--scheme-neutral-gray);
 $scheme-background-black: var(--scheme-background-black);
+$scheme-background-black-subtle: var(--scheme-background-black-subtle);
 $scheme-editor-black: var(--scheme-background-black);
 $scheme-editor-blue: var(--scheme-editor-blue);
+$scheme-footer-black-primary: var(--scheme-footer-black-primary);
+$scheme-footer-black-secondary: var(--scheme-footer-black-secondary);
 $scheme-friendly-blue: var(--scheme-friendly-blue);
 $scheme-friendly-deep-blue: var(--scheme-friendly-deep-blue);
 $scheme-white-subtle: var(--scheme-white-subtle);
 $scheme-link-hover-color: var(--scheme-cs-2);
 $scheme-starting-green: var(--scheme-starting-green);
 $scheme-starting-green-intense: var(--scheme-starting-green-intense);
+$scheme-starting-green-soft: var(--scheme-starting-green-soft);
 $scheme-healthy-green: var(--scheme-healthy-green);
 $scheme-healthy-green-intense: var(--scheme-healthy-green-intense);
+$scheme-healthy-green-soft: var(--scheme-healthy-green-soft);
 $scheme-warning-yellow: var(--scheme-warning-yellow);
 $scheme-warning-yellow-intense: var(--scheme-warning-yellow-intense);
+$scheme-warning-yellow-soft: var(--scheme-warning-yellow-soft);
 $scheme-danger-red: var(--scheme-danger-red);
 $scheme-danger-red-intense: var(--scheme-danger-red-intense);
+$scheme-danger-red-soft: var(--scheme-danger-red-soft);
 $scheme-catastrophic-red: var(--scheme-catastrophic-red);
 $scheme-catastrophic-red-intense: var(--scheme-catastrophic-red-intense);
+$scheme-catastrophic-red-soft: var(--scheme-catastrophic-red-soft);
 
 // Universal gray tones
 $scheme-gray-100: var(--scheme-gray-100);
@@ -220,9 +228,18 @@ $editor-button-font-size: var(--editor-button-font-size);
 $highlighted-button-font-size: var(--highlighted-button-font-size);
 
 // Window size presets
-$window-large: 1200px;
-$window-medium: 900px;
-$window-small: 600px;
+$window-2xlarge: 1500px;
+$window-xlarge: 1280px;
+$window-large: 1140px;
+$window-xmedium: 1024px;
+$window-medium: 768px;
+$window-small: 640px;
+$window-xsmall: 480px;
+$window-2xsmall: 320px;
+$window-3xsmall: 240px;
+
+// Whole screen presets
+$scrollbar-width: var(--scrollbar-width);
 
 // Nav-bar presets (Required to allow for easier dynamic resizing)
 $nav-bar-height: var(--nav-bar-height);
@@ -327,11 +344,19 @@ html[data-theme='light'] {
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-300);
   --vueform-highlighted-box-border-color: var(--scheme-gray-300);
   --placeholder-background: var(--scheme-gray-100);
+  --save-state-background-saved: var(--scheme-healthy-green-soft);
+  --save-state-background-error: var(--scheme-danger-red-soft);
+  --save-state-background-not-saved: var(--scheme-warning-yellow-soft);
   --stylised-button-background-color: var(--scheme-cs-2);
   --stylised-button-hover-text-color: white;
   --dot-dot-dot-color: var(--scheme-cs-2);
   --dot-dot-dot-color-subtle: var(--scheme-cs-2-subtle);
+  --scheme-pulse-color: rgba(0, 0, 0, 0.2);
+  --scheme-footer-black-primary: #0f111a;
+  --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: transparent;
+  --scheme-home-content-background-primary: white;
+  --scheme-home-content-background-secondary: var(--scheme-gray-100);
 }
 
 html[data-theme='dark'] {
@@ -348,11 +373,19 @@ html[data-theme='dark'] {
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-900);
   --vueform-highlighted-box-border-color: var(--scheme-gray-800);
   --placeholder-background: var(--scheme-gray-900);
+  --save-state-background-saved: var(--scheme-healthy-green);
+  --save-state-background-error: var(--scheme-danger-red);
+  --save-state-background-not-saved: var(--scheme-warning-yellow);
   --stylised-button-background-color: white;
   --stylised-button-hover-text-color: black;
   --dot-dot-dot-color: white;
   --dot-dot-dot-color-subtle: var(--scheme-white-subtle);
+  --scheme-pulse-color: rgba(255, 255, 255, 0.4);
+  --scheme-footer-black-primary: #0f111a;
+  --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: var(--scheme-background-black);
+  --scheme-home-content-background-primary: var(--scheme-footer-black-primary);
+  --scheme-home-content-background-secondary: var(--scheme-footer-black-secondary);
 }
 
 $text-color: var(--text-color);
@@ -372,12 +405,15 @@ $vueform-highlighted-box-background-color-active: var(
 );
 $vueform-highlighted-box-border-color: var(--vueform-highlighted-box-border-color);
 $placeholder-background: var(--placeholder-background);
+$save-state-background-saved: var(--save-state-background-saved);
+$save-state-background-error: var(--save-state-background-error);
+$save-state-background-not-saved: var(--save-state-background-not-saved);
 $stylised-button-text-color: var(--stylised-button-background-color);
 $stylised-button-hover-text-color: var(--stylised-button-hover-text-color);
 $stylised-button-disabled-color: var(--stylised-button-disabled-color);
 $dot-dot-dot-color: var(--dot-dot-dot-color);
 $dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);
+$scheme-pulse-color: var(--scheme-pulse-color);
 $scheme-background: var(--scheme-background);
-
-// Whole screen presets
-$scrollbar-width: var(--scrollbar-width);
+$scheme-home-content-background-primary: var(--scheme-home-content-background-primary);
+$scheme-home-content-background-secondary: var(--scheme-home-content-background-secondary);

@@ -50,5 +50,13 @@ export default Object.freeze({
         'Log in again to continue working!',
     },
   } satisfies { [key: string]: { title: string; text: string } },
-  version: 'v0.6.0',
+  defaultFileName: 'untitled.adoc',
+  defaultFileContent: '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°',
+  saveStates: {
+    local: 'Saved Locally',
+    server: 'Saved Remotely',
+    unsavedChanges: 'Unsaved Changes',
+  },
+  version: 'v0.6.1',
+  copyright: 'Solardoc © 2023-2024 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
 })
