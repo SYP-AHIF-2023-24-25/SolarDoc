@@ -11,11 +11,10 @@ darkModeStore.setThemeOnHTMLRoot()
 </script>
 
 <template>
+  <header>
+    <Navbar />
+  </header>
   <main>
-    <header>
-      <Navbar />
-    </header>
-
     <RouterView />
     <ModalsContainer />
     <ProgressSpinner />
@@ -25,21 +24,25 @@ darkModeStore.setThemeOnHTMLRoot()
       position="bottom right"
       :width="400"
     />
-
-    <footer>
-      <Footer />
-    </footer>
   </main>
+  <footer>
+    <Footer />
+  </footer>
 </template>
 
 <style scoped lang="scss">
+@use '@/assets/core/var' as var;
+
+header {
+  height: var.$nav-bar-height;
+  padding: 0;
+  margin: 0;
+}
+
 main {
+  min-height: calc(100% - var(--nav-bar-height));
   display: flex;
   flex-direction: column;
-
-  header {
-    padding: 0;
-    margin: 0;
-  }
+  align-content: space-around;
 }
 </style>
