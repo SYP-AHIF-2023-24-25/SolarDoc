@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ProgressSpinner from '@/components/ProgressSpinner.vue'
-import { useCurrentFileStore } from '@/stores/current-file'
+import {type Permission, useCurrentFileStore} from '@/stores/current-file'
 import { onMounted } from 'vue'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
@@ -49,7 +49,7 @@ async function handleShareURLReq(shareUrlId: unknown): Promise<void> {
         )
       }
       if (getShare.status === 200) {
-        currentFileStore.setFile(resp.data, getShare.data.perms)
+        currentFileStore.setFile(resp.data, <Permission>getShare.data.perms)
         loadingStore.setLoading(false)
         await $router.push('/editor')
       } else if (getShare.status === 401) {
