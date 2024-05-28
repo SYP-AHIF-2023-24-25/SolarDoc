@@ -40,7 +40,7 @@ header {
 }
 
 main {
-  min-height: calc(100% - var(--nav-bar-height));
+  min-height: calc(100vh - var(--nav-bar-height));
   display: flex;
   flex-direction: column;
   align-content: space-around;
