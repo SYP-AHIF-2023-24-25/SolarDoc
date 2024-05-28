@@ -14,6 +14,8 @@ const props = defineProps<{
 const editorUpdateWSClient = useEditorUpdateWSClient()
 const channelViewStore = useChannelViewStore()
 
+const channelDescription = ref(props.channel.description || '<None provided>')
+
 const { wsClient } = storeToRefs(editorUpdateWSClient)
 const loadingState = ref(false)
 
@@ -73,7 +75,7 @@ setInterval(updateLastModified, 500)
             <p><span>Active Users:</span> NaN</p>
             <p><span>Description:</span></p>
             <!-- eslint-disable-next-line vue/no-mutating-props -->
-            <textarea disabled wrap="soft" v-model="channel.description"></textarea>
+            <textarea disabled wrap="soft" v-model="channelDescription"></textarea>
           </div>
         </div>
         <div id="current-channel-element-interaction">
@@ -147,7 +149,7 @@ setInterval(updateLastModified, 500)
 
         &.healthy span {
           background: var.$scheme-healthy-green;
-          animation: pulse-animation 2s infinite;
+          animation: pulse-animation 1.75s infinite;
         }
 
         &.leaving span {
@@ -168,7 +170,7 @@ setInterval(updateLastModified, 500)
 
         @keyframes pulse-animation {
           0% {
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 0 0 var.$scheme-pulse-color;
           }
           100% {
             box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
@@ -216,7 +218,7 @@ setInterval(updateLastModified, 500)
         textarea {
           border: none;
           resize: none;
-          padding: 0;
+          padding: 0 0 0 0.25rem;
           margin: 0 0 0.5rem 0;
           width: 100%;
 
