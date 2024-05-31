@@ -55,10 +55,10 @@ async function handleSaveButtonClick() {
   }
 }
 
-function handleNewFileButtonClick() {
+async function handleNewFileButtonClick() {
   closeDropdown()
   showDummyLoading()
-  currentFileStore.closeFile()
+  await currentFileStore.closeFile()
   showInfoNotifFromObj(constants.notifMessages.newFile)
 }
 </script>

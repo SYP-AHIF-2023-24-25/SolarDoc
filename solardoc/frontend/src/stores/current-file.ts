@@ -75,7 +75,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
   },
   actions: {
-    ensureUserIsAuthorisedForFile(userId: string) {
+    async ensureUserIsAuthorisedForFile(userId: string) {
       if (!this.fileId || !this.ownerId) {
         this.clearFileId()
         this.clearOwnerId()
@@ -84,7 +84,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
 
       if (this.ownerId !== userId) {
-        this.closeFile()
+        await this.closeFile()
       }
     },
     async storeOnServer(bearer: string) {
@@ -283,13 +283,16 @@ export const useCurrentFileStore = defineStore('currentFile', {
         permissions ? String(permissions) : '',
       )
     },
-    closeFile() {
+    async closeFile() {
       this.clearFileId()
       this.setFileName(constants.defaultFileName)
       this.setContent(constants.defaultFileContent)
       this.setOnlineSaveState(false)
       this.clearOTransStack()
       this.setPermissions(Permissions.Unknown)
+
+      const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
+      SolardocEditor.setContent(constants.defaultFileContent)
     },
     clearOTransStack() {
       this.oTransStack = new Map<string, OTrans>()

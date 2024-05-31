@@ -56,13 +56,13 @@ interceptErrors(
       currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
     if (authStatus === 'authenticated') {
       // Ensure that the user has the permissions to open the current file
-      currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
+      await currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
 
       console.log('[Editor] Attempting to connect to SDS')
       editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
     } else if (authStatus === 'expired-or-revoked') {
       await currentUserStore.logout()
-      currentFileStore.closeFile()
+      await currentFileStore.closeFile()
     } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
       showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')
     } else {
