@@ -1,5 +1,5 @@
-import { type NotificationsOptions, useNotification } from '@kyvg/vue3-notification'
-import type { NotifiableError } from '@/errors/solardoc-error'
+import {type NotificationsOptions, useNotification} from '@kyvg/vue3-notification'
+import type {NotifiableError} from '@/errors/solardoc-error'
 
 export type NotificationType = Exclude<NotificationsOptions['type'], undefined>
 const duration: Record<NotificationType, number> = {

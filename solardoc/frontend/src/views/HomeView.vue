@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import SolardocStreamSVG from '@/components/icons/SolardocStreamSVG.vue'
-import HomeFeatureCard from "@/components/home/HomeFeatureCard.vue";
+import HomeFeatureCard from '@/components/home/HomeFeatureCard.vue'
 </script>
 
 <template>
@@ -12,8 +12,12 @@ import HomeFeatureCard from "@/components/home/HomeFeatureCard.vue";
           <p id="gradient-text">your way.</p>
         </div>
         <div id="buttons-wrapper">
-          <button class="home-button no-wrap-button" @click="$router.push('editor')">Try now</button>
-          <button class="home-button no-wrap-button transparent" @click="$router.push('docs')">Docs</button>
+          <button class="home-button no-wrap-button" @click="$router.push('editor')">
+            Try now
+          </button>
+          <button class="home-button no-wrap-button transparent" @click="$router.push('docs')">
+            Docs
+          </button>
         </div>
       </div>
       <div id="stream-svg">
@@ -37,7 +41,7 @@ import HomeFeatureCard from "@/components/home/HomeFeatureCard.vue";
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/page-content' as *;
 @use '@/assets/core/mixins/view-presets' as *;
@@ -93,7 +97,13 @@ import HomeFeatureCard from "@/components/home/HomeFeatureCard.vue";
 
         #gradient-text {
           color: transparent;
-          background: linear-gradient(262deg, var(--scheme-cs-4), var(--scheme-cs-1), var(--scheme-cs-4), var(--scheme-cs-1));
+          background: linear-gradient(
+            262deg,
+            var(--scheme-cs-4),
+            var(--scheme-cs-1),
+            var(--scheme-cs-4),
+            var(--scheme-cs-1)
+          );
           background-size: 400%;
           background-clip: text;
           -webkit-background-clip: text;
@@ -110,24 +120,48 @@ import HomeFeatureCard from "@/components/home/HomeFeatureCard.vue";
           }
 
           @-webkit-keyframes moving-gradient {
-            0%{background-position:0% 50%}
-            50%{background-position:100% 50%}
-            100%{background-position:0% 50%}
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
           }
           @-moz-keyframes moving-gradient {
-            0%{background-position:0% 50%}
-            50%{background-position:100% 50%}
-            100%{background-position:0% 50%}
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
           }
           @-o-keyframes moving-gradient {
-            0%{background-position:0% 50%}
-            50%{background-position:100% 50%}
-            100%{background-position:0% 50%}
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
           }
           @keyframes moving-gradient {
-            0%{background-position:0% 50%}
-            50%{background-position:100% 50%}
-            100%{background-position:0% 50%}
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
           }
 
           &::selection {
@@ -183,7 +217,11 @@ import HomeFeatureCard from "@/components/home/HomeFeatureCard.vue";
     @include align-center;
     width: 100%;
     height: 20rem;
-    background: linear-gradient(0deg, var.$scheme-home-content-background-primary, var.$scheme-home-content-background-secondary);
+    background: linear-gradient(
+      0deg,
+      var.$scheme-home-content-background-primary,
+      var.$scheme-home-content-background-secondary
+    );
 
     h2 {
       font-size: 3rem;

@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
-import type { RenderedPresentation } from '@/scripts/handle-render'
+import {defineStore} from 'pinia'
+import type {RenderedPresentation} from '@/scripts/handle-render'
 
 export const useRenderDataStore = defineStore('renderData', {
   state: () => {

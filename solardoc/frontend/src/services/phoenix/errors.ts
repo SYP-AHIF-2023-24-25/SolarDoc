@@ -1,5 +1,5 @@
-import { SolardocError } from '@/errors/solardoc-error'
-import { titlecase } from '@/scripts/titlecase'
+import {SolardocError} from '@/errors/solardoc-error'
+import {titlecase} from '@/scripts/titlecase'
 
 export type ActualPhxErrorResp = {
   errors: { detail: string } | { [key: string]: Array<string> }

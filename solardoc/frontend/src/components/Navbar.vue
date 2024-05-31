@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import HalfMoonSVG from '@/components/icons/HalfMoonSVG.vue'
 import GithubLogoSVG from '@/components/icons/GithubLogoSVG.vue'
 import SolardocLogoSVG from '@/components/icons/SolardocLogoSVG.vue'
@@ -9,7 +9,7 @@ import constants from '@/plugins/constants'
 import UserIconDarkModeSVG from '@/components/icons/UserIconDarkModeSVG.vue'
 import UserIconSVG from '@/components/icons/UserIconSVG.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
-import { useDarkModeStore } from '@/stores/dark-mode'
+import {useDarkModeStore} from '@/stores/dark-mode'
 
 const darkModeStore = useDarkModeStore()
 </script>
@@ -41,7 +41,7 @@ const darkModeStore = useDarkModeStore()
           <UserIconDarkModeSVG v-show="darkModeStore.darkMode" />
           <UserIconSVG v-show="!darkModeStore.darkMode" />
         </SDRouterLink>
-        <a :href="constants.githubURL" target="_blank" rel="noopener noreferrer">
+        <a :href="constants.githubURL" rel="noopener noreferrer" target="_blank">
           <GithubLogoDarkModeSVG v-show="darkModeStore.darkMode" />
           <GithubLogoSVG v-show="!darkModeStore.darkMode" />
         </a>
@@ -54,7 +54,7 @@ const darkModeStore = useDarkModeStore()
   </nav>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/mixins/link-hover-presets' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
 @use '@/assets/core/var' as var;

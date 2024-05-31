@@ -1,8 +1,8 @@
-<script setup lang="ts">
-import { handleRender } from '@/scripts/handle-render'
-import { useRenderDataStore } from '@/stores/render-data'
-import { useCurrentFileStore } from '@/stores/current-file'
-import { interceptErrors } from '@/errors/error-handler'
+<script lang="ts" setup>
+import {handleRender} from '@/scripts/handle-render'
+import {useRenderDataStore} from '@/stores/render-data'
+import {useCurrentFileStore} from '@/stores/current-file'
+import {interceptErrors} from '@/errors/handler/error-handler'
 
 const props = defineProps(['colorMode'])
 
@@ -37,4 +37,4 @@ function getColorModeClass(): string {
   </button>
 </template>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped></style>

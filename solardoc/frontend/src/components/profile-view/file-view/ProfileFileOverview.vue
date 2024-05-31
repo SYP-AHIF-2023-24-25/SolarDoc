@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import FilesList from '@/components/profile-view/file-view/FilesList.vue'
 import SearchBar from '@/components/profile-view/file-view/SearchBar.vue'
 </script>
@@ -13,7 +13,7 @@ import SearchBar from '@/components/profile-view/file-view/SearchBar.vue'
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 #profile-file-overview {
   display: flex;
   flex-flow: column nowrap;

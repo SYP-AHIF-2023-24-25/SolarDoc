@@ -1,4 +1,4 @@
-import { isDev } from '@/config/env'
+import {isDev} from '@/config/env'
 
 export const PHOENIX_URL = isDev
   ? `${import.meta.env.DEV_PHOENIX_HOST}${

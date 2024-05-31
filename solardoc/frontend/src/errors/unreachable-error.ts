@@ -1,4 +1,4 @@
-import { SolardocError } from '@/errors/solardoc-error'
+import {SolardocError} from '@/errors/solardoc-error'
 
 /**
  * Error class for when the Solardoc API is unreachable.

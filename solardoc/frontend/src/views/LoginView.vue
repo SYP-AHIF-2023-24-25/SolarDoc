@@ -1,15 +1,15 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import * as phoenixBackend from '@/services/phoenix/api-service'
-import { useRouter } from 'vue-router'
-import { useCurrentUserStore } from '@/stores/current-user'
-import type { Vueform } from '@vueform/vueform'
+import {useRouter} from 'vue-router'
+import {useCurrentUserStore} from '@/stores/current-user'
+import type {Vueform} from '@vueform/vueform'
 import {
   type ActualPhxErrorResp,
   PhoenixBadRequestError,
   PhoenixInvalidCredentialsError,
 } from '@/services/phoenix/errors'
-import { SolardocUnreachableError } from '@/errors/unreachable-error'
-import { interceptErrors } from '@/errors/error-handler'
+import {SolardocUnreachableError} from '@/errors/unreachable-error'
+import {interceptErrors} from '@/errors/handler/error-handler'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
@@ -76,36 +76,36 @@ async function submitForm(
       <h1 id="login-signup-title">Log in</h1>
       <Vueform
         ref="form$"
-        add-class="solardoc-style-form"
         :display-errors="false"
         :endpoint="false"
+        add-class="solardoc-style-form"
         @submit="(value: any) => interceptErrors(submitForm(value))"
       >
-        <TextElement name="email" label="Email" :rules="['required', 'email']" />
+        <TextElement :rules="['required', 'email']" label="Email" name="email" />
         <TextElement
-          name="password"
+          :rules="['required', 'min:0']"
           input-type="password"
           label="Password"
-          :rules="['required', 'min:0']"
+          name="password"
         />
         <ButtonElement
-          name="login"
-          button-label="Login"
-          @submit="submitForm"
           :columns="{
             container: 2,
           }"
           :submits="true"
+          button-label="Login"
+          name="login"
+          @submit="submitForm"
         />
         <ButtonElement
-          name="reset"
-          button-label="Reset"
-          :secondary="true"
-          :resets="true"
           :columns="{
             container: 2,
           }"
+          :resets="true"
+          :secondary="true"
           align="center"
+          button-label="Reset"
+          name="reset"
         />
         <div id="forgot-my-password">
           <a class="emphasised-link" @click="$router.push('reset-password')"
@@ -117,7 +117,7 @@ async function submitForm(
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/page-content' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;

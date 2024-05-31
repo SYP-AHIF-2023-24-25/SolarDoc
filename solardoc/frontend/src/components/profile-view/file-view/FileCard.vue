@@ -1,6 +1,6 @@
-<script setup lang="ts">
-import { getHumanReadableTimeInfo } from '@/scripts/format-date'
-import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
+<script lang="ts" setup>
+import {getHumanReadableTimeInfo} from '@/scripts/format-date'
+import type {File} from '@/services/phoenix/gen/phoenix-rest-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import {
   type ActualPhxErrorResp,
@@ -8,12 +8,12 @@ import {
   PhoenixInternalError,
   PhoenixInvalidCredentialsError,
 } from '@/services/phoenix/errors'
-import { useCurrentUserStore } from '@/stores/current-user'
-import { useCurrentFileStore } from '@/stores/current-file'
-import { useRouter } from 'vue-router'
-import { ref } from 'vue'
-import { interceptErrors } from '@/errors/error-handler'
-import { useLoadingStore } from '@/stores/loading'
+import {useCurrentUserStore} from '@/stores/current-user'
+import {useCurrentFileStore} from '@/stores/current-file'
+import {useRouter} from 'vue-router'
+import {ref} from 'vue'
+import {interceptErrors} from '@/errors/handler/error-handler'
+import {useLoadingStore} from '@/stores/loading'
 
 const props = defineProps<{ file: File }>()
 const deleted = ref(false)
@@ -72,7 +72,7 @@ setInterval(() => {
 </script>
 
 <template>
-  <div class="profile-file-overview-file" v-if="!deleted">
+  <div v-if="!deleted" class="profile-file-overview-file">
     <div id="slide-placeholder" @click="openFileInEditor()"></div>
     <div id="file-infos">
       <p>
@@ -89,7 +89,7 @@ setInterval(() => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 
 .profile-file-overview-file {
@@ -185,10 +185,11 @@ setInterval(() => {
     }
 
     /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 
-    p, p * {
+    p,
+    p * {
       display: flex;
       white-space: nowrap;
       margin: 0;

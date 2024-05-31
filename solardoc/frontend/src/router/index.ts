@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { useLoadingStore } from '@/stores/loading'
-import { useNotification } from '@kyvg/vue3-notification'
+import {createRouter, createWebHistory} from 'vue-router'
+import {useLoadingStore} from '@/stores/loading'
+import {useNotification} from '@kyvg/vue3-notification'
 import HomeView from '../views/HomeView.vue'
 
 const { notify } = useNotification()

@@ -1,6 +1,6 @@
 import * as api from './gen/phoenix-rest-service'
-import { PHOENIX_URL, SDSCLIENT_URL } from './config'
-import { SolardocUnreachableError } from '@/errors/unreachable-error'
+import {PHOENIX_URL, SDSCLIENT_URL} from './config'
+import {SolardocUnreachableError} from '@/errors/unreachable-error'
 
 // Overwrite the default configuration depending on the environment
 api.defaults.baseUrl = PHOENIX_URL

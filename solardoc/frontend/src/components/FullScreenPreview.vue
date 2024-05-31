@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useOverlayStateStore } from '@/stores/overlay-state'
-import { useInitStateStore } from '@/stores/init-state'
-import { useRenderDataStore } from '@/stores/render-data'
+import {ref} from 'vue'
+import {useOverlayStateStore} from '@/stores/overlay-state'
+import {useInitStateStore} from '@/stores/init-state'
+import {useRenderDataStore} from '@/stores/render-data'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import OpenFullscreenSVG from '@/components/icons/OpenFullscreenSVG.vue'

@@ -1,6 +1,6 @@
-<script setup lang="ts">
-import { useCurrentUserStore } from '@/stores/current-user'
-import { useRouter } from 'vue-router'
+<script lang="ts" setup>
+import {useCurrentUserStore} from '@/stores/current-user'
+import {useRouter} from 'vue-router'
 import ProfileHeader from '@/components/profile-view/header/ProfileHeader.vue'
 import ProfileFileOverview from '@/components/profile-view/file-view/ProfileFileOverview.vue'
 import ProfileViewHeaderButtons from '@/components/profile-view/header/ProfileViewHeaderButtons.vue'
@@ -28,7 +28,7 @@ if (!currentUserStore.loggedIn) {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/page-content' as *;
 @use '@/assets/core/mixins/align-center' as *;

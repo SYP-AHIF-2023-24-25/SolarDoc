@@ -1,4 +1,4 @@
-import type { IMarkerData } from '@/components/editor/error-checking'
+import type {IMarkerData} from '@/scripts/editor/error-checking'
 import constants from '@/plugins/constants'
 import * as monaco from 'monaco-editor'
 
