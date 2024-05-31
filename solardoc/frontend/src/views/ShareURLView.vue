@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ProgressSpinner from '@/components/ProgressSpinner.vue'
-import {type Permission, useCurrentFileStore} from '@/stores/current-file'
+import { type Permission, useCurrentFileStore } from '@/stores/current-file'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'

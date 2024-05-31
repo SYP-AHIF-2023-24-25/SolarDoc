@@ -185,10 +185,11 @@ setInterval(() => {
     }
 
     /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 
-    p, p * {
+    p,
+    p * {
       display: flex;
       white-space: nowrap;
       margin: 0;

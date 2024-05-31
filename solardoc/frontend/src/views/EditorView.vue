@@ -27,7 +27,7 @@ import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
 import { interceptErrors } from '@/errors/error-handler'
 import { showWarnNotif } from '@/scripts/show-notif'
 import { Permissions } from '@/stores/current-file'
-import constants from "@/plugins/constants";
+import constants from '@/plugins/constants'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -150,7 +150,9 @@ setInterval(updateLastModified, 500)
         <div id="save-state">
           <p
             :class="currentFileStore.saveState === constants.saveStates.server ? 'saved' : 'error'"
-          >{{ currentFileStore.saveState }}</p>
+          >
+            {{ currentFileStore.saveState }}
+          </p>
         </div>
       </div>
       <div id="menu-center">

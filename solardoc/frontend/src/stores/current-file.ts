@@ -27,7 +27,7 @@ export const Permissions = {
   None: 0,
   Read: 1,
   Write: 3,
-} as const satisfies {[key: string]: Permission}
+} as const satisfies { [key: string]: Permission }
 
 export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
@@ -56,7 +56,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
     if (!storedPermissions) {
       storedPermissions = null
-      localStorage.setItem(constants.localStorageFilePermissionsKey, "")
+      localStorage.setItem(constants.localStorageFilePermissionsKey, '')
     }
 
     return {
@@ -206,13 +206,13 @@ export const useCurrentFileStore = defineStore('currentFile', {
         if (oTrans.trans.type === 'insert') {
           this.setContent(
             this.content.slice(0, oTrans.trans.pos) +
-            oTrans.trans.content +
-            this.content.slice(oTrans.trans.pos)
+              oTrans.trans.content +
+              this.content.slice(oTrans.trans.pos),
           )
         } else if (oTrans.trans.type === 'delete') {
           this.setContent(
             this.content.slice(0, oTrans.trans.pos) +
-            this.content.slice(oTrans.trans.pos + oTrans.trans.length)
+              this.content.slice(oTrans.trans.pos + oTrans.trans.length),
           )
         }
       }
@@ -289,7 +289,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     setPermissions(permissions: Permission) {
       this.permissions = permissions
-      localStorage.setItem(constants.localStorageFilePermissionsKey, permissions ? String(permissions) : "")
+      localStorage.setItem(
+        constants.localStorageFilePermissionsKey,
+        permissions ? String(permissions) : '',
+      )
     },
     closeFile() {
       this.clearFileId()
