@@ -10,7 +10,7 @@ import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Vueform } from '@vueform/vueform'
 import { useCurrentFileStore } from '@/stores/current-file'
-import { handleOTUpdates } from '@/scripts/handle-ot'
+import { handleOTUpdates } from '@/services/phoenix/ot-trans'
 import { PhoenixNotAuthorisedError, PhoenixSDSError } from '@/services/phoenix/errors'
 import { interceptErrors } from '@/errors/error-handler'
 

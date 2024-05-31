@@ -201,20 +201,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
           init: false,
         }
         this.pushOTrans(newTrans)
-
-        // Perform the transformation on the current content
-        if (oTrans.trans.type === 'insert') {
-          this.setContent(
-            this.content.slice(0, oTrans.trans.pos) +
-              oTrans.trans.content +
-              this.content.slice(oTrans.trans.pos),
-          )
-        } else if (oTrans.trans.type === 'delete') {
-          this.setContent(
-            this.content.slice(0, oTrans.trans.pos) +
-              this.content.slice(oTrans.trans.pos + oTrans.trans.length),
-          )
-        }
+        this.applyOTrans(newTrans)
       }
     },
     /**
@@ -225,24 +212,30 @@ export const useCurrentFileStore = defineStore('currentFile', {
      */
     pushOTransReq(oTrans: OTransReqDto) {
       this.oTransNotAcked.set(oTrans.id, oTrans)
+      this.applyOTrans(oTrans)
     },
     /**
-     * Creates an OTrans object which represents a change to the content.
-     * @param insertOrDeleteTrans The raw insert or delete OTrans.
-     * @returns The OTrans object.
-     * @since 0.5.0
+     * Applies an OTrans to the current content.
+     *
+     * This should only be called inside this store.
+     * @param oTrans The OTrans object to apply.
+     * @since 0.7.0
+     * @private
      */
-    createOTrans(insertOrDeleteTrans: RawInsertOTrans | RawDeleteOTrans): OTransReqDto {
-      return {
-        id: uuidv4(),
-        trans: insertOrDeleteTrans,
+    applyOTrans(oTrans: OTrans | OTransReqDto) {
+      // Perform the transformation on the current content
+      if (oTrans.trans.type === 'insert') {
+        this.setContent(
+          this.content.slice(0, oTrans.trans.pos) +
+          oTrans.trans.content +
+          this.content.slice(oTrans.trans.pos),
+        )
+      } else if (oTrans.trans.type === 'delete') {
+        this.setContent(
+          this.content.slice(0, oTrans.trans.pos - oTrans.trans.length) +
+          this.content.slice(oTrans.trans.pos),
+        )
       }
-    },
-    createInsertOTrans(pos: number, content: string): OTransReqDto {
-      return this.createOTrans({ type: 'insert', pos, content })
-    },
-    createDeleteOTrans(pos: number, length: number): OTransReqDto {
-      return this.createOTrans({ type: 'delete', pos, length })
     },
     setOnlineSaveState(value: boolean) {
       this.saveState = value ? 'Saved Remotely' : 'Saved Locally'

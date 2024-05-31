@@ -8,7 +8,7 @@ import type { Vueform } from '@vueform/vueform'
 import type { OTransRespDto } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
 import { useCurrentUserStore } from '@/stores/current-user'
-import { handleOTUpdates } from '@/scripts/handle-ot'
+import { handleOTUpdates } from '@/services/phoenix/ot-trans'
 import { PhoenixSDSError } from '@/services/phoenix/errors'
 
 const currentUserStore = useCurrentUserStore()
