@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import constants from '@/plugins/constants'
 </script>
 
@@ -8,7 +8,7 @@ import constants from '@/plugins/constants'
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 
 #footer {

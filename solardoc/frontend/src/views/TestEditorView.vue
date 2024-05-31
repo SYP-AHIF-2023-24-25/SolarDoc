@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import Editor from '@/components/editor/Editor.vue'
 </script>
 
@@ -8,7 +8,7 @@ import Editor from '@/components/editor/Editor.vue'
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/mixins/view-presets' as *;
 
 div#test-editor-page {

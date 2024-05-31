@@ -1,6 +1,6 @@
-import { useCurrentFileStore } from '@/stores/current-file'
-import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
-import {v4 as uuidv4} from "uuid";
+import {useCurrentFileStore} from '@/stores/current-file'
+import {useEditorUpdateWSClient} from '@/stores/editor-update-ws-client'
+import {v4 as uuidv4} from 'uuid'
 
 /**
  * A raw operational transformation which inserts text.
@@ -65,11 +65,14 @@ const currentFileStore = useCurrentFileStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
 
 async function handleIncomingUpdate(toProcess: OTransRespDto): Promise<void> {
-  currentFileStore.pushOTransResp(toProcess)
+  await currentFileStore.pushOTransResp(toProcess)
 }
 
-export async function handleOutgoingUpdate(toSend: OTransReqDto, sendToRemote: boolean = false): Promise<void> {
-  currentFileStore.pushOTransReq(toSend)
+export async function handleOutgoingUpdate(
+  toSend: OTransReqDto,
+  sendToRemote: boolean = false,
+): Promise<void> {
+  await currentFileStore.pushOTransReq(toSend)
   if (sendToRemote) {
     await editorUpdateWSClient.wsClient?.sendOTrans(
       toSend,

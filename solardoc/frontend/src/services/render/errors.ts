@@ -1,4 +1,4 @@
-import { SolardocError } from '@/errors/solardoc-error'
+import {SolardocError} from '@/errors/solardoc-error'
 
 /**
  * An error that is thrown when the backend render service encounters an error.

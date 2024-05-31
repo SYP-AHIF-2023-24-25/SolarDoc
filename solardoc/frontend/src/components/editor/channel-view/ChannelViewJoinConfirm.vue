@@ -1,15 +1,15 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useChannelViewStore } from '@/stores/channel-view'
-import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
-import { useCurrentFileStore } from '@/stores/current-file'
-import type { EditorChannel, JoinChannelOptions } from '@/services/phoenix/editor-channel'
-import type { Vueform } from '@vueform/vueform'
-import type { OTransRespDto } from '@/services/phoenix/ot-trans'
-import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
-import { useCurrentUserStore } from '@/stores/current-user'
-import { handleOTUpdates } from '@/services/phoenix/ot-trans'
-import { PhoenixSDSError } from '@/services/phoenix/errors'
+<script lang="ts" setup>
+import {ref} from 'vue'
+import {useChannelViewStore} from '@/stores/channel-view'
+import {useEditorUpdateWSClient} from '@/stores/editor-update-ws-client'
+import {useCurrentFileStore} from '@/stores/current-file'
+import type {EditorChannel, JoinChannelOptions} from '@/services/phoenix/editor-channel'
+import type {Vueform} from '@vueform/vueform'
+import type {OTransRespDto} from '@/services/phoenix/ot-trans'
+import {handleOTUpdates} from '@/services/phoenix/ot-trans'
+import type {File} from '@/services/phoenix/gen/phoenix-rest-service'
+import {useCurrentUserStore} from '@/stores/current-user'
+import {PhoenixSDSError} from '@/services/phoenix/errors'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
@@ -45,7 +45,7 @@ async function submitForm(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async (initTrans: OTransRespDto, file: Required<File>) => {
       currentFileStore.setFile(file)
-      currentFileStore.initOTransStackFromServerTrans(initTrans)
+      await currentFileStore.initOTransStackFromServerTrans(initTrans)
 
       channelViewStore.setChannelJoined(true)
       channelViewStore.setSelectedChannel(props.channel)
@@ -79,32 +79,29 @@ function handleGoBack() {
     <h2>Please enter password for "{{ channel.name }}"</h2>
     <Vueform
       ref="form$"
-      add-class="solardoc-style-form"
       :display-errors="false"
       :endpoint="false"
+      add-class="solardoc-style-form"
       @submit="submitForm"
     >
       <TextElement
-        name="password"
+        :rules="['required', 'min:10']"
         input-type="password"
         label="Password"
-        :rules="['required', 'min:10']"
+        name="password"
       />
       <ButtonElement
-        name="confirm"
-        button-label="Confirm"
         :columns="{
           default: { container: 2 },
           sm: { container: 1 },
           md: { container: 1 },
         }"
         :submits="true"
+        button-label="Confirm"
+        name="confirm"
         style="width: 10rem"
       />
       <ButtonElement
-        name="goBack"
-        button-label="Go Back"
-        @click="handleGoBack"
         :columns="{
           default: { container: 2 },
           sm: { container: 3 },
@@ -112,7 +109,10 @@ function handleGoBack() {
         }"
         :secondary="true"
         align="center"
+        button-label="Go Back"
+        name="goBack"
         style="width: 10rem"
+        @click="handleGoBack"
       />
     </Vueform>
   </div>
@@ -121,7 +121,7 @@ function handleGoBack() {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 
 #channel-view-join-confirm-wrapper {

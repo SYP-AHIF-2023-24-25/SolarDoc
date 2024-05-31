@@ -1,11 +1,11 @@
-<script setup lang="ts">
-import { useRenderDataStore } from '@/stores/render-data'
-import { storeToRefs } from 'pinia'
-import { useInitStateStore } from '@/stores/init-state'
+<script lang="ts" setup>
+import {useRenderDataStore} from '@/stores/render-data'
+import {storeToRefs} from 'pinia'
+import {useInitStateStore} from '@/stores/init-state'
 import SlidePreview from '@/components/slides-navigator/SlidePreview.vue'
-import { ref, watch } from 'vue'
-import { useScroll } from '@vueuse/core'
-import { usePreviewMenuSlideStateStore } from '@/stores/preview-menu-slide-state'
+import {ref, watch} from 'vue'
+import {useScroll} from '@vueuse/core'
+import {usePreviewMenuSlideStateStore} from '@/stores/preview-menu-slide-state'
 
 const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()
@@ -30,7 +30,7 @@ watch(globalY, () => {
 </script>
 
 <template>
-  <div id="slides-navigator" v-if="!initStateStore.init" ref="slidesNavigatorEl">
+  <div v-if="!initStateStore.init" id="slides-navigator" ref="slidesNavigatorEl">
     <!-- For every *main* slide, create a slide preview -->
     <SlidePreview
       v-for="i in Array(slideCount || 2)
@@ -42,7 +42,7 @@ watch(globalY, () => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 
 #slides-navigator {

@@ -1,11 +1,11 @@
-<script setup lang="ts">
-import { getHumanReadableTimeInfo } from '@/scripts/format-date'
-import type { EditorChannel } from '@/services/phoenix/editor-channel'
-import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
-import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
-import { useChannelViewStore } from '@/stores/channel-view'
-import { interceptErrors } from '@/errors/error-handler'
+<script lang="ts" setup>
+import {getHumanReadableTimeInfo} from '@/scripts/format-date'
+import type {EditorChannel} from '@/services/phoenix/editor-channel'
+import {useEditorUpdateWSClient} from '@/stores/editor-update-ws-client'
+import {storeToRefs} from 'pinia'
+import {ref} from 'vue'
+import {useChannelViewStore} from '@/stores/channel-view'
+import {interceptErrors} from '@/errors/handler/error-handler'
 
 const props = defineProps<{
   channel: EditorChannel
@@ -31,6 +31,7 @@ async function handleLeaveChannel() {
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
+
 function getLastModified(): string {
   return getHumanReadableTimeInfo(props.channel.active_since)
 }
@@ -47,22 +48,22 @@ setInterval(updateLastModified, 500)
       </div>
       <div id="current-channel-element">
         <div id="channel-info-state">
-          <div class="joining" v-if="wsClient?.currentChannelState === 'joining'">
+          <div v-if="wsClient?.currentChannelState === 'joining'" class="joining">
             <span></span>
           </div>
-          <div class="leaving" v-else-if="wsClient?.currentChannelState === 'leaving'">
+          <div v-else-if="wsClient?.currentChannelState === 'leaving'" class="leaving">
             <span></span>
           </div>
-          <div class="errored" v-else-if="wsClient?.currentChannelState === 'errored'">
+          <div v-else-if="wsClient?.currentChannelState === 'errored'" class="errored">
             <span></span>
           </div>
-          <div class="closed" v-else-if="wsClient?.currentChannelState === 'closed'">
+          <div v-else-if="wsClient?.currentChannelState === 'closed'" class="closed">
             <span></span>
           </div>
-          <div class="healthy" v-else-if="wsClient?.currentChannelState === 'joined'">
+          <div v-else-if="wsClient?.currentChannelState === 'joined'" class="healthy">
             <span></span>
           </div>
-          <div class="unknown" v-else><span></span></div>
+          <div v-else class="unknown"><span></span></div>
         </div>
         <div id="current-channel-element-info">
           <h2 id="channel-info-title">
@@ -75,7 +76,7 @@ setInterval(updateLastModified, 500)
             <p><span>Active Users:</span> NaN</p>
             <p><span>Description:</span></p>
             <!-- eslint-disable-next-line vue/no-mutating-props -->
-            <textarea disabled wrap="soft" v-model="channelDescription"></textarea>
+            <textarea v-model="channelDescription" disabled wrap="soft"></textarea>
           </div>
         </div>
         <div id="current-channel-element-interaction">
@@ -93,7 +94,7 @@ setInterval(updateLastModified, 500)
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;

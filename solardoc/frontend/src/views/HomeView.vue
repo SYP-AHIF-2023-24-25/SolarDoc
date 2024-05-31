@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import SolardocStreamSVG from '@/components/icons/SolardocStreamSVG.vue'
 import HomeFeatureCard from '@/components/home/HomeFeatureCard.vue'
 </script>
@@ -41,7 +41,7 @@ import HomeFeatureCard from '@/components/home/HomeFeatureCard.vue'
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/page-content' as *;
 @use '@/assets/core/mixins/view-presets' as *;

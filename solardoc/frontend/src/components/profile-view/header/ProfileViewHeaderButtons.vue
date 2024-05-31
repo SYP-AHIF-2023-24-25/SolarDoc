@@ -1,10 +1,10 @@
-<script setup lang="ts">
-import { useCurrentUserStore } from '@/stores/current-user'
-import { useCurrentFileStore } from '@/stores/current-file'
-import { showInfoNotifFromObj } from '@/scripts/show-notif'
-import { handleError } from '@/errors/error-handler'
+<script lang="ts" setup>
+import {useCurrentUserStore} from '@/stores/current-user'
+import {useCurrentFileStore} from '@/stores/current-file'
+import {showInfoNotifFromObj} from '@/scripts/show-notif'
+import {handleError} from '@/errors/handler/error-handler'
 import constants from '@/plugins/constants'
-import { useRouter } from 'vue-router'
+import {useRouter} from 'vue-router'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
@@ -31,14 +31,14 @@ async function logout() {
 
 <template>
   <div id="profile-view-header-buttons">
-    <button id="edit-button" class="highlighted-button" disabled v-tooltip="'Not implemented yet'">
+    <button id="edit-button" v-tooltip="'Not implemented yet'" class="highlighted-button" disabled>
       Edit
     </button>
     <button id="logout-button" class="highlighted-button" @click="logout()">Logout</button>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 #profile-view-header-buttons {
   display: flex;
   margin-top: 2rem;

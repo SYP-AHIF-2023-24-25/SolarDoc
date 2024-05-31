@@ -1,7 +1,7 @@
-<script setup lang="ts">
-import { RouterView } from 'vue-router'
-import { ModalsContainer } from 'vue-final-modal'
-import { useDarkModeStore } from '@/stores/dark-mode'
+<script lang="ts" setup>
+import {RouterView} from 'vue-router'
+import {ModalsContainer} from 'vue-final-modal'
+import {useDarkModeStore} from '@/stores/dark-mode'
 import ProgressSpinner from '@/components/ProgressSpinner.vue'
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
@@ -19,10 +19,10 @@ darkModeStore.setThemeOnHTMLRoot()
     <ModalsContainer />
     <ProgressSpinner />
     <notifications
-      classes="styled-notif"
-      animation-type="velocity"
-      position="bottom right"
       :width="400"
+      animation-type="velocity"
+      classes="styled-notif"
+      position="bottom right"
     />
   </main>
   <footer>
@@ -30,7 +30,7 @@ darkModeStore.setThemeOnHTMLRoot()
   </footer>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 
 header {

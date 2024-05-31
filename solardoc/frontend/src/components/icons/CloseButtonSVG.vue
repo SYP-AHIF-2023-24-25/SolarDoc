@@ -2,10 +2,10 @@
   <svg
     fill="#000000"
     height="800px"
-    width="800px"
-    xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 460.775 460.775"
+    width="800px"
     xml:space="preserve"
+    xmlns="http://www.w3.org/2000/svg"
   >
     <path
       d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55

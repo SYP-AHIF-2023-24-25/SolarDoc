@@ -1,5 +1,5 @@
-import {handleOutgoingUpdate} from "@/services/phoenix/ot-trans";
-import type {OTransReqDto} from "@/services/phoenix/ot-trans";
+import type {OTransReqDto} from '@/services/phoenix/ot-trans'
+import {handleOutgoingUpdate} from '@/services/phoenix/ot-trans'
 
 /**
  * Sends the operational transformation updates to the server.
@@ -8,7 +8,10 @@ import type {OTransReqDto} from "@/services/phoenix/ot-trans";
  * updates to the server.
  * @since 0.7.0
  */
-export async function sendOTUpdates(ots: Array<OTransReqDto>, hasChannelConnection: boolean = false): Promise<void> {
+export async function sendOTUpdates(
+  ots: Array<OTransReqDto>,
+  hasChannelConnection: boolean = false,
+): Promise<void> {
   for (const oTrans of ots) {
     console.debug(`[Editor] Pushing OT operation:`, oTrans)
     await handleOutgoingUpdate(oTrans, hasChannelConnection)

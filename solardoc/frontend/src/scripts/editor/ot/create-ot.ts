@@ -1,8 +1,10 @@
-import type { OTransReqDto } from '@/services/phoenix/ot-trans'
+import type {OTransReqDto} from '@/services/phoenix/ot-trans'
 import {createDeleteOTrans, createInsertOTrans} from '@/services/phoenix/ot-trans'
-import { editor } from 'monaco-editor'
+import {editor} from 'monaco-editor'
 
-export async function createOTUpdates(changes: Array<editor.IModelContentChange>): Promise<Array<Array<OTransReqDto>>> {
+export async function createOTUpdates(
+  changes: Array<editor.IModelContentChange>,
+): Promise<Array<Array<OTransReqDto>>> {
   // We will create for every change a new OT operation
   // To do this though we will need to translate the monaco editor changes to OT operations
   // This is simple if we simply assume that empty text means deletion and non-empty text means insertion

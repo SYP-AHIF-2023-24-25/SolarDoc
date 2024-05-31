@@ -1,4 +1,5 @@
 let unsecureWarningShown: boolean = false
+
 function unsecuredCopyToClipboard(text: string) {
   if (!unsecureWarningShown) {
     console.warn(

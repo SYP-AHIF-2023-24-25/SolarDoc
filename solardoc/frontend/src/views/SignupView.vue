@@ -1,11 +1,11 @@
-<script setup lang="ts">
-import type { Vueform } from '@vueform/vueform'
+<script lang="ts" setup>
+import type {Vueform} from '@vueform/vueform'
 import * as phoenixBackend from '@/services/phoenix/api-service'
-import { useCurrentUserStore } from '@/stores/current-user'
-import { useRouter } from 'vue-router'
-import { SolardocUnreachableError } from '@/errors/unreachable-error'
-import { type ActualPhxErrorResp, PhoenixBadRequestError } from '@/services/phoenix/errors'
-import { interceptErrors } from '@/errors/error-handler'
+import {useCurrentUserStore} from '@/stores/current-user'
+import {useRouter} from 'vue-router'
+import {SolardocUnreachableError} from '@/errors/unreachable-error'
+import {type ActualPhxErrorResp, PhoenixBadRequestError} from '@/services/phoenix/errors'
+import {interceptErrors} from '@/errors/handler/error-handler'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
@@ -63,37 +63,36 @@ async function submitForm(
       <h1 id="login-signup-title">Sign up</h1>
       <Vueform
         ref="form$"
-        add-class="solardoc-style-form"
         :display-errors="false"
         :endpoint="false"
+        add-class="solardoc-style-form"
         @submit="(value: any) => interceptErrors(submitForm(value))"
       >
-        <TextElement name="username" label="Username" :rules="['required', 'min:6', 'max:20']" />
+        <TextElement :rules="['required', 'min:6', 'max:20']" label="Username" name="username" />
         <TextElement
-          name="email"
-          input-type="email"
           :rules="['required', 'email']"
-          label="Email"
           info="The email that will be used when contacting you regarding info or important matters e.g. resetting your password."
+          input-type="email"
+          label="Email"
+          name="email"
         />
         <TextElement
-          name="password"
-          input-type="password"
-          label="Password"
           :rules="[
             'required',
             'min:12',
             'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*_<>~]).{12,}$/',
           ]"
           info="Use at least 12 characters, at least one uppercase and lowercase letter, one number and one special character."
+          input-type="password"
+          label="Password"
+          name="password"
         />
         <TextElement
-          name="organisation"
-          label="Organisation"
           info="Potentially allows you to be eligible for organisation-specific benefits."
+          label="Organisation"
+          name="organisation"
         />
         <SelectElement
-          name="intended-use"
           :items="[
             {
               value: 0,
@@ -112,45 +111,46 @@ async function submitForm(
               label: 'Other',
             },
           ]"
-          :search="true"
           :native="false"
-          input-type="search"
-          autocomplete="off"
           :rules="['required']"
-          label="Intended Use"
+          :search="true"
+          autocomplete="off"
           info="What you are planning to use Solardoc for."
+          input-type="search"
+          label="Intended Use"
+          name="intended-use"
         />
         <CheckboxElement
-          name="accepts-conditions"
-          text="You, as the user, acknowledge that Solardoc is still in development and as such can not provide any guarantee for satisfaction or consistent user experience."
-          size="lg"
           :rules="['required', 'accepted']"
           field-name="usage conditions"
+          name="accepts-conditions"
+          size="lg"
+          text="You, as the user, acknowledge that Solardoc is still in development and as such can not provide any guarantee for satisfaction or consistent user experience."
         />
         <ButtonElement
-          name="submit"
-          button-label="Submit"
           :columns="{
             container: 2,
           }"
           :submits="true"
+          button-label="Submit"
+          name="submit"
         />
         <ButtonElement
-          name="reset"
-          button-label="Reset"
-          :secondary="true"
-          :resets="true"
           :columns="{
             container: 3,
           }"
+          :resets="true"
+          :secondary="true"
           align="center"
+          button-label="Reset"
+          name="reset"
         />
       </Vueform>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/page-content' as *;
 
