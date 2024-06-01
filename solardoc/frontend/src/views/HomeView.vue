@@ -1,6 +1,16 @@
 <script lang="ts" setup>
 import SolardocStreamSVG from '@/components/icons/SolardocStreamSVG.vue'
 import HomeFeatureCard from '@/components/home/HomeFeatureCard.vue'
+import {useLoadingStore} from "@/stores/loading";
+import {useRouter} from "vue-router";
+
+const $router = useRouter()
+const loadingStore = useLoadingStore()
+
+async function routeWithLoading(to: string) {
+  loadingStore.setLoading(true)
+  await $router.push(to)
+}
 </script>
 
 <template>
@@ -12,10 +22,10 @@ import HomeFeatureCard from '@/components/home/HomeFeatureCard.vue'
           <p id="gradient-text">your way.</p>
         </div>
         <div id="buttons-wrapper">
-          <button class="home-button no-wrap-button" @click="$router.push('editor')">
+          <button class="home-button no-wrap-button" @click="routeWithLoading('editor')">
             Try now
           </button>
-          <button class="home-button no-wrap-button transparent" @click="$router.push('docs')">
+          <button class="home-button no-wrap-button transparent" @click="routeWithLoading('docs')">
             Docs
           </button>
         </div>
