@@ -16,9 +16,13 @@
 
 // Make app take up whole screen
 html,
-body,
+body {
+  min-height: 100%;
+  width: 100%;
+}
+
 body > #app {
-  height: 100%;
+  min-height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;

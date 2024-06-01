@@ -1,12 +1,6 @@
-import { defineStore } from 'pinia'
-import type {
-  OTrans,
-  OTransReqDto,
-  OTransRespDto,
-  RawDeleteOTrans,
-  RawInsertOTrans,
-} from '@/services/phoenix/ot-trans'
-import type { File } from '@/services/phoenix/api-service'
+import {defineStore} from 'pinia'
+import type {OTrans, OTransReqDto, OTransRespDto} from '@/services/phoenix/ot-trans'
+import type {File} from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import {
   type ActualPhxErrorResp,
@@ -15,7 +9,6 @@ import {
   PhoenixNotAuthorisedError,
 } from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
-import { v4 as uuidv4 } from 'uuid'
 
 export type Unknown = null
 export type NoPermissions = 0
@@ -27,7 +20,7 @@ export const Permissions = {
   None: 0,
   Read: 1,
   Write: 3,
-} as const satisfies {[key: string]: Permission}
+} as const satisfies { [key: string]: Permission }
 
 export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
@@ -56,7 +49,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
     if (!storedPermissions) {
       storedPermissions = null
-      localStorage.setItem(constants.localStorageFilePermissionsKey, "")
+      localStorage.setItem(constants.localStorageFilePermissionsKey, '')
     }
 
     return {
@@ -82,7 +75,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
   },
   actions: {
-    ensureUserIsAuthorisedForFile(userId: string) {
+    async ensureUserIsAuthorisedForFile(userId: string) {
       if (!this.fileId || !this.ownerId) {
         this.clearFileId()
         this.clearOwnerId()
@@ -91,7 +84,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
 
       if (this.ownerId !== userId) {
-        this.closeFile()
+        await this.closeFile()
       }
     },
     async storeOnServer(bearer: string) {
@@ -153,9 +146,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
         throw new PhoenixNotAuthorisedError('Server rejected request to save file')
       }
     },
-    initOTransStackFromServerTrans(initOTransDto: OTransRespDto) {
+    async initOTransStackFromServerTrans(initOTransDto: OTransRespDto) {
       this.clearOTransStack()
-      this.pushOTrans({
+      await this.pushOTrans({
         ...initOTransDto,
         acknowledged: true,
         init: true,
@@ -170,9 +163,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @see lastTrans
      * @see oTransStack
      */
-    pushOTrans(oTrans: OTrans) {
+    async pushOTrans(oTrans: OTrans) {
       this.lastTrans = oTrans
       this.oTransStack.set(oTrans.id, oTrans)
+
+      const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
+      await SolardocEditor.applyOTUpdates(oTrans)
     },
     /**
      * "Pushes" an OTrans to the {@link oTransStack stack of transformations}.
@@ -182,7 +178,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @param oTrans The OTrans object to push.
      * @since 0.5.0
      */
-    pushOTransResp(oTrans: OTransRespDto) {
+    async pushOTransResp(oTrans: OTransRespDto) {
       const oTransWaiting = this.oTransNotAcked.get(oTrans.id)
       if (oTransWaiting) {
         const ackedTrans: OTrans = {
@@ -192,7 +188,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
           acknowledged: true,
           init: false,
         }
-        this.pushOTrans(ackedTrans)
+        await this.pushOTrans(ackedTrans)
       } else {
         // This is a new transformation
         const newTrans: OTrans = {
@@ -200,21 +196,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
           acknowledged: true,
           init: false,
         }
-        this.pushOTrans(newTrans)
-
-        // Perform the transformation on the current content
-        if (oTrans.trans.type === 'insert') {
-          this.setContent(
-            this.content.slice(0, oTrans.trans.pos) +
-            oTrans.trans.content +
-            this.content.slice(oTrans.trans.pos)
-          )
-        } else if (oTrans.trans.type === 'delete') {
-          this.setContent(
-            this.content.slice(0, oTrans.trans.pos) +
-            this.content.slice(oTrans.trans.pos + oTrans.trans.length)
-          )
-        }
+        await this.pushOTrans(newTrans)
+        this.applyOTrans(newTrans)
       }
     },
     /**
@@ -223,26 +206,32 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @param oTrans The OTrans object to push.
      * @since 0.5.0
      */
-    pushOTransReq(oTrans: OTransReqDto) {
+    async pushOTransReq(oTrans: OTransReqDto) {
       this.oTransNotAcked.set(oTrans.id, oTrans)
+      this.applyOTrans(oTrans)
     },
     /**
-     * Creates an OTrans object which represents a change to the content.
-     * @param insertOrDeleteTrans The raw insert or delete OTrans.
-     * @returns The OTrans object.
-     * @since 0.5.0
+     * Applies an OTrans to the current content.
+     *
+     * This should only be called inside this store.
+     * @param oTrans The OTrans object to apply.
+     * @since 0.7.0
+     * @private
      */
-    createOTrans(insertOrDeleteTrans: RawInsertOTrans | RawDeleteOTrans): OTransReqDto {
-      return {
-        id: uuidv4(),
-        trans: insertOrDeleteTrans,
+    applyOTrans(oTrans: OTrans | OTransReqDto) {
+      // Perform the transformation on the current content
+      if (oTrans.trans.type === 'insert') {
+        this.setContent(
+          this.content.slice(0, oTrans.trans.pos) +
+            oTrans.trans.content +
+            this.content.slice(oTrans.trans.pos),
+        )
+      } else if (oTrans.trans.type === 'delete') {
+        this.setContent(
+          this.content.slice(0, oTrans.trans.pos - oTrans.trans.length) +
+            this.content.slice(oTrans.trans.pos),
+        )
       }
-    },
-    createInsertOTrans(pos: number, content: string): OTransReqDto {
-      return this.createOTrans({ type: 'insert', pos, content })
-    },
-    createDeleteOTrans(pos: number, length: number): OTransReqDto {
-      return this.createOTrans({ type: 'delete', pos, length })
     },
     setOnlineSaveState(value: boolean) {
       this.saveState = value ? 'Saved Remotely' : 'Saved Locally'
@@ -289,15 +278,21 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     setPermissions(permissions: Permission) {
       this.permissions = permissions
-      localStorage.setItem(constants.localStorageFilePermissionsKey, permissions ? String(permissions) : "")
+      localStorage.setItem(
+        constants.localStorageFilePermissionsKey,
+        permissions ? String(permissions) : '',
+      )
     },
-    closeFile() {
+    async closeFile() {
       this.clearFileId()
       this.setFileName(constants.defaultFileName)
       this.setContent(constants.defaultFileContent)
       this.setOnlineSaveState(false)
       this.clearOTransStack()
       this.setPermissions(Permissions.Unknown)
+
+      const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
+      SolardocEditor.setContent(constants.defaultFileContent)
     },
     clearOTransStack() {
       this.oTransStack = new Map<string, OTrans>()

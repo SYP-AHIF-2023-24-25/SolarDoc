@@ -1,9 +1,9 @@
-import type { RenderPresentationDtoModel } from '@/services/render/gen/backend-rest-service'
+import type {RenderPresentationDtoModel} from '@/services/render/gen/backend-rest-service'
 import * as backendAPI from '@/services/render/api-service'
-import { usePreviewLoadingStore } from '@/stores/preview-loading'
-import { useInitStateStore } from '@/stores/init-state'
-import { SolardocUnreachableError } from '@/errors/unreachable-error'
-import { RenderBackendRestUnknownError } from '@/services/render/errors'
+import {usePreviewLoadingStore} from '@/stores/preview-loading'
+import {useInitStateStore} from '@/stores/init-state'
+import {SolardocUnreachableError} from '@/errors/unreachable-error'
+import {RenderBackendRestUnknownError} from '@/services/render/errors'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()

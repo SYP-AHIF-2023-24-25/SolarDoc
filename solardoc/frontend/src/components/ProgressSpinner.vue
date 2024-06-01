@@ -1,16 +1,16 @@
-<script setup lang="ts">
-import { useLoadingStore } from '@/stores/loading'
+<script lang="ts" setup>
+import {useLoadingStore} from '@/stores/loading'
 
 const loadingStore = useLoadingStore()
 </script>
 
 <template>
-  <div id="progress-spinner" v-show="loadingStore.loading">
+  <div v-show="loadingStore.loading" id="progress-spinner">
     <span class="loader-spinner"></span>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/spinner' as *;
 @use '@/assets/core/var' as var;
 

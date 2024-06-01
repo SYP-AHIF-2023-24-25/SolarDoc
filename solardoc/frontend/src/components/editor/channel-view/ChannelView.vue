@@ -1,17 +1,17 @@
-<script setup lang="ts">
-import { useOverlayStateStore } from '@/stores/overlay-state'
-import { useChannelViewStore } from '@/stores/channel-view'
-import { useCurrentUserStore } from '@/stores/current-user'
+<script lang="ts" setup>
+import {useOverlayStateStore} from '@/stores/overlay-state'
+import {useChannelViewStore} from '@/stores/channel-view'
+import {useCurrentUserStore} from '@/stores/current-user'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import ChannelViewElement from '@/components/editor/channel-view/ChannelViewElement.vue'
 import ChannelViewJoinConfirm from '@/components/editor/channel-view/ChannelViewJoinConfirm.vue'
 import ChannelViewCurrent from '@/components/editor/channel-view/ChannelViewCurrent.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
 import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreate.vue'
-import { storeToRefs } from 'pinia'
-import { ref, watch } from 'vue'
-import { useCurrentFileStore } from '@/stores/current-file'
-import { interceptErrors } from '@/errors/error-handler'
+import {storeToRefs} from 'pinia'
+import {ref, watch} from 'vue'
+import {useCurrentFileStore} from '@/stores/current-file'
+import {interceptErrors} from '@/errors/handler/error-handler'
 
 const overlayStateStore = useOverlayStateStore()
 const channelViewStore = useChannelViewStore()
@@ -45,9 +45,9 @@ if (currentUserStore.loggedIn) {
 
 <template>
   <div
+    v-if="overlayStateStore.channelView"
     id="full-screen-wrapper"
     class="page-content-wrapper blurred-background-full-screen-overlay"
-    v-if="overlayStateStore.channelView"
   >
     <div id="channel-view" class="page-content-container large full-screen-overlay-content">
       <div id="channel-view-header">
@@ -57,26 +57,26 @@ if (currentUserStore.loggedIn) {
         <h1>Channels</h1>
         <p id="experimental-tag">Experimental</p>
       </div>
-      <div id="channel-view-not-logged-in" v-if="!currentUserStore.loggedIn">
+      <div v-if="!currentUserStore.loggedIn" id="channel-view-not-logged-in">
         <p>
           You need to be logged in to view channels
           <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
         </p>
       </div>
-      <div id="channel-create" v-else-if="creatingChannel">
+      <div v-else-if="creatingChannel" id="channel-create">
         <ChannelViewCreate />
       </div>
       <template v-else-if="!selectedChannel">
         <button
           id="create-button"
-          class="highlighted-button"
-          @click="channelViewStore.setCreatingChannel(true)"
-          :disabled="!currentFileStore.fileId"
           v-tooltip="
             !currentFileStore.fileId
               ? 'You need to save the file before creating a channel'
               : undefined
           "
+          :disabled="!currentFileStore.fileId"
+          class="highlighted-button"
+          @click="channelViewStore.setCreatingChannel(true)"
         >
           Create
         </button>
@@ -92,22 +92,22 @@ if (currentUserStore.loggedIn) {
             ></ChannelViewElement>
           </div>
         </template>
-        <div id="loading-banner" v-else-if="loadingState">
+        <div v-else-if="loadingState" id="loading-banner">
           <h2><span class="dot-dot-dot-flashing"></span></h2>
         </div>
-        <p id="channel-view-empty-msg" v-else>So empty! Maybe go ahead and create a channel?</p>
+        <p v-else id="channel-view-empty-msg">So empty! Maybe go ahead and create a channel?</p>
       </template>
-      <div id="channel-view-confirm" v-else-if="!channelViewStore.channelJoined">
+      <div v-else-if="!channelViewStore.channelJoined" id="channel-view-confirm">
         <ChannelViewJoinConfirm :channel="selectedChannel" />
       </div>
-      <div id="channel-view-info" v-else>
+      <div v-else id="channel-view-info">
         <ChannelViewCurrent :channel="selectedChannel" />
       </div>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/full-screen-overlay' as *;

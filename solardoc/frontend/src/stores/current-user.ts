@@ -1,4 +1,4 @@
-import type { UserPrivate, UserToken } from '@/services/phoenix/gen/phoenix-rest-service'
+import type {UserPrivate, UserToken} from '@/services/phoenix/gen/phoenix-rest-service'
 import {
   type ActualPhxErrorResp,
   PhoenixBadRequestError,
@@ -8,7 +8,7 @@ import {
 } from '@/services/phoenix/errors'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import constants from '@/plugins/constants'
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 
 export type ServerAuthStatus = 'authenticated' | 'expired-or-revoked' | 'unreachable' | 'unknown'
 
