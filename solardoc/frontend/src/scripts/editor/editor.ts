@@ -272,15 +272,7 @@ export class SolardocEditor {
    * @private
    */
   private static _applyInitContent(content: string) {
-    const model = globalMonacoEditor!.getModel()!.getFullModelRange()
-    globalMonacoEditor!.executeEdits(
-      this.name,
-      [{
-        range: model,
-        text: content,
-      }] satisfies Array<editor.IIdentifiedSingleEditOperation>,
-    )
-
+    globalMonacoEditor!.setValue(content)
     document.fonts.ready.then(() => {
       monaco.editor.remeasureFonts()
       this.forceRerender()
