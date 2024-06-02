@@ -61,6 +61,7 @@ setInterval(updateTimeRefs, 500)
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
+@use '@/assets/core/mixins/icon-presets' as *;
 @use '@/assets/full-screen-overlay' as *;
 
 #full-screen-wrapper {
@@ -117,10 +118,7 @@ setInterval(updateTimeRefs, 500)
         line-height: 1.5rem;
 
         i {
-          height: 100%;
-          top: 1px;
-          position: relative;
-          margin: 0 0.25rem 0 0;
+          @include icon-presets;
         }
       }
 
