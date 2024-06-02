@@ -62,7 +62,10 @@ if (currentUserStore.loggedIn) {
         <CurrentChannel :channel="selectedChannel" />
       </div>
       <div id="channel-missing-error" v-else>
-        <p>Channel not found. Please reload the page and if the error persists, logout and login again!</p>
+        <p>
+          <i class="pi pi-exclamation-circle"></i>
+          Channel not found. Please reload the page and if the error persists, logout and login again!
+        </p>
       </div>
     </div>
   </div>
@@ -71,6 +74,7 @@ if (currentUserStore.loggedIn) {
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/mixins/icon-presets' as *;
 @use '@/assets/full-screen-overlay' as *;
 
 #full-screen-wrapper {
@@ -130,6 +134,10 @@ if (currentUserStore.loggedIn) {
       width: 100%;
       height: 8rem;
       font-size: 1.4rem;
+
+      i {
+        @include icon-presets;
+      }
     }
 
     #close-button {
