@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useLoadingStore} from '@/stores/loading'
+import { useLoadingStore } from '@/stores/loading'
 
 defineProps<{
   to: string

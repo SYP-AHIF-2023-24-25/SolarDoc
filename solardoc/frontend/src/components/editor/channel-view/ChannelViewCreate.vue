@@ -1,14 +1,18 @@
 <script lang="ts" setup>
-import type {CreateEditorChannel, EditorChannel, JoinChannelOptions,} from '@/services/phoenix/editor-channel'
-import {useChannelViewStore} from '@/stores/channel-view'
-import {ref} from 'vue'
-import {useEditorUpdateWSClient} from '@/stores/editor-update-ws-client'
-import {useCurrentUserStore} from '@/stores/current-user'
-import type {Vueform} from '@vueform/vueform'
-import {useCurrentFileStore} from '@/stores/current-file'
-import {handleOTUpdates} from '@/services/phoenix/ot-trans'
-import {PhoenixNotAuthorisedError, PhoenixSDSError} from '@/services/phoenix/errors'
-import {interceptErrors} from '@/errors/handler/error-handler'
+import type {
+  CreateEditorChannel,
+  EditorChannel,
+  JoinChannelOptions,
+} from '@/services/phoenix/editor-channel'
+import { useChannelViewStore } from '@/stores/channel-view'
+import { ref } from 'vue'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import { useCurrentUserStore } from '@/stores/current-user'
+import type { Vueform } from '@vueform/vueform'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { handleOTUpdates } from '@/services/phoenix/ot-trans'
+import { PhoenixNotAuthorisedError, PhoenixSDSError } from '@/services/phoenix/errors'
+import { interceptErrors } from '@/errors/handler/error-handler'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()

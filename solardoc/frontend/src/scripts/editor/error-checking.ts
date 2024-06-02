@@ -1,7 +1,7 @@
 import * as monaco from 'monaco-editor'
-import {editor} from 'monaco-editor'
-import {headingSpaceMissingError} from '@/scripts/editor/error-checkers/heading-space-missing-error'
-import {listInconsistentError} from '@/scripts/editor/error-checkers/list-inconsistent-error'
+import { editor } from 'monaco-editor'
+import { headingSpaceMissingError } from '@/scripts/editor/error-checkers/heading-space-missing-error'
+import { listInconsistentError } from '@/scripts/editor/error-checkers/list-inconsistent-error'
 
 export type IMarkerData = editor.IMarkerData
 

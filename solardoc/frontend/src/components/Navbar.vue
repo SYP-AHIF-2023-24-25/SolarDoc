@@ -9,7 +9,7 @@ import constants from '@/plugins/constants'
 import UserIconDarkModeSVG from '@/components/icons/UserIconDarkModeSVG.vue'
 import UserIconSVG from '@/components/icons/UserIconSVG.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
-import {useDarkModeStore} from '@/stores/dark-mode'
+import { useDarkModeStore } from '@/stores/dark-mode'
 
 const darkModeStore = useDarkModeStore()
 </script>

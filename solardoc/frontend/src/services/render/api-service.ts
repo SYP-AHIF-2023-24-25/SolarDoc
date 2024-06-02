@@ -1,6 +1,6 @@
 import * as api from './gen/backend-rest-service'
-import {isDev} from '@/config/env'
-import {SolardocUnreachableError} from '@/errors/unreachable-error'
+import { isDev } from '@/config/env'
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
 
 // Overwrite the default configuration depending on the environment
 api.defaults.baseUrl = isDev

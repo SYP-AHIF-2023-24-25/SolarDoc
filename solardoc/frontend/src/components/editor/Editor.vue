@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import {onMounted, ref, type Ref} from 'vue'
-import {type SubscriptionCallbackMutation} from 'pinia'
-import {useDarkModeStore} from '@/stores/dark-mode'
-import {useCurrentFileStore} from '@/stores/current-file'
-import {SolardocEditor} from '@/scripts/editor/editor'
-import {EditorElementNotFoundError} from '@/errors/editor-element-not-found-error'
-import {interceptErrors} from '@/errors/handler/error-handler'
+import { onMounted, ref, type Ref } from 'vue'
+import { type SubscriptionCallbackMutation } from 'pinia'
+import { useDarkModeStore } from '@/stores/dark-mode'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { SolardocEditor } from '@/scripts/editor/editor'
+import { EditorElementNotFoundError } from '@/errors/editor-element-not-found-error'
+import { interceptErrors } from '@/errors/handler/error-handler'
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()

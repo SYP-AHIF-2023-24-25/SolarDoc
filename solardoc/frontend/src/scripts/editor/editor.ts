@@ -1,27 +1,26 @@
-import type {Ref} from 'vue'
-import type {editor, languages} from 'monaco-editor/esm/vs/editor/editor.api'
+import type { Ref } from 'vue'
+import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import type {OTrans} from '@/services/phoenix/ot-trans'
+import type { OTrans } from '@/services/phoenix/ot-trans'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
-import {lightEditorTheme} from '@/scripts/editor/monaco-config/light-editor-theme'
-import {darkEditorTheme} from '@/scripts/editor/monaco-config/dark-editor-theme'
-import {usePreviewLoadingStore} from '@/stores/preview-loading'
-import {useInitStateStore} from '@/stores/init-state'
-import {performErrorChecking} from '@/scripts/editor/error-checking'
-import {type Permission, Permissions, useCurrentFileStore} from '@/stores/current-file'
-import {useEditorUpdateWSClient} from '@/stores/editor-update-ws-client'
-import {useCurrentUserStore} from '@/stores/current-user'
+import { lightEditorTheme } from '@/scripts/editor/monaco-config/light-editor-theme'
+import { darkEditorTheme } from '@/scripts/editor/monaco-config/dark-editor-theme'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import { useInitStateStore } from '@/stores/init-state'
+import { performErrorChecking } from '@/scripts/editor/error-checking'
+import { type Permission, Permissions, useCurrentFileStore } from '@/stores/current-file'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import { useCurrentUserStore } from '@/stores/current-user'
 import asciiDocLangMonarch from '@/scripts/editor/monaco-config/asciidoc-lang-monarch'
-import {triggerPreviewRerender} from '@/scripts/editor/render'
-import {createOTUpdates} from '@/scripts/editor/ot/create-ot'
-import {getMonacoUpdatesFromOT} from '@/scripts/editor/ot/get-monaco-updates'
-import {sendOTUpdates} from '@/scripts/editor/ot/send-ot'
-import {EditorModelNotFoundError} from "@/errors/editor-model-not-found-error";
-import {Selection, SelectionDirection} from "monaco-editor";
+import { triggerPreviewRerender } from '@/scripts/editor/render'
+import { createOTUpdates } from '@/scripts/editor/ot/create-ot'
+import { getMonacoUpdatesFromOT } from '@/scripts/editor/ot/get-monaco-updates'
+import { sendOTUpdates } from '@/scripts/editor/ot/send-ot'
+import { EditorModelNotFoundError } from '@/errors/editor-model-not-found-error'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -51,7 +50,7 @@ function setUpMonaco() {
         return new tsWorker()
       }
       return new editorWorker()
-    }
+    },
   }
 
   // Register a new language
@@ -197,7 +196,10 @@ export class SolardocEditor {
       return
     } else {
       await this._runThreadSafe(async () => {
-        const edits: Array<editor.IIdentifiedSingleEditOperation> = getMonacoUpdatesFromOT(editorModel, oTrans)
+        const edits: Array<editor.IIdentifiedSingleEditOperation> = getMonacoUpdatesFromOT(
+          editorModel,
+          oTrans,
+        )
         globalMonacoEditor!.executeEdits(this.name, edits)
       })
     }

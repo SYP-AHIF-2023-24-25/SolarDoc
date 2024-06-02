@@ -1,8 +1,8 @@
-import {interceptErrors} from '@/errors/handler/error-handler'
-import {handleRender} from '@/scripts/handle-render'
-import {useRenderDataStore} from '@/stores/render-data'
-import {editor} from 'monaco-editor'
-import {useCurrentFileStore} from '@/stores/current-file'
+import { interceptErrors } from '@/errors/handler/error-handler'
+import { handleRender } from '@/scripts/handle-render'
+import { useRenderDataStore } from '@/stores/render-data'
+import { editor } from 'monaco-editor'
+import { useCurrentFileStore } from '@/stores/current-file'
 
 const renderDataStore = useRenderDataStore()
 const currentFileStore = useCurrentFileStore()

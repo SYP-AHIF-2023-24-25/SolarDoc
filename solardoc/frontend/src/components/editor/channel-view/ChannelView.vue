@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import {useOverlayStateStore} from '@/stores/overlay-state'
-import {useChannelViewStore} from '@/stores/channel-view'
-import {useCurrentUserStore} from '@/stores/current-user'
+import { useOverlayStateStore } from '@/stores/overlay-state'
+import { useChannelViewStore } from '@/stores/channel-view'
+import { useCurrentUserStore } from '@/stores/current-user'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import ChannelViewElement from '@/components/editor/channel-view/ChannelViewElement.vue'
 import ChannelViewJoinConfirm from '@/components/editor/channel-view/ChannelViewJoinConfirm.vue'
 import ChannelViewCurrent from '@/components/editor/channel-view/ChannelViewCurrent.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
 import ChannelViewCreate from '@/components/editor/channel-view/ChannelViewCreate.vue'
-import {storeToRefs} from 'pinia'
-import {ref, watch} from 'vue'
-import {useCurrentFileStore} from '@/stores/current-file'
-import {interceptErrors} from '@/errors/handler/error-handler'
+import { storeToRefs } from 'pinia'
+import { ref, watch } from 'vue'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { interceptErrors } from '@/errors/handler/error-handler'
 
 const overlayStateStore = useOverlayStateStore()
 const channelViewStore = useChannelViewStore()

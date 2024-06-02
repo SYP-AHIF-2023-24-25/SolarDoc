@@ -1,6 +1,6 @@
-import {type Router} from 'vue-router'
-import {useCurrentUserStore} from '@/stores/current-user'
-import {NotLoggedInWarn} from '@/errors/not-logged-in-warn'
+import { type Router } from 'vue-router'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { NotLoggedInWarn } from '@/errors/not-logged-in-warn'
 
 const currentUserStore = useCurrentUserStore()
 

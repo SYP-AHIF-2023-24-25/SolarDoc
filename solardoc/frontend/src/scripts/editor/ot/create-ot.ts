@@ -1,6 +1,6 @@
-import type {OTransReqDto} from '@/services/phoenix/ot-trans'
-import {createDeleteOTrans, createInsertOTrans} from '@/services/phoenix/ot-trans'
-import {editor} from 'monaco-editor'
+import type { OTransReqDto } from '@/services/phoenix/ot-trans'
+import { createDeleteOTrans, createInsertOTrans } from '@/services/phoenix/ot-trans'
+import { editor } from 'monaco-editor'
 
 export async function createOTUpdates(
   changes: Array<editor.IModelContentChange>,

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import type {Vueform} from '@vueform/vueform'
+import type { Vueform } from '@vueform/vueform'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
-import {handleCopy} from '@/scripts/handle-copy'
-import {useOverlayStateStore} from '@/stores/overlay-state'
-import {useCurrentUserStore} from '@/stores/current-user'
-import {useCurrentFileStore} from '@/stores/current-file'
+import { handleCopy } from '@/scripts/handle-copy'
+import { useOverlayStateStore } from '@/stores/overlay-state'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useCurrentFileStore } from '@/stores/current-file'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import {PhoenixInternalError, PhoenixRestError} from '@/services/phoenix/errors'
-import {ref} from 'vue'
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import { ref } from 'vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()

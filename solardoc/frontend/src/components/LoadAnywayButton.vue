@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import {handleRender} from '@/scripts/handle-render'
-import {useRenderDataStore} from '@/stores/render-data'
-import {useCurrentFileStore} from '@/stores/current-file'
-import {interceptErrors} from '@/errors/handler/error-handler'
+import { handleRender } from '@/scripts/handle-render'
+import { useRenderDataStore } from '@/stores/render-data'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { interceptErrors } from '@/errors/handler/error-handler'
 
 const props = defineProps(['colorMode'])
 

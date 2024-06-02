@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 import constants from '@/plugins/constants'
 
 export const useLastModifiedStore = defineStore('lastModified', {

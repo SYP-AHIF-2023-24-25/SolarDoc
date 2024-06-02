@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {getHumanReadableTimeInfo} from '@/scripts/format-date'
-import type {File} from '@/services/phoenix/gen/phoenix-rest-service'
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import {
   type ActualPhxErrorResp,
@@ -8,12 +8,12 @@ import {
   PhoenixInternalError,
   PhoenixInvalidCredentialsError,
 } from '@/services/phoenix/errors'
-import {useCurrentUserStore} from '@/stores/current-user'
-import {useCurrentFileStore} from '@/stores/current-file'
-import {useRouter} from 'vue-router'
-import {ref} from 'vue'
-import {interceptErrors} from '@/errors/handler/error-handler'
-import {useLoadingStore} from '@/stores/loading'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { interceptErrors } from '@/errors/handler/error-handler'
+import { useLoadingStore } from '@/stores/loading'
 
 const props = defineProps<{ file: File }>()
 const deleted = ref(false)

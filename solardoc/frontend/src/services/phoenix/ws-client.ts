@@ -5,10 +5,10 @@ import {
   type PhoenixSocket as SDSClientBare,
   socket,
 } from '@solardoc/phoenix'
-import {PhoenixInternalError, PhoenixInvalidOperationError} from '@/services/phoenix/errors'
-import type {CreateEditorChannel, EditorChannel} from '@/services/phoenix/editor-channel'
-import type {OTransReqDto, OTransRespDto} from '@/services/phoenix/ot-trans'
-import type {File} from '@/services/phoenix/api-service'
+import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
+import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
+import type { OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
+import type { File } from '@/services/phoenix/api-service'
 
 /**
  * The SolarDoc Socket client (SDS) is a Phoenix Channels client that connects to the SolarDoc Phoenix server. It is
