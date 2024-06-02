@@ -32,9 +32,11 @@ function closeDropdown() {
   )?.close()
 }
 
-function handleJoinChannel() {
-  overlayStateStore.setChannelView(true)
+async function handleNewFileButtonClick() {
   closeDropdown()
+  showDummyLoading()
+  await currentFileStore.closeFile()
+  showInfoNotifFromObj(constants.notifMessages.newFile)
 }
 
 async function handleSaveButtonClick() {
@@ -55,11 +57,14 @@ async function handleSaveButtonClick() {
   }
 }
 
-async function handleNewFileButtonClick() {
+function handleCurrentChannelClick() {
+  overlayStateStore.setCurrentChannel(true)
   closeDropdown()
-  showDummyLoading()
-  await currentFileStore.closeFile()
-  showInfoNotifFromObj(constants.notifMessages.newFile)
+}
+
+function handleSettingsClick() {
+  overlayStateStore.setSettings(true)
+  closeDropdown()
 }
 </script>
 
@@ -81,8 +86,8 @@ async function handleNewFileButtonClick() {
     <div id="dropdown-elements">
       <div class="dropdown-element" @click="handleNewFileButtonClick()">New File</div>
       <div class="dropdown-element" @click="handleSaveButtonClick()">Save in profile</div>
-      <div class="dropdown-element" @click="handleJoinChannel()">Channels</div>
-      <div class="dropdown-element">Settings (In work...)</div>
+      <div class="dropdown-element" @click="handleCurrentChannelClick()">Current Channel</div>
+      <div class="dropdown-element" @click="handleSettingsClick()">File Settings</div>
     </div>
   </Dropdown>
 </template>

@@ -2,6 +2,7 @@ export default Object.freeze({
   githubURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc',
   githubVersionURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc/releases/tag',
   localStorageLastModifiedKey: 'last-modified',
+  localStorageCreatedKey: 'created',
   localStorageFileIdKey: 'file-id',
   localStorageFileNameKey: 'file-name',
   localStorageFileOwnerKey: 'file-owner',

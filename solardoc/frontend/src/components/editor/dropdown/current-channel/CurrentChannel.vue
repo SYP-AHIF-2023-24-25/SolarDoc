@@ -12,7 +12,7 @@ const props = defineProps<{
 }>()
 
 const editorUpdateWSClient = useEditorUpdateWSClient()
-const channelViewStore = useChannelViewStore()
+const currentChannelStore = useChannelViewStore()
 
 const channelDescription = ref(props.channel.description || '<None provided>')
 
@@ -24,7 +24,7 @@ async function handleLeaveChannel() {
   console.log('[ChannelView] Leaving channel')
   await wsClient.value?.leaveChannel()
   setTimeout(() => {
-    channelViewStore.unsetSelectedChannel()
+    currentChannelStore.unsetSelectedChannel()
     loadingState.value = false
   }, 250)
 }

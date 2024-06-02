@@ -18,8 +18,8 @@ import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavig
 import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
-import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
-import ShareUrlCreate from '@/components/editor/share-url/ShareUrlCreate.vue'
+import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
+import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
 import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
@@ -27,6 +27,7 @@ import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import { showWarnNotif } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
+import EditorSettings from "@/components/editor/dropdown/editor-settings/EditorSettings.vue";
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -129,6 +130,7 @@ setInterval(updateLastModified, 500)
 <template>
   <ShareUrlCreate />
   <ChannelView />
+  <EditorSettings />
   <FullScreenPreview />
   <div id="editor-page">
     <div id="menu">
