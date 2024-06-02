@@ -54,7 +54,7 @@ The user stories and goals for the project are listed here in the https://github
 ** Collaborative Editing
 ** Share Links
 ** File Storage
-* Sprint 6 (Planned 02.05.2024):
+* Sprint 6 (Finished 02.05.2024):
 ** Stabilise Channel API and OT library
 ** Proper file explorer in the user profile
 ** Share URLs can be created, accessed and modified using read/write permissions
