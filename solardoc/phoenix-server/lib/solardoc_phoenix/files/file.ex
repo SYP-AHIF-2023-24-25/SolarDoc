@@ -10,6 +10,7 @@ defmodule SolardocPhoenix.Files.File do
     field :file_name, :string
     field :last_edited, :naive_datetime
     field :content, :string, default: ""
+    belongs_to :channel, SolardocPhoenix.EditorChannels.EditorChannel
     belongs_to :owner, SolardocPhoenix.Accounts.User
 
     timestamps(type: :utc_datetime)
@@ -31,19 +32,21 @@ defmodule SolardocPhoenix.Files.File do
   def update_changeset(file, attrs) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     file
-    |> cast(attrs, [:file_name, :content])
-    |> validate_required([:file_name])
+    |> cast(attrs, [:file_name, :content, :channel_id])
     |> unique_constraint([:file_name, :owner_id])
+    |> unique_constraint(:channel_id)
     |> validate_length(:file_name, min: 1, max: 40)
-    |> change(last_edited: now)
+    |> foreign_key_constraint(:channel_id)
+    |> maybe_set_last_edited(now)
   end
 
-  @doc false
-  def content_changeset(file, attrs) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
-    file
-    |> cast(attrs, [:content])
-    |> validate_required([:content])
-    |> change(last_edited: now)
+  defp maybe_set_last_edited(changeset, now) do
+    content = get_change(changeset, :content)
+    if content do
+      changeset
+      |> change(last_edited: now)
+    else
+      changeset
+    end
   end
 end

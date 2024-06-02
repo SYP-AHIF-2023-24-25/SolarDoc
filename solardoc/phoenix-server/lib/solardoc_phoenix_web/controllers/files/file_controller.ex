@@ -22,6 +22,7 @@ defmodule SolardocPhoenixWeb.FileController do
           content :string, "File content", required: true
           last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: true
           created :integer, "Creation date in UNIX timestamp milliseconds", required: true
+          channel_id :string, "UUID of the channel created for this file, if one exists", required: false
         end
       end,
       Files: swagger_schema do
@@ -133,12 +134,14 @@ defmodule SolardocPhoenixWeb.FileController do
 
   def update(conn, file_params) do
     with {:id, id} <- {:id, file_params["id"]},
+         {:changes_channel, false} <- {:changes_channel, Map.has_key?(file_params, "channel_id")},
          {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
          {:is_owner, true} <- {:is_owner, owner?(conn.assigns.current_user, file)},
          {:ok, %File{} = file} <- Files.update_file(file, file_params) do
       render(conn, :show, file: file)
     else
       {:id, _} -> {:error, :not_found}
+      {:changes_channel, true} -> {:error, :bad_request} # Channel changes are not allowed. Internal only!
       {:file_exists, _} -> {:error, :not_found}
       {:is_owner, false} -> {:error, :unauthorized}
       {:error, changeset} -> {:error, changeset}

@@ -81,9 +81,6 @@ defmodule SolardocPhoenix.Files do
 
   """
   def update_file(%File{} = file, attrs) do
-    attrs = attrs
-    |> Map.put_new("file_name", file.file_name)
-    |> Map.put_new("owner_id", file.owner_id)
     file
     |> File.update_changeset(attrs)
     |> Repo.update()
@@ -103,22 +100,5 @@ defmodule SolardocPhoenix.Files do
   """
   def delete_file(%File{} = file) do
     Repo.delete(file)
-  end
-
-  @doc """
-  Updates the content of a file.
-
-  ## Examples
-
-      iex> update_content(file, %{content: "new content"})
-      {:ok, %File{}}
-
-      iex> update_content(file, %{content: 1})
-      {:error, %Ecto.Changeset{}}
-  """
-  def change_content(%File{} = file, attrs \\ %{}) do
-    file
-    |> File.content_changeset(attrs)
-    |> Repo.update()
   end
 end

@@ -20,8 +20,8 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   @doc false
   def changeset(channel, attrs) do
     channel
-    |> cast(attrs, [:name, :description, :active_since, :creator, :file])
-    |> validate_required([:name, :description, :active_since, :creator, :file])
+    |> cast(attrs, [:name, :description, :active_since, :creator, :file_id])
+    |> validate_required([:name, :description, :active_since, :creator, :file_id])
   end
 
   @doc """
