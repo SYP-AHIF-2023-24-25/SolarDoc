@@ -128,6 +128,12 @@ onMounted(() => {
     scrollBeyondLastLine: false,
   })
 
+  // Fix font sizing related issues (See #146 for details)
+  document.fonts.ready.then(() => {
+    monaco.editor.remeasureFonts()
+    editorInstance!.render()
+  })
+
   if (currentFileStore.permissions === Permissions.Read) {
     editorInstance!.updateOptions({
       readOnly: true,
