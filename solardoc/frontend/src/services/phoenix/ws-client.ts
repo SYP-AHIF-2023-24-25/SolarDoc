@@ -20,7 +20,6 @@ import type { File } from '@/services/phoenix/api-service'
  */
 export class SDSClient {
   private readonly socket: SDSClientBare
-  private _active: boolean
   private _currentChannel: Channel | undefined
 
   constructor(url: string, userToken?: string) {
@@ -34,6 +33,8 @@ export class SDSClient {
       console.log('[ws-client.ts] Received message:', message)
     })
   }
+
+  private _active: boolean
 
   /**
    * Returns true if the socket is connecting/connected to the server, false otherwise.
@@ -67,14 +68,6 @@ export class SDSClient {
   }
 
   /**
-   * Disconnects the socket from the server.
-   * @since 0.4.0
-   */
-  public disconnect() {
-    this.socket.disconnect(() => void (this._active = false))
-  }
-
-  /**
    * Returns the current state of the channel that is joined, if any.
    * @since 0.4.0
    */
@@ -82,69 +75,12 @@ export class SDSClient {
     return this._currentChannel?.state
   }
 
-  private async _ensureSocketIsHealthy(): Promise<void> {
-    await this._waitForSocketToBeHealthyIfConnecting()
-    if (!this._active) {
-      throw new PhoenixInvalidOperationError(
-        '[ws-client.ts] Cannot perform operation on a closed socket.',
-      )
-    }
-  }
-
-  private async _waitForSocketToBeHealthyIfConnecting(): Promise<void> {
-    if (this.connectionState === 'connecting') {
-      return new Promise<void>(resolve => {
-        const interval = setInterval(() => {
-          if (this.healthy) {
-            clearInterval(interval)
-            resolve()
-          }
-        }, 100)
-      })
-    }
-  }
-
-  private async _ensureChannelIsHealthy(): Promise<void> {
-    await this._waitForChannelToBeHealthyIfConnecting()
-    if (!this.channelHealthy) {
-      throw new PhoenixInvalidOperationError(
-        '[ws-client.ts] Cannot perform operation on a channel that has not been joined.',
-      )
-    }
-  }
-
-  private async _waitForChannelToBeHealthyIfConnecting(): Promise<void> {
-    if (this.currentChannelState === 'joining') {
-      return new Promise<void>(resolve => {
-        const interval = setInterval(() => {
-          if (this.channelHealthy) {
-            clearInterval(interval)
-            resolve()
-          }
-        }, 100)
-      })
-    }
-  }
-
-  private async _handleJoinChannel(
-    currUserId: string,
-    onJoin: (initTrans: OTransRespDto, file: Required<File>) => void | Promise<void>,
-    onError: (resp: any) => void | Promise<void>,
-    resp: {},
-  ) {
-    if (!('user_id' in resp)) {
-      this._leaveChannelAndEnsureDestruction()
-      onError(new PhoenixInternalError('[ws-client.ts] Server did not return a valid response.'))
-    }
-
-    const validResp = resp as {
-      user_id: string
-      init_trans: OTransRespDto
-      file: Required<File>
-    }
-    if (validResp.user_id === currUserId) {
-      onJoin(validResp.init_trans, validResp.file)
-    }
+  /**
+   * Disconnects the socket from the server.
+   * @since 0.4.0
+   */
+  public disconnect() {
+    this.socket.disconnect(() => void (this._active = false))
   }
 
   /**
@@ -181,34 +117,6 @@ export class SDSClient {
         onError(resp)
         this._leaveChannelAndEnsureDestruction()
       })
-  }
-
-  private async _leaveChannelNew(): Promise<void> {
-    if (this._currentChannel?.topic === 'channel:new') {
-      this._leaveChannelAndEnsureDestruction()
-    }
-  }
-
-  private async _handleCreateChannel(
-    creatorId: string,
-    onJoin: (resp: EditorChannel, initTrans: OTransRespDto) => void | Promise<void>,
-    onError: (resp: any) => void | Promise<void>,
-    resp: {},
-  ) {
-    if (!('creator_id' in resp)) {
-      this._leaveChannelAndEnsureDestruction()
-      onError(new PhoenixInternalError('[ws-client.ts] Server did not return a valid response.'))
-    }
-
-    const validResp = resp as {
-      creator_id: string
-      editor_channel: EditorChannel
-      init_trans: OTransRespDto
-    }
-    if (validResp.creator_id === creatorId) {
-      await this._leaveChannelNew()
-      onJoin(validResp.editor_channel, validResp.init_trans)
-    }
   }
 
   /**
@@ -289,18 +197,6 @@ export class SDSClient {
   }
 
   /**
-   * Internal function to leave the current channel, this is primarily used for error handling cleanup.
-   * @private
-   */
-  private _leaveChannelAndEnsureDestruction(): void {
-    if (this._currentChannel) {
-      this._currentChannel.leave()
-      this.socket.remove(this._currentChannel)
-      this._currentChannel = undefined
-    }
-  }
-
-  /**
    * Leaves the current channel.
    * @throws PhoenixInvalidOperationError If no channel has been joined.
    * @since 0.4.0
@@ -314,5 +210,110 @@ export class SDSClient {
     }
     await this._ensureChannelIsHealthy()
     this._leaveChannelAndEnsureDestruction()
+  }
+
+  private async _ensureSocketIsHealthy(): Promise<void> {
+    await this._waitForSocketToBeHealthyIfConnecting()
+    if (!this._active) {
+      throw new PhoenixInvalidOperationError(
+        '[ws-client.ts] Cannot perform operation on a closed socket.',
+      )
+    }
+  }
+
+  private async _waitForSocketToBeHealthyIfConnecting(): Promise<void> {
+    if (this.connectionState === 'connecting') {
+      return new Promise<void>(resolve => {
+        const interval = setInterval(() => {
+          if (this.healthy) {
+            clearInterval(interval)
+            resolve()
+          }
+        }, 100)
+      })
+    }
+  }
+
+  private async _ensureChannelIsHealthy(): Promise<void> {
+    await this._waitForChannelToBeHealthyIfConnecting()
+    if (!this.channelHealthy) {
+      throw new PhoenixInvalidOperationError(
+        '[ws-client.ts] Cannot perform operation on a channel that has not been joined.',
+      )
+    }
+  }
+
+  private async _waitForChannelToBeHealthyIfConnecting(): Promise<void> {
+    if (this.currentChannelState === 'joining') {
+      return new Promise<void>(resolve => {
+        const interval = setInterval(() => {
+          if (this.channelHealthy) {
+            clearInterval(interval)
+            resolve()
+          }
+        }, 100)
+      })
+    }
+  }
+
+  private async _handleJoinChannel(
+    currUserId: string,
+    onJoin: (initTrans: OTransRespDto, file: Required<File>) => void | Promise<void>,
+    onError: (resp: any) => void | Promise<void>,
+    resp: {},
+  ) {
+    if (!('user_id' in resp)) {
+      this._leaveChannelAndEnsureDestruction()
+      onError(new PhoenixInternalError('[ws-client.ts] Server did not return a valid response.'))
+    }
+
+    const validResp = resp as {
+      user_id: string
+      init_trans: OTransRespDto
+      file: Required<File>
+    }
+    if (validResp.user_id === currUserId) {
+      onJoin(validResp.init_trans, validResp.file)
+    }
+  }
+
+  private async _leaveChannelNew(): Promise<void> {
+    if (this._currentChannel?.topic === 'channel:new') {
+      this._leaveChannelAndEnsureDestruction()
+    }
+  }
+
+  private async _handleCreateChannel(
+    creatorId: string,
+    onJoin: (resp: EditorChannel, initTrans: OTransRespDto) => void | Promise<void>,
+    onError: (resp: any) => void | Promise<void>,
+    resp: {},
+  ) {
+    if (!('creator_id' in resp)) {
+      this._leaveChannelAndEnsureDestruction()
+      onError(new PhoenixInternalError('[ws-client.ts] Server did not return a valid response.'))
+    }
+
+    const validResp = resp as {
+      creator_id: string
+      editor_channel: EditorChannel
+      init_trans: OTransRespDto
+    }
+    if (validResp.creator_id === creatorId) {
+      await this._leaveChannelNew()
+      onJoin(validResp.editor_channel, validResp.init_trans)
+    }
+  }
+
+  /**
+   * Internal function to leave the current channel, this is primarily used for error handling cleanup.
+   * @private
+   */
+  private _leaveChannelAndEnsureDestruction(): void {
+    if (this._currentChannel) {
+      this._currentChannel.leave()
+      this.socket.remove(this._currentChannel)
+      this._currentChannel = undefined
+    }
   }
 }

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { EditorChannel } from '@/services/phoenix/editor-channel'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { useChannelViewStore } from '@/stores/channel-view'
@@ -36,7 +36,7 @@ function handleJoinChannel() {
         <p><span>Active since:</span> {{ getHumanReadableTimeInfo(channel.active_since) }}</p>
         <p><span>Description:</span></p>
         <!-- eslint-disable-next-line vue/no-mutating-props -->
-        <textarea disabled wrap="soft" cols="1" v-model="channelDescription"></textarea>
+        <textarea v-model="channelDescription" cols="1" disabled wrap="soft"></textarea>
       </div>
     </div>
     <div id="channel-view-element-interaction">
@@ -45,7 +45,7 @@ function handleJoinChannel() {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
 

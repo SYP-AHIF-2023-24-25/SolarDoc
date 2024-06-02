@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type {
   CreateEditorChannel,
   EditorChannel,
@@ -10,9 +10,9 @@ import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Vueform } from '@vueform/vueform'
 import { useCurrentFileStore } from '@/stores/current-file'
-import { handleOTUpdates } from '@/scripts/handle-ot'
+import { handleOTUpdates } from '@/services/phoenix/ot-trans'
 import { PhoenixNotAuthorisedError, PhoenixSDSError } from '@/services/phoenix/errors'
-import { interceptErrors } from '@/errors/error-handler'
+import { interceptErrors } from '@/errors/handler/error-handler'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
@@ -83,7 +83,7 @@ async function submitForm(
   await editorUpdateWSClient.wsClient.createChannel(
     async (channel, initTrans) => {
       console.log('[ChannelView] Channel created', channel)
-      currentFileStore.initOTransStackFromServerTrans(initTrans)
+      await currentFileStore.initOTransStackFromServerTrans(initTrans)
       setTimeout(() => joinNewChannel(channel), SAFETY_DELAY_MS)
     },
     errorResp => {
@@ -107,41 +107,41 @@ async function submitForm(
     <Vueform
       v-if="!loadingState"
       ref="form$"
-      add-class="solardoc-style-form"
       :display-errors="false"
       :endpoint="false"
+      add-class="solardoc-style-form"
       @submit="(value: any) => interceptErrors(submitForm(value))"
     >
       <TextElement
-        name="channel-name"
-        label="Channel name"
         :rules="['required', 'min:4', 'max:25']"
+        label="Channel name"
+        name="channel-name"
       />
       <TextElement
-        name="password"
+        :rules="['required', 'min:10']"
         input-type="password"
         label="Password"
-        :rules="['required', 'min:10']"
+        name="password"
       />
-      <TextareaElement name="description" label="Channel description" />
+      <TextareaElement label="Channel description" name="description" />
       <ButtonElement
-        name="Create"
-        button-label="Create"
         :columns="{
           container: 1,
         }"
         :submits="true"
+        button-label="Create"
+        name="Create"
       />
       <ButtonElement
-        name="goBack"
-        button-label="Go Back"
-        @click="handleGoBack"
-        :resets="true"
         :columns="{
           container: 2,
         }"
+        :resets="true"
         :secondary="true"
         align="center"
+        button-label="Go Back"
+        name="goBack"
+        @click="handleGoBack"
       />
     </Vueform>
     <div v-else id="loading-banner">
@@ -150,7 +150,7 @@ async function submitForm(
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
 

@@ -1,6 +1,6 @@
 {
   "name": "@solardoc/phoenix",
-  "version": "0.6.2",
+  "version": "0.7.0-dev",
   "description": "Websocket server using Elixir for SolarDoc",
   "main": "dist/index.js",
   "dependencies": {

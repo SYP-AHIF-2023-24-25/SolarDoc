@@ -21,9 +21,11 @@
   --v-tooltip-arrow-top: calc(var(--v-tooltip-top) - var(--v-tooltip-top-offset) + 8px);
   --v-tooltip-arrow-left: calc(var(--v-tooltip-left) - var(--v-tooltip-left-offset));
 }
+
 .data-v-tooltip {
   position: relative;
 }
+
 .data-v-tooltip::after {
   z-index: 2147483647;
   content: attr(data-v-tooltip);
@@ -47,6 +49,7 @@
   visibility: hidden;
   pointer-events: none;
 }
+
 /* arrow */
 .data-v-tooltip::before {
   z-index: 2147483647;
@@ -67,6 +70,7 @@
   visibility: hidden;
   pointer-events: none;
 }
+
 .data-v-tooltip:hover::after,
 .data-v-tooltip:hover::before {
   transition-duration: var(--v-tooltip-transition-duration);

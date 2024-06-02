@@ -37,7 +37,7 @@ export async function interceptErrors<FuncT extends Promise<any>>(
   try {
     return await func
   } catch (e) {
-    await handleError(e)
+    handleError(e)
     throw e
   }
 }

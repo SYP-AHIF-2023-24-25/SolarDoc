@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Vueform } from '@vueform/vueform'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
@@ -59,7 +59,11 @@ async function submitForm(
 </script>
 
 <template>
-  <div id="full-screen-wrapper" class="blurred-background-full-screen-overlay" v-if="overlayStateStore.createShareUrl">
+  <div
+    v-if="overlayStateStore.createShareUrl"
+    id="full-screen-wrapper"
+    class="blurred-background-full-screen-overlay"
+  >
     <div id="share-url-view-create">
       <div id="share-url-view-header">
         <button id="close-button" @click="overlayStateStore.setShareUrlView(false)">
@@ -67,44 +71,44 @@ async function submitForm(
         </button>
         <h1>Create Share URL</h1>
       </div>
-      <div id="channel-view-not-logged-in" v-if="!currentUserStore.loggedIn">
+      <div v-if="!currentUserStore.loggedIn" id="channel-view-not-logged-in">
         <p>
           You need to be logged in to create a share url!
           <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
         </p>
       </div>
-      <div id="channel-view-not-logged-in" v-else-if="currentFileStore.fileId === undefined">
+      <div v-else-if="currentFileStore.fileId === undefined" id="channel-view-not-logged-in">
         <p>You need to save your file to share it!</p>
       </div>
       <template v-else>
         <div id="generated-link-display">
           <i
-            @click="handleGeneratedLinkCopyButtonClick()"
             :class="'pi pi-clipboard' + (generatedLink ? '' : ' disabled')"
+            @click="handleGeneratedLinkCopyButtonClick()"
           ></i>
           <p>{{ generatedLink || 'Your generated link~ °^°' }}</p>
         </div>
         <Vueform
           ref="form$"
-          add-class="solardoc-style-form"
           :display-errors="false"
           :endpoint="false"
+          add-class="solardoc-style-form"
           @submit="submitForm"
         >
           <CheckboxElement
-            name="write"
-            text="Write access"
-            info="(Currently unavailable!) Gives the participant write access to your presentation (read is always present)"
-            size="lg"
             disabled
+            info="(Currently unavailable!) Gives the participant write access to your presentation (read is always present)"
+            name="write"
+            size="lg"
+            text="Write access"
           />
           <ButtonElement
-            name="create"
-            button-label="Create"
             :columns="{
               container: 1,
             }"
             :submits="true"
+            button-label="Create"
+            name="create"
           />
         </Vueform>
       </template>
@@ -112,7 +116,7 @@ async function submitForm(
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;

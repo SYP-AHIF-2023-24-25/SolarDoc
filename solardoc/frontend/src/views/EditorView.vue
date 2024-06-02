@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
@@ -10,7 +10,7 @@ import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
-import { useCurrentFileStore } from '@/stores/current-file'
+import { Permissions, useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
 import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
@@ -24,10 +24,9 @@ import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
-import { interceptErrors } from '@/errors/error-handler'
+import { interceptErrors } from '@/errors/handler/error-handler'
 import { showWarnNotif } from '@/scripts/show-notif'
-import { Permissions } from '@/stores/current-file'
-import constants from "@/plugins/constants";
+import constants from '@/plugins/constants'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -57,13 +56,13 @@ interceptErrors(
       currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
     if (authStatus === 'authenticated') {
       // Ensure that the user has the permissions to open the current file
-      currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
+      await currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
 
       console.log('[Editor] Attempting to connect to SDS')
       editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
     } else if (authStatus === 'expired-or-revoked') {
       await currentUserStore.logout()
-      currentFileStore.closeFile()
+      await currentFileStore.closeFile()
     } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
       showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')
     } else {
@@ -118,6 +117,7 @@ function handleShareButtonClick() {
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
+
 function getLastModified(): string {
   return getHumanReadableTimeInfo(currentFileStore.lastModified)
 }
@@ -150,7 +150,9 @@ setInterval(updateLastModified, 500)
         <div id="save-state">
           <p
             :class="currentFileStore.saveState === constants.saveStates.server ? 'saved' : 'error'"
-          >{{ currentFileStore.saveState }}</p>
+          >
+            {{ currentFileStore.saveState }}
+          </p>
         </div>
       </div>
       <div id="menu-center">
@@ -177,8 +179,8 @@ setInterval(updateLastModified, 500)
         </div>
         <div>
           <button
-            class="editor-button"
             id="fullscreen-preview-button"
+            class="editor-button"
             @click="handlePreviewButtonPress()"
           >
             Fullscreen
@@ -192,7 +194,7 @@ setInterval(updateLastModified, 500)
       </div>
       <div id="preview-wrapper">
         <div id="preview">
-          <div id="init-msg-wrapper" v-if="initStateStore.init">
+          <div v-if="initStateStore.init" id="init-msg-wrapper">
             <p id="init-msg">Start typing and see preview!</p>
             <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
           </div>
@@ -207,9 +209,9 @@ setInterval(updateLastModified, 500)
           ></iframe>
         </div>
         <div
+          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
           id="preview-meta-info"
           class="loading"
-          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
         >
           <div>
             <div class="dot-dot-dot-flashing-mini"></div>
@@ -222,7 +224,7 @@ setInterval(updateLastModified, 500)
             <p>KB Raw Size</p>
           </div>
         </div>
-        <div id="preview-meta-info" v-else>
+        <div v-else id="preview-meta-info">
           <p>
             {{ slideCount ? slideCount! : '?' }} {{ slideCount == 1 ? 'slide' : 'slides' }} ({{
               slideCount && slideCountInclSubslides ? slideCountInclSubslides - slideCount : '?'
@@ -244,7 +246,7 @@ setInterval(updateLastModified, 500)
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/mixins/link-hover-presets' as *;
 @use '@/assets/core/mixins/view-presets' as *;
 @use '@/assets/core/mixins/align-center' as *;
