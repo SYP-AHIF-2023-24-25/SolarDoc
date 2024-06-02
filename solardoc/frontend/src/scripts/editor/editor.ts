@@ -21,6 +21,7 @@ import {createOTUpdates} from '@/scripts/editor/ot/create-ot'
 import {getMonacoUpdatesFromOT} from '@/scripts/editor/ot/get-monaco-updates'
 import {sendOTUpdates} from '@/scripts/editor/ot/send-ot'
 import {EditorModelNotFoundError} from "@/errors/editor-model-not-found-error";
+import {Selection, SelectionDirection} from "monaco-editor";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -107,7 +108,7 @@ export class SolardocEditor {
     globalMonacoEditor! = monaco.editor.create(elementToBindTo.value, {
       theme: initialState.darkMode ? 'asciiDocDarkTheme' : 'asciiDocLightTheme',
       language: 'asciiDoc',
-      value: initialState.content,
+      value: undefined,
       fontFamily: 'JetBrains Mono',
       minimap: {
         enabled: false,
@@ -116,6 +117,8 @@ export class SolardocEditor {
       automaticLayout: true,
       scrollBeyondLastLine: false,
     })
+    // We need to set the content after the editor is created due to a weird bug in Monaco (See #146)
+    this._applyInitContent(`${initialState.content}` || '')
     this._locked = false
     this._readonly = false
 
@@ -164,6 +167,10 @@ export class SolardocEditor {
     globalMonacoEditor!.setValue(content)
   }
 
+  private static forceRerender() {
+    globalMonacoEditor!.render()
+  }
+
   /**
    * @since 0.7.0
    */
@@ -186,10 +193,10 @@ export class SolardocEditor {
     } else if (oTrans.init) {
       // The init transformation should not be applied and only the init content should be set
       //await this.runThreadSafe(async () => model.setValue(currentFileStore.content))
-      await this.runThreadSafe(async () => globalMonacoEditor!.setValue(currentFileStore.content))
+      await this._runThreadSafe(async () => globalMonacoEditor!.setValue(currentFileStore.content))
       return
     } else {
-      await this.runThreadSafe(async () => {
+      await this._runThreadSafe(async () => {
         const edits: Array<editor.IIdentifiedSingleEditOperation> = getMonacoUpdatesFromOT(editorModel, oTrans)
         globalMonacoEditor!.executeEdits(this.name, edits)
       })
@@ -218,11 +225,11 @@ export class SolardocEditor {
     })
   }
 
-  private static lock() {
+  private static _lock() {
     this._locked = true
   }
 
-  private static unlock() {
+  private static _unlock() {
     this._locked = false
   }
 
@@ -232,20 +239,20 @@ export class SolardocEditor {
    * @param promise The promise to run
    * @private
    */
-  private static async runThreadSafe(promise: () => Promise<void>): Promise<void> {
+  private static async _runThreadSafe(promise: () => Promise<void>): Promise<void> {
     if (this.isLocked) {
-      await this.waitForUnlock()
+      await this._waitForUnlock()
     }
-    this.lock()
+    this._lock()
     await promise()
-    this.unlock()
+    this._unlock()
   }
 
   /**
    * Returns a promise which resolves when the editor is unlocked.
    * @private
    */
-  private static waitForUnlock(): Promise<void> {
+  private static _waitForUnlock(): Promise<void> {
     return new Promise(resolve => {
       const interval = setInterval(() => {
         if (!this.isLocked) {
@@ -253,6 +260,30 @@ export class SolardocEditor {
           resolve(undefined)
         }
       }, 100)
+    })
+  }
+
+  /**
+   * Applies the initial content to the editor. This is used to set the initial content of the editor when it is
+   * created.
+   *
+   * This is required due to bug #146 in Monaco, where setting the content in the editor creation options does not work.
+   * @param content The content to set.
+   * @private
+   */
+  private static _applyInitContent(content: string) {
+    const model = globalMonacoEditor!.getModel()!.getFullModelRange()
+    globalMonacoEditor!.executeEdits(
+      this.name,
+      [{
+        range: model,
+        text: content,
+      }] satisfies Array<editor.IIdentifiedSingleEditOperation>,
+    )
+
+    document.fonts.ready.then(() => {
+      monaco.editor.remeasureFonts()
+      this.forceRerender()
     })
   }
 }
