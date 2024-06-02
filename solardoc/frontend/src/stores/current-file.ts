@@ -28,7 +28,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
     const storedFileOwner = localStorage.getItem(constants.localStorageFileOwnerKey)
     let storedFileName = localStorage.getItem(constants.localStorageFileNameKey)
     let storedFileContent = localStorage.getItem(constants.localStorageFileContentKey)
-    let localStorageLastModified = localStorage.getItem(constants.localStorageLastModifiedKey)
+    let storedLastModified = localStorage.getItem(constants.localStorageLastModifiedKey)
+    let storedCreated = localStorage.getItem(constants.localStorageCreatedKey)
     let storedPermissions = localStorage.getItem(constants.localStorageFilePermissionsKey)
 
     // Ensure the default is populated if the stored content is empty or the file name is empty
@@ -42,9 +43,14 @@ export const useCurrentFileStore = defineStore('currentFile', {
       localStorage.setItem(constants.localStorageFileContentKey, constants.defaultFileContent)
     }
 
-    if (!localStorageLastModified) {
-      localStorageLastModified = new Date().toISOString()
-      localStorage.setItem(constants.localStorageLastModifiedKey, localStorageLastModified)
+    if (!storedLastModified) {
+      storedLastModified = new Date().toISOString()
+      localStorage.setItem(constants.localStorageLastModifiedKey, storedLastModified)
+    }
+
+    if (!storedCreated) {
+      storedCreated = new Date().toISOString()
+      localStorage.setItem(constants.localStorageCreatedKey, storedCreated)
     }
 
     if (!storedPermissions) {
@@ -62,7 +68,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,
-      lastModified: new Date(localStorageLastModified),
+      lastModified: new Date(storedLastModified),
+      created: new Date(storedCreated),
     }
   },
   getters: {
@@ -244,6 +251,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setOnlineSaveState(true)
       this.setLastModified(new Date(file.last_edited))
       this.setPermissions(perm)
+      this.setCreated(new Date(file.created))
     },
     setFileId(fileId: string) {
       this.fileId = fileId
@@ -273,8 +281,15 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.lastModified = lastModified
       localStorage.setItem(constants.localStorageLastModifiedKey, lastModified.toISOString())
     },
+    setCreated(created: Date) {
+      this.created = created
+      localStorage.setItem(constants.localStorageCreatedKey, created.toISOString())
+    },
     resetLastModified() {
       this.setLastModified(new Date())
+    },
+    resetCreated() {
+      this.setCreated(new Date())
     },
     setPermissions(permissions: Permission) {
       this.permissions = permissions
@@ -288,8 +303,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setFileName(constants.defaultFileName)
       this.setContent(constants.defaultFileContent)
       this.setOnlineSaveState(false)
-      this.clearOTransStack()
       this.setPermissions(Permissions.Unknown)
+      this.clearOTransStack()
+      this.resetLastModified()
+      this.resetCreated()
 
       const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
       SolardocEditor.setContent(constants.defaultFileContent)
