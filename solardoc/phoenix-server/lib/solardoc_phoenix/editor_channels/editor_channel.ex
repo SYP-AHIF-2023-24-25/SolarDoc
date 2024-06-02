@@ -59,7 +59,6 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
 
   defp validate_password(changeset, opts) do
     changeset
-    |> validate_required([:password])
     |> validate_length(:password, min: 10, max: 72)
     |> maybe_hash_password(opts)
   end
@@ -88,6 +87,12 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   def valid_password?(%SolardocPhoenix.EditorChannels.EditorChannel{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Argon2.verify_pass(password, hashed_password)
+  end
+
+  def valid_password?(%SolardocPhoenix.EditorChannels.EditorChannel{hashed_password: hashed_password}, password)
+      when hashed_password in [nil, ""] and password in [nil, ""] do
+    Argon2.no_user_verify()
+    true
   end
 
   def valid_password?(_, _) do
