@@ -45,7 +45,9 @@ async function handleSaveButtonClick() {
   showDummyLoading()
   try {
     await interceptErrors(
-      ensureLoggedIn($router).then(async () => await currentFileStore.storeOnServer(currentUserStore.bearer!))
+      ensureLoggedIn($router).then(
+        async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
+      ),
     )
     if (wasAlreadyUploaded) {
       showInfoNotifFromObj(constants.notifMessages.fileSaved)

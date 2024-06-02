@@ -4,7 +4,7 @@ import { useChannelViewStore } from '@/stores/channel-view'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
-import CurrentChannel from "@/components/editor/dropdown/current-channel/CurrentChannel.vue"
+import CurrentChannel from '@/components/editor/dropdown/current-channel/CurrentChannel.vue'
 import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue'
 import { interceptErrors } from '@/errors/handler/error-handler'
@@ -64,7 +64,8 @@ if (currentUserStore.loggedIn) {
       <div id="channel-missing-error" v-else>
         <p>
           <i class="pi pi-exclamation-circle"></i>
-          Channel not found. Please reload the page and if the error persists, logout and login again!
+          Channel not found. Please reload the page and if the error persists, logout and login
+          again!
         </p>
       </div>
     </div>

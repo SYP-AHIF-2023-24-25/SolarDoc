@@ -27,7 +27,7 @@ import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import { showWarnNotif } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
-import EditorSettings from "@/components/editor/dropdown/editor-settings/EditorSettings.vue";
+import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorSettings.vue'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()

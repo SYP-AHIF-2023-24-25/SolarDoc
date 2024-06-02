@@ -1,10 +1,9 @@
 <script setup lang="ts">
-
-import {useOverlayStateStore} from "@/stores/overlay-state";
-import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
-import {useCurrentFileStore} from "@/stores/current-file";
-import {getHumanReadableTimeInfo} from "@/scripts/format-date";
-import {ref} from "vue";
+import { useOverlayStateStore } from '@/stores/overlay-state'
+import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import { ref } from 'vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
@@ -42,7 +41,9 @@ setInterval(updateTimeRefs, 500)
         </button>
       </div>
       <div id="settings-file-info">
-        <h2 id="settings-file-info-title">File Information •<code>{{ currentFileStore.fileName }}</code></h2>
+        <h2 id="settings-file-info-title">
+          File Information •<code>{{ currentFileStore.fileName }}</code>
+        </h2>
         <p id="settings-file-info-file-id">
           <i class="pi pi-wrench"></i>
           ID: {{ currentFileStore.fileId || 'Not registered' }}
