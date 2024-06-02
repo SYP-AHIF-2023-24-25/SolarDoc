@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import ProgressSpinner from '@/components/ProgressSpinner.vue'
-import {type Permission, useCurrentFileStore} from '@/stores/current-file'
+import { type Permission, useCurrentFileStore } from '@/stores/current-file'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import {useCurrentUserStore} from '@/stores/current-user'
-import {PhoenixInternalError, PhoenixRestError} from '@/services/phoenix/errors'
-import {useLoadingStore} from '@/stores/loading'
-import {useRoute, useRouter} from 'vue-router'
-import {onMounted} from 'vue'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import { useLoadingStore } from '@/stores/loading'
+import { useRoute, useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()

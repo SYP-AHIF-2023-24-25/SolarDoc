@@ -1,6 +1,6 @@
-import {defineStore} from 'pinia'
-import type {OTrans, OTransReqDto, OTransRespDto} from '@/services/phoenix/ot-trans'
-import type {File} from '@/services/phoenix/api-service'
+import { defineStore } from 'pinia'
+import type { OTrans, OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
+import type { File } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import {
   type ActualPhxErrorResp,

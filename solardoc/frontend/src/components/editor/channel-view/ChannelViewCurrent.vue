@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import {getHumanReadableTimeInfo} from '@/scripts/format-date'
-import type {EditorChannel} from '@/services/phoenix/editor-channel'
-import {useEditorUpdateWSClient} from '@/stores/editor-update-ws-client'
-import {storeToRefs} from 'pinia'
-import {ref} from 'vue'
-import {useChannelViewStore} from '@/stores/channel-view'
-import {interceptErrors} from '@/errors/handler/error-handler'
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import type { EditorChannel } from '@/services/phoenix/editor-channel'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import { useChannelViewStore } from '@/stores/channel-view'
+import { interceptErrors } from '@/errors/handler/error-handler'
 
 const props = defineProps<{
   channel: EditorChannel

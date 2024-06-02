@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import {ref} from 'vue'
-import {useChannelViewStore} from '@/stores/channel-view'
-import {useEditorUpdateWSClient} from '@/stores/editor-update-ws-client'
-import {useCurrentFileStore} from '@/stores/current-file'
-import type {EditorChannel, JoinChannelOptions} from '@/services/phoenix/editor-channel'
-import type {Vueform} from '@vueform/vueform'
-import type {OTransRespDto} from '@/services/phoenix/ot-trans'
-import {handleOTUpdates} from '@/services/phoenix/ot-trans'
-import type {File} from '@/services/phoenix/gen/phoenix-rest-service'
-import {useCurrentUserStore} from '@/stores/current-user'
-import {PhoenixSDSError} from '@/services/phoenix/errors'
+import { ref } from 'vue'
+import { useChannelViewStore } from '@/stores/channel-view'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import { useCurrentFileStore } from '@/stores/current-file'
+import type { EditorChannel, JoinChannelOptions } from '@/services/phoenix/editor-channel'
+import type { Vueform } from '@vueform/vueform'
+import type { OTransRespDto } from '@/services/phoenix/ot-trans'
+import { handleOTUpdates } from '@/services/phoenix/ot-trans'
+import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { PhoenixSDSError } from '@/services/phoenix/errors'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()

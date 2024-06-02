@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import {storeToRefs} from 'pinia'
-import {useRenderDataStore} from '@/stores/render-data'
-import {usePreviewLoadingStore} from '@/stores/preview-loading'
-import {usePreviewSelectedSlideStore} from '@/stores/preview-selected-slide'
+import { storeToRefs } from 'pinia'
+import { useRenderDataStore } from '@/stores/render-data'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 
 defineProps({
   slideIndex: {

@@ -1,5 +1,5 @@
-import type {OTransReqDto} from '@/services/phoenix/ot-trans'
-import {handleOutgoingUpdate} from '@/services/phoenix/ot-trans'
+import type { OTransReqDto } from '@/services/phoenix/ot-trans'
+import { handleOutgoingUpdate } from '@/services/phoenix/ot-trans'
 
 /**
  * Sends the operational transformation updates to the server.

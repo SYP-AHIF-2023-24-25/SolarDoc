@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type {File} from '@/services/phoenix/api-service'
+import type { File } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import {useCurrentUserStore} from '@/stores/current-user'
-import {PhoenixInternalError, PhoenixInvalidCredentialsError} from '@/services/phoenix/errors'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { PhoenixInternalError, PhoenixInvalidCredentialsError } from '@/services/phoenix/errors'
 import FileCard from '@/components/profile-view/file-view/FileCard.vue'
-import {handleError} from '@/errors/handler/error-handler'
-import {useRouter} from 'vue-router'
-import {ref} from 'vue'
+import { handleError } from '@/errors/handler/error-handler'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 const currentUserStore = useCurrentUserStore()
 const $router = useRouter()

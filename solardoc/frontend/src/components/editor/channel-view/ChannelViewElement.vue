@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type {EditorChannel} from '@/services/phoenix/editor-channel'
-import {getHumanReadableTimeInfo} from '@/scripts/format-date'
-import {useChannelViewStore} from '@/stores/channel-view'
-import {ref} from 'vue'
+import type { EditorChannel } from '@/services/phoenix/editor-channel'
+import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import { useChannelViewStore } from '@/stores/channel-view'
+import { ref } from 'vue'
 
 const props = defineProps<{
   channel: EditorChannel

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import SolardocStreamSVG from '@/components/icons/SolardocStreamSVG.vue'
 import HomeFeatureCard from '@/components/home/HomeFeatureCard.vue'
-import {useLoadingStore} from "@/stores/loading";
-import {useRouter} from "vue-router";
+import { useLoadingStore } from '@/stores/loading'
+import { useRouter } from 'vue-router'
 
 const $router = useRouter()
 const loadingStore = useLoadingStore()

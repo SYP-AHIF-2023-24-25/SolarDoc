@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import * as phoenixBackend from '@/services/phoenix/api-service'
-import {useRouter} from 'vue-router'
-import {useCurrentUserStore} from '@/stores/current-user'
-import type {Vueform} from '@vueform/vueform'
+import { useRouter } from 'vue-router'
+import { useCurrentUserStore } from '@/stores/current-user'
+import type { Vueform } from '@vueform/vueform'
 import {
   type ActualPhxErrorResp,
   PhoenixBadRequestError,
   PhoenixInvalidCredentialsError,
 } from '@/services/phoenix/errors'
-import {SolardocUnreachableError} from '@/errors/unreachable-error'
-import {interceptErrors} from '@/errors/handler/error-handler'
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
+import { interceptErrors } from '@/errors/handler/error-handler'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()

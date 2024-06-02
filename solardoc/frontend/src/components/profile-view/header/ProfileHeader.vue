@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useCurrentUserStore} from '@/stores/current-user'
+import { useCurrentUserStore } from '@/stores/current-user'
 
 const currentUserStore = useCurrentUserStore()
 </script>

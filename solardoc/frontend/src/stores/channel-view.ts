@@ -1,8 +1,8 @@
-import type {EditorChannel} from '@/services/phoenix/editor-channel'
+import type { EditorChannel } from '@/services/phoenix/editor-channel'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import constants from '@/plugins/constants'
-import {defineStore} from 'pinia'
-import {PhoenixInternalError, PhoenixRestError} from '@/services/phoenix/errors'
+import { defineStore } from 'pinia'
+import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 
 export const useChannelViewStore = defineStore('channels', {
   state: () => {

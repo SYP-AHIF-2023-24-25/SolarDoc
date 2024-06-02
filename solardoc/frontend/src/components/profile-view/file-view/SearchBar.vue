@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import {ref} from 'vue'
+import { ref } from 'vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
-import {useDarkModeStore} from '@/stores/dark-mode'
+import { useDarkModeStore } from '@/stores/dark-mode'
 
 const darkModeStore = useDarkModeStore()
 const input = ref('')

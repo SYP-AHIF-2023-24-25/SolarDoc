@@ -1,5 +1,5 @@
-import {SolardocError} from '@/errors/solardoc-error'
-import {showNotifFromErr} from '@/scripts/show-notif'
+import { SolardocError } from '@/errors/solardoc-error'
+import { showNotifFromErr } from '@/scripts/show-notif'
 
 /**
  * An error handler which displays a notification to the user in case the error is a {@link SolardocError}, otherwise

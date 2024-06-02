@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {useCurrentUserStore} from '@/stores/current-user'
-import {useRouter} from 'vue-router'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useRouter } from 'vue-router'
 import ProfileHeader from '@/components/profile-view/header/ProfileHeader.vue'
 import ProfileFileOverview from '@/components/profile-view/file-view/ProfileFileOverview.vue'
 import ProfileViewHeaderButtons from '@/components/profile-view/header/ProfileViewHeaderButtons.vue'

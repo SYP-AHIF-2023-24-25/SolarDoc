@@ -1,6 +1,6 @@
-import type {editor} from 'monaco-editor'
+import type { editor } from 'monaco-editor'
 import * as monaco from 'monaco-editor'
-import type {OTrans} from '@/services/phoenix/ot-trans'
+import type { OTrans } from '@/services/phoenix/ot-trans'
 
 export function getMonacoUpdatesFromOT(
   model: monaco.editor.ITextModel,

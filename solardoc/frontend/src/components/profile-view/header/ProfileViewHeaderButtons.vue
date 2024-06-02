@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import {useCurrentUserStore} from '@/stores/current-user'
-import {useCurrentFileStore} from '@/stores/current-file'
-import {showInfoNotifFromObj} from '@/scripts/show-notif'
-import {handleError} from '@/errors/handler/error-handler'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { showInfoNotifFromObj } from '@/scripts/show-notif'
+import { handleError } from '@/errors/handler/error-handler'
 import constants from '@/plugins/constants'
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()

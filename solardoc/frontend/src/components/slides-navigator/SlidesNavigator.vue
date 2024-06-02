@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import {useRenderDataStore} from '@/stores/render-data'
-import {storeToRefs} from 'pinia'
-import {useInitStateStore} from '@/stores/init-state'
+import { useRenderDataStore } from '@/stores/render-data'
+import { storeToRefs } from 'pinia'
+import { useInitStateStore } from '@/stores/init-state'
 import SlidePreview from '@/components/slides-navigator/SlidePreview.vue'
-import {ref, watch} from 'vue'
-import {useScroll} from '@vueuse/core'
-import {usePreviewMenuSlideStateStore} from '@/stores/preview-menu-slide-state'
+import { ref, watch } from 'vue'
+import { useScroll } from '@vueuse/core'
+import { usePreviewMenuSlideStateStore } from '@/stores/preview-menu-slide-state'
 
 const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()

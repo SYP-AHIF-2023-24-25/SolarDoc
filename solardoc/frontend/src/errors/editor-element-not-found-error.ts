@@ -1,4 +1,4 @@
-import {SolardocError} from '@/errors/solardoc-error'
+import { SolardocError } from '@/errors/solardoc-error'
 
 /**
  * An error that is thrown when the editor element could not be found. This is a critical initialisation error.
