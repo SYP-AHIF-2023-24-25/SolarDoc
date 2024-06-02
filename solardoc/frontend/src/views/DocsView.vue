@@ -18,6 +18,7 @@ div#docs-page {
 
   h1 {
     width: 90%;
+    text-align: center;
 
     @include r-min(var.$window-xmedium) {
       width: 50%;
