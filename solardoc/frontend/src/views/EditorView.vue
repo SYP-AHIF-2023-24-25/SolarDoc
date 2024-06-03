@@ -28,6 +28,9 @@ import { interceptErrors } from '@/errors/handler/error-handler'
 import { showWarnNotif } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
 import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorSettings.vue'
+import { connectToWSIfPossible } from '@/scripts/editor/sds'
+import {createOrJoinChannelForFile} from "@/scripts/editor/channel";
+import {createEditorRemoteFileConnection} from "@/scripts/editor/file";
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -53,22 +56,7 @@ interceptErrors(backendAPI.ensureRenderBackendIsReachable())
 interceptErrors(
   (async () => {
     await phoenixBackend.ensurePhoenixBackendIsReachable()
-    const authStatus =
-      currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
-    if (authStatus === 'authenticated') {
-      // Ensure that the user has the permissions to open the current file
-      await currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
-
-      console.log('[Editor] Attempting to connect to SDS')
-      editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
-    } else if (authStatus === 'expired-or-revoked') {
-      await currentUserStore.logout()
-      await currentFileStore.closeFile()
-    } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
-      showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')
-    } else {
-      console.log('[Editor] Skipping connection to SDS. Not logged in!')
-    }
+    await createEditorRemoteFileConnection()
   })(),
 )
 // ---------------------------------------------------------------------------------------------------------------------
@@ -144,12 +132,13 @@ setInterval(updateLastModified, 500)
             v-if="currentFileStore.permissions === Permissions.Unknown"
             class="editor-button"
             @click="handleShareButtonClick()"
+            v-tooltip="'Creates a URL to let others join your workspace'"
           >
             Share
           </button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
-        <div id="save-state">
+        <div id="save-state" v-tooltip="'Indicates whether the file is saved remotely on the server'">
           <p
             :class="currentFileStore.saveState === constants.saveStates.server ? 'saved' : 'error'"
           >

@@ -9,6 +9,8 @@ import {
   PhoenixNotAuthorisedError,
 } from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
+import {showErrorNotifFromObj, showNotifFromErr, showWarnNotif} from "@/scripts/show-notif";
+import {FileGoneWarn} from "@/errors/file-gone-warn";
 
 export type Unknown = null
 export type NoPermissions = 0
@@ -26,6 +28,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
     const storedFileId = localStorage.getItem(constants.localStorageFileIdKey)
     const storedFileOwner = localStorage.getItem(constants.localStorageFileOwnerKey)
+    const storedChannelId = localStorage.getItem(constants.localStorageFileChannelIdKey)
     let storedFileName = localStorage.getItem(constants.localStorageFileNameKey)
     let storedFileContent = localStorage.getItem(constants.localStorageFileContentKey)
     let storedLastModified = localStorage.getItem(constants.localStorageLastModifiedKey)
@@ -69,6 +72,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,
       lastModified: new Date(storedLastModified),
+      channelId: storedChannelId || undefined,
       created: new Date(storedCreated),
     }
   },
@@ -77,21 +81,58 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * Returns true if a remotely opened file is currently being edited.
      * @since 0.6.0
      */
-    remoteFileOpened(): boolean {
+    remoteFile(): boolean {
       return this.fileId !== undefined
     },
+    raw(): File | undefined {
+      if (!this.fileId || !this.ownerId) {
+        return undefined
+      }
+      return {
+        id: this.fileId,
+        content: this.content,
+        created: this.created.getTime(),
+        file_name: this.fileName,
+        last_edited: this.lastModified.getTime(),
+        owner_id: this.ownerId,
+        channel_id: this.channelId,
+      }
+    }
   },
   actions: {
-    async ensureUserIsAuthorisedForFile(userId: string) {
-      if (!this.fileId || !this.ownerId) {
-        this.clearFileId()
-        this.clearOwnerId()
-        this.setOnlineSaveState(false) // For safety
+    /**
+     * Fetches the file data from the server and sets the current file with the response data.
+     *
+     * This is to make sure the data is up-to-date with the server.
+     * @private
+     */
+    async fetchNewestRemoteFileVersionIfPossible(bearer?: string): Promise<void> {
+      if (this.fileId === undefined || bearer == undefined) {
         return
       }
 
-      if (this.ownerId !== userId) {
+      let resp: Awaited<ReturnType<typeof phoenixRestService.getV1FilesById>>
+      try {
+        resp = await phoenixRestService.getV1FilesById(bearer, this.fileId)
+      } catch (e) {
+        throw new PhoenixInternalError(
+          'Critically failed to fetch file. Cause: ' + (<Error>e).message,
+        )
+      }
+
+      if (resp.status === 200) {
+        this.setFile(resp.data)
+      } else {
+        await this.closeFile(true)
+
+        // Show notification indicating that the file was not found
+        showNotifFromErr(new FileGoneWarn())
+      }
+    },
+    async ensureUserIsAuthorisedForFile(userId: string) {
+      if (!this.fileId || !this.ownerId || this.ownerId !== userId) {
         await this.closeFile()
+        this.setOnlineSaveState(false)
       }
     },
     async storeOnServer(bearer: string) {
@@ -241,9 +282,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
     },
     setOnlineSaveState(value: boolean) {
-      this.saveState = value ? 'Saved Remotely' : 'Saved Locally'
+      this.saveState = value ? constants.saveStates.server : constants.saveStates.local
     },
-    setFile(file: Required<File>, perm: Permission = Permissions.Unknown) {
+    setFile(file: File, perm: Permission = Permissions.Unknown) {
       this.setFileId(file.id)
       this.setOwnerId(file.owner_id)
       this.setFileName(file.file_name)
@@ -252,6 +293,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setLastModified(new Date(file.last_edited))
       this.setPermissions(perm)
       this.setCreated(new Date(file.created))
+      this.setChannelId(file.channel_id)
     },
     setFileId(fileId: string) {
       this.fileId = fileId
@@ -260,14 +302,6 @@ export const useCurrentFileStore = defineStore('currentFile', {
     setOwnerId(ownerId: string) {
       this.ownerId = ownerId
       localStorage.setItem(constants.localStorageFileOwnerKey, ownerId)
-    },
-    clearFileId() {
-      this.fileId = undefined
-      localStorage.removeItem(constants.localStorageFileIdKey)
-    },
-    clearOwnerId() {
-      this.ownerId = undefined
-      localStorage.removeItem(constants.localStorageFileOwnerKey)
     },
     setFileName(fileName: string) {
       this.fileName = fileName
@@ -285,6 +319,25 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.created = created
       localStorage.setItem(constants.localStorageCreatedKey, created.toISOString())
     },
+    setChannelId(channelId: string | undefined) {
+      this.channelId = channelId
+      localStorage.setItem(
+        constants.localStorageFileChannelIdKey,
+        channelId ? channelId : '',
+      )
+    },
+    clearFileId() {
+      this.fileId = undefined
+      localStorage.removeItem(constants.localStorageFileIdKey)
+    },
+    clearOwnerId() {
+      this.ownerId = undefined
+      localStorage.removeItem(constants.localStorageFileOwnerKey)
+    },
+    clearChannelId() {
+      this.channelId = undefined
+      localStorage.removeItem(constants.localStorageFileChannelIdKey)
+    },
     resetLastModified() {
       this.setLastModified(new Date())
     },
@@ -298,18 +351,23 @@ export const useCurrentFileStore = defineStore('currentFile', {
         permissions ? String(permissions) : '',
       )
     },
-    async closeFile() {
+    async closeFile(preserveContent: boolean = false) {
       this.clearFileId()
+      this.clearOTransStack()
+      this.clearOwnerId()
+      this.clearChannelId()
       this.setFileName(constants.defaultFileName)
-      this.setContent(constants.defaultFileContent)
       this.setOnlineSaveState(false)
       this.setPermissions(Permissions.Unknown)
-      this.clearOTransStack()
       this.resetLastModified()
       this.resetCreated()
 
-      const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
-      SolardocEditor.setContent(constants.defaultFileContent)
+      if (!preserveContent) {
+        this.setContent(constants.defaultFileContent)
+
+        const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
+        SolardocEditor.setContent(constants.defaultFileContent)
+      }
     },
     clearOTransStack() {
       this.oTransStack = new Map<string, OTrans>()

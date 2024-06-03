@@ -1,41 +1,16 @@
 <script setup lang="ts">
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { useChannelViewStore } from '@/stores/channel-view'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import SDRouterLink from '@/components/SDRouterLink.vue'
 import CurrentChannel from '@/components/editor/dropdown/current-channel/CurrentChannel.vue'
-import { storeToRefs } from 'pinia'
-import { ref, watch } from 'vue'
-import { interceptErrors } from '@/errors/handler/error-handler'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import {useCurrentFileStore} from "@/stores/current-file";
 
 const overlayStateStore = useOverlayStateStore()
-const currentChannelStore = useChannelViewStore()
+const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
-
-const { creatingChannel, selectedChannel, channels } = storeToRefs(currentChannelStore)
-
-const loadingState = ref(false)
-
-async function refreshChannels() {
-  loadingState.value = true
-  if (currentUserStore.loggedIn && currentUserStore.bearer) {
-    await currentChannelStore.fetchChannels(currentUserStore.bearer)
-  } else {
-    currentChannelStore.clearChannels()
-  }
-  loadingState.value = false
-}
-
-if (currentUserStore.loggedIn) {
-  // Fetch channels again when the user returns from one of the forms
-  watch([selectedChannel, creatingChannel], async () => {
-    if (!selectedChannel.value || !creatingChannel.value) {
-      await interceptErrors(refreshChannels())
-    }
-  })
-  interceptErrors(refreshChannels())
-}
+const editorUpdateWSClient = useEditorUpdateWSClient()
 </script>
 
 <template>
@@ -52,16 +27,23 @@ if (currentUserStore.loggedIn) {
         <h1>Channels</h1>
         <p id="experimental-tag">Experimental</p>
       </div>
-      <div id="channel-view-not-logged-in" v-if="!currentUserStore.loggedIn">
+      <div class="channel-view-error" v-if="!currentUserStore.loggedIn">
         <p>
-          You need to be logged in to view channels
+          <i class="pi pi-info-circle"></i>
+          You need to be logged in to view a channel!
           <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
         </p>
       </div>
-      <div id="channel-view-info" v-else-if="selectedChannel">
-        <CurrentChannel :channel="selectedChannel" />
+      <div class="channel-view-error" v-if="!currentFileStore.remoteFile">
+        <p>
+          <i class="pi pi-info-circle"></i>
+          You need to save the file to view its channel!
+        </p>
       </div>
-      <div id="channel-missing-error" v-else>
+      <div id="channel-view-info" v-else-if="editorUpdateWSClient.currentChannel">
+        <CurrentChannel :channel="editorUpdateWSClient.currentChannel" />
+      </div>
+      <div class="channel-view-error" v-else>
         <p>
           <i class="pi pi-exclamation-circle"></i>
           Channel not found. Please reload the page and if the error persists, logout and login
@@ -80,6 +62,10 @@ if (currentUserStore.loggedIn) {
 
 #full-screen-wrapper {
   @include align-center;
+
+  i {
+    @include icon-presets;
+  }
 
   #experimental-tag {
     position: absolute;
@@ -127,18 +113,12 @@ if (currentUserStore.loggedIn) {
       margin: 2rem 0;
     }
 
-    #channel-view-not-logged-in,
-    #channel-view-empty-msg,
-    #channel-missing-error {
+    .channel-view-error {
       @include align-center;
       margin-bottom: 1rem;
       width: 100%;
       height: 8rem;
       font-size: 1.4rem;
-
-      i {
-        @include icon-presets;
-      }
     }
 
     #close-button {

@@ -14,6 +14,8 @@ import { useLoadingStore } from '@/stores/loading'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+import {useEditorUpdateWSClient} from "@/stores/editor-update-ws-client";
+import {closeEditorRemoteFileConnection, createEditorRemoteFileConnection} from "@/scripts/editor/file";
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
@@ -36,6 +38,7 @@ async function handleNewFileButtonClick() {
   closeDropdown()
   showDummyLoading()
   await currentFileStore.closeFile()
+  await closeEditorRemoteFileConnection()
   showInfoNotifFromObj(constants.notifMessages.newFile)
 }
 
@@ -44,15 +47,14 @@ async function handleSaveButtonClick() {
   closeDropdown()
   showDummyLoading()
   try {
-    await interceptErrors(
-      ensureLoggedIn($router).then(
-        async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
-      ),
-    )
+    await interceptErrors(ensureLoggedIn($router).then(
+      async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
+    ))
     if (wasAlreadyUploaded) {
       showInfoNotifFromObj(constants.notifMessages.fileSaved)
     } else {
       showInfoNotifFromObj(constants.notifMessages.fileUploaded)
+      await createEditorRemoteFileConnection()
     }
   } catch (e) {
     loadingStore.setLoading(false)

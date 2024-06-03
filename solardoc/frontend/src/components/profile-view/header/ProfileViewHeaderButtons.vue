@@ -16,7 +16,7 @@ async function logout() {
     await $router.push('/login')
 
     // If there is a currently remotely opened file, close it and reset the store
-    if (currentFileStore.remoteFileOpened) {
+    if (currentFileStore.remoteFile) {
       await currentFileStore.closeFile()
       showInfoNotifFromObj(constants.notifMessages.loggedOutAndFileCleared)
     } else {

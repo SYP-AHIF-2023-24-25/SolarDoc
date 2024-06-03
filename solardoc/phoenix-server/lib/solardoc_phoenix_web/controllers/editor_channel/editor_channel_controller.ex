@@ -2,6 +2,7 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger, except: [:delete]
 
+  alias SolardocPhoenix.Repo
   alias SolardocPhoenix.EditorChannels
 
   action_fallback SolardocPhoenixWeb.FallbackController
@@ -74,6 +75,7 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
 
   def show(conn, %{"id" => id}) do
     editor_channel = EditorChannels.get_editor_channel!(id)
+      |> Repo.preload(:creator)
     render(conn, :show, editor_channel: editor_channel)
   end
 

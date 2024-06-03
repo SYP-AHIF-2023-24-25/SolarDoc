@@ -8,6 +8,7 @@ export default Object.freeze({
   localStorageFileOwnerKey: 'file-owner',
   localStorageFileContentKey: 'file-content',
   localStorageFilePermissionsKey: 'file-permissions',
+  localStorageFileChannelIdKey: 'file-channel-id',
   localStorageThemeKey: 'user-theme',
   localStorageAuthKey: 'user-auth',
   localStorageCurrUserKey: 'current-user',

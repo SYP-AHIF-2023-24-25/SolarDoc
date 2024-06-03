@@ -49,7 +49,7 @@ export function joinChannel(channel: EditorChannel, password?: string): Promise<
         )
       },
       currentUserStore.currentUser!.id,
-      { auth: password } satisfies JoinChannelOptions,
+      { auth: password || '' } satisfies JoinChannelOptions,
     )
   })
 }

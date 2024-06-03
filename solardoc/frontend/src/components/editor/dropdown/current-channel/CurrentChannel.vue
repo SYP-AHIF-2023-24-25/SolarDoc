@@ -4,30 +4,17 @@ import type { EditorChannel } from '@/services/phoenix/editor-channel'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
-import { useChannelViewStore } from '@/stores/channel-view'
-import { interceptErrors } from '@/errors/handler/error-handler'
 
 const props = defineProps<{
   channel: EditorChannel
 }>()
 
 const editorUpdateWSClient = useEditorUpdateWSClient()
-const currentChannelStore = useChannelViewStore()
 
 const channelDescription = ref(props.channel.description || '<None provided>')
 
 const { wsClient } = storeToRefs(editorUpdateWSClient)
 const loadingState = ref(false)
-
-async function handleLeaveChannel() {
-  loadingState.value = true
-  console.log('[ChannelView] Leaving channel')
-  await wsClient.value?.leaveChannel()
-  setTimeout(() => {
-    currentChannelStore.unsetSelectedChannel()
-    loadingState.value = false
-  }, 250)
-}
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
@@ -73,17 +60,13 @@ setInterval(updateLastModified, 500)
           <div id="channel-info-details">
             <p><span>Creator:</span> {{ channel.creator.username }}</p>
             <p><span>Active since:</span> {{ lastModified }}</p>
-            <p><span>Active Users:</span> NaN</p>
+            <p><span>Active Users:</span> Unknown</p>
             <p><span>Description:</span></p>
             <!-- eslint-disable-next-line vue/no-mutating-props -->
             <textarea v-model="channelDescription" disabled wrap="soft"></textarea>
           </div>
         </div>
-        <div id="current-channel-element-interaction">
-          <button class="highlighted-button" @click="interceptErrors(handleLeaveChannel())">
-            Leave
-          </button>
-        </div>
+        <div id="current-channel-element-interaction"></div>
       </div>
     </div>
   </template>
