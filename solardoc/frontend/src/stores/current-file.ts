@@ -9,8 +9,8 @@ import {
   PhoenixNotAuthorisedError,
 } from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
-import {showErrorNotifFromObj, showNotifFromErr, showWarnNotif} from "@/scripts/show-notif";
-import {FileGoneWarn} from "@/errors/file-gone-warn";
+import { showErrorNotifFromObj, showNotifFromErr, showWarnNotif } from '@/scripts/show-notif'
+import { FileGoneWarn } from '@/errors/file-gone-warn'
 
 export type Unknown = null
 export type NoPermissions = 0
@@ -97,7 +97,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
         owner_id: this.ownerId,
         channel_id: this.channelId,
       }
-    }
+    },
   },
   actions: {
     /**
@@ -321,10 +321,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     setChannelId(channelId: string | undefined) {
       this.channelId = channelId
-      localStorage.setItem(
-        constants.localStorageFileChannelIdKey,
-        channelId ? channelId : '',
-      )
+      localStorage.setItem(constants.localStorageFileChannelIdKey, channelId ? channelId : '')
     },
     clearFileId() {
       this.fileId = undefined

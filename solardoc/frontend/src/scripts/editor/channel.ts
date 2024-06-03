@@ -1,8 +1,12 @@
-import {type File, getV1EditorChannelsById, type UserPrivate} from '@/services/phoenix/gen/phoenix-rest-service'
+import {
+  type File,
+  getV1EditorChannelsById,
+  type UserPrivate,
+} from '@/services/phoenix/gen/phoenix-rest-service'
 import { joinChannel } from '@/scripts/channel/join-channel'
-import type {CreateEditorChannel, EditorChannel} from '@/services/phoenix/editor-channel'
+import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
 import { PhoenixRestError } from '@/services/phoenix/errors'
-import {createChannel} from "@/scripts/channel/create-channel";
+import { createChannel } from '@/scripts/channel/create-channel'
 
 async function getChannelFromId(channelId: string, token: string): Promise<EditorChannel> {
   let resp: Awaited<ReturnType<typeof getV1EditorChannelsById>>
@@ -40,7 +44,7 @@ async function getChannelFromId(channelId: string, token: string): Promise<Edito
 export async function createOrJoinChannelForFile(
   file: File,
   user: UserPrivate,
-  token: string
+  token: string,
 ): Promise<EditorChannel> {
   if (file.channel_id) {
     const channel = await getChannelFromId(file.channel_id, token)

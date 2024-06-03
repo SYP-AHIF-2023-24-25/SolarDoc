@@ -1,9 +1,9 @@
-import {useCurrentFileStore} from "@/stores/current-file";
-import {useCurrentUserStore} from "@/stores/current-user";
-import {useEditorUpdateWSClient} from "@/stores/editor-update-ws-client";
-import {useOverlayStateStore} from "@/stores/overlay-state";
-import {connectToWSIfPossible} from "@/scripts/editor/sds";
-import {createOrJoinChannelForFile} from "@/scripts/editor/channel";
+import { useCurrentFileStore } from '@/stores/current-file'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import { useOverlayStateStore } from '@/stores/overlay-state'
+import { connectToWSIfPossible } from '@/scripts/editor/sds'
+import { createOrJoinChannelForFile } from '@/scripts/editor/channel'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -35,7 +35,12 @@ export async function closeEditorRemoteFileConnection(): Promise<boolean> {
 export async function createEditorRemoteFileConnection(): Promise<boolean> {
   overlayStateStore.resetAll()
   const sdsConnected = await connectToWSIfPossible()
-  if (sdsConnected && currentFileStore.remoteFile && currentFileStore.raw && currentUserStore.currentUser) {
+  if (
+    sdsConnected &&
+    currentFileStore.remoteFile &&
+    currentFileStore.raw &&
+    currentUserStore.currentUser
+  ) {
     await currentFileStore.fetchNewestRemoteFileVersionIfPossible(currentUserStore.bearer!)
     await createOrJoinChannelForFile(
       currentFileStore.raw,

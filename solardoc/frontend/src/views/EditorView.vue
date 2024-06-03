@@ -29,8 +29,8 @@ import { showWarnNotif } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
 import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorSettings.vue'
 import { connectToWSIfPossible } from '@/scripts/editor/sds'
-import {createOrJoinChannelForFile} from "@/scripts/editor/channel";
-import {createEditorRemoteFileConnection} from "@/scripts/editor/file";
+import { createOrJoinChannelForFile } from '@/scripts/editor/channel'
+import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -138,7 +138,10 @@ setInterval(updateLastModified, 500)
           </button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
-        <div id="save-state" v-tooltip="'Indicates whether the file is saved remotely on the server'">
+        <div
+          id="save-state"
+          v-tooltip="'Indicates whether the file is saved remotely on the server'"
+        >
           <p
             :class="currentFileStore.saveState === constants.saveStates.server ? 'saved' : 'error'"
           >
