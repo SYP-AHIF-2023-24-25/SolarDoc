@@ -48,6 +48,7 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
     |> validate_password(opts)
     |> foreign_key_constraint(:creator_id)
     |> foreign_key_constraint(:file_id)
+    |> unique_constraint(:file_id)
     |> change(active_since: now)
   end
 
