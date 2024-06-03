@@ -69,6 +69,7 @@ defmodule SolardocPhoenixWeb.EditorChannelController do
     end
     response 200, "OK", Schema.ref(:EditorChannel)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def show(conn, %{"id" => id}) do

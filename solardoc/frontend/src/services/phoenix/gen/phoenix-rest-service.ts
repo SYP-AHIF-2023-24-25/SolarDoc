@@ -38,6 +38,7 @@ export type EditorChannel = {
 }
 export type EditorChannels = EditorChannel[]
 export type File = {
+  channel_id?: string
   content: string
   created: number
   file_name: string
@@ -180,6 +181,10 @@ export function getV1EditorChannelsById(
       }
     | {
         status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
         data: ErrorsResp
       }
   >(`/v1/editor_channels/${encodeURIComponent(id)}`, {

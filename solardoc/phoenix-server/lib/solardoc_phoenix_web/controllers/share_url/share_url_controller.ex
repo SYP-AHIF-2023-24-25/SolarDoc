@@ -43,6 +43,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
           content :string, "File content", required: true
           last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: true
           created :integer, "Creation date in UNIX timestamp milliseconds", required: true
+          channel_id :string, "UUID of the channel created for this file, if one exists", required: false
         end
       end,
       ErrorResp: swagger_schema do
