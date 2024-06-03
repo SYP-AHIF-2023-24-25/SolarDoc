@@ -1,12 +1,10 @@
 /**
  * @solardoc/rest-api
- * 0.6.0
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
 import * as Oazapfts from 'oazapfts/lib/runtime'
 import * as QS from 'oazapfts/lib/runtime/query'
-
 export const defaults: Oazapfts.RequestOpts = {
   baseUrl: '/',
 }
@@ -66,7 +64,6 @@ export type RenderedSlideImageDtoModel = {
   cache: CacheDtoModel
   download: DownloadDtoModel
 }
-
 export function getV1Ping(opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<{
     status: 200
@@ -75,7 +72,6 @@ export function getV1Ping(opts?: Oazapfts.RequestOpts) {
     ...opts,
   })
 }
-
 export function postV1RenderPresentationImages(
   renderPresentationDtoModel?: RenderPresentationDtoModel,
   opts?: Oazapfts.RequestOpts,
@@ -92,7 +88,6 @@ export function postV1RenderPresentationImages(
     }),
   )
 }
-
 export function postV1RenderPresentationPdf(
   renderPresentationDtoModel?: RenderPresentationDtoModel,
   opts?: Oazapfts.RequestOpts,
@@ -109,7 +104,6 @@ export function postV1RenderPresentationPdf(
     }),
   )
 }
-
 export function postV1RenderPresentationRjsHtml(
   renderPresentationDtoModel?: RenderPresentationDtoModel,
   opts?: Oazapfts.RequestOpts,
@@ -126,7 +120,6 @@ export function postV1RenderPresentationRjsHtml(
     }),
   )
 }
-
 export function postV1RenderSlideByIdImage(
   id: string,
   renderPresentationDtoModel?: RenderPresentationDtoModel,
@@ -144,7 +137,6 @@ export function postV1RenderSlideByIdImage(
     }),
   )
 }
-
 export function getV1ResultByUuid(
   uuid: string,
   {

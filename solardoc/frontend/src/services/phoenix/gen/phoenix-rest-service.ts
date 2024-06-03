@@ -1,11 +1,11 @@
 /**
  * @solardoc/phoenix
- * 0.6.0
+ * 0.7.0-dev
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
 import * as Oazapfts from 'oazapfts/lib/runtime'
-
+import * as QS from 'oazapfts/lib/runtime/query'
 export const defaults: Oazapfts.RequestOpts = {
   baseUrl: 'http://localhost:4000/phx/api',
 }
@@ -93,7 +93,6 @@ export type UserPrivate = {
   role?: string
   username?: string
 }
-
 /**
  * Log out a user
  */
@@ -119,7 +118,6 @@ export function deleteV1AuthBearer(authorization: string, opts?: Oazapfts.Reques
     },
   })
 }
-
 /**
  * Log in a user
  */
@@ -146,7 +144,6 @@ export function postV1AuthBearer(userLogin: UserLogin, opts?: Oazapfts.RequestOp
     }),
   )
 }
-
 /**
  * List all currently running editor channels
  */
@@ -168,7 +165,6 @@ export function getV1EditorChannels(authorization: string, opts?: Oazapfts.Reque
     },
   })
 }
-
 /**
  * Get a single editor channel
  */
@@ -194,7 +190,6 @@ export function getV1EditorChannelsById(
     },
   })
 }
-
 /**
  * List all files owned by the current user
  */
@@ -216,7 +211,6 @@ export function getV1Files(authorization: string, opts?: Oazapfts.RequestOpts) {
     },
   })
 }
-
 /**
  * Create a new file
  */
@@ -251,7 +245,6 @@ export function postV1Files(
     }),
   )
 }
-
 /**
  * Deletes a file
  */
@@ -268,6 +261,10 @@ export function deleteV1FilesById(authorization: string, id: string, opts?: Oaza
         status: 401
         data: ErrorsResp
       }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
   >(`/v1/files/${encodeURIComponent(id)}`, {
     ...opts,
     method: 'DELETE',
@@ -277,7 +274,6 @@ export function deleteV1FilesById(authorization: string, id: string, opts?: Oaza
     },
   })
 }
-
 /**
  * Get a single file
  */
@@ -291,6 +287,10 @@ export function getV1FilesById(authorization: string, id: string, opts?: Oazapft
         status: 401
         data: ErrorsResp
       }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
   >(`/v1/files/${encodeURIComponent(id)}`, {
     ...opts,
     headers: {
@@ -299,7 +299,6 @@ export function getV1FilesById(authorization: string, id: string, opts?: Oazapft
     },
   })
 }
-
 /**
  * Update a single file
  */
@@ -322,6 +321,10 @@ export function putV1FilesById(
         status: 401
         data: ErrorsResp
       }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
   >(
     `/v1/files/${encodeURIComponent(id)}`,
     oazapfts.json({
@@ -335,7 +338,6 @@ export function putV1FilesById(
     }),
   )
 }
-
 /**
  * Ping the server
  */
@@ -347,7 +349,6 @@ export function getV1Ping(opts?: Oazapfts.RequestOpts) {
     ...opts,
   })
 }
-
 /**
  * Create a new share url
  */
@@ -382,7 +383,6 @@ export function postV1Share(
     }),
   )
 }
-
 /**
  * Get a single share url
  */
@@ -404,7 +404,6 @@ export function getV1ShareById(authorization: string, id: string, opts?: Oazapft
     },
   })
 }
-
 /**
  * Get a file via a share url
  */
@@ -426,7 +425,6 @@ export function getV1ShareByIdFile(authorization: string, id: string, opts?: Oaz
     },
   })
 }
-
 /**
  * List all users
  */
@@ -442,7 +440,6 @@ export function getV1Users(authorization: string, opts?: Oazapfts.RequestOpts) {
     },
   })
 }
-
 /**
  * Create a new user
  */
@@ -465,7 +462,6 @@ export function postV1Users(createUser: CreateUser, opts?: Oazapfts.RequestOpts)
     }),
   )
 }
-
 /**
  * Get the current user
  */

@@ -105,6 +105,7 @@ defmodule SolardocPhoenixWeb.FileController do
     end
     response 200, "OK", Schema.ref(:File)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def show(conn, %{"id" => id}) do
@@ -130,6 +131,7 @@ defmodule SolardocPhoenixWeb.FileController do
     response 200, "OK", Schema.ref(:File)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def update(conn, file_params) do
@@ -160,6 +162,7 @@ defmodule SolardocPhoenixWeb.FileController do
     response 204, "No Content"
     response 400, "Bad Request", Schema.ref(:ErrorResp)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def delete(conn, params) do
