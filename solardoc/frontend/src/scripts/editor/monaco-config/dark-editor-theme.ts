@@ -4,7 +4,7 @@ export const darkEditorTheme: editor.IStandaloneThemeData = {
   base: 'vs',
   inherit: false,
   rules: [
-    { token: 'header', foreground: '#5a35d3', fontStyle: 'bold' },
+    { token: 'header', foreground: '#7966c4', fontStyle: 'bold' },
     { token: 'bold', foreground: '#1100ff', fontStyle: 'bold' },
     { token: 'italic', foreground: '#ff00fb', fontStyle: 'italic' },
     { token: 'code', foreground: '#c4c200' },
