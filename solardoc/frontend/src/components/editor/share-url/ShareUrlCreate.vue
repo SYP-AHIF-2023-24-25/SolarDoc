@@ -59,7 +59,7 @@ async function submitForm(
 </script>
 
 <template>
-  <div id="full-screen-wrapper" class="blurred-background-full-screen-overlay" v-if="overlayStateStore.createShareUrl">
+  <div id="full-screen-wrapper" class="page-content-wrapper blurred-background-full-screen-overlay" v-if="overlayStateStore.createShareUrl">
     <div id="share-url-view-create">
       <div id="share-url-view-header">
         <button id="close-button" @click="overlayStateStore.setShareUrlView(false)">
