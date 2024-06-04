@@ -2,8 +2,8 @@ defmodule SolardocPhoenixWeb.ShareURLController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger, except: [:delete]
 
-  alias SolardocPhoenix.Share
-  alias SolardocPhoenix.Share.ShareURL
+  alias SolardocPhoenix.ShareURLs
+  alias SolardocPhoenix.ShareURLs.ShareURL
   alias SolardocPhoenix.Files
   alias SolardocPhoenix.Files.File
   alias SolardocPhoenix.Accounts.User
@@ -54,21 +54,6 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     }
   end
 
-  swagger_path :index do
-    get "#{@api_path}/share"
-    produces "application/json"
-    summary "List all share urls"
-    deprecated false
-    parameter("Authorization", :header, :string, "Bearer", required: true)
-    response 200, "OK", Schema.ref(:ShareUrl)
-    response 401, "Unauthorized", Schema.ref(:ErrorResp)
-  end
-
-  def index(conn, _params) do
-    share_urls = Share.list_share_urls()
-    render(conn, :index, share_urls: share_urls)
-  end
-
   swagger_path :create do
     post "#{@api_path}/share"
     consumes "application/json"
@@ -87,7 +72,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
   def create(conn, share_url_params) do
     with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(share_url_params["file_id"])},
          {:is_owner, true} <- {:is_owner, owner?(conn.assigns.current_user, file)} do
-      with {:ok, %ShareURL{} = share_url} <- Share.create_share_url(share_url_params) do
+      with {:ok, %ShareURL{} = share_url} <- ShareURLs.create_share_url(share_url_params) do
         conn
         |> put_status(:created)
         |> put_resp_header("location", ~p"/api/share_urls/#{share_url.id}")
@@ -117,11 +102,15 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     end
     response 200, "Ok", Schema.ref(:ShareUrl)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def show_share(conn, %{"id"=> id}) do
-    share_url = Share.get_share_url!(id)
-    render(conn, :show_share, share_url: share_url)
+    with {:share_url_exists, %ShareURL{} = share_url} <- {:share_url_exists, ShareURLs.get_share_url!(id)} do
+      render(conn, :show_share, share_url: share_url)
+    else
+      {:share_url_exists, _} -> {:error, :not_found}
+    end
   end
 
   swagger_path :show_file do
@@ -136,20 +125,26 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     end
     response 200, "Ok", Schema.ref(:File)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def show_file(conn, %{"id" => id}) do
-    share_url = Share.get_share_url!(id)
-    with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(share_url.file_id)} do
+    with {:share_url_exists, %ShareURL{} = share_url} <- {:share_url_exists, ShareURLs.get_share_url!(id)},
+         {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(share_url.file_id)} do
       render(conn, :show_file, file: file)
+    else
+      {:share_url_exists, _} -> {:error, :not_found}
+      {:file_exists, _} -> {:error, :not_found}
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    share_url = Share.get_share_url!(id)
-
-    with {:ok, %ShareURL{}} <- Share.delete_share_url(share_url) do
+    with {:share_url_exists, %ShareURL{} = share_url} <- {:share_url_exists, ShareURLs.get_share_url!(id)},
+         {:ok, %ShareURL{}} <- ShareURLs.delete_share_url(share_url) do
       send_resp(conn, :no_content, "")
+    else
+      {:share_url_exists, _} -> {:error, :not_found}
+      {:error, _} -> {:error, :unauthorized}
     end
   end
 end

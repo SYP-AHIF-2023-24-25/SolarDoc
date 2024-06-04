@@ -1,5 +1,5 @@
 defmodule SolardocPhoenixWeb.ShareURLJSON do
-  alias SolardocPhoenix.Share.ShareURL
+  alias SolardocPhoenix.ShareURLs.ShareURL
   alias SolardocPhoenix.Utils
   alias SolardocPhoenix.Files.File
 
