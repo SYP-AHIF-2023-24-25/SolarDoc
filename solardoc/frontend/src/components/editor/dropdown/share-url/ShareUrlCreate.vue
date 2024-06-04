@@ -116,6 +116,7 @@ async function submitForm(
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
+@use '@/assets/full-screen-overlay' as *;
 
 #full-screen-wrapper {
   @include align-center;
