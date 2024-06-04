@@ -97,10 +97,10 @@ async function submitForm(
         >
           <CheckboxElement
             disabled
-            info="(Currently unavailable!) Gives the participant write access to your presentation (read is always present)"
             name="write"
             size="lg"
             text="Write access"
+            default="true"
           />
           <ButtonElement
             :columns="{
