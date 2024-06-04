@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import Dropdown from 'v-dropdown'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
@@ -8,7 +8,7 @@ import { useCurrentFileStore } from '@/stores/current-file'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
-import { interceptErrors } from '@/errors/error-handler'
+import { interceptErrors } from '@/errors/handler/error-handler'
 import { showDummyLoading } from '@/scripts/show-dummy-loading'
 import { useLoadingStore } from '@/stores/loading'
 import constants from '@/plugins/constants'
@@ -55,10 +55,10 @@ async function handleSaveButtonClick() {
   }
 }
 
-function handleNewFileButtonClick() {
+async function handleNewFileButtonClick() {
   closeDropdown()
   showDummyLoading()
-  currentFileStore.closeFile()
+  await currentFileStore.closeFile()
   showInfoNotifFromObj(constants.notifMessages.newFile)
 }
 </script>
@@ -71,8 +71,8 @@ function handleNewFileButtonClick() {
       -->
       <button
         id="sandwich-menu-button"
-        class="sandwich-button"
         :class="{ highlighted: visible.value }"
+        class="sandwich-button"
       >
         <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
         <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
@@ -87,7 +87,7 @@ function handleNewFileButtonClick() {
   </Dropdown>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/link-hover-presets' as *;
 

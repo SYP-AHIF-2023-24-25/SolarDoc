@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useCurrentUserStore } from '@/stores/current-user'
 
 const currentUserStore = useCurrentUserStore()
@@ -21,7 +21,7 @@ const currentUserStore = useCurrentUserStore()
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 #profile-header {
   margin-right: 2rem;
 

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useRenderDataStore } from '@/stores/render-data'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
@@ -24,7 +24,7 @@ const { previewURL } = storeToRefs(renderDataStore)
     :class="`slide-preview ${previewLoadingStore.previewLoading ? 'loading' : ''}`"
     @click="previewSelectedSlide.setSlide(slideIndex, undefined)"
   >
-    <h2 id="loading-wrapper" v-if="previewLoadingStore.previewLoading">
+    <h2 v-if="previewLoadingStore.previewLoading" id="loading-wrapper">
       <span class="dot-dot-dot-flashing"></span>
     </h2>
     <template v-else>
@@ -34,7 +34,7 @@ const { previewURL } = storeToRefs(renderDataStore)
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
 

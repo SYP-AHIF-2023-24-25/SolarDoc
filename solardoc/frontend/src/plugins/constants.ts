@@ -51,12 +51,12 @@ export default Object.freeze({
     },
   } satisfies { [key: string]: { title: string; text: string } },
   defaultFileName: 'untitled.adoc',
-  defaultFileContent: '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°',
+  defaultFileContent: '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°\n',
   saveStates: {
     local: 'Saved Locally',
     server: 'Saved Remotely',
     unsavedChanges: 'Unsaved Changes',
   },
-  version: 'v0.6.1',
+  version: 'v0.7.0-dev',
   copyright: 'Solardoc © 2023-2024 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
 })

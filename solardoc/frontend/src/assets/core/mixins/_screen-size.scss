@@ -28,49 +28,49 @@
  *
  * @author Ahmad Awais (https://github.com/ahmadawais)
  */
-@mixin r-min( $point ) {
+@mixin r-min($point) {
   @if $point==var.$window-3xsmall {
-    @media ( min-width: var.$window-3xsmall) {
+    @media (min-width: var.$window-3xsmall) {
       @content;
     }
   }
   @if $point==var.$window-2xsmall {
-    @media ( min-width: var.$window-2xsmall) {
+    @media (min-width: var.$window-2xsmall) {
       @content;
     }
   }
   @if $point==var.$window-xsmall {
-    @media ( min-width: var.$window-xsmall) {
+    @media (min-width: var.$window-xsmall) {
       @content;
     }
   }
   @if $point==var.$window-small {
-    @media ( min-width: var.$window-small) {
+    @media (min-width: var.$window-small) {
       @content;
     }
   }
   @if $point==var.$window-medium {
-    @media ( min-width: var.$window-medium) {
+    @media (min-width: var.$window-medium) {
       @content;
     }
   }
   @if $point==var.$window-xmedium {
-    @media ( min-width: var.$window-xmedium) {
+    @media (min-width: var.$window-xmedium) {
       @content;
     }
   }
   @if $point==var.$window-large {
-    @media ( min-width: var.$window-large) {
+    @media (min-width: var.$window-large) {
       @content;
     }
   }
   @if $point==var.$window-xlarge {
-    @media ( min-width: var.$window-xlarge) {
+    @media (min-width: var.$window-xlarge) {
       @content;
     }
   }
   @if $point==var.$window-2xlarge {
-    @media ( min-width: var.$window-2xlarge) {
+    @media (min-width: var.$window-2xlarge) {
       @content;
     }
   }
@@ -79,49 +79,49 @@
 /**
  * DEPRECATED - Use r-min instead. This is only used for compatibility for existing SCSS
  */
-@mixin r-max( $point ) {
+@mixin r-max($point) {
   @if $point==var.$window-3xsmall {
-    @media ( max-width: var.$window-3xsmall) {
+    @media (max-width: var.$window-3xsmall) {
       @content;
     }
   }
   @if $point==var.$window-2xsmall {
-    @media ( max-width: var.$window-2xsmall) {
+    @media (max-width: var.$window-2xsmall) {
       @content;
     }
   }
   @if $point==var.$window-xsmall {
-    @media ( max-width: var.$window-xsmall) {
+    @media (max-width: var.$window-xsmall) {
       @content;
     }
   }
   @if $point==var.$window-small {
-    @media ( max-width: var.$window-small) {
+    @media (max-width: var.$window-small) {
       @content;
     }
   }
   @if $point==var.$window-medium {
-    @media ( max-width: var.$window-medium) {
+    @media (max-width: var.$window-medium) {
       @content;
     }
   }
   @if $point==var.$window-xmedium {
-    @media ( max-width: var.$window-xmedium) {
+    @media (max-width: var.$window-xmedium) {
       @content;
     }
   }
   @if $point==var.$window-large {
-    @media ( max-width: var.$window-large) {
+    @media (max-width: var.$window-large) {
       @content;
     }
   }
   @if $point==var.$window-xlarge {
-    @media ( max-width: var.$window-xlarge) {
+    @media (max-width: var.$window-xlarge) {
       @content;
     }
   }
   @if $point==var.$window-2xlarge {
-    @media ( max-width: var.$window-2xlarge) {
+    @media (max-width: var.$window-2xlarge) {
       @content;
     }
   }

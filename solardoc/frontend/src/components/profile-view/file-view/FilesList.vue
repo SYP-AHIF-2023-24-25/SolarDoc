@@ -1,10 +1,10 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { File } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { PhoenixInternalError, PhoenixInvalidCredentialsError } from '@/services/phoenix/errors'
 import FileCard from '@/components/profile-view/file-view/FileCard.vue'
-import { handleError } from '@/errors/error-handler'
+import { handleError } from '@/errors/handler/error-handler'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
@@ -52,11 +52,11 @@ async function fetchFiles(bearer: string) {
 
 <template>
   <div id="profile-file-overview-files">
-    <FileCard v-for="file in files" :file="file" :key="file.id" />
+    <FileCard v-for="file in files" :key="file.id" :file="file" />
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 
 #profile-file-overview-files {

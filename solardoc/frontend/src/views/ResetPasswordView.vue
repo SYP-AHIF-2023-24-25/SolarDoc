@@ -1,4 +1,4 @@
-<script setup lang="ts"></script>
+<script lang="ts" setup></script>
 
 <template>
   <div id="profile-wrapper" class="page-content-wrapper">
@@ -8,6 +8,6 @@
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/page-content' as *;
 </style>
