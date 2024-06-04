@@ -7,6 +7,7 @@ import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/error
 import { useLoadingStore } from '@/stores/loading'
 import { useRoute, useRouter } from 'vue-router'
 import { onMounted } from 'vue'
+import {showWarnNotif} from "@/scripts/show-notif";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -24,6 +25,10 @@ async function handleShareURLReq(shareUrlId: string): Promise<void> {
   } else if (!currentUserStore.loggedIn) {
     loadingStore.setLoading(false)
     await $router.push('/login')
+    showWarnNotif(
+      'Not logged in',
+      'You need to be logged in to view this file. Please log in first and try again.'
+    )
   } else {
     let resp: Awaited<ReturnType<typeof phoenixRestService.getV1ShareByIdFile>>
     try {
