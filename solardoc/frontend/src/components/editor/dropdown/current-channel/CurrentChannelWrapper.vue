@@ -34,7 +34,7 @@ const editorUpdateWSClient = useEditorUpdateWSClient()
           <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
         </p>
       </div>
-      <div class="channel-view-error" v-if="!currentFileStore.remoteFile">
+      <div class="channel-view-error" v-else-if="!currentFileStore.remoteFile">
         <p>
           <i class="pi pi-info-circle"></i>
           You need to save the file to view its channel!
