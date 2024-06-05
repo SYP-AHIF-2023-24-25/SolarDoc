@@ -126,7 +126,7 @@ async function submitForm(
 #full-screen-wrapper {
   @include align-center;
 
-  i {
+  i.pi.pi-info-circle {
     @include icon-presets;
   }
 
