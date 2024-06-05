@@ -105,7 +105,6 @@ defmodule SolardocPhoenixWeb.ShareURLController do
 
   swagger_path :show_share do
     get "#{@api_path}/share/{id}"
-    consumes "application/json"
     produces "application/json"
     summary "Get a single share url"
     deprecated false
@@ -128,7 +127,6 @@ defmodule SolardocPhoenixWeb.ShareURLController do
 
   swagger_path :show_file do
     get "#{@api_path}/share/{id}/file"
-    consumes "application/json"
     produces "application/json"
     summary "Get a file via a share url"
     deprecated false
@@ -153,7 +151,6 @@ defmodule SolardocPhoenixWeb.ShareURLController do
 
   swagger_path :show_channel do
     get "#{@api_path}/share/{id}/channel"
-    consumes "application/json"
     produces "application/json"
     summary "Get a channel via a share url"
     deprecated false
@@ -184,15 +181,13 @@ defmodule SolardocPhoenixWeb.ShareURLController do
 
   swagger_path :delete do
     PhoenixSwagger.Path.delete "#{@api_path}/share/{id}"
-    consumes "application/json"
-    produces "application/json"
     summary "Delete a share url"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameters do
       id :path, :string, "Share Url ID", required: true
     end
-    response 204, "No Content", Schema.ref(:ErrorResp)
+    response 204, "No Content"
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
     response 404, "Not Found", Schema.ref(:ErrorResp)
   end

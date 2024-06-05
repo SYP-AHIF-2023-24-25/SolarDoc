@@ -64,7 +64,6 @@ defmodule SolardocPhoenixWeb.UserAuthController do
 
   swagger_path :delete do
     PhoenixSwagger.Path.delete "#{@api_path}/auth/bearer"
-    produces "application/json"
     summary "Log out a user"
     deprecated false
     CommonParameters.auth_bearer

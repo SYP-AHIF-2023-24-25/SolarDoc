@@ -152,7 +152,6 @@ defmodule SolardocPhoenixWeb.FileController do
 
   swagger_path :delete do
     PhoenixSwagger.Path.delete "#{@api_path}/files/{id}"
-    produces "application/json"
     summary "Deletes a file"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
