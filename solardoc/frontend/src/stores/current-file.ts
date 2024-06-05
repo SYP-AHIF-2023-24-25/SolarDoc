@@ -29,11 +29,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
     const storedFileId = localStorage.getItem(constants.localStorageFileIdKey)
     const storedFileOwner = localStorage.getItem(constants.localStorageFileOwnerKey)
     const storedChannelId = localStorage.getItem(constants.localStorageFileChannelIdKey)
+    const storedPermissions = localStorage.getItem(constants.localStorageFilePermissionsKey)
+    const shareURLId = localStorage.getItem(constants.localStorageShareURLIdKey)
     let storedFileName = localStorage.getItem(constants.localStorageFileNameKey)
     let storedFileContent = localStorage.getItem(constants.localStorageFileContentKey)
     let storedLastModified = localStorage.getItem(constants.localStorageLastModifiedKey)
     let storedCreated = localStorage.getItem(constants.localStorageCreatedKey)
-    let storedPermissions = localStorage.getItem(constants.localStorageFilePermissionsKey)
 
     // Ensure the default is populated if the stored content is empty or the file name is empty
     if (!storedFileName || storedFileName === '') {
@@ -56,24 +57,20 @@ export const useCurrentFileStore = defineStore('currentFile', {
       localStorage.setItem(constants.localStorageCreatedKey, storedCreated)
     }
 
-    if (!storedPermissions) {
-      storedPermissions = null
-      localStorage.setItem(constants.localStorageFilePermissionsKey, '')
-    }
-
     return {
       fileId: <string | undefined>storedFileId || undefined,
       fileName: storedFileName,
       ownerId: storedFileOwner || undefined,
       saveState: storedFileId ? constants.saveStates.server : constants.saveStates.local,
       content: storedFileContent,
-      permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : null),
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,
       lastModified: new Date(storedLastModified),
       channelId: storedChannelId || undefined,
       created: new Date(storedCreated),
+      permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : null),
+      shareURLId: shareURLId || undefined,
     }
   },
   getters: {
@@ -84,6 +81,24 @@ export const useCurrentFileStore = defineStore('currentFile', {
     remoteFile(): boolean {
       return this.fileId !== undefined
     },
+    /**
+     * Returns true if the current file is shared with the user.
+     * @since 0.7.0
+     */
+    shareFile(): boolean {
+      return this.shareURLId !== undefined
+    },
+    /**
+     * Returns true if the current file is a share file and accessible by the user.
+     * @since 0.7.0
+     */
+    isAccessibleShareFile(): boolean {
+      return this.shareFile && (this.permissions === Permissions.Read || this.permissions === Permissions.Write)
+    },
+    /**
+     * Returns the raw dto file object.
+     * @since 0.7.0
+     */
     raw(): File | undefined {
       if (!this.fileId || !this.ownerId) {
         return undefined
@@ -107,13 +122,15 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @private
      */
     async fetchNewestRemoteFileVersionIfPossible(bearer?: string): Promise<void> {
-      if (this.fileId === undefined || bearer == undefined) {
+      if (this.fileId === undefined) {
         return
       }
 
-      let resp: Awaited<ReturnType<typeof phoenixRestService.getV1FilesById>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.getV1FilesById | typeof phoenixRestService.getV1ShareByIdFile>>
       try {
-        resp = await phoenixRestService.getV1FilesById(bearer, this.fileId)
+        resp = this.shareFile ?
+          await phoenixRestService.getV1ShareByIdFile(bearer || '', this.shareURLId!)
+          : await phoenixRestService.getV1FilesById(bearer || '', this.fileId)
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch file. Cause: ' + (<Error>e).message,
@@ -130,10 +147,11 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
     },
     async ensureUserIsAuthorisedForFile(userId: string) {
-      if (!this.fileId || !this.ownerId || this.ownerId !== userId) {
-        await this.closeFile()
-        this.setOnlineSaveState(false)
+      if (this.fileId && (this.ownerId === userId || this.isAccessibleShareFile)) {
+        return
       }
+      await this.closeFile()
+      this.setOnlineSaveState(false)
     },
     async storeOnServer(bearer: string) {
       if (this.fileId === undefined) {
@@ -295,6 +313,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setCreated(new Date(file.created))
       this.setChannelId(file.channel_id)
     },
+    setFileFromShared(file: File, shareURLId: string, perm: Permission = Permissions.Read) {
+      this.setShareURLId(shareURLId)
+      this.setFile(file, perm)
+    },
     setFileId(fileId: string) {
       this.fileId = fileId
       localStorage.setItem(constants.localStorageFileIdKey, fileId)
@@ -323,6 +345,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.channelId = channelId
       localStorage.setItem(constants.localStorageFileChannelIdKey, channelId ? channelId : '')
     },
+    setShareURLId(shareURLId: string) {
+      this.shareURLId = shareURLId
+      localStorage.setItem(constants.localStorageShareURLIdKey, shareURLId)
+    },
     clearFileId() {
       this.fileId = undefined
       localStorage.removeItem(constants.localStorageFileIdKey)
@@ -334,6 +360,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
     clearChannelId() {
       this.channelId = undefined
       localStorage.removeItem(constants.localStorageFileChannelIdKey)
+    },
+    clearShareURLId() {
+      this.shareURLId = undefined
+      localStorage.removeItem(constants.localStorageShareURLIdKey)
     },
     resetLastModified() {
       this.setLastModified(new Date())
@@ -353,6 +383,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.clearOTransStack()
       this.clearOwnerId()
       this.clearChannelId()
+      this.clearShareURLId()
       this.setFileName(constants.defaultFileName)
       this.setOnlineSaveState(false)
       this.setPermissions(Permissions.Unknown)
