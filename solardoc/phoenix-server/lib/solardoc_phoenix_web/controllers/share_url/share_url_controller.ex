@@ -7,6 +7,8 @@ defmodule SolardocPhoenixWeb.ShareURLController do
   alias SolardocPhoenix.Files
   alias SolardocPhoenix.Files.File
   alias SolardocPhoenix.Accounts.User
+  alias SolardocPhoenix.EditorChannels
+  alias SolardocPhoenix.EditorChannels.EditorChannel
 
   action_fallback SolardocPhoenixWeb.FallbackController
   @api_path SolardocPhoenixWeb.v1_api_path()
@@ -44,6 +46,17 @@ defmodule SolardocPhoenixWeb.ShareURLController do
           last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: true
           created :integer, "Creation date in UNIX timestamp milliseconds", required: true
           channel_id :string, "UUID of the channel created for this file, if one exists", required: false
+        end
+      end,
+      EditorChannel: swagger_schema do
+        title "EditorChannel"
+        description "An editor channel"
+        properties do
+          id :string, "Editor channel UUID", required: true
+          name :string, "Editor channel name", required: true
+          description :string, "Editor channel description", required: true
+          creator Schema.ref(:UserTrusted), "Editor channel creator", required: true
+          active_since :integer, "Editor channel active since in UNIX timestamp milliseconds", required: true
         end
       end,
       ErrorResp: swagger_schema do
@@ -136,6 +149,52 @@ defmodule SolardocPhoenixWeb.ShareURLController do
       {:share_url_exists, _} -> {:error, :not_found}
       {:file_exists, _} -> {:error, :not_found}
     end
+  end
+
+  swagger_path :show_channel do
+    get "#{@api_path}/share/{id}/channel"
+    consumes "application/json"
+    produces "application/json"
+    summary "Get a channel via a share url"
+    deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
+    parameters do
+      id :path, :string, "Share Url ID", required: true
+    end
+    response 200, "Ok", Schema.ref(:EditorChannel)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
+  end
+
+  def show_channel(conn, %{"id" => id}) do
+    with {:share_url_exists, %ShareURL{} = share_url} <- {:share_url_exists, ShareURLs.get_share_url!(id)},
+         {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(share_url.file_id)},
+         {:channel_exists, %EditorChannel{} = editor_channel} <- {:channel_exists, EditorChannels.get_channel!(file.channel_id)} do
+      render(
+        conn,
+        :show_channel,
+        editor_channel: editor_channel |> Repo.preload(:creator)
+      )
+    else
+      {:share_url_exists, _} -> {:error, :not_found}
+      {:file_exists, _} -> {:error, :not_found}
+      {:channel_exists, _} -> {:error, :not_found}
+    end
+  end
+
+  swagger_path :delete do
+    PhoenixSwagger.Path.delete "#{@api_path}/share/{id}"
+    consumes "application/json"
+    produces "application/json"
+    summary "Delete a share url"
+    deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
+    parameters do
+      id :path, :string, "Share Url ID", required: true
+    end
+    response 204, "No Content", Schema.ref(:ErrorResp)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def delete(conn, %{"id" => id}) do
