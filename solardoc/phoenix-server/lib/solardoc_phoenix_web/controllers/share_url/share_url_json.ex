@@ -25,8 +25,9 @@ defmodule SolardocPhoenixWeb.ShareURLJSON do
       file_name: file.file_name,
       last_edited: Utils.naive_datetime_to_unix_milliseconds(file.last_edited),
       content: file.content,
-      created: file.created,
-      owner_id: file.owner_id
+      created: Utils.naive_datetime_to_unix_milliseconds(file.created),
+      owner_id: file.owner_id,
+      channel_id: file.channel_id
     }
   end
 
