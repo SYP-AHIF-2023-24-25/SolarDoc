@@ -2,6 +2,7 @@ defmodule SolardocPhoenixWeb.ShareURLController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger, except: [:delete]
 
+  alias SolardocPhoenix.Repo
   alias SolardocPhoenix.ShareURLs
   alias SolardocPhoenix.ShareURLs.ShareURL
   alias SolardocPhoenix.Files
@@ -88,18 +89,12 @@ defmodule SolardocPhoenixWeb.ShareURLController do
       with {:ok, %ShareURL{} = share_url} <- ShareURLs.create_share_url(share_url_params) do
         conn
         |> put_status(:created)
-        |> put_resp_header("location", ~p"/api/share_urls/#{share_url.id}")
+        |> put_resp_header("location", ~p"/#{@api_path}/share/#{share_url.id}")
         |> render(:show_share, share_url: share_url)
       end
     else
       {:file_exists, _} -> {:error, :not_found}
       {:is_owner, false} -> {:error, :unauthorized}
-    end
-  end
-
-  defp owner?(user, file) do
-    with %File{} <- file, %User{} <- user do
-      user.id == file.owner_id
     end
   end
 
@@ -199,6 +194,12 @@ defmodule SolardocPhoenixWeb.ShareURLController do
     else
       {:share_url_exists, _} -> {:error, :not_found}
       {:error, _} -> {:error, :unauthorized}
+    end
+  end
+
+  defp owner?(user, file) do
+    with %File{} <- file, %User{} <- user do
+      user.id == file.owner_id
     end
   end
 end
