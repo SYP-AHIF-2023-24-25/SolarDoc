@@ -59,7 +59,11 @@ async function submitForm(
 </script>
 
 <template>
-  <div id="full-screen-wrapper" class="page-content-wrapper blurred-background-full-screen-overlay" v-if="overlayStateStore.createShareUrl">
+  <div
+    id="full-screen-wrapper"
+    class="page-content-wrapper blurred-background-full-screen-overlay"
+    v-if="overlayStateStore.createShareUrl"
+  >
     <div id="share-url-view-create">
       <div id="share-url-view-header">
         <button id="close-button" @click="overlayStateStore.setShareUrlView(false)">
@@ -95,13 +99,7 @@ async function submitForm(
           add-class="solardoc-style-form"
           @submit="submitForm"
         >
-          <CheckboxElement
-            disabled
-            name="write"
-            size="lg"
-            text="Write access"
-            default="true"
-          />
+          <CheckboxElement disabled name="write" size="lg" text="Write access" default="true" />
           <ButtonElement
             :columns="{
               container: 1,

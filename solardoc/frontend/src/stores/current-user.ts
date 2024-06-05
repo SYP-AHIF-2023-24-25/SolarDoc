@@ -102,7 +102,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
       }
       let resp: Awaited<ReturnType<typeof phoenixRestService.getV1UsersCurrent>>
       try {
-        resp = await phoenixRestService.getV1UsersCurrent(`Bearer ${this.currentAuth.token}`)
+        resp = await phoenixRestService.getV1UsersCurrent(this.bearer || '')
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch current user. Cause: ' + (<Error>e).message,

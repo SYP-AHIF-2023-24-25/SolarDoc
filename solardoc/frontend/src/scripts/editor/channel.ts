@@ -1,6 +1,6 @@
 import {
   type File,
-  getV1EditorChannelsById,
+  getV1EditorChannelsById, getV1ShareByIdChannel,
   type UserPrivate,
 } from '@/services/phoenix/gen/phoenix-rest-service'
 import { joinChannel } from '@/scripts/channel/join-channel'
@@ -8,10 +8,24 @@ import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/edit
 import { PhoenixRestError } from '@/services/phoenix/errors'
 import { createChannel } from '@/scripts/channel/create-channel'
 
-async function getChannelFromId(channelId: string, token: string): Promise<EditorChannel> {
+/**
+ * Get a channel from its ID or its ShareURL ID.
+ * @param channelOrShareURLId The ID of the channel or the ShareURL ID.
+ * @param token The token to authenticate the request with.
+ * @param isShared Whether the channel is accessed through a ShareURL.
+ * @returns The channel which was found for the given ID.
+ * @since 0.7.0
+ */
+async function getChannelFromId(
+  channelOrShareURLId: string,
+  token: string,
+  isShared: boolean = false
+): Promise<EditorChannel> {
   let resp: Awaited<ReturnType<typeof getV1EditorChannelsById>>
   try {
-    resp = await getV1EditorChannelsById(token, channelId)
+    resp = isShared ?
+      await getV1ShareByIdChannel(token, channelOrShareURLId)
+      : await getV1EditorChannelsById(token, channelOrShareURLId)
   } catch (e) {
     throw new PhoenixRestError(
       'Error getting channel',
@@ -36,26 +50,28 @@ async function getChannelFromId(channelId: string, token: string): Promise<Edito
 /**
  * Create a channel for a file if it doesn't exist, or join the channel if it does.
  * @param file The file to create or join a channel for.
- * @param user The user to create the channel for.
  * @param token The token to authenticate the request with.
+ * @param shareURLID The ShareURL ID through which the channel can be requested.
  * @returns The channel that was created or joined.
  * @since 0.7.0
  */
 export async function createOrJoinChannelForFile(
   file: File,
-  user: UserPrivate,
   token: string,
+  shareURLID?: string,
 ): Promise<EditorChannel> {
-  if (file.channel_id) {
-    const channel = await getChannelFromId(file.channel_id, token)
-    await joinChannel(channel)
-    return channel
-  } else {
-    return await createChannel({
+  let channel_id = file.channel_id
+  if (!channel_id) {
+    channel_id = (await createChannel({
       name: file.file_name,
       description: '',
       password: '',
       file_id: file.id,
-    } satisfies CreateEditorChannel)
+    } satisfies CreateEditorChannel)).id
   }
+  const channel = await getChannelFromId(
+    shareURLID ?? channel_id, token, shareURLID !== undefined
+  )
+  await joinChannel(channel)
+  return channel
 }

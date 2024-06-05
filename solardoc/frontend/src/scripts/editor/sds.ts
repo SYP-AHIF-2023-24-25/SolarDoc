@@ -9,6 +9,23 @@ const currentUserStore = useCurrentUserStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
 
 /**
+ * Create a WebSocket client for the SDS WebSocket.
+ * @param url The URL to connect to.
+ * @param token The token to use for authentication.
+ * @returns A promise that resolves when the connection is established.
+ * @since 0.7.0
+ */
+function createWSClient(url: string, token: string): Promise<void> {
+  return new Promise(resolve => {
+    editorUpdateWSClient.createWSClient(
+      SDSCLIENT_URL,
+      currentUserStore.currentAuth!.token,
+      async () => resolve(),
+    )
+  })
+}
+
+/**
  * Connect to the SDS WebSocket if the user is logged in and has the necessary permissions. If there is already a
  * connection present, this functions simply returns true.
  *
@@ -22,16 +39,17 @@ export async function connectToWSIfPossible(): Promise<boolean> {
   }
 
   const authStatus = await currentUserStore.ensureAuthNotExpiredOrRevoked()
-  if (currentUserStore.loggedIn || authStatus === 'authenticated') {
+  if (currentUserStore.loggedIn && authStatus === 'authenticated') {
     // Ensure that the user has the permissions to open the current files
     await currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
 
     console.log('[Editor] Attempting to connect to SDS')
-    editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth!.token)
+    await createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth!.token)
     return true
   } else if (authStatus === 'expired-or-revoked') {
     await currentUserStore.logout()
     await currentFileStore.closeFile()
+    showWarnNotif('Warning', 'Your session has expired. Please log in again.')
   } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
     showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')
   } else {

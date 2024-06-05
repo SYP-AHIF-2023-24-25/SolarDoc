@@ -93,7 +93,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @since 0.7.0
      */
     isAccessibleShareFile(): boolean {
-      return this.shareFile && (this.permissions === Permissions.Read || this.permissions === Permissions.Write)
+      return (
+        this.shareFile &&
+        (this.permissions === Permissions.Read || this.permissions === Permissions.Write)
+      )
     },
     /**
      * Returns the raw dto file object.
@@ -126,10 +129,14 @@ export const useCurrentFileStore = defineStore('currentFile', {
         return
       }
 
-      let resp: Awaited<ReturnType<typeof phoenixRestService.getV1FilesById | typeof phoenixRestService.getV1ShareByIdFile>>
+      let resp: Awaited<
+        ReturnType<
+          typeof phoenixRestService.getV1FilesById | typeof phoenixRestService.getV1ShareByIdFile
+        >
+      >
       try {
-        resp = this.shareFile ?
-          await phoenixRestService.getV1ShareByIdFile(bearer || '', this.shareURLId!)
+        resp = this.shareFile
+          ? await phoenixRestService.getV1ShareByIdFile(bearer || '', this.shareURLId!)
           : await phoenixRestService.getV1FilesById(bearer || '', this.fileId)
       } catch (e) {
         throw new PhoenixInternalError(

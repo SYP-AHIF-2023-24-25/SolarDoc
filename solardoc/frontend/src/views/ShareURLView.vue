@@ -4,11 +4,11 @@ import { type Permission, useCurrentFileStore } from '@/stores/current-file'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
-import type { File, ShareUrl} from "@/services/phoenix/api-service";
+import type { File, ShareUrl } from '@/services/phoenix/api-service'
 import { useLoadingStore } from '@/stores/loading'
 import { useRoute, useRouter } from 'vue-router'
-import {showWarnNotif} from "@/scripts/show-notif"
-import {interceptErrors} from "@/errors/handler/error-handler"
+import { showWarnNotif } from '@/scripts/show-notif'
+import { interceptErrors } from '@/errors/handler/error-handler'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -28,9 +28,7 @@ async function getFile(shareUrlId: string): Promise<File | undefined> {
   try {
     resp = await phoenixRestService.getV1ShareByIdFile(currentUserStore.bearer!, shareUrlId)
   } catch (e) {
-    throw new PhoenixInternalError(
-        'Critically failed to fetch file. Cause: ' + (<Error>e).message,
-    )
+    throw new PhoenixInternalError('Critically failed to fetch file. Cause: ' + (<Error>e).message)
   }
 
   if (resp.status !== 200) {
@@ -46,7 +44,7 @@ async function getShareURL(shareUrlId: string): Promise<ShareUrl | undefined> {
     resp = await phoenixRestService.getV1ShareById(currentUserStore.bearer!, shareUrlId)
   } catch (e) {
     throw new PhoenixInternalError(
-        'Critically failed to fetch share URL. Cause: ' + (<Error>e).message,
+      'Critically failed to fetch share URL. Cause: ' + (<Error>e).message,
     )
   }
 
@@ -67,7 +65,7 @@ async function handleShareURLReq(shareUrlId: string): Promise<void> {
     await $router.push('/login')
     showWarnNotif(
       'Not logged in',
-      'You need to be logged in to view this file. Please log in first and try again.'
+      'You need to be logged in to view this file. Please log in first and try again.',
     )
     return
   }

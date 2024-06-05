@@ -31,6 +31,7 @@ import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorS
 import { connectToWSIfPossible } from '@/scripts/editor/sds'
 import { createOrJoinChannelForFile } from '@/scripts/editor/channel'
 import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
+import {useLoadingStore} from "@/stores/loading";
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -40,7 +41,7 @@ const renderDataStore = useRenderDataStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
-const editorUpdateWSClient = useEditorUpdateWSClient()
+const loadingStore = useLoadingStore()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
@@ -55,8 +56,10 @@ interceptErrors(currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid())
 interceptErrors(backendAPI.ensureRenderBackendIsReachable())
 interceptErrors(
   (async () => {
+    loadingStore.setLoading(true)
     await phoenixBackend.ensurePhoenixBackendIsReachable()
     await createEditorRemoteFileConnection()
+    loadingStore.setLoading(false)
   })(),
 )
 // ---------------------------------------------------------------------------------------------------------------------

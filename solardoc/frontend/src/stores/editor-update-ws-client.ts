@@ -15,8 +15,8 @@ export const useEditorUpdateWSClient = defineStore('editorUpdateWSClient', {
     },
   },
   actions: {
-    createWSClient(url: string, userToken?: string) {
-      return (this.wsClient = new SDSClient(url, userToken))
+    createWSClient(url: string, userToken?: string, onOpen?: () => Promise<void>) {
+      return (this.wsClient = new SDSClient(url, userToken, onOpen))
     },
     disconnectWSClient() {
       if (this.wsClient) {

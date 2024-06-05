@@ -15,29 +15,6 @@ const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
 
-async function joinNewChannel(channel: EditorChannel, password?: string | undefined) {
-  await editorUpdateWSClient.wsClient?.joinChannel(
-    `channel:${channel.id}`,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async _ => {
-      console.log(`[ChannelView] Channel joined (Id: ${channel.id})`)
-      editorUpdateWSClient.setCurrentChannel(channel)
-
-      // Start the ot update handler
-      handleOTUpdates()
-    },
-    errorResp => {
-      console.error('[ChannelView] Failed to join new channel', errorResp)
-      throw new PhoenixSDSError(
-        'Failed to join new channel',
-        'Please try again. If the problem persists, check the logs and contact the developers.',
-      )
-    },
-    currentUserStore.currentUser!.id,
-    { auth: password } satisfies JoinChannelOptions,
-  )
-}
-
 /**
  * Create a new channel for the current user.
  * @param data The data to create the channel with.
@@ -56,13 +33,9 @@ export function createChannel(data: CreateEditorChannel): Promise<EditorChannel>
 
   return new Promise<EditorChannel>((resolve, reject) => {
     void editorUpdateWSClient.wsClient!.createChannel(
-      async (channel, initTrans) => {
+      async (channel) => {
         console.log('[ChannelView] Channel created', channel)
-        await currentFileStore.initOTransStackFromServerTrans(initTrans)
-        setTimeout(async () => {
-          await joinNewChannel(channel, data.password)
-          resolve(channel)
-        }, SAFETY_DELAY_MS)
+        resolve(channel)
       },
       errorResp => {
         console.error('[ChannelView] Failed to create new channel', errorResp)
