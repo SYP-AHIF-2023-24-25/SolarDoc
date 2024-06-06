@@ -61,7 +61,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       fileId: <string | undefined>storedFileId || undefined,
       fileName: storedFileName,
       ownerId: storedFileOwner || undefined,
-      saveState: storedFileId ? constants.saveStates.server : constants.saveStates.local,
+      saveState: storedFileId !== undefined,
       content: storedFileContent,
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
@@ -307,7 +307,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
     },
     setOnlineSaveState(value: boolean) {
-      this.saveState = value ? constants.saveStates.server : constants.saveStates.local
+      this.saveState = value
     },
     setFile(file: File, perm: Permission = Permissions.Unknown) {
       this.setFileId(file.id)

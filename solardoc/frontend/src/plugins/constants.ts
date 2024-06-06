@@ -56,6 +56,7 @@ export default Object.freeze({
   defaultFileName: 'untitled.adoc',
   defaultFileContent: '= Welcome to SolarDoc! \n\n== Your AsciiDoc web-editor °^°\n',
   saveStates: {
+    shared: 'Shared File',
     local: 'Saved Locally',
     server: 'Saved Remotely',
     unsavedChanges: 'Unsaved Changes',

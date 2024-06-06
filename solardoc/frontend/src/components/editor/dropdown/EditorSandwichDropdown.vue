@@ -94,7 +94,7 @@ function handleSettingsClick() {
     </template>
     <div id="dropdown-elements">
       <div class="dropdown-element" @click="handleNewFileButtonClick()">New File</div>
-      <div class="dropdown-element" @click="handleSaveButtonClick()">Save in profile</div>
+      <div class="dropdown-element" v-if="!currentFileStore.shareFile" @click="handleSaveButtonClick()">Save in profile</div>
       <div class="dropdown-element" @click="handleCurrentChannelClick()">Current Channel</div>
       <div class="dropdown-element" @click="handleSettingsClick()">File Settings</div>
     </div>

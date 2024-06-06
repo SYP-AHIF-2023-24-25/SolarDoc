@@ -344,6 +344,7 @@ html[data-theme='light'] {
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-300);
   --vueform-highlighted-box-border-color: var(--scheme-gray-300);
   --placeholder-background: var(--scheme-gray-100);
+  --save-state-background-shared: var(--scheme-lavender);
   --save-state-background-saved: var(--scheme-healthy-green-soft);
   --save-state-background-error: var(--scheme-danger-red-soft);
   --save-state-background-not-saved: var(--scheme-warning-yellow-soft);
@@ -373,6 +374,7 @@ html[data-theme='dark'] {
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-900);
   --vueform-highlighted-box-border-color: var(--scheme-gray-800);
   --placeholder-background: var(--scheme-gray-900);
+  --save-state-background-shared: var(--scheme-lavender);
   --save-state-background-saved: var(--scheme-healthy-green);
   --save-state-background-error: var(--scheme-danger-red);
   --save-state-background-not-saved: var(--scheme-warning-yellow);
@@ -405,6 +407,7 @@ $vueform-highlighted-box-background-color-active: var(
 );
 $vueform-highlighted-box-border-color: var(--vueform-highlighted-box-border-color);
 $placeholder-background: var(--placeholder-background);
+$save-state-background-shared: var(--save-state-background-shared);
 $save-state-background-saved: var(--save-state-background-saved);
 $save-state-background-error: var(--save-state-background-error);
 $save-state-background-not-saved: var(--save-state-background-not-saved);
