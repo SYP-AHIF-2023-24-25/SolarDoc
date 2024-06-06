@@ -21,7 +21,7 @@ import type { File } from '@/services/phoenix/api-service'
 export class SDSClient {
   private readonly socket: SDSClientBare
   private _currentChannel: Channel | undefined
-  private _stateTransListenerDefined: boolean;
+  private _stateTransListenerDefined: boolean
 
   constructor(url: string, userToken?: string, onOpen?: () => Promise<void>) {
     this._active = false

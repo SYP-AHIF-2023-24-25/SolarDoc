@@ -1,7 +1,7 @@
 import {
   type File,
-  getV1EditorChannelsById, getV1ShareByIdChannel,
-  type UserPrivate,
+  getV1EditorChannelsById,
+  getV1ShareByIdChannel,
 } from '@/services/phoenix/gen/phoenix-rest-service'
 import { joinChannel } from '@/scripts/channel/join-channel'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
@@ -19,12 +19,12 @@ import { createChannel } from '@/scripts/channel/create-channel'
 async function getChannelFromId(
   channelOrShareURLId: string,
   token: string,
-  isShared: boolean = false
+  isShared: boolean = false,
 ): Promise<EditorChannel> {
   let resp: Awaited<ReturnType<typeof getV1EditorChannelsById>>
   try {
-    resp = isShared ?
-      await getV1ShareByIdChannel(token, channelOrShareURLId)
+    resp = isShared
+      ? await getV1ShareByIdChannel(token, channelOrShareURLId)
       : await getV1EditorChannelsById(token, channelOrShareURLId)
   } catch (e) {
     throw new PhoenixRestError(
@@ -62,16 +62,16 @@ export async function createOrJoinChannelForFile(
 ): Promise<EditorChannel> {
   let channel_id = file.channel_id
   if (!channel_id) {
-    channel_id = (await createChannel({
-      name: file.file_name,
-      description: '',
-      password: '',
-      file_id: file.id,
-    } satisfies CreateEditorChannel)).id
+    channel_id = (
+      await createChannel({
+        name: file.file_name,
+        description: '',
+        password: '',
+        file_id: file.id,
+      } satisfies CreateEditorChannel)
+    ).id
   }
-  const channel = await getChannelFromId(
-    shareURLID ?? channel_id, token, shareURLID !== undefined
-  )
+  const channel = await getChannelFromId(shareURLID ?? channel_id, token, shareURLID !== undefined)
   await joinChannel(channel)
   return channel
 }

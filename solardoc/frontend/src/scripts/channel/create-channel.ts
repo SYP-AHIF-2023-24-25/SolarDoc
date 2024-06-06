@@ -1,13 +1,8 @@
-import type {
-  CreateEditorChannel,
-  EditorChannel,
-  JoinChannelOptions,
-} from '@/services/phoenix/editor-channel'
+import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { PhoenixNotAuthorisedError, PhoenixSDSError } from '@/services/phoenix/errors'
-import { handleOTUpdates } from '@/services/phoenix/ot-trans'
 
 const SAFETY_DELAY_MS = 1000
 
@@ -33,7 +28,7 @@ export function createChannel(data: CreateEditorChannel): Promise<EditorChannel>
 
   return new Promise<EditorChannel>((resolve, reject) => {
     void editorUpdateWSClient.wsClient!.createChannel(
-      async (channel) => {
+      async channel => {
         console.log('[ChannelView] Channel created', channel)
         resolve(channel)
       },

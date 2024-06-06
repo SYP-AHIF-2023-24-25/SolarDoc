@@ -14,7 +14,6 @@ import { useLoadingStore } from '@/stores/loading'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import {
   closeEditorRemoteFileConnection,
   createEditorRemoteFileConnection,

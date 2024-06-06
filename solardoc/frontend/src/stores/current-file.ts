@@ -9,7 +9,7 @@ import {
   PhoenixNotAuthorisedError,
 } from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
-import { showErrorNotifFromObj, showNotifFromErr, showWarnNotif } from '@/scripts/show-notif'
+import { showNotifFromErr } from '@/scripts/show-notif'
 import { FileGoneWarn } from '@/errors/file-gone-warn'
 
 export type Unknown = null

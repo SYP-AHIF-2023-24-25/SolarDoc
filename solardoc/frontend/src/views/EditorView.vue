@@ -8,7 +8,6 @@ import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
-import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { Permissions, useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
@@ -22,16 +21,12 @@ import ChannelView from '@/components/editor/dropdown/current-channel/CurrentCha
 import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
 import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
-import { SDSCLIENT_URL } from '@/services/phoenix/config'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
 import { interceptErrors } from '@/errors/handler/error-handler'
-import { showWarnNotif } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
 import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorSettings.vue'
-import { connectToWSIfPossible } from '@/scripts/editor/sds'
-import { createOrJoinChannelForFile } from '@/scripts/editor/channel'
 import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
-import {useLoadingStore} from "@/stores/loading";
+import { useLoadingStore } from '@/stores/loading'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
