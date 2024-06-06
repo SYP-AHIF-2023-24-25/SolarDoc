@@ -18,8 +18,8 @@ const editorUpdateWSClient = useEditorUpdateWSClient()
 function createWSClient(url: string, token: string): Promise<void> {
   return new Promise(resolve => {
     editorUpdateWSClient.createWSClient(
-      SDSCLIENT_URL,
-      currentUserStore.currentAuth!.token,
+      url,
+      token,
       async () => resolve(),
     )
   })

@@ -4,8 +4,6 @@ import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { PhoenixNotAuthorisedError, PhoenixSDSError } from '@/services/phoenix/errors'
 
-const SAFETY_DELAY_MS = 1000
-
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
