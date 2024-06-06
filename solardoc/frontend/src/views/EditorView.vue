@@ -20,6 +20,7 @@ import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
 import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
 import ShareUrlCreate from '@/components/editor/share-url/ShareUrlCreate.vue'
+import Export from "@/components/editor/export/Export.vue";
 import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SDSCLIENT_URL } from '@/services/phoenix/config'
@@ -130,6 +131,7 @@ setInterval(updateLastModified, 500)
   <ShareUrlCreate />
   <ChannelView />
   <FullScreenPreview />
+  <Export />
   <div id="editor-page">
     <div id="menu">
       <div id="menu-left-side">
