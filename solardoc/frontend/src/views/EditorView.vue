@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDarkModeStore } from '@/stores/dark-mode'
@@ -8,7 +8,6 @@ import { useInitStateStore } from '@/stores/init-state'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { handleCopy } from '@/scripts/handle-copy'
 import { useRenderDataStore } from '@/stores/render-data'
-import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
@@ -18,16 +17,16 @@ import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavig
 import FullScreenPreview from '@/components/FullScreenPreview.vue'
 import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
-import ChannelView from '@/components/editor/channel-view/ChannelView.vue'
-import ShareUrlCreate from '@/components/editor/share-url/ShareUrlCreate.vue'
+import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
+import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
 import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
-import { SDSCLIENT_URL } from '@/services/phoenix/config'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
-import { interceptErrors } from '@/errors/error-handler'
-import { showWarnNotif } from '@/scripts/show-notif'
-import { Permissions } from '@/stores/current-file'
-import constants from "@/plugins/constants";
+import { interceptErrors } from '@/errors/handler/error-handler'
+import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorSettings.vue'
+import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
+import { useLoadingStore } from '@/stores/loading'
+import SaveStateBadge from "@/components/editor/SaveStateBadge.vue";
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -37,7 +36,7 @@ const renderDataStore = useRenderDataStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
-const editorUpdateWSClient = useEditorUpdateWSClient()
+const loadingStore = useLoadingStore()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
@@ -52,23 +51,10 @@ interceptErrors(currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid())
 interceptErrors(backendAPI.ensureRenderBackendIsReachable())
 interceptErrors(
   (async () => {
+    loadingStore.setLoading(true)
     await phoenixBackend.ensurePhoenixBackendIsReachable()
-    const authStatus =
-      currentUserStore.loggedIn && (await currentUserStore.ensureAuthNotExpiredOrRevoked())
-    if (authStatus === 'authenticated') {
-      // Ensure that the user has the permissions to open the current file
-      currentFileStore.ensureUserIsAuthorisedForFile(currentUserStore.currentUser!.id)
-
-      console.log('[Editor] Attempting to connect to SDS')
-      editorUpdateWSClient.createWSClient(SDSCLIENT_URL, currentUserStore.currentAuth?.token)
-    } else if (authStatus === 'expired-or-revoked') {
-      await currentUserStore.logout()
-      currentFileStore.closeFile()
-    } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
-      showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')
-    } else {
-      console.log('[Editor] Skipping connection to SDS. Not logged in!')
-    }
+    await createEditorRemoteFileConnection()
+    loadingStore.setLoading(false)
   })(),
 )
 // ---------------------------------------------------------------------------------------------------------------------
@@ -118,6 +104,7 @@ function handleShareButtonClick() {
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
+
 function getLastModified(): string {
   return getHumanReadableTimeInfo(currentFileStore.lastModified)
 }
@@ -129,6 +116,7 @@ setInterval(updateLastModified, 500)
 <template>
   <ShareUrlCreate />
   <ChannelView />
+  <EditorSettings />
   <FullScreenPreview />
   <div id="editor-page">
     <div id="menu">
@@ -139,19 +127,16 @@ setInterval(updateLastModified, 500)
             {{ copyButtonContent }}
           </button>
           <button
-            v-if="currentFileStore.permissions === Permissions.Unknown"
+            v-if="!currentFileStore.shareFile"
             class="editor-button"
             @click="handleShareButtonClick()"
+            v-tooltip="'Creates a URL to let others join your workspace'"
           >
             Share
           </button>
           <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
         </div>
-        <div id="save-state">
-          <p
-            :class="currentFileStore.saveState === constants.saveStates.server ? 'saved' : 'error'"
-          >{{ currentFileStore.saveState }}</p>
-        </div>
+        <SaveStateBadge />
       </div>
       <div id="menu-center">
         <div>
@@ -177,8 +162,8 @@ setInterval(updateLastModified, 500)
         </div>
         <div>
           <button
-            class="editor-button"
             id="fullscreen-preview-button"
+            class="editor-button"
             @click="handlePreviewButtonPress()"
           >
             Fullscreen
@@ -192,7 +177,7 @@ setInterval(updateLastModified, 500)
       </div>
       <div id="preview-wrapper">
         <div id="preview">
-          <div id="init-msg-wrapper" v-if="initStateStore.init">
+          <div v-if="initStateStore.init" id="init-msg-wrapper">
             <p id="init-msg">Start typing and see preview!</p>
             <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
           </div>
@@ -207,9 +192,9 @@ setInterval(updateLastModified, 500)
           ></iframe>
         </div>
         <div
+          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
           id="preview-meta-info"
           class="loading"
-          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
         >
           <div>
             <div class="dot-dot-dot-flashing-mini"></div>
@@ -222,7 +207,7 @@ setInterval(updateLastModified, 500)
             <p>KB Raw Size</p>
           </div>
         </div>
-        <div id="preview-meta-info" v-else>
+        <div v-else id="preview-meta-info">
           <p>
             {{ slideCount ? slideCount! : '?' }} {{ slideCount == 1 ? 'slide' : 'slides' }} ({{
               slideCount && slideCountInclSubslides ? slideCountInclSubslides - slideCount : '?'
@@ -244,7 +229,7 @@ setInterval(updateLastModified, 500)
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/mixins/link-hover-presets' as *;
 @use '@/assets/core/mixins/view-presets' as *;
 @use '@/assets/core/mixins/align-center' as *;
@@ -279,58 +264,11 @@ div#editor-page {
       @include menu-child-presets;
       width: $left-menu-width;
 
-      #sandwich-menu-button {
-        // TODO!
-      }
-
       #button-menu {
         display: flex;
         flex-flow: row nowrap;
         padding: var.$editor-menu-button-menu-padding;
         margin: var.$editor-menu-button-menu-margin;
-      }
-
-      #save-state {
-        @include align-center;
-        display: flex;
-        flex-flow: row nowrap;
-        height: 100%;
-        max-width: 100%;
-        font-size: 0.8rem;
-
-        & > p {
-          @include align-center;
-          height: 1.5rem;
-          color: var.$scheme-gray-600;
-          max-width: 100%;
-          white-space: nowrap;
-          overflow: hidden;
-
-          padding: 0 0.25rem;
-          @media screen and (min-width: var.$window-xlarge) {
-            & {
-              padding: 2px 0.5rem 0;
-            }
-          }
-
-          background-color: var.$scheme-gray-300;
-          border-radius: 2px;
-
-          &.saved {
-            background-color: var.$save-state-background-saved;
-            color: white;
-          }
-
-          &.error {
-            background-color: var.$save-state-background-error;
-            color: white;
-          }
-
-          &.not-saved {
-            background-color: var.$save-state-background-not-saved;
-            color: white;
-          }
-        }
       }
     }
 

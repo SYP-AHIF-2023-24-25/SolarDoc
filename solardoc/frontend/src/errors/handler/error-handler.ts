@@ -1,5 +1,8 @@
 import { SolardocError } from '@/errors/solardoc-error'
 import { showNotifFromErr } from '@/scripts/show-notif'
+import { useLoadingStore } from '@/stores/loading'
+
+const loadingStore = useLoadingStore()
 
 /**
  * An error handler which displays a notification to the user in case the error is a {@link SolardocError}, otherwise
@@ -37,7 +40,8 @@ export async function interceptErrors<FuncT extends Promise<any>>(
   try {
     return await func
   } catch (e) {
-    await handleError(e)
+    handleError(e)
+    loadingStore.setLoading(false)
     throw e
   }
 }

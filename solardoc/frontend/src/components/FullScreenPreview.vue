@@ -13,6 +13,7 @@ const initStateStore = useInitStateStore()
 const renderData = useRenderDataStore()
 
 let fillWholeScreen = ref(false)
+
 function toggleFillWholeScreen() {
   const preview = document.getElementById('full-screen-preview')
   if (preview) {

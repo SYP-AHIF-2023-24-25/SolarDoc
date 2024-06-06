@@ -1,4 +1,4 @@
-defmodule SolardocPhoenix.Share.ShareURL do
+defmodule SolardocPhoenix.ShareURLs.ShareURL do
   @moduledoc false
   use Ecto.Schema
   import Ecto.Changeset

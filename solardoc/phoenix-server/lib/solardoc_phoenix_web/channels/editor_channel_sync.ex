@@ -22,7 +22,7 @@ defmodule SolardocPhoenixWeb.EditorChannelSync do
 
   defp sync_to_db(state, file_id, content) do
     file = Files.get_file!(file_id)
-    Files.change_content(file, %{content: content})
+    Files.update_file(file, %{content: content})
     Map.put(state, :timer_ref, nil)
   end
 end

@@ -22,6 +22,7 @@ defmodule SolardocPhoenixWeb.FileController do
           content :string, "File content", required: true
           last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: true
           created :integer, "Creation date in UNIX timestamp milliseconds", required: true
+          channel_id :string, "UUID of the channel created for this file, if one exists", required: false
         end
       end,
       Files: swagger_schema do
@@ -104,6 +105,7 @@ defmodule SolardocPhoenixWeb.FileController do
     end
     response 200, "OK", Schema.ref(:File)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def show(conn, %{"id" => id}) do
@@ -129,16 +131,19 @@ defmodule SolardocPhoenixWeb.FileController do
     response 200, "OK", Schema.ref(:File)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def update(conn, file_params) do
     with {:id, id} <- {:id, file_params["id"]},
+         {:changes_channel, false} <- {:changes_channel, Map.has_key?(file_params, "channel_id")},
          {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(id)},
          {:is_owner, true} <- {:is_owner, owner?(conn.assigns.current_user, file)},
          {:ok, %File{} = file} <- Files.update_file(file, file_params) do
       render(conn, :show, file: file)
     else
       {:id, _} -> {:error, :not_found}
+      {:changes_channel, true} -> {:error, :bad_request} # Channel changes are not allowed. Internal only!
       {:file_exists, _} -> {:error, :not_found}
       {:is_owner, false} -> {:error, :unauthorized}
       {:error, changeset} -> {:error, changeset}
@@ -147,7 +152,6 @@ defmodule SolardocPhoenixWeb.FileController do
 
   swagger_path :delete do
     PhoenixSwagger.Path.delete "#{@api_path}/files/{id}"
-    produces "application/json"
     summary "Deletes a file"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
@@ -157,6 +161,7 @@ defmodule SolardocPhoenixWeb.FileController do
     response 204, "No Content"
     response 400, "Bad Request", Schema.ref(:ErrorResp)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
   def delete(conn, params) do

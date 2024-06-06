@@ -20,8 +20,8 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   @doc false
   def changeset(channel, attrs) do
     channel
-    |> cast(attrs, [:name, :description, :active_since, :creator, :file])
-    |> validate_required([:name, :description, :active_since, :creator, :file])
+    |> cast(attrs, [:name, :description, :active_since, :creator, :file_id])
+    |> validate_required([:name, :description, :active_since, :creator, :file_id])
   end
 
   @doc """
@@ -48,6 +48,7 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
     |> validate_password(opts)
     |> foreign_key_constraint(:creator_id)
     |> foreign_key_constraint(:file_id)
+    |> unique_constraint(:file_id)
     |> change(active_since: now)
   end
 
@@ -59,7 +60,6 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
 
   defp validate_password(changeset, opts) do
     changeset
-    |> validate_required([:password])
     |> validate_length(:password, min: 10, max: 72)
     |> maybe_hash_password(opts)
   end
@@ -88,6 +88,12 @@ defmodule SolardocPhoenix.EditorChannels.EditorChannel do
   def valid_password?(%SolardocPhoenix.EditorChannels.EditorChannel{hashed_password: hashed_password}, password)
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Argon2.verify_pass(password, hashed_password)
+  end
+
+  def valid_password?(%SolardocPhoenix.EditorChannels.EditorChannel{hashed_password: hashed_password}, password)
+      when hashed_password in [nil, ""] and password in [nil, ""] do
+    Argon2.no_user_verify()
+    true
   end
 
   def valid_password?(_, _) do

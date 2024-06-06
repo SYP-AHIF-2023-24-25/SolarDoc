@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
@@ -10,7 +10,7 @@ const input = ref('')
 
 <template>
   <div id="file-searchbar">
-    <input type="text" v-model="input" placeholder="Search..." />
+    <input v-model="input" placeholder="Search..." type="text" />
     <button id="sandwich-menu-button" class="sandwich-button">
       <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
       <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
@@ -18,7 +18,7 @@ const input = ref('')
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/hover-background' as *;
 

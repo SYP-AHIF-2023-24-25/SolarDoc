@@ -1,36 +1,24 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import type { EditorChannel } from '@/services/phoenix/editor-channel'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
-import { useChannelViewStore } from '@/stores/channel-view'
-import { interceptErrors } from '@/errors/error-handler'
 
 const props = defineProps<{
   channel: EditorChannel
 }>()
 
 const editorUpdateWSClient = useEditorUpdateWSClient()
-const channelViewStore = useChannelViewStore()
 
 const channelDescription = ref(props.channel.description || '<None provided>')
 
 const { wsClient } = storeToRefs(editorUpdateWSClient)
 const loadingState = ref(false)
 
-async function handleLeaveChannel() {
-  loadingState.value = true
-  console.log('[ChannelView] Leaving channel')
-  await wsClient.value?.leaveChannel()
-  setTimeout(() => {
-    channelViewStore.unsetSelectedChannel()
-    loadingState.value = false
-  }, 250)
-}
-
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
+
 function getLastModified(): string {
   return getHumanReadableTimeInfo(props.channel.active_since)
 }
@@ -47,22 +35,22 @@ setInterval(updateLastModified, 500)
       </div>
       <div id="current-channel-element">
         <div id="channel-info-state">
-          <div class="joining" v-if="wsClient?.currentChannelState === 'joining'">
+          <div v-if="wsClient?.currentChannelState === 'joining'" class="joining">
             <span></span>
           </div>
-          <div class="leaving" v-else-if="wsClient?.currentChannelState === 'leaving'">
+          <div v-else-if="wsClient?.currentChannelState === 'leaving'" class="leaving">
             <span></span>
           </div>
-          <div class="errored" v-else-if="wsClient?.currentChannelState === 'errored'">
+          <div v-else-if="wsClient?.currentChannelState === 'errored'" class="errored">
             <span></span>
           </div>
-          <div class="closed" v-else-if="wsClient?.currentChannelState === 'closed'">
+          <div v-else-if="wsClient?.currentChannelState === 'closed'" class="closed">
             <span></span>
           </div>
-          <div class="healthy" v-else-if="wsClient?.currentChannelState === 'joined'">
+          <div v-else-if="wsClient?.currentChannelState === 'joined'" class="healthy">
             <span></span>
           </div>
-          <div class="unknown" v-else><span></span></div>
+          <div v-else class="unknown"><span></span></div>
         </div>
         <div id="current-channel-element-info">
           <h2 id="channel-info-title">
@@ -72,17 +60,13 @@ setInterval(updateLastModified, 500)
           <div id="channel-info-details">
             <p><span>Creator:</span> {{ channel.creator.username }}</p>
             <p><span>Active since:</span> {{ lastModified }}</p>
-            <p><span>Active Users:</span> NaN</p>
+            <p><span>Active Users:</span> Unknown</p>
             <p><span>Description:</span></p>
             <!-- eslint-disable-next-line vue/no-mutating-props -->
-            <textarea disabled wrap="soft" v-model="channelDescription"></textarea>
+            <textarea v-model="channelDescription" disabled wrap="soft"></textarea>
           </div>
         </div>
-        <div id="current-channel-element-interaction">
-          <button class="highlighted-button" @click="interceptErrors(handleLeaveChannel())">
-            Leave
-          </button>
-        </div>
+        <div id="current-channel-element-interaction"></div>
       </div>
     </div>
   </template>
@@ -93,7 +77,7 @@ setInterval(updateLastModified, 500)
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
@@ -211,7 +195,8 @@ setInterval(updateLastModified, 500)
         font-size: 1.1rem;
         line-height: 2rem;
 
-        &, & * {
+        &,
+        & * {
           background: transparent;
         }
 

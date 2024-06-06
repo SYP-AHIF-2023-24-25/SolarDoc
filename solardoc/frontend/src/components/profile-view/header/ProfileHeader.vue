@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useCurrentUserStore } from '@/stores/current-user'
 
 const currentUserStore = useCurrentUserStore()
@@ -15,13 +15,15 @@ const currentUserStore = useCurrentUserStore()
       </p>
       <p><span>Email:</span> {{ currentUserStore.currentUser?.email || '' }}</p>
       <p><span>Role:</span> {{ currentUserStore.currentUser?.role || '' }}</p>
-      <p><span>Confirmed At:</span> {{ currentUserStore.currentUser?.confirmed_at || 'NaN' }}</p>
+      <p>
+        <span>Confirmed At:</span> {{ currentUserStore.currentUser?.confirmed_at || 'Unknown' }}
+      </p>
       <p><span>Organisation:</span> {{ currentUserStore.currentUser?.organisation || '' }}</p>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 #profile-header {
   margin-right: 2rem;
 

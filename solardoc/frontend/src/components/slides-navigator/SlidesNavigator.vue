@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useRenderDataStore } from '@/stores/render-data'
 import { storeToRefs } from 'pinia'
 import { useInitStateStore } from '@/stores/init-state'
@@ -30,7 +30,7 @@ watch(globalY, () => {
 </script>
 
 <template>
-  <div id="slides-navigator" v-if="!initStateStore.init" ref="slidesNavigatorEl">
+  <div v-if="!initStateStore.init" id="slides-navigator" ref="slidesNavigatorEl">
     <!-- For every *main* slide, create a slide preview -->
     <SlidePreview
       v-for="i in Array(slideCount || 2)
@@ -42,7 +42,7 @@ watch(globalY, () => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 
 #slides-navigator {

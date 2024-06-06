@@ -15,8 +15,14 @@
 @use './notif' as *;
 
 // Make app take up whole screen
-body #app {
-  height: 100%;
+html,
+body {
+  min-height: 100%;
+  width: 100%;
+}
+
+body > #app {
+  min-height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;

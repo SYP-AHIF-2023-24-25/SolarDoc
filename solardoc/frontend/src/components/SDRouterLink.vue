@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useLoadingStore } from '@/stores/loading'
 
 defineProps<{
@@ -13,5 +13,7 @@ function setLoading(state: boolean): void {
 </script>
 
 <template>
-  <RouterLink :to="to" @click="setLoading(true)"><slot /></RouterLink>
+  <RouterLink :to="to" @click="setLoading(true)">
+    <slot />
+  </RouterLink>
 </template>

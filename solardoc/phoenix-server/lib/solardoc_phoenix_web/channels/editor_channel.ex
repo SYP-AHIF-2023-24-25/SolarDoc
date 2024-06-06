@@ -17,8 +17,9 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     case EditorChannels.create_channel(Map.put(data, "creator_id", socket.assigns.user_id)) do
       {:ok, editor_channel} ->
         editor_channel = editor_channel
-                         |> Repo.preload(:creator)
-                         |> Repo.preload(:file)
+          |> Repo.preload(:creator)
+          |> Repo.preload(:file)
+        set_file_channel(editor_channel.file, editor_channel.id)
 
         # We assume that the user holds the truth about the channel state, so as such we simply load this into the server
         # state. To make sure that the state is in sync with the database (which it should usually be, but potentially
@@ -176,7 +177,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   defp sync_to_db(editor_channel, state) do
-    Files.change_content(editor_channel.file, %{content: state})
+    Files.update_file(editor_channel.file, %{content: state})
   end
 
   defp curr_channel_id(socket) do
@@ -193,5 +194,9 @@ defmodule SolardocPhoenixWeb.EditorChannel do
       %EditorChannel{} -> true
       _ -> false
     end
+  end
+
+  defp set_file_channel(file, channel_id) do
+    Files.update_file(file, %{channel_id: channel_id})
   end
 end
