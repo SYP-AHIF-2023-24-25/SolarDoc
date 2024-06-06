@@ -62,7 +62,7 @@ async function handleShareURLReq(shareUrlId: string): Promise<void> {
     return
   } else if (!currentUserStore.loggedIn) {
     loadingStore.setLoading(false)
-    await $router.push('/login')
+    await $router.push({ path: '/login', query: { returnTo: $route.fullPath }})
     showWarnNotif(
       'Not logged in',
       'You need to be logged in to view this file. Please log in first and try again.',
