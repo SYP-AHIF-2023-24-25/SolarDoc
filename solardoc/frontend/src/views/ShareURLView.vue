@@ -78,9 +78,16 @@ async function handleShareURLReq(shareUrlId: string): Promise<void> {
   if (!shareURL) {
     return
   }
-  currentFileStore.setFileFromShared(file, shareUrlId, <Permission>shareURL.perms)
+
+  // The owner themselves can use the share URL so we need to make sure they see it as it were their own file
+  const isShareFileOwner = currentUserStore.currentUser?.id === file.owner_id
+  if (isShareFileOwner) {
+    currentFileStore.setFile(file)
+  } else {
+    currentFileStore.setFileFromShared(file, shareUrlId, <Permission>shareURL.perms)
+  }
   loadingStore.setLoading(false)
-  await $router.push('/editor')
+  await $router.push({ path: '/editor', query: isShareFileOwner ? undefined : { shareId: shareUrlId }})
 }
 
 interceptErrors(handleShareURLReq(`${$route.params.shareUrlId}`))
