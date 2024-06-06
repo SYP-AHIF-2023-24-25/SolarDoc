@@ -75,10 +75,9 @@ defmodule SolardocPhoenixWeb.Router do
   scope "/phx/api/v1/", SolardocPhoenixWeb do
     pipe_through [:api, :api_auth]
 
-    # Get the current user
-    get "/users/current", UserController, :current
     # User routes
     get "/users", UserController, :index
+    get "/users/current", UserController, :current
 
     # User confirmation routes
     # credo:disable-for-next-line
@@ -104,6 +103,7 @@ defmodule SolardocPhoenixWeb.Router do
     # Share URL routes
     get "/share/:id", ShareURLController, :show_share
     get "/share/:id/file", ShareURLController, :show_file
+    get "/share/:id/channel", ShareURLController, :show_channel
     delete "/share/:id", ShareURLController, :delete
     post "/share", ShareURLController, :create
   end

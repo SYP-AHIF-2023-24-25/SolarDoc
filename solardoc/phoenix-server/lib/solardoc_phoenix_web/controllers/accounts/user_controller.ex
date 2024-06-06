@@ -36,12 +36,6 @@ defmodule SolardocPhoenixWeb.UserController do
         type :array
         items Schema.ref(:UserPublic)
       end,
-      UsersPrivate: swagger_schema do
-        title "UsersPrivate"
-        description "A collection of Users (full data)"
-        type :array
-        items Schema.ref(:UserPrivate)
-      end,
       CreateUser: swagger_schema do
         title "CreateUser"
         description "A new user to be created"

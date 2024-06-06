@@ -1,6 +1,6 @@
 /**
  * @solardoc/phoenix
- * 0.6.0
+ * 0.7.0-dev
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
@@ -38,6 +38,7 @@ export type EditorChannel = {
 }
 export type EditorChannels = EditorChannel[]
 export type File = {
+  channel_id?: string
   content: string
   created: number
   file_name: string
@@ -186,6 +187,10 @@ export function getV1EditorChannelsById(
         status: 401
         data: ErrorsResp
       }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
   >(`/v1/editor_channels/${encodeURIComponent(id)}`, {
     ...opts,
     headers: {
@@ -268,6 +273,10 @@ export function deleteV1FilesById(authorization: string, id: string, opts?: Oaza
         status: 401
         data: ErrorsResp
       }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
   >(`/v1/files/${encodeURIComponent(id)}`, {
     ...opts,
     method: 'DELETE',
@@ -289,6 +298,10 @@ export function getV1FilesById(authorization: string, id: string, opts?: Oazapft
       }
     | {
         status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
         data: ErrorsResp
       }
   >(`/v1/files/${encodeURIComponent(id)}`, {
@@ -320,6 +333,10 @@ export function putV1FilesById(
       }
     | {
         status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
         data: ErrorsResp
       }
   >(
@@ -384,6 +401,32 @@ export function postV1Share(
 }
 
 /**
+ * Delete a share url
+ */
+export function deleteV1ShareById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+  return oazapfts.fetchJson<
+    | {
+        status: 204
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v1/share/${encodeURIComponent(id)}`, {
+    ...opts,
+    method: 'DELETE',
+    headers: {
+      ...(opts && opts.headers),
+      Authorization: authorization,
+    },
+  })
+}
+
+/**
  * Get a single share url
  */
 export function getV1ShareById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
@@ -396,7 +439,41 @@ export function getV1ShareById(authorization: string, id: string, opts?: Oazapft
         status: 401
         data: ErrorsResp
       }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
   >(`/v1/share/${encodeURIComponent(id)}`, {
+    ...opts,
+    headers: {
+      ...(opts && opts.headers),
+      Authorization: authorization,
+    },
+  })
+}
+
+/**
+ * Get a channel via a share url
+ */
+export function getV1ShareByIdChannel(
+  authorization: string,
+  id: string,
+  opts?: Oazapfts.RequestOpts,
+) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: EditorChannel
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v1/share/${encodeURIComponent(id)}/channel`, {
     ...opts,
     headers: {
       ...(opts && opts.headers),
@@ -416,6 +493,10 @@ export function getV1ShareByIdFile(authorization: string, id: string, opts?: Oaz
       }
     | {
         status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
         data: ErrorsResp
       }
   >(`/v1/share/${encodeURIComponent(id)}/file`, {

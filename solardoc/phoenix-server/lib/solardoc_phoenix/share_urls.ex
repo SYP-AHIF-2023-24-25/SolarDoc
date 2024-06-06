@@ -1,4 +1,4 @@
-defmodule SolardocPhoenix.Share do
+defmodule SolardocPhoenix.ShareURLs do
   @moduledoc """
   The Share context.
   """
@@ -6,7 +6,7 @@ defmodule SolardocPhoenix.Share do
   import Ecto.Query, warn: false
   alias SolardocPhoenix.Repo
 
-  alias SolardocPhoenix.Share.ShareURL
+  alias SolardocPhoenix.ShareURLs.ShareURL
 
   @doc """
   Returns the list of share_urls.

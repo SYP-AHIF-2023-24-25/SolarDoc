@@ -59,7 +59,11 @@ async function submitForm(
 </script>
 
 <template>
-  <div id="full-screen-wrapper" class="page-content-wrapper blurred-background-full-screen-overlay" v-if="overlayStateStore.createShareUrl">
+  <div
+    id="full-screen-wrapper"
+    class="page-content-wrapper blurred-background-full-screen-overlay"
+    v-if="overlayStateStore.createShareUrl"
+  >
     <div id="share-url-view-create">
       <div id="share-url-view-header">
         <button id="close-button" @click="overlayStateStore.setShareUrlView(false)">
@@ -67,14 +71,18 @@ async function submitForm(
         </button>
         <h1>Create Share URL</h1>
       </div>
-      <div v-if="!currentUserStore.loggedIn" id="channel-view-not-logged-in">
+      <div v-if="!currentUserStore.loggedIn" class="share-url-error">
         <p>
-          You need to be logged in to create a share url!
+          <i class="pi pi-info-circle"></i>
+          You need to be logged in to create a share URL
           <SDRouterLink class="emphasised-link" to="/login">→ Log in!</SDRouterLink>
         </p>
       </div>
-      <div v-else-if="currentFileStore.fileId === undefined" id="channel-view-not-logged-in">
-        <p>You need to save your file to share it!</p>
+      <div v-else-if="currentFileStore.fileId === undefined" class="share-url-error">
+        <p>
+          <i class="pi pi-info-circle"></i>
+          You need to save your file to share it!
+        </p>
       </div>
       <template v-else>
         <div id="generated-link-display">
@@ -91,13 +99,7 @@ async function submitForm(
           add-class="solardoc-style-form"
           @submit="submitForm"
         >
-          <CheckboxElement
-            disabled
-            info="(Currently unavailable!) Gives the participant write access to your presentation (read is always present)"
-            name="write"
-            size="lg"
-            text="Write access"
-          />
+          <CheckboxElement disabled name="write" size="lg" text="Write access" default="true" />
           <ButtonElement
             :columns="{
               container: 1,
@@ -117,9 +119,14 @@ async function submitForm(
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
 @use '@/assets/full-screen-overlay' as *;
+@use '@/assets/core/mixins/icon-presets' as *;
 
 #full-screen-wrapper {
   @include align-center;
+
+  i.pi.pi-info-circle {
+    @include icon-presets;
+  }
 
   #share-url-view-create {
     position: relative;
@@ -165,6 +172,14 @@ async function submitForm(
 
     .solardoc-style-form {
       margin-bottom: 1rem;
+    }
+
+    .share-url-error {
+      @include align-center;
+      margin-bottom: 1rem;
+      width: 100%;
+      height: 8rem;
+      font-size: 1.4rem;
     }
 
     #generated-link-display {

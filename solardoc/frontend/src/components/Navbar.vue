@@ -33,7 +33,7 @@ const darkModeStore = useDarkModeStore()
         <div id="router-links">
           <SDRouterLink to="/docs">docs</SDRouterLink>
           <SDRouterLink to="/editor">editor</SDRouterLink>
-          <SDRouterLink to="/about">about</SDRouterLink>
+          <SDRouterLink to="/collab">collab</SDRouterLink>
         </div>
       </div>
       <div id="clickable-icons">
