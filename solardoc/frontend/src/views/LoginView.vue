@@ -21,7 +21,7 @@ currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
 
 // Ensure if the user is already logged in that he is redirected to the '/profile' page
 if (currentUserStore.loggedIn) {
-  $router.push('/profile')
+  redirect()
 }
 
 async function redirect() {
