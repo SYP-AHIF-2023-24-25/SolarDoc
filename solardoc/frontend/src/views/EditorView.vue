@@ -144,6 +144,7 @@ setInterval(updateLastModified, 500)
           <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
           <input
             id="file-name-input"
+            :disabled="currentFileStore.shareFile"
             v-model="currentFileStore.fileName"
             @input="event => currentFileStore.setFileName(event.target!.value)"
           />

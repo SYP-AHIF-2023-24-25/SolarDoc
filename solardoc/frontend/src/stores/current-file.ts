@@ -305,6 +305,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
             this.content.slice(oTrans.trans.pos),
         )
       }
+      this.setLastModified(new Date())
     },
     setOnlineSaveState(value: boolean) {
       this.saveState = value
