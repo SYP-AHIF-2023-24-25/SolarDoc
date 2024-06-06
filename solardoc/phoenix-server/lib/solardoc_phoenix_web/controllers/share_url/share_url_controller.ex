@@ -113,10 +113,11 @@ defmodule SolardocPhoenixWeb.ShareURLController do
   end
 
   def show_share(conn, %{"id"=> id}) do
-    with {:share_url_exists, %ShareURL{} = share_url} <- {:share_url_exists, ShareURLs.get_share_url!(id)} do
-      render(conn, :show_share, share_url: share_url)
-    else
-      {:share_url_exists, _} -> {:error, :not_found}
+    case {:share_url_exists, ShareURLs.get_share_url!(id)} do
+      {:share_url_exists, %ShareURL{} = share_url} ->
+        render(conn, :show_share, share_url: share_url)
+      {:share_url_exists, _} ->
+        {:error, :not_found}
     end
   end
 
