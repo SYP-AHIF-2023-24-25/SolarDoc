@@ -9,25 +9,16 @@ import {
   PhoenixInvalidCredentialsError,
 } from '@/services/phoenix/errors'
 import { useCurrentUserStore } from '@/stores/current-user'
-import { useCurrentFileStore } from '@/stores/current-file'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { interceptErrors } from '@/errors/handler/error-handler'
-import { useLoadingStore } from '@/stores/loading'
+import { openFileInEditor } from '@/scripts/editor/file'
 
 const props = defineProps<{ file: File }>()
 const deleted = ref(false)
 
 const currentUserStore = useCurrentUserStore()
-const fileStore = useCurrentFileStore()
-const loadingStore = useLoadingStore()
 const $router = useRouter()
-
-async function openFileInEditor(): Promise<void> {
-  loadingStore.setLoading(true)
-  fileStore.setFile(props.file)
-  await $router.push('/editor')
-}
 
 async function deleteFile() {
   let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1FilesById>>
@@ -73,7 +64,7 @@ setInterval(() => {
 
 <template>
   <div v-if="!deleted" class="profile-file-overview-file">
-    <div id="slide-placeholder" @click="openFileInEditor()"></div>
+    <div id="slide-placeholder" @click="openFileInEditor($router, file)"></div>
     <div id="file-infos">
       <p>
         <span>Filename:</span><code>{{ file.file_name }}</code>

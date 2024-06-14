@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SlideSubSlidesPreview from '@/components/sub-slides-navigator/SlideSubSlidesPreview.vue'
+import SlideSubSlidesPreview from '@/components/editor/sub-slides-navigator/SlideSubSlidesPreview.vue'
 import { storeToRefs } from 'pinia'
 import { useRenderDataStore } from '@/stores/render-data'
 import { useInitStateStore } from '@/stores/init-state'
@@ -11,7 +11,7 @@ const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()
 const previewMenuSlideStateStore = usePreviewMenuSlideStateStore()
 
-const { slideCount } = storeToRefs(renderDataStore)
+const { slideCount, previewURL } = storeToRefs(renderDataStore)
 const { x: globalY } = storeToRefs(previewMenuSlideStateStore)
 
 const subSlidesNavigatorEl = ref<HTMLElement | null>(null)
@@ -30,7 +30,11 @@ watch(globalY, () => {
 </script>
 
 <template>
-  <div id="sub-slides-navigator" v-if="!initStateStore.init" ref="subSlidesNavigatorEl">
+  <div
+    id="sub-slides-navigator"
+    v-if="!initStateStore.init && previewURL"
+    ref="subSlidesNavigatorEl"
+  >
     <!-- For every *main* slide, create a sub-slide preview -->
     <SlideSubSlidesPreview
       v-for="i in Array(slideCount || 2)
