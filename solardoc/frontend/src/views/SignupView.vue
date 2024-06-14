@@ -13,12 +13,12 @@ const currentUserStore = useCurrentUserStore()
 async function submitForm(
   form$: Vueform & {
     requestData: {
-      username: string
       email: string
       password: string
       organisation: string
       'intended-use': number
       'accepts-conditions': boolean
+      'display-name': string
     }
   },
 ) {
@@ -28,7 +28,7 @@ async function submitForm(
   const newUser = {
     email: form$.requestData.email,
     password: form$.requestData.password,
-    username: form$.requestData.username,
+    username: form$.requestData['display-name'],
     organisation: form$.requestData.organisation,
     intended_use: form$.requestData['intended-use'],
   } satisfies phoenixBackend.CreateUser
@@ -68,13 +68,18 @@ async function submitForm(
         add-class="solardoc-style-form"
         @submit="(value: any) => interceptErrors(submitForm(value))"
       >
-        <TextElement :rules="['required', 'min:6', 'max:20']" label="Username" name="username" />
         <TextElement
           :rules="['required', 'email']"
           info="The email that will be used when contacting you regarding info or important matters e.g. resetting your password."
           input-type="email"
           label="Email"
           name="email"
+          autocomplete="username"
+        />
+        <TextElement
+          :rules="['required', 'min:6', 'max:20']"
+          label="Display Name"
+          name="display-name"
         />
         <TextElement
           :rules="[
@@ -86,6 +91,7 @@ async function submitForm(
           input-type="password"
           label="Password"
           name="password"
+          autocomplete="new-password"
         />
         <TextElement
           info="Potentially allows you to be eligible for organisation-specific benefits."
