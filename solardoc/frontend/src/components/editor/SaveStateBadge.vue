@@ -5,11 +5,11 @@ import constants from '@/plugins/constants'
 const currentFileStore = useCurrentFileStore()
 
 function getSaveStateCSSClass() {
-  return currentFileStore.saveState ? (currentFileStore.shareFile ? 'shared' : 'saved') : 'error'
+  return currentFileStore.remoteFile ? (currentFileStore.shareFile ? 'shared' : 'saved') : 'error'
 }
 
 function getSaveState() {
-  return currentFileStore.saveState
+  return currentFileStore.remoteFile
     ? currentFileStore.shareFile
       ? constants.saveStates.shared
       : constants.saveStates.server
