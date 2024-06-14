@@ -17,11 +17,7 @@ const editorUpdateWSClient = useEditorUpdateWSClient()
  */
 function createWSClient(url: string, token: string): Promise<void> {
   return new Promise(resolve => {
-    editorUpdateWSClient.createWSClient(
-      url,
-      token,
-      async () => resolve(),
-    )
+    editorUpdateWSClient.createWSClient(url, token, async () => resolve())
   })
 }
 

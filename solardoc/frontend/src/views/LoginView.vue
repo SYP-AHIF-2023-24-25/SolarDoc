@@ -10,8 +10,8 @@ import {
 } from '@/services/phoenix/errors'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
 import { interceptErrors } from '@/errors/handler/error-handler'
-import {isValidPath} from "@/scripts/is-valid-path";
-import {useLoadingStore} from "@/stores/loading";
+import { isValidPath } from '@/scripts/is-valid-path'
+import { useLoadingStore } from '@/stores/loading'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
@@ -28,7 +28,7 @@ async function redirect() {
   loadingStore.setLoading(true)
 
   const returnTo = $router.currentRoute.value.query.returnTo
-  if (typeof returnTo === "string" && isValidPath(returnTo)) {
+  if (typeof returnTo === 'string' && isValidPath(returnTo)) {
     return await $router.push(returnTo)
   } else {
     return await $router.push('/profile')

@@ -51,14 +51,18 @@ async function fetchFiles(bearer: string) {
   }
 }
 
-function filterFiles(file:File, searchQuery:string):boolean {
+function filterFiles(file: File, searchQuery: string): boolean {
   return file.file_name.toLowerCase().includes(searchQuery.toLowerCase())
 }
 </script>
 
 <template>
   <div id="profile-file-overview-files">
-    <FileCard v-for="file in files.filter(file => filterFiles(file, searchQuery))" :key="file.id" :file="file" />
+    <FileCard
+      v-for="file in files.filter(file => filterFiles(file, searchQuery))"
+      :key="file.id"
+      :file="file"
+    />
   </div>
 </template>
 
