@@ -8,6 +8,8 @@ import { handleError } from '@/errors/handler/error-handler'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
+defineProps<{ searchQuery: string }>()
+
 const currentUserStore = useCurrentUserStore()
 const $router = useRouter()
 
@@ -52,6 +54,7 @@ async function fetchFiles(bearer: string) {
 
 <template>
   <div id="profile-file-overview-files">
+    <p>{{ searchQuery }}</p>
     <FileCard v-for="file in files" :key="file.id" :file="file" />
   </div>
 </template>
