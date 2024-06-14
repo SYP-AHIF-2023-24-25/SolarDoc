@@ -14,8 +14,8 @@ const searchQuery = ref('')
     <input
       v-model="searchQuery"
       placeholder="Search..."
-      type="text"
       @input="$emit('searchQueryUpdate', searchQuery)"
+      type="search"
     />
     <button id="sandwich-menu-button" class="sandwich-button">
       <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />

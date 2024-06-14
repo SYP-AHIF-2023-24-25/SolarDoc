@@ -95,12 +95,19 @@ async function submitForm(
         add-class="solardoc-style-form"
         @submit="(value: any) => interceptErrors(submitForm(value))"
       >
-        <TextElement :rules="['required', 'email']" label="Email" name="email" />
+        <TextElement
+          :rules="['required', 'email']"
+          input-type="email"
+          label="Email"
+          name="email"
+          autocomplete="username"
+        />
         <TextElement
           :rules="['required', 'min:0']"
           input-type="password"
           label="Password"
           name="password"
+          autocomplete="current-password"
         />
         <ButtonElement
           :columns="{
