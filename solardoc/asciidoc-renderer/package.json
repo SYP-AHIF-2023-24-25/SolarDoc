@@ -1,6 +1,6 @@
 {
   "name": "@solardoc/asciidoc-renderer",
-  "version": "0.7.1",
+  "version": "1.0.0-dev",
   "description": "AsciiDoc Rendered for SolarDoc, which generates PDFs and reveal.js presentations",
   "main": "dist/index.js",
   "keywords": [

@@ -1,6 +1,6 @@
 /**
  * @solardoc/phoenix
- * 0.7.1
+ * 1.0.0-dev
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
