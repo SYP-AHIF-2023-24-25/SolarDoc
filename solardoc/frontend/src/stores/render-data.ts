@@ -19,5 +19,12 @@ export const useRenderDataStore = defineStore('renderData', {
       this.subslideCountPerSlide = renderData.subslideCountPerSlide
       this.previewURL = renderData.previewURL
     },
+    clear() {
+      this.rawSize = undefined
+      this.slideCount = undefined
+      this.slideCountInclSubslides = undefined
+      this.subslideCountPerSlide = undefined
+      this.previewURL = undefined
+    }
   },
 })

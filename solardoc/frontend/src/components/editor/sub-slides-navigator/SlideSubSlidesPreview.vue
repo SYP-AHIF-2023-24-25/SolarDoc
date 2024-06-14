@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useRenderDataStore } from '@/stores/render-data'
-import SlideSubSlidePreview from '@/components/sub-slides-navigator/SlideSubSlidePreview.vue'
+import SlideSubSlidePreview from '@/components/editor/sub-slides-navigator/SlideSubSlidePreview.vue'
 
 defineProps({
   slideIndex: {
