@@ -4,12 +4,12 @@ import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { connectToWSIfPossible } from '@/scripts/editor/sds'
 import { createOrJoinChannelForFile } from '@/scripts/editor/channel'
-import {useLoadingStore} from "@/stores/loading";
-import {useRenderDataStore} from "@/stores/render-data";
-import type {File} from "@/services/phoenix/gen/phoenix-rest-service";
-import type {Router} from "vue-router";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import {useInitStateStore} from "@/stores/init-state";
+import { useLoadingStore } from '@/stores/loading'
+import { useRenderDataStore } from '@/stores/render-data'
+import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
+import type { Router } from 'vue-router'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import { useInitStateStore } from '@/stores/init-state'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()

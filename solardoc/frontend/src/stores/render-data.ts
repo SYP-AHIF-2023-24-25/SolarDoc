@@ -25,6 +25,6 @@ export const useRenderDataStore = defineStore('renderData', {
       this.slideCountInclSubslides = undefined
       this.subslideCountPerSlide = undefined
       this.previewURL = undefined
-    }
+    },
   },
 })

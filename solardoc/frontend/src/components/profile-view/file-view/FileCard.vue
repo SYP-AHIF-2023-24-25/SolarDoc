@@ -12,7 +12,7 @@ import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { interceptErrors } from '@/errors/handler/error-handler'
-import {openFileInEditor} from "@/scripts/editor/file";
+import { openFileInEditor } from '@/scripts/editor/file'
 
 const props = defineProps<{ file: File }>()
 const deleted = ref(false)

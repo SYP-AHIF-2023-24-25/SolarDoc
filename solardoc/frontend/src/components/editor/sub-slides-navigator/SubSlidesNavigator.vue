@@ -30,7 +30,11 @@ watch(globalY, () => {
 </script>
 
 <template>
-  <div id="sub-slides-navigator" v-if="!initStateStore.init && previewURL" ref="subSlidesNavigatorEl">
+  <div
+    id="sub-slides-navigator"
+    v-if="!initStateStore.init && previewURL"
+    ref="subSlidesNavigatorEl"
+  >
     <!-- For every *main* slide, create a sub-slide preview -->
     <SlideSubSlidesPreview
       v-for="i in Array(slideCount || 2)

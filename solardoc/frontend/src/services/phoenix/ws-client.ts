@@ -5,7 +5,11 @@ import {
   type PhoenixSocket as SDSClientBare,
   socket,
 } from '@solardoc/phoenix'
-import {PhoenixInternalError, PhoenixInvalidOperationError, PhoenixSDSError} from '@/services/phoenix/errors'
+import {
+  PhoenixInternalError,
+  PhoenixInvalidOperationError,
+  PhoenixSDSError,
+} from '@/services/phoenix/errors'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
 import type { OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/api-service'
