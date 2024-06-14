@@ -54,8 +54,7 @@ async function fetchFiles(bearer: string) {
 
 <template>
   <div id="profile-file-overview-files">
-    <p>{{ searchQuery }}</p>
-    <FileCard v-for="file in files" :key="file.id" :file="file" />
+    <FileCard v-for="file in files.filter(file => file.file_name.toLowerCase().includes(searchQuery.toLowerCase()))" :key="file.id" :file="file" />
   </div>
 </template>
 

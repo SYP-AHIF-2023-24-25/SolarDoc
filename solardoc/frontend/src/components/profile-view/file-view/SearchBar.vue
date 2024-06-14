@@ -11,7 +11,7 @@ const searchQuery = ref('')
 
 <template>
   <div id="file-searchbar">
-    <input v-model="searchQuery" placeholder="Search..." type="text" @input="$emit('searchQueryUpdate', )" />
+    <input v-model="searchQuery" placeholder="Search..." type="text" @input="$emit('searchQueryUpdate',searchQuery )" />
     <button id="sandwich-menu-button" class="sandwich-button">
       <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
       <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
