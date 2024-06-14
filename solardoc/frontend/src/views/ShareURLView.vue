@@ -62,7 +62,7 @@ async function handleShareURLReq(shareUrlId: string): Promise<void> {
     return
   } else if (!currentUserStore.loggedIn) {
     loadingStore.setLoading(false)
-    await $router.push({ path: '/login', query: { returnTo: $route.fullPath }})
+    await $router.push({ path: '/login', query: { returnTo: $route.fullPath } })
     showWarnNotif(
       'Not logged in',
       'You need to be logged in to view this file. Please log in first and try again.',
@@ -87,7 +87,10 @@ async function handleShareURLReq(shareUrlId: string): Promise<void> {
     currentFileStore.setFileFromShared(file, shareUrlId, <Permission>shareURL.perms)
   }
   loadingStore.setLoading(false)
-  await $router.push({ path: '/editor', query: isShareFileOwner ? undefined : { shareId: shareUrlId }})
+  await $router.push({
+    path: '/editor',
+    query: isShareFileOwner ? undefined : { shareId: shareUrlId },
+  })
 }
 
 interceptErrors(handleShareURLReq(`${$route.params.shareUrlId}`))

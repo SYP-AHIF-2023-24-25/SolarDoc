@@ -26,7 +26,7 @@ import { interceptErrors } from '@/errors/handler/error-handler'
 import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorSettings.vue'
 import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
 import { useLoadingStore } from '@/stores/loading'
-import SaveStateBadge from "@/components/editor/SaveStateBadge.vue";
+import SaveStateBadge from '@/components/editor/SaveStateBadge.vue'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
