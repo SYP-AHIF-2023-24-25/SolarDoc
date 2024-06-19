@@ -39,7 +39,6 @@ function closeDropdown() {
 async function handleNewFileButtonClick() {
   closeDropdown()
   showDummyLoading()
-  await currentFileStore.closeFile()
   await closeEditorRemoteFileConnection()
   showInfoNotifFromObj(constants.notifMessages.newFile)
 }
