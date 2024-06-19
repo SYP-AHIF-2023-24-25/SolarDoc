@@ -10,15 +10,29 @@ import {
 } from '@/services/phoenix/errors'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
 import { interceptErrors } from '@/errors/handler/error-handler'
+import { isValidPath } from '@/scripts/is-valid-path'
+import { useLoadingStore } from '@/stores/loading'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
+const loadingStore = useLoadingStore()
 
 currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
 
 // Ensure if the user is already logged in that he is redirected to the '/profile' page
 if (currentUserStore.loggedIn) {
-  $router.push('/profile')
+  redirect()
+}
+
+async function redirect() {
+  loadingStore.setLoading(true)
+
+  const returnTo = $router.currentRoute.value.query.returnTo
+  if (typeof returnTo === 'string' && isValidPath(returnTo)) {
+    return await $router.push(returnTo)
+  } else {
+    return await $router.push('/profile')
+  }
 }
 
 async function submitForm(
@@ -51,7 +65,7 @@ async function submitForm(
     currentUserStore.setCurrentAuth(resp.data)
 
     await currentUserStore.fetchCurrentUser()
-    await $router.push('/profile')
+    await redirect()
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError('Server rejected sign in', resp.data as ActualPhxErrorResp)
   } else if (resp.status === 401) {
@@ -81,12 +95,19 @@ async function submitForm(
         add-class="solardoc-style-form"
         @submit="(value: any) => interceptErrors(submitForm(value))"
       >
-        <TextElement :rules="['required', 'email']" label="Email" name="email" />
+        <TextElement
+          :rules="['required', 'email']"
+          input-type="email"
+          label="Email"
+          name="email"
+          autocomplete="username"
+        />
         <TextElement
           :rules="['required', 'min:0']"
           input-type="password"
           label="Password"
           name="password"
+          autocomplete="current-password"
         />
         <ButtonElement
           :columns="{

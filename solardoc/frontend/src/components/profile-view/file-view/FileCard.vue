@@ -9,27 +9,21 @@ import {
   PhoenixInvalidCredentialsError,
 } from '@/services/phoenix/errors'
 import { useCurrentUserStore } from '@/stores/current-user'
-import { useCurrentFileStore } from '@/stores/current-file'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { interceptErrors } from '@/errors/handler/error-handler'
-import { useLoadingStore } from '@/stores/loading'
+import {closeEditorRemoteFileConnection, openFileInEditor} from '@/scripts/editor/file'
+import {useLoadingStore} from "@/stores/loading";
 
 const props = defineProps<{ file: File }>()
 const deleted = ref(false)
 
 const currentUserStore = useCurrentUserStore()
-const fileStore = useCurrentFileStore()
 const loadingStore = useLoadingStore()
 const $router = useRouter()
 
-async function openFileInEditor(): Promise<void> {
-  loadingStore.setLoading(true)
-  fileStore.setFile(props.file)
-  await $router.push('/editor')
-}
-
 async function deleteFile() {
+  loadingStore.setLoading(true)
   let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1FilesById>>
   try {
     resp = await phoenixRestService.deleteV1FilesById(currentUserStore.bearer!, props.file.id)
@@ -51,6 +45,10 @@ async function deleteFile() {
       'Your saved token is invalid or has already been revoked. Please log in again.',
     )
   }
+
+  // Ensure the editor and channel state are reset
+  await closeEditorRemoteFileConnection()
+  loadingStore.setLoading(false)
 }
 
 // Last modified and created are refs which is updated every 0.5 second to show the last modified time
@@ -73,7 +71,7 @@ setInterval(() => {
 
 <template>
   <div v-if="!deleted" class="profile-file-overview-file">
-    <div id="slide-placeholder" @click="openFileInEditor()"></div>
+    <div id="slide-placeholder" @click="openFileInEditor($router, file)"></div>
     <div id="file-infos">
       <p>
         <span>Filename:</span><code>{{ file.file_name }}</code>

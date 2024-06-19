@@ -61,7 +61,6 @@ export const useCurrentFileStore = defineStore('currentFile', {
       fileId: <string | undefined>storedFileId || undefined,
       fileName: storedFileName,
       ownerId: storedFileOwner || undefined,
-      saveState: storedFileId !== undefined,
       content: storedFileContent,
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
@@ -158,7 +157,6 @@ export const useCurrentFileStore = defineStore('currentFile', {
         return
       }
       await this.closeFile()
-      this.setOnlineSaveState(false)
     },
     async storeOnServer(bearer: string) {
       if (this.fileId === undefined) {
@@ -166,7 +164,6 @@ export const useCurrentFileStore = defineStore('currentFile', {
       } else {
         await this.updateFile(bearer)
       }
-      this.setOnlineSaveState(true)
     },
     async createFile(bearer: string) {
       let resp: Awaited<ReturnType<typeof phoenixRestService.postV1Files>>
@@ -307,15 +304,11 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
       this.setLastModified(new Date())
     },
-    setOnlineSaveState(value: boolean) {
-      this.saveState = value
-    },
     setFile(file: File, perm: Permission = Permissions.Unknown) {
       this.setFileId(file.id)
       this.setOwnerId(file.owner_id)
       this.setFileName(file.file_name)
       this.setContent(file.content)
-      this.setOnlineSaveState(true)
       this.setLastModified(new Date(file.last_edited))
       this.setPermissions(perm)
       this.setCreated(new Date(file.created))
@@ -393,7 +386,6 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.clearChannelId()
       this.clearShareURLId()
       this.setFileName(constants.defaultFileName)
-      this.setOnlineSaveState(false)
       this.setPermissions(Permissions.Unknown)
       this.resetLastModified()
       this.resetCreated()

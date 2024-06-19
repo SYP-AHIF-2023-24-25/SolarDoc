@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 import FilesList from '@/components/profile-view/file-view/FilesList.vue'
 import SearchBar from '@/components/profile-view/file-view/SearchBar.vue'
+import { ref } from 'vue'
+
+const query = ref('')
 </script>
 
 <template>
   <div id="profile-file-overview">
     <h1 id="profile-file-overview-header">Files</h1>
     <div id="profile-file-overview-content">
-      <SearchBar />
-      <FilesList />
+      <SearchBar @searchQueryUpdate="payload => (query = payload)" />
+      <FilesList :searchQuery="query" />
     </div>
   </div>
 </template>

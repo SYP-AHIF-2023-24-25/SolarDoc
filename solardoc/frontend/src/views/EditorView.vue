@@ -12,10 +12,10 @@ import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import Editor from '@/components/editor/Editor.vue'
-import SlidesNavigator from '@/components/slides-navigator/SlidesNavigator.vue'
-import SubSlidesNavigator from '@/components/sub-slides-navigator/SubSlidesNavigator.vue'
-import FullScreenPreview from '@/components/FullScreenPreview.vue'
-import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
+import SlidesNavigator from '@/components/editor/slides-navigator/SlidesNavigator.vue'
+import SubSlidesNavigator from '@/components/editor/sub-slides-navigator/SubSlidesNavigator.vue'
+import FullScreenPreview from '@/components/editor/FullScreenPreview.vue'
+import LoadAnywayButton from '@/components/editor/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
 import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
 import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
@@ -26,7 +26,7 @@ import { interceptErrors } from '@/errors/handler/error-handler'
 import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorSettings.vue'
 import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
 import { useLoadingStore } from '@/stores/loading'
-import SaveStateBadge from "@/components/editor/SaveStateBadge.vue";
+import SaveStateBadge from '@/components/editor/SaveStateBadge.vue'
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
