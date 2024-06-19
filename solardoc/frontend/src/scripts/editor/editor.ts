@@ -104,7 +104,11 @@ export class SolardocEditor {
     },
   ) {
     setUpMonaco()
-    globalMonacoEditor! = monaco.editor.create(elementToBindTo.value, {
+    if (globalMonacoEditor != null) {
+      this._destroy()
+    }
+
+    globalMonacoEditor = monaco.editor.create(elementToBindTo.value, {
       theme: initialState.darkMode ? 'asciiDocDarkTheme' : 'asciiDocLightTheme',
       language: 'asciiDoc',
       value: undefined,
@@ -116,6 +120,7 @@ export class SolardocEditor {
       automaticLayout: true,
       scrollBeyondLastLine: false,
     })
+
     // We need to set the content after the editor is created due to a weird bug in Monaco (See #146)
     this._applyInitContent(`${initialState.content}` || '')
     this._locked = false
@@ -279,5 +284,15 @@ export class SolardocEditor {
       monaco.editor.remeasureFonts()
       this.forceRerender()
     })
+  }
+
+  /**
+   * @since 1.0.0
+   * @private
+   */
+  private static _destroy(): void {
+    globalMonacoEditor?.setModel(null)
+    globalMonacoEditor?.dispose()
+    globalMonacoEditor = null
   }
 }

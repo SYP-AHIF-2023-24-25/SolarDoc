@@ -379,6 +379,14 @@ export const useCurrentFileStore = defineStore('currentFile', {
         permissions ? String(permissions) : '',
       )
     },
+    /**
+     * Closes the file and resets the entire store.
+     *
+     * DANGEROUS FUNCTION: This will clear the entire store and reset it to the default state. If you are still hooked
+     * to the editor and potentially are still in a sync channel with the server, this will overwrite all of that!
+     * @param preserveContent If true, the content will not be reset to the default content.
+     * @since 0.
+     */
     async closeFile(preserveContent: boolean = false) {
       this.clearFileId()
       this.clearOTransStack()

@@ -42,17 +42,19 @@ export async function openFileInEditor($router: Router, file: File): Promise<voi
 
 /**
  * Close the current remote file connection and resets all file-related stores.
+ *
+ * If there was no websocket connection, we will still reset the file store just to be safe.
  * @returns True if the connection was closed, false otherwise. (e.g. no connection was present)
  * @since 0.7.0
  */
 export async function closeEditorRemoteFileConnection(): Promise<boolean> {
-  if (!editorUpdateWSClient.wsClient) {
-    return false
-  }
   overlayStateStore.resetAll()
   await currentFileStore.closeFile()
-  await editorUpdateWSClient.disconnectWSClient()
-  return true
+  if (editorUpdateWSClient.wsClient) {
+    await editorUpdateWSClient.disconnectWSClient()
+    return true
+  }
+  return false
 }
 
 /**
