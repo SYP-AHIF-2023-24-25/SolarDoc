@@ -4,12 +4,11 @@ import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
 import { RenderBackendRestUnknownError } from '@/services/render/errors'
+import constants from '@/plugins/constants'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 
-// The reveal.js CDN URL which provides the reveal.js assets
-const REVEAL_JS_CDN_URL = 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/'
 
 /**
  * The data returned by the backend when rendering a presentation.
@@ -42,7 +41,7 @@ export async function handleRender(
   const renderPresentationDtoModel: RenderPresentationDtoModel = {
     fileName: fileName,
     fileContent: content,
-    revealJSAssetsPath: REVEAL_JS_CDN_URL,
+    revealJSAssetsPath: constants.revealJsCdnUrl,
   }
   let error: Error | undefined = undefined
   let renderResp:
