@@ -3,53 +3,25 @@
 import {useOverlayStateStore} from "@/stores/overlay-state";
 import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
 import {useCurrentFileStore} from "@/stores/current-file";
-import {postV1RenderPresentationImages, postV1RenderPresentationPdf} from "@/services/render/gen/backend-rest-service";
-import {RenderBackendRestError} from "@/services/render/errors";
-import type {RenderPresentationDtoModel} from "@/services/render/api-service";
-
+import {handleRender} from "@/scripts/handle-render";
 
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
-let selectedFormat = "PDF"
-
+let selectedFormat = "HTML"
 
 async function handleFileExport() {
-  let presentationModel: RenderPresentationDtoModel = {
-    fileContent: currentFileStore.content,
-    fileName: currentFileStore.fileName,
-  }
+  let resp = await handleRender(currentFileStore.fileName,currentFileStore.content);
+  let content = await fetch(resp.previewURL)
+  let value = await content.blob();
+  let fileType = "text/html"
 
-  console.log("trying to handel file export")
 
-  let resp;
-  try {
-
-    switch(selectedFormat){
-      case "PDF":
-        resp = await postV1RenderPresentationPdf(presentationModel)
-            break;
-      case "JPG":
-        resp = await postV1RenderPresentationImages(presentationModel);
-        break;
-      case "PNG":
-        resp = await postV1RenderPresentationImages(presentationModel);
-        break;
-      default:
-        throw new Error("Invalid format selected")
-    }
-
-    console.log("now trying to download the file")
-    console.log(resp.data.fileName)
-
-    let fileType = 'application/pdf'
-
-    let bloby: Blob = new Blob([], { type: fileType })
 
     let a = document.createElement('a')
-    a.download = resp.data.fileName
-    a.href = URL.createObjectURL(bloby)
-    a.dataset.downloadurl = [fileType, a.download, a.href].join(':')
+    a.download = `${currentFileStore.fileName.substring(0,currentFileStore.fileName.length-4)}${selectedFormat.toLowerCase()}`
+    a.href = URL.createObjectURL(value)
+    a.dataset.downloadurl = [fileType, resp.previewURL, a.href].join(':')
     a.style.display = 'none'
     document.body.appendChild(a)
     a.click()
@@ -57,18 +29,6 @@ async function handleFileExport() {
     setTimeout(function () {
       URL.revokeObjectURL(a.href)
     }, 1500)
-
-    console.log("file downloaded");
-
-
-    console.log("after postV1RenderPresentationPdf")
-  } catch (e) {
-    console.log("error in postV1RenderPresentationPdf")
-    throw new RenderBackendRestError(
-        'Critically failed to render file. Cause: ' + (<Error>e).message,
-    )
-  }
-
 
 }
 
@@ -86,19 +46,20 @@ async function handleFileExport() {
           <CloseButtonSVG />
         </button>
         <h1>Export</h1>
+        <span>Currently there is only HTML export available</span>
       </div>
         <Vueform>
-          <SelectElement
+          <SelectElement disabled
               name="select"
               v-model="selectedFormat"
               :native="false"
               :items="[
+        'HTML',
         'PDF',
         'JPG',
         'PNG',
       ]"
           />
-          <span>Selected: {{ selectedFormat }}</span>
         </Vueform>
         <button id="export-button" class="highlighted-button" @click="handleFileExport()">Export</button>
       </div>
