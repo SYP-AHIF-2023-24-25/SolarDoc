@@ -1,6 +1,6 @@
 {
   "name": "@solardoc/rest-api",
-  "version": "1.0.0-dev",
+  "version": "0.7.1",
   "description": "SolarDoc backend API",
   "keywords": [
     "solardoc",

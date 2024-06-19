@@ -210,7 +210,7 @@ export class SolardocEditor {
     globalMonacoEditor!.onDidChangeModelContent(async (event: editor.IModelContentChangedEvent) => {
       // We always trigger the re-render of the preview when the editor content changes
       previewLoadingStore.setPreviewLoading(true)
-      initStateStore.setInit(false)
+      initStateStore.setFalse()
       await triggerPreviewRerender(globalMonacoEditor!)
 
       // If the editor is locked, then the server has sent an update, and we are currently updating the editor

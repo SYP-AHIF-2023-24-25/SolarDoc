@@ -1,25 +1,34 @@
 <script setup lang="ts">
-import { useCurrentFileStore } from '@/stores/current-file'
+import {useCurrentFileStore} from "@/stores/current-file"
 import constants from '@/plugins/constants'
 
 const currentFileStore = useCurrentFileStore()
 
 function getSaveStateCSSClass() {
-  return currentFileStore.remoteFile ? (currentFileStore.shareFile ? 'shared' : 'saved') : 'error'
+  return currentFileStore.saveState ?
+      currentFileStore.shareFile ?
+        'shared'
+        : 'saved'
+      : 'error'
 }
 
 function getSaveState() {
-  return currentFileStore.remoteFile
-    ? currentFileStore.shareFile
-      ? constants.saveStates.shared
-      : constants.saveStates.server
-    : constants.saveStates.local
+  return currentFileStore.saveState ?
+      currentFileStore.shareFile ?
+        constants.saveStates.shared
+        : constants.saveStates.server
+      : constants.saveStates.local
 }
 </script>
 
 <template>
-  <div id="save-state" v-tooltip="'Indicates whether the file is saved remotely on the server'">
-    <p :class="getSaveStateCSSClass()">
+  <div
+      id="save-state"
+      v-tooltip="'Indicates whether the file is saved remotely on the server'"
+  >
+    <p
+        :class="getSaveStateCSSClass()"
+    >
       {{ getSaveState() }}
     </p>
   </div>

@@ -8,8 +8,8 @@ export const useInitStateStore = defineStore('init', {
     return { init: true }
   },
   actions: {
-    setInit(value: boolean) {
-      this.init = value
+    setFalse() {
+      this.init = false
     },
   },
 })

@@ -5,11 +5,7 @@ import {
   type PhoenixSocket as SDSClientBare,
   socket,
 } from '@solardoc/phoenix'
-import {
-  PhoenixInternalError,
-  PhoenixInvalidOperationError,
-  PhoenixSDSError,
-} from '@/services/phoenix/errors'
+import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
 import type { OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/api-service'
@@ -94,27 +90,10 @@ export class SDSClient {
 
   /**
    * Disconnects the socket from the server.
-   *
-   * This returns a promise which will resolve once the client has successfully closed its connection to the remote
-   * server.
    * @since 0.4.0
    */
-  public disconnect(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      let resolved = false
-      this.socket.disconnect(() => {
-        this._active = false
-        resolved = true
-        resolve()
-      })
-
-      // Ensure that if the function gets stuck we reject after a timeout of 2 seconds
-      setTimeout(() => {
-        if (!resolved) {
-          reject(new PhoenixSDSError('Failed to disconnect from the remote server'))
-        }
-      }, 2000)
-    })
+  public disconnect() {
+    this.socket.disconnect(() => void (this._active = false))
   }
 
   /**

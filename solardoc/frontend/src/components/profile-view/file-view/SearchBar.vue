@@ -5,18 +5,12 @@ import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 
 const darkModeStore = useDarkModeStore()
-
-const searchQuery = ref('')
+const input = ref('')
 </script>
 
 <template>
   <div id="file-searchbar">
-    <input
-      v-model="searchQuery"
-      placeholder="Search..."
-      @input="$emit('searchQueryUpdate', searchQuery)"
-      type="search"
-    />
+    <input v-model="input" placeholder="Search..." type="text" />
     <button id="sandwich-menu-button" class="sandwich-button">
       <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
       <SandwichMenuSVG v-show="!darkModeStore.darkMode" />

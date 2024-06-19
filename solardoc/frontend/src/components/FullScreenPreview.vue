@@ -4,7 +4,7 @@ import { useOverlayStateStore } from '@/stores/overlay-state'
 import { useInitStateStore } from '@/stores/init-state'
 import { useRenderDataStore } from '@/stores/render-data'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
-import LoadAnywayButton from '@/components/editor/LoadAnywayButton.vue'
+import LoadAnywayButton from '@/components/LoadAnywayButton.vue'
 import OpenFullscreenSVG from '@/components/icons/OpenFullscreenSVG.vue'
 import CloseFullscreenSVG from '@/components/icons/CloseFullscreenSVG.vue'
 
@@ -15,7 +15,10 @@ const renderData = useRenderDataStore()
 let fillWholeScreen = ref(false)
 
 function toggleFillWholeScreen() {
-  fillWholeScreen.value = !fillWholeScreen.value
+  const preview = document.getElementById('full-screen-preview')
+  if (preview) {
+    fillWholeScreen.value = preview.classList.toggle('fill-whole-screen')
+  }
 }
 </script>
 
@@ -32,7 +35,7 @@ function toggleFillWholeScreen() {
       <OpenFullscreenSVG v-if="!fillWholeScreen" />
       <CloseFullscreenSVG v-else />
     </button>
-    <div id="full-screen-preview" :class="fillWholeScreen ? 'fill-whole-screen' : ''">
+    <div id="full-screen-preview">
       <div id="msg-wrapper" v-if="initStateStore.init">
         <p id="preview-not-loadable-msg">
           Modify source code before previewing fullscreen presentation

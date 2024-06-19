@@ -2,7 +2,7 @@
 import { useRenderDataStore } from '@/stores/render-data'
 import { storeToRefs } from 'pinia'
 import { useInitStateStore } from '@/stores/init-state'
-import SlidePreview from '@/components/editor/slides-navigator/SlidePreview.vue'
+import SlidePreview from '@/components/slides-navigator/SlidePreview.vue'
 import { ref, watch } from 'vue'
 import { useScroll } from '@vueuse/core'
 import { usePreviewMenuSlideStateStore } from '@/stores/preview-menu-slide-state'
@@ -11,7 +11,7 @@ const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()
 const previewMenuSlideStateStore = usePreviewMenuSlideStateStore()
 
-const { slideCount, previewURL } = storeToRefs(renderDataStore)
+const { slideCount } = storeToRefs(renderDataStore)
 const { x: globalY } = storeToRefs(previewMenuSlideStateStore)
 
 const slidesNavigatorEl = ref<HTMLElement | null>(null)
@@ -30,7 +30,7 @@ watch(globalY, () => {
 </script>
 
 <template>
-  <div v-if="!initStateStore.init && previewURL" id="slides-navigator" ref="slidesNavigatorEl">
+  <div v-if="!initStateStore.init" id="slides-navigator" ref="slidesNavigatorEl">
     <!-- For every *main* slide, create a slide preview -->
     <SlidePreview
       v-for="i in Array(slideCount || 2)
