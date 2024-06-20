@@ -49,7 +49,7 @@ export async function openFileInEditor($router: Router, file: File): Promise<voi
  */
 export async function closeEditorRemoteFileConnection(): Promise<boolean> {
   overlayStateStore.resetAll()
-  await currentFileStore.closeFile()
+  await currentFileStore.closeFileGlobally()
   if (editorUpdateWSClient.wsClient) {
     await editorUpdateWSClient.disconnectWSClient()
     return true

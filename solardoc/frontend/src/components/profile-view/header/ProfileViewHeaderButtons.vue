@@ -17,7 +17,7 @@ async function logout() {
 
     // If there is a currently remotely opened file, close it and reset the store
     if (currentFileStore.remoteFile) {
-      await currentFileStore.closeFile()
+      await currentFileStore.closeFileGlobally()
       showInfoNotifFromObj(constants.notifMessages.loggedOutAndFileCleared)
     } else {
       showInfoNotifFromObj(constants.notifMessages.loggedOut)
