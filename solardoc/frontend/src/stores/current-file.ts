@@ -24,6 +24,16 @@ export const Permissions = {
   Write: 3,
 } as const satisfies { [key: string]: Permission }
 
+async function setGlobalEditorContentIfAvailable(content: string) {
+  const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
+  SolardocEditor.setContentIfAvailable(content)
+}
+
+async function applyGlobalEditorOTransIfAvailable(oTrans: OTrans) {
+  const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
+  await SolardocEditor.applyOTrans(oTrans)
+}
+
 export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
     const storedFileId = localStorage.getItem(constants.localStorageFileIdKey)
@@ -146,7 +156,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       if (resp.status === 200) {
         this.setFile(resp.data)
       } else {
-        await this.closeFile(true)
+        await this.closeFileGlobally(true)
 
         // Show notification indicating that the file was not found
         showNotifFromErr(new FileGoneWarn())
@@ -156,7 +166,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       if (this.fileId && (this.ownerId === userId || this.isAccessibleShareFile)) {
         return
       }
-      await this.closeFile()
+      await this.closeFileGlobally()
     },
     async storeOnServer(bearer: string) {
       if (this.fileId === undefined) {
@@ -236,9 +246,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     async pushOTrans(oTrans: OTrans) {
       this.lastTrans = oTrans
       this.oTransStack.set(oTrans.id, oTrans)
-
-      const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
-      await SolardocEditor.applyOTUpdates(oTrans)
+      await applyGlobalEditorOTransIfAvailable(oTrans)
     },
     /**
      * "Pushes" an OTrans to the {@link oTransStack stack of transformations}.
@@ -380,14 +388,14 @@ export const useCurrentFileStore = defineStore('currentFile', {
       )
     },
     /**
-     * Closes the file and resets the entire store.
+     * Closes the file and resets the entire store, as well as resets the state of the global editor if it is present.
      *
      * DANGEROUS FUNCTION: This will clear the entire store and reset it to the default state. If you are still hooked
      * to the editor and potentially are still in a sync channel with the server, this will overwrite all of that!
      * @param preserveContent If true, the content will not be reset to the default content.
      * @since 0.
      */
-    async closeFile(preserveContent: boolean = false) {
+    async closeFileGlobally(preserveContent: boolean = false) {
       this.clearFileId()
       this.clearOTransStack()
       this.clearOwnerId()
@@ -400,9 +408,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
       if (!preserveContent) {
         this.setContent(constants.defaultFileContent)
-
-        const SolardocEditor = (await import('@/scripts/editor/editor')).SolardocEditor
-        SolardocEditor.setContent(constants.defaultFileContent)
+        await setGlobalEditorContentIfAvailable(constants.defaultFileContent)
       }
     },
     clearOTransStack() {

@@ -44,7 +44,7 @@ export async function connectToWSIfPossible(): Promise<boolean> {
     return true
   } else if (authStatus === 'expired-or-revoked') {
     await currentUserStore.logout()
-    await currentFileStore.closeFile()
+    await currentFileStore.closeFileGlobally()
     showWarnNotif('Warning', 'Your session has expired. Please log in again.')
   } else if (authStatus === 'unreachable' || authStatus === 'unknown') {
     showWarnNotif('Warning', 'Could not verify authentication status. Please reload the page.')

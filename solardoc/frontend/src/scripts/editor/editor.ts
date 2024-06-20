@@ -74,7 +74,7 @@ function setUpMonaco() {
  * caused reactivity errors in Vue. This makes it much more ugly and harder to manage, but it works.
  * @since 0.7.0
  */
-export let globalMonacoEditor!: editor.IStandaloneCodeEditor | null
+let globalMonacoEditor!: editor.IStandaloneCodeEditor | null
 
 /**
  * Class that manages the global Monaco editor instance.
@@ -141,6 +141,14 @@ export class SolardocEditor {
   }
 
   /**
+   * Returns whether the Monaco editor has been initialised.
+   * @since 1.0.0
+   */
+  public static get initialised() {
+    return globalMonacoEditor != null
+  }
+
+  /**
    * Returns whether the editor is locked. This indicates that currently an update is being processed from the remote.
    * @since 0.7.0
    */
@@ -165,17 +173,25 @@ export class SolardocEditor {
   }
 
   /**
+   * Sets the content of the editor.
    * @since 0.7.0
    */
   public static setContent(content: string) {
     globalMonacoEditor!.setValue(content)
   }
 
-  private static forceRerender() {
-    globalMonacoEditor!.render()
+  /**
+   * Sets the content of the editor if the editor has been initialised.
+   * @param content The content to set.
+   */
+  public static setContentIfAvailable(content: string) {
+    if (this.initialised) {
+      globalMonacoEditor!.setValue(content)
+    }
   }
 
   /**
+   * Returns the content of the editor.
    * @since 0.7.0
    */
   public static getContent() {
@@ -188,7 +204,7 @@ export class SolardocEditor {
     })
   }
 
-  public static async applyOTUpdates(oTrans: OTrans) {
+  public static async applyOTrans(oTrans: OTrans) {
     const editorModel = globalMonacoEditor!.getModel()
     if (oTrans.user_id == currentUserStore.currentUser!.id) {
       return
@@ -196,7 +212,6 @@ export class SolardocEditor {
       throw new EditorModelNotFoundError()
     } else if (oTrans.init) {
       // The init transformation should not be applied and only the init content should be set
-      //await this.runThreadSafe(async () => model.setValue(currentFileStore.content))
       await this._runThreadSafe(async () => globalMonacoEditor!.setValue(currentFileStore.content))
       return
     } else {
@@ -282,9 +297,14 @@ export class SolardocEditor {
     globalMonacoEditor!.setValue(content)
     document.fonts.ready.then(() => {
       monaco.editor.remeasureFonts()
-      this.forceRerender()
+      this._forceRerender()
     })
   }
+
+  private static _forceRerender() {
+    globalMonacoEditor!.render()
+  }
+
 
   /**
    * @since 1.0.0
