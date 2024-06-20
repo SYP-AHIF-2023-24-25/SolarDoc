@@ -39,7 +39,7 @@
     "urijs": "1.19.11"
   },
   "engines": {
-    "node": "16 || 18 || 20",
+    "node": "18 || 20 || 22",
     "pnpm": "8"
   },
   "repository": {

@@ -11,7 +11,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": "16 || 18 || 20",
+    "node": "18 || 20 || 22",
     "pnpm": "8"
   },
   "scripts": {
