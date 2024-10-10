@@ -26,6 +26,19 @@ defmodule SolardocPhoenixWeb.FileController do
           is_global :boolean, "Whether the file is global or not", required: true
         end
       end,
+      GlobalFile: swagger_schema do
+        title "GlobalFile"
+        description "A global file"
+        properties do
+          id :string, "File UUID", required: true
+          file_name :string, "File name", required: true
+          owner_id :string, "Owner id", required: true
+          last_edited :integer, "Last edited in UNIX timestamp milliseconds", required: true
+          created :integer, "Creation date in UNIX timestamp milliseconds", required: true
+          channel_id :string, "UUID of the channel created for this file, if one exists", required: false
+          is_global :boolean, "Whether the file is global or not", required: true
+        end
+      end,
       Files: swagger_schema do
         title "Files"
         description "A list of files"
@@ -70,6 +83,21 @@ defmodule SolardocPhoenixWeb.FileController do
   def index(conn, _params) do
     files = Files.get_files_for_user(conn.assigns.current_user.id)
     render(conn, :index, files: files)
+  end
+
+  swagger_path :global do
+    get "#{@api_path}/files/global"
+    produces "application/json"
+    summary "List all global files"
+    deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
+    response 200, "OK", Schema.ref(:Files)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
+  end
+
+  def global(conn, _params) do
+    files = Files.get_global_files()
+    render(conn, :global, files: files)
   end
 
   swagger_path :create do

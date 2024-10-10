@@ -98,7 +98,12 @@ defmodule SolardocPhoenixWeb.Router do
     delete "/auth/bearer", UserAuthController, :delete
 
     # File routes
-    resources "/files", FileController, only: [:index, :create, :show, :update, :delete]
+    get "/files", FileController, :index
+    get "/files/global", FileController, :global
+    get "/files/:id", FileController, :show
+    post "/files", FileController, :create
+    put "/files/:id", FileController, :update
+    delete "/files/:id", FileController, :delete
 
     # Share URL routes
     get "/share/:id", ShareURLController, :show_share

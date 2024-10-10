@@ -51,6 +51,16 @@ defmodule SolardocPhoenix.Files do
   def get_files_for_user(user_id), do: Repo.all(from file in File, where: file.owner_id == ^user_id)
 
   @doc """
+  Gets all global files.
+
+  ## Examples
+
+      iex> get_global_files()
+      [%File{}, ...]
+  """
+  def get_global_files, do: Repo.all(from file in File, where: file.is_global == true)
+
+  @doc """
   Creates a file.
 
   ## Examples
