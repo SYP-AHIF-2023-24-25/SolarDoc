@@ -20,7 +20,7 @@ defmodule SolardocPhoenixWeb.Endpoint do
     longpoll: false
 
   # Serve live server with longpolling at "/live"
-  socket "/phx/live", Phoenix.LiveView.Socket,
+  socket "/live", Phoenix.LiveView.Socket,
      websocket: [connect_info: [session: @session_options]]
 
   # The session will be stored in the cookie and signed,
