@@ -37,6 +37,7 @@ defmodule SolardocPhoenixWeb.FileController do
           created :integer, "Creation date in UNIX timestamp milliseconds", required: true
           channel_id :string, "UUID of the channel created for this file, if one exists", required: false
           is_global :boolean, "Whether the file is global or not", required: true
+          organisation :string, "Organisation name", required: true
         end
       end,
       Files: swagger_schema do
@@ -44,6 +45,12 @@ defmodule SolardocPhoenixWeb.FileController do
         description "A list of files"
         type :array
         items Schema.ref(:File)
+      end,
+      GlobalFiles: swagger_schema do
+        title "GlobalFiles"
+        description "A list of global files"
+        type :array
+        items Schema.ref(:GlobalFile)
       end,
       CreateFile: swagger_schema do
         title "CreateFile"
@@ -91,12 +98,20 @@ defmodule SolardocPhoenixWeb.FileController do
     summary "List all global files"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
-    response 200, "OK", Schema.ref(:Files)
+    parameters do
+      file_name :query, :string, "File name", required: false
+      created_from :query, :integer, "Creation date from (UNIX timestamp)", required: false
+      created_to :query, :integer, "Creation date to (UNIX timestamp)", required: false
+      updated_from :query, :integer, "Update date from (UNIX timestamp)", required: false
+      updated_to :query, :integer, "Update date to (UNIX timestamp)", required: false
+      user_name :query, :string, "User name", required: false
+    end
+    response 200, "OK", Schema.ref(:GlobalFiles)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
 
-  def global(conn, _params) do
-    files = Files.get_global_files()
+  def global(conn, params) do
+    files = Files.search_global_files(params)
     render(conn, :global, files: files)
   end
 
