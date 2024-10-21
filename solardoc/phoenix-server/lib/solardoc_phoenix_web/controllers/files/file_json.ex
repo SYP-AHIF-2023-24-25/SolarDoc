@@ -27,4 +27,24 @@ defmodule SolardocPhoenixWeb.FileJSON do
       channel_id: file.channel_id
     }
   end
+
+  @doc """
+  Renders a list of global files.
+  """
+  def global(%{files: files}) do
+    for(file <- files, do: global_data(file))
+  end
+
+  defp global_data(file) do
+    %{
+      id: file.id,
+      file_name: file.file_name,
+      last_edited: Utils.naive_datetime_to_unix_milliseconds(file.last_edited),
+      created: Utils.naive_datetime_to_unix_milliseconds(file.created),
+      owner_id: file.owner_id,
+      owner_name: file.owner_name,
+      channel_id: file.channel_id,
+      organisation: file.organisation # Additional property from search_global_files/1
+    }
+  end
 end
