@@ -42,6 +42,7 @@ defmodule SolardocPhoenixWeb.FileJSON do
       last_edited: Utils.naive_datetime_to_unix_milliseconds(file.last_edited),
       created: Utils.naive_datetime_to_unix_milliseconds(file.created),
       owner_id: file.owner_id,
+      owner_name: file.owner_name,
       channel_id: file.channel_id,
       organisation: file.organisation # Additional property from search_global_files/1
     }

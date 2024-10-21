@@ -111,13 +111,12 @@ defmodule SolardocPhoenix.Files do
         dynamic_query
       end
 
-    query = from f in base_query,
-                 join: u in assoc(f, :owner),
-                 where: ^dynamic_query,
-                 select: f, preload: [:owner]
-
-    Repo.all(query)
-      |> Enum.map(&Map.put(&1, :organisation, &1.owner.organisation))
+    (from f in base_query,
+       join: u in assoc(f, :owner),
+       where: ^dynamic_query,
+       select: %{f | organisation: u.organisation, owner_name: u.username},
+       preload: [:owner]
+    ) |> Repo.all
   end
 
   @doc """
