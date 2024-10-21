@@ -58,6 +58,7 @@ defmodule SolardocPhoenix.Files do
       iex> get_global_files()
       [%File{}, ...]
   """
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
   def search_global_files(params) do
     base_query = from f in File, where: f.is_global == true
     dynamic_query = dynamic([f], true)
