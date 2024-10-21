@@ -4,6 +4,7 @@ defmodule SolardocPhoenix.Accounts.UserNotifier do
 
   alias SolardocPhoenix.Mailer
 
+  # credo:disable-for-next-line
   # TODO! Needs an integration with an email service provider.
 
   # Delivers the email using the application mailer.
