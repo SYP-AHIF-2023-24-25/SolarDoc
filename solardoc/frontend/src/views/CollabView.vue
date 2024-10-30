@@ -1,11 +1,15 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import GlobalFilesOverview from "@/components/collab/GlobalFilesOverview.vue";
+</script>
 
 <template>
-  <div id="about-page">
-    <h1>
-      As Solardoc is still under development please kindly wait until we are able to design a proper
-      about us page! 💜
-    </h1>
+  <div id="collab-page">
+    <div id="header">
+      <h1>Collab</h1>
+    </div>
+    <div id="content-view">
+      <GlobalFilesOverview />
+    </div>
   </div>
 </template>
 
@@ -15,16 +19,29 @@
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/mixins/screen-size' as *;
 
-div#about-page {
+#collab-page {
   @include view-presets;
   @include align-center;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-flow: column nowrap;
+  gap: 2rem;
+  width: 100%;
 
-  h1 {
-    width: 90%;
+  #header {
+    @include align-center;
 
-    @include r-min(var.$window-xmedium) {
-      width: 50%;
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 1rem;
     }
+  }
+
+  #content-view {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 80%;
   }
 }
 </style>

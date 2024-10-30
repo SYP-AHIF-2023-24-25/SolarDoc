@@ -36,9 +36,9 @@ async function submitForm(
       if (form$.requestData.write) {
         perms = 3
       }
-      let resp: Awaited<ReturnType<typeof phoenixRestService.postV1Share>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.postV2Share>>
       try {
-        resp = await phoenixRestService.postV1Share(currentUserStore.bearer, {
+        resp = await phoenixRestService.postV2Share(currentUserStore.bearer, {
           file_id: currentFileStore.fileId,
           perms: perms,
         })

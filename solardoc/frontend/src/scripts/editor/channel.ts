@@ -1,7 +1,7 @@
 import {
   type File,
-  getV1EditorChannelsById,
-  getV1ShareByIdChannel,
+  getV2EditorChannelsById,
+  getV2ShareByIdChannel,
 } from '@/services/phoenix/gen/phoenix-rest-service'
 import { joinChannel } from '@/scripts/channel/join-channel'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
@@ -21,11 +21,11 @@ async function getChannelFromId(
   token: string,
   isShared: boolean = false,
 ): Promise<EditorChannel> {
-  let resp: Awaited<ReturnType<typeof getV1EditorChannelsById>>
+  let resp: Awaited<ReturnType<typeof getV2EditorChannelsById>>
   try {
     resp = isShared
-      ? await getV1ShareByIdChannel(token, channelOrShareURLId)
-      : await getV1EditorChannelsById(token, channelOrShareURLId)
+      ? await getV2ShareByIdChannel(token, channelOrShareURLId)
+      : await getV2EditorChannelsById(token, channelOrShareURLId)
   } catch (e) {
     throw new PhoenixRestError(
       'Error getting channel',
