@@ -106,6 +106,12 @@ defmodule SolardocPhoenixWeb.Router do
     get "/share/:id/channel", ShareURLController, :show_channel
     delete "/share/:id", ShareURLController, :delete
     post "/share", ShareURLController, :create
+
+    #File Permission routes
+    post "/file-permission", FilePermissionController, :create
+    get "/file-permission/:id", FilePermissionController, :show
+    put "/file-permission/:id", FilePermissionController, :update
+    get "/file-permission", FilePermissionController, :show_permission_for_user
   end
 
   ########## - General API Info - ##########
@@ -144,6 +150,7 @@ defmodule SolardocPhoenixWeb.Router do
         %{name: "EditorChannel", description: "Editor channel resources"},
         %{name: "File", description: "File resources"},
         %{name: "ShareURL", description: "Share URL resources"},
+        %{name: "FilePermission", description: "File Permission resources"},
       ]
     }
   end

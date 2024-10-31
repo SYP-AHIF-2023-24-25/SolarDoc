@@ -1,6 +1,6 @@
 defmodule SolardocPhoenixWeb.FilePermissionController do
   use SolardocPhoenixWeb, :controller
-  use PhoenixSwagger, except: [:delete]
+  use PhoenixSwagger
 
   alias SolardocPhoenix.Permissions
   alias SolardocPhoenix.Permissions.FilePermission
@@ -84,7 +84,7 @@ defmodule SolardocPhoenixWeb.FilePermissionController do
       with {:ok, %FilePermission{} = file_permission} <- Permissions.create_file_permission(file_permission_params) do
         conn
         |> put_status(:created)
-        |> put_resp_header("location", ~p"/#{@api_path}/file_permissions/#{file_permission.id}")
+        |> put_resp_header("location", ~p"/#{@api_path}/file-permissions/#{file_permission.id}")
         |> render(:show, file_permission: file_permission)
       end
     else
