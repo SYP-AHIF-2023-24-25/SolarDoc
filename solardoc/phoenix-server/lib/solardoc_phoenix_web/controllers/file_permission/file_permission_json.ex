@@ -18,7 +18,9 @@ defmodule SolardocPhoenixWeb.FilePermissionJSON do
   defp data(%FilePermission{} = file_permission) do
     %{
       id: file_permission.id,
-      permission: file_permission.permission
+      permission: file_permission.permission,
+      user_id: file_permission.user_id,
+      file_id: file_permission.file_id
     }
   end
 end

@@ -108,10 +108,10 @@ defmodule SolardocPhoenixWeb.Router do
     post "/share", ShareURLController, :create
 
     #File Permission routes
-    post "/file-permission", FilePermissionController, :create
-    get "/file-permission/:id", FilePermissionController, :show
-    put "/file-permission/:id", FilePermissionController, :update
-    get "/file-permission", FilePermissionController, :show_permission_for_user
+    post "/file/permission", FilePermissionController, :create
+    get "/file/permission/:id", FilePermissionController, :show
+    put "/file/permission/:id", FilePermissionController, :update
+    get "/file/:file_id/permission/:user_id", FilePermissionController, :show_permission_for_user
   end
 
   ########## - General API Info - ##########

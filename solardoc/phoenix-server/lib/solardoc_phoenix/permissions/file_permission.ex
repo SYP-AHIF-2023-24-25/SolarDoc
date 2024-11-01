@@ -25,11 +25,11 @@ defmodule SolardocPhoenix.Permissions.FilePermission do
   """
   def create_changeset(file_permission, attrs) do
     file_permission
-    |> cast(attrs, [:file_id, :user_id, :permission, ])
+    |> cast(attrs, [:file_id, :user_id, :permission])
     |> validate_required([:file_id, :user_id, :permission])
     |> foreign_key_constraint(:file_id)
     |> foreign_key_constraint(:user_id)
       # 0: none, 1: read, 3: read/write (2 is excluded since only write is not possible)
-    |> validate_inclusion(:perms, [0, 1, 3])
+    |> validate_inclusion(:permission, [0, 1, 3])
   end
 end

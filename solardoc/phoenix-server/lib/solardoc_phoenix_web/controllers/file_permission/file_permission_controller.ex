@@ -65,36 +65,34 @@ defmodule SolardocPhoenixWeb.FilePermissionController do
   end
 
   swagger_path :create do
-    post "#{@api_path}/file-permission"
+    post "#{@api_path}/file/permission"
     consumes "application/json"
     produces "application/json"
     summary "Create a new file permission"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameters do
-      file_permission :body, Schema.ref(:CreateFilePermission), "Arguments for creating a file permission", required: true
+      file_permission_params :body, Schema.ref(:CreateFilePermission), "Arguments for creating a file permission", required: true
     end
     response 201, "Created", Schema.ref(:FilePermission)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
   def create(conn,  file_permission_params) do
-    with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(file_permission_params["file_id"])},
-         {:is_owner, true} <- {:is_owner, owner?(conn.assigns.current_user, file)} do
+    with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(file_permission_params["file_id"])} do
       with {:ok, %FilePermission{} = file_permission} <- Permissions.create_file_permission(file_permission_params) do
         conn
         |> put_status(:created)
-        |> put_resp_header("location", ~p"/#{@api_path}/file-permissions/#{file_permission.id}")
+        |> put_resp_header("location", ~p"/#{@api_path}/file/permissions/#{file_permission.id}")
         |> render(:show, file_permission: file_permission)
       end
     else
       {:file_exists, _} -> {:error, :not_found}
-      {:is_owner, false} -> {:error, :unauthorized}
     end
   end
 
   swagger_path :show do
-    get "#{@api_path}/file-permission/{id}"
+    get "#{@api_path}/file/permission/{id}"
     produces "application/json"
     summary "Get a single file permission"
     deprecated false
@@ -116,7 +114,7 @@ defmodule SolardocPhoenixWeb.FilePermissionController do
   end
 
   swagger_path :update do
-    put "#{@api_path}/file-permission/{id}"
+    put "#{@api_path}/file/permission/{id}"
     produces "application/json"
     summary "Update a single file"
     deprecated false
@@ -147,30 +145,28 @@ defmodule SolardocPhoenixWeb.FilePermissionController do
   end
 
   swagger_path :show_permission_for_user do
-    put "#{@api_path}/file-permission"
+    get "#{@api_path}/file/{file_id}/permission/{user_id}"
     produces "application/json"
     summary "Gets the permissions for one file from one specific user"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
-    parameters do
-      file_permission :body, Schema.ref(:GetPermissionForUser), "Arguments for getting one specific file permission", required: true
-    end
+    parameter("file_id", :path, :string, "File ID", required: true)
+    parameter("user_id", :path, :string, "User ID", required: true)
     response 200, "OK", Schema.ref(:FilePermission)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
     response 404, "Not Found", Schema.ref(:ErrorResp)
   end
 
-  def show_permission_for_user(conn, file_permission_params) do
-     with {:user_id, user_id} <- {:user_id, file_permission_params["user_id"]},
-          {:file_id, file_id} <- {:file_id, file_permission_params["file_id"]},
-          {:file_permission_exists, %FilePermission{} = file_permission} <- {:file_permission_exists, Permissions.get_file_permission_by_user_file!(user_id, file_id)} do
-        render(conn, :show, file_permission: file_permission)
-     else
-       {:user_id, _} -> {:error, :not_found}
-       {:file_id, _} -> {:error, :not_found}
-       {:file_permission_exists, _} -> {:error, :not_found}
-     end
+  def show_permission_for_user(conn, %{"file_id" => file_id, "user_id" => user_id}) do
+    with %FilePermission{} = file_permission <- Permissions.get_file_permission_by_user_file!(user_id, file_id) do
+      render(conn, :show, file_permission: file_permission)
+    else
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> render("error.json", message: "File permission not found")
+    end
   end
   #def delete(conn, %{"id" => id}) do
   #  file_permission = Permissions.get_file_permission!(id)
