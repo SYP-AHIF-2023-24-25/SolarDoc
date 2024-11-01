@@ -37,6 +37,22 @@ export type EditorChannel = {
     name: string;
 };
 export type EditorChannels = EditorChannel[];
+export type CreateFilePermissions = {
+    file_id: string;
+    permission: number;
+    user_id: string;
+};
+export type FilePermissions = {
+    file_id: string;
+    id: string;
+    permission: number;
+    user_id: string;
+};
+export type UpdateFilePermissions = {
+    file_id: string;
+    permission: number;
+    user_id: string;
+};
 export type File = {
     channel_id?: string;
     content: string;
@@ -166,6 +182,100 @@ export function getV1EditorChannelsById(authorization: string, id: string, opts?
         status: 404;
         data: ErrorsResp;
     }>(`/v1/editor_channels/${encodeURIComponent(id)}`, {
+        ...opts,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    });
+}
+/**
+ * Create a new file permission
+ */
+export function postV1FilePermission(authorization: string, createFilePermission: CreateFilePermissions, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 201;
+        data: FilePermissions;
+    } | {
+        status: 400;
+        data: ErrorsResp;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    }>("/v1/file/permission", oazapfts.json({
+        ...opts,
+        method: "POST",
+        body: createFilePermission,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    }));
+}
+/**
+ * Get a single file permission
+ */
+export function getV1FilePermissionById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: FilePermissions;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
+    }>(`/v1/file/permission/${encodeURIComponent(id)}`, {
+        ...opts,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    });
+}
+/**
+ * Update a single file
+ */
+export function putV1FilePermissionById(authorization: string, id: string, updatePermission: UpdateFilePermissions, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: FilePermissions;
+    } | {
+        status: 400;
+        data: ErrorsResp;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
+    }>(`/v1/file/permission/${encodeURIComponent(id)}`, oazapfts.json({
+        ...opts,
+        method: "PUT",
+        body: updatePermission,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    }));
+}
+/**
+ * Gets the permissions for one file from one specific user
+ */
+export function getV1FileByFileIdPermissionAndUserId(authorization: string, fileId: string, userId: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: FilePermissions;
+    } | {
+        status: 400;
+        data: ErrorsResp;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
+    }>(`/v1/file/${encodeURIComponent(fileId)}/permission/${encodeURIComponent(userId)}`, {
         ...opts,
         headers: {
             ...opts && opts.headers,
