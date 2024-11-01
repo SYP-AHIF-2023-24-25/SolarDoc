@@ -42,7 +42,7 @@ setInterval(updateTimeRefs, 500)
       </div>
       <div id="settings-file-info">
         <h2 id="settings-file-info-title">
-          File Information •<code>{{ currentFileStore.fileName }}</code>
+          File Information <code>{{ currentFileStore.fileName }}</code>
         </h2>
         <p id="settings-file-info-file-id">
           <i class="pi pi-wrench"></i>
