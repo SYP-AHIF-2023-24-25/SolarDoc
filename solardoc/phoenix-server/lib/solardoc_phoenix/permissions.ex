@@ -55,6 +55,28 @@ defmodule SolardocPhoenix.Permissions do
     Repo.get_by!(FilePermission, user_id: user_id, file_id: file_id)
   end
 
+  @doc """
+  Gets all file permissions for a specific file.
+
+  Raises `Ecto.NoResultsError` if no file permissions exist.
+
+  ## Examples
+
+      iex> get_file_permissions_by_file!(123)
+      [%FilePermission{}, ...]
+
+      iex> get_file_permissions_by_file!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_file_permissions_by_file!(file_id) do
+    query = from(fp in FilePermission, where: fp.file_id == ^file_id)
+
+    case Repo.all(query) do
+      [] -> raise Ecto.NoResultsError, "No file permissions found for file_id: #{file_id}"
+      permissions -> permissions
+    end
+  end
 
   @doc """
   Creates a file_permission.

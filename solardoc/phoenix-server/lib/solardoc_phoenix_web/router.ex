@@ -112,6 +112,7 @@ defmodule SolardocPhoenixWeb.Router do
     get "/file/permission/:id", FilePermissionController, :show
     put "/file/permission/:id", FilePermissionController, :update
     get "/file/:file_id/permission/:user_id", FilePermissionController, :show_permission_for_user
+    get "/file/:file_id/permission", FilePermissionController, :show_permissions_for_file
   end
 
   ########## - General API Info - ##########

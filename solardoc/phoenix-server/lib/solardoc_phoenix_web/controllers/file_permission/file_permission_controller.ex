@@ -50,6 +50,13 @@ defmodule SolardocPhoenixWeb.FilePermissionController do
           user_id :string, "User UUID", required: true
         end
       end,
+      GetAllPermissionsForFile: swagger_schema do
+        title "GetAllPermissionsForFile"
+        description "Gets the permissions for one file for all users having an entry with the file"
+        properties do
+          file_id :string, "File UUID", required: true
+        end
+      end,
       ErrorResp: swagger_schema do
         title "ErrorsResp"
         description "A list of errors"
@@ -168,6 +175,32 @@ defmodule SolardocPhoenixWeb.FilePermissionController do
         |> render("error.json", message: "File permission not found")
     end
   end
+
+  swagger_path :show_permissions_for_file do
+    get "#{@api_path}/file/{file_id}/permission"
+    produces "application/json"
+    summary "Gets the permissions for one file for all users who have access to it"
+    deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
+    parameter("file_id", :path, :string, "File ID", required: true)
+    response 200, "OK", Schema.ref(:FilePermission)
+    response 400, "Bad Request", Schema.ref(:ErrorResp)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
+  end
+
+  def show_permissions_for_file(conn, %{"file_id" => file_id}) do
+    case Permissions.get_file_permissions_by_file!(file_id) do
+      [] ->
+        conn
+        |> put_status(:not_found)
+        |> render("error.json", message: "File permissions not found")
+
+      file_permissions ->
+        render(conn, :index, file_permissions: file_permissions)
+    end
+  end
+
   #def delete(conn, %{"id" => id}) do
   #  file_permission = Permissions.get_file_permission!(id)
   #
