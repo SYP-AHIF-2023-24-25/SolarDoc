@@ -5,7 +5,7 @@ defmodule SolardocPhoenixWeb.FilePermissionJSON do
   Renders a list of file_permissions.
   """
   def index(%{file_permissions: file_permissions}) do
-    %{data: for(file_permission <- file_permissions, do: data(file_permission))}
+    for(file_permission <- file_permissions, do: data(file_permission))
   end
 
   @doc """

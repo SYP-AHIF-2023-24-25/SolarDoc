@@ -53,9 +53,8 @@ defmodule SolardocPhoenixWeb.FilePermissionController do
       GetAllPermissionsForFile: swagger_schema do
         title "GetAllPermissionsForFile"
         description "Gets the permissions for one file for all users having an entry with the file"
-        properties do
-          file_id :string, "File UUID", required: true
-        end
+        type :array
+        items Schema.ref(:FilePermission)
       end,
       ErrorResp: swagger_schema do
         title "ErrorsResp"
@@ -183,7 +182,7 @@ defmodule SolardocPhoenixWeb.FilePermissionController do
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameter("file_id", :path, :string, "File ID", required: true)
-    response 200, "OK", Schema.ref(:FilePermission)
+    response 200, "OK", Schema.ref(:GetAllPermissionsForFile)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
     response 404, "Not Found", Schema.ref(:ErrorResp)
