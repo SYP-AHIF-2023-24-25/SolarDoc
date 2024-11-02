@@ -5,7 +5,10 @@ import GlobalFilesOverview from "@/components/collab/GlobalFilesOverview.vue";
 <template>
   <div id="collab-page">
     <div id="header">
-      <h1>Collab</h1>
+      <h1>Team Collab<span id="experimental-tag">Experimental</span></h1>
+      <p>
+        Join and collaborate with your team members on projects.
+      </p>
     </div>
     <div id="content-view">
       <GlobalFilesOverview />
@@ -31,10 +34,31 @@ import GlobalFilesOverview from "@/components/collab/GlobalFilesOverview.vue";
 
   #header {
     @include align-center;
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    margin-bottom: 1.5rem;
 
     h1 {
       font-size: 4rem;
       margin-bottom: 1rem;
+
+      span#experimental-tag {
+        position: relative;
+        font-size: 1.25rem;
+        top: -2.5rem;
+        left: -0.5rem;
+        color: var.$text-color;
+        font-style: italic;
+      }
+    }
+
+    p {
+      font-size: 1.5rem;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      width: 80%;
     }
   }
 

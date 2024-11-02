@@ -19,7 +19,7 @@ async function routeWithLoading(to: string) {
       <div id="text-and-buttons">
         <div id="welcome-text">
           <p>Create <br />presentations</p>
-          <p id="gradient-text">your way.</p>
+          <p class="gradient-text">your way.</p>
         </div>
         <div id="buttons-wrapper">
           <button class="home-button no-wrap-button" @click="routeWithLoading('editor')">
@@ -53,6 +53,7 @@ async function routeWithLoading(to: string) {
 
 <style lang="scss" scoped>
 @use '@/assets/core/var' as var;
+@use '@/assets/gradient-text' as *;
 @use '@/assets/page-content' as *;
 @use '@/assets/core/mixins/view-presets' as *;
 @use '@/assets/core/mixins/screen-size' as *;
@@ -102,81 +103,6 @@ async function routeWithLoading(to: string) {
             & {
               font-size: 3rem;
             }
-          }
-        }
-
-        #gradient-text {
-          color: transparent;
-          background: linear-gradient(
-            262deg,
-            var(--scheme-cs-4),
-            var(--scheme-cs-1),
-            var(--scheme-cs-4),
-            var(--scheme-cs-1)
-          );
-          background-size: 400%;
-          background-clip: text;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-
-          -webkit-animation: moving-gradient 10s ease-in-out infinite;
-          -moz-animation: moving-gradient 10s ease-in-out infinite;
-          -o-animation: moving-gradient 10s ease-in-out infinite;
-          animation: moving-gradient 10s ease-in-out infinite;
-
-          &::selection {
-            color: #fff;
-            -webkit-text-fill-color: #fff;
-          }
-
-          @-webkit-keyframes moving-gradient {
-            0% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-            100% {
-              background-position: 0% 50%;
-            }
-          }
-          @-moz-keyframes moving-gradient {
-            0% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-            100% {
-              background-position: 0% 50%;
-            }
-          }
-          @-o-keyframes moving-gradient {
-            0% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-            100% {
-              background-position: 0% 50%;
-            }
-          }
-          @keyframes moving-gradient {
-            0% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-            100% {
-              background-position: 0% 50%;
-            }
-          }
-
-          &::selection {
-            color: #fff;
-            -webkit-text-fill-color: #fff;
           }
         }
       }

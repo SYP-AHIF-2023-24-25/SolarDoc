@@ -3,7 +3,7 @@ import {getHumanReadablePreciseDate, getHumanReadableTimeInfo} from "@/scripts/f
 import PaddedInfoBox from "@/components/common/PaddedInfoBox.vue";
 import {ref} from "vue";
 
-const props = defineProps<{ dateTime: Date | number, update: boolean | undefined }>()
+const props = defineProps<{ dateTime: Date | number, update?: boolean }>()
 
 const timeProp = ref(getHumanReadableTimeInfo(props.dateTime))
 if (props.update) {
