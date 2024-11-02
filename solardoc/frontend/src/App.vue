@@ -5,6 +5,7 @@ import { useDarkModeStore } from '@/stores/dark-mode'
 import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
+import {Notifications} from "@kyvg/vue3-notification";
 
 const NO_FOOTER_ROUTES = [
   'test-editor',

@@ -20,7 +20,7 @@ import GlobalFilesOverview from "@/components/collab/GlobalFilesOverview.vue";
 @use '@/assets/core/mixins/screen-size' as *;
 
 #collab-page {
-  @include view-presets;
+  @include scrollable-view-presets;
   @include align-center;
   display: flex;
   justify-content: flex-start;
@@ -41,7 +41,19 @@ import GlobalFilesOverview from "@/components/collab/GlobalFilesOverview.vue";
   #content-view {
     display: flex;
     flex-flow: column nowrap;
-    width: 80%;
+    margin-bottom: 2rem;
+    width: 100%;
+    padding: 2rem;
+
+    @include r-min(var.$window-medium) {
+      width: 80%;
+      padding: 0;
+    }
+
+    @include r-min(var.$window-large) {
+      width: 70%;
+      padding: 0;
+    }
   }
 }
 </style>
