@@ -56,8 +56,8 @@ setInterval(updateTimeRefs, 500)
           <p><span>Created:</span> {{ created }}</p>
           <p><span>Last Modified:</span> {{ lastModified }}</p>
         </div>
-        <div v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id">
-          <p>Collaborators:</p>
+        <div v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id" id="collaborators-list">
+          <p><span>Collaborators:</span></p>
           <CollaboratorList></CollaboratorList>
         </div>
       </div>
@@ -138,6 +138,15 @@ setInterval(updateTimeRefs, 500)
         & * {
           background: transparent;
         }
+      }
+      #collaborators-list{
+        display: flex;
+        margin-left: 0.5rem;
+        line-height: 2rem;
+        flex-grow: 1;
+        flex-direction: column;
+
+        margin-bottom: 1rem;
       }
 
       code {

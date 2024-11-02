@@ -22,14 +22,7 @@
   const currentUserStore = useCurrentUserStore();
   const permissionUsers = ref<Array<FilePermissions>>([])
   ;(async () => {
-    try {
-      await fetchFilePermissions(currentUserStore.bearer!)
-    } catch (e) {
-      if (e instanceof PhoenixInvalidCredentialsError) {
-        handleError(e)
-      }
-      throw e
-    }
+    await fetchFilePermissions(currentUserStore.bearer!)
   })()
 
   async function fetchFilePermissions(bearerToken: string) {
@@ -51,14 +44,22 @@
 </script>
 
 <template>
- <div>
+ <div v-if="permissionUsers.length !== 0" id="user-permission-box">
     <CollaboratorCard
         v-for="permission in permissionUsers"
         :key="permission.id"
-        :permission="permission"/>
+        :filePermission="permission"/>
  </div>
+  <div v-else>
+    <p>None.</p>
+  </div>
 </template>
 
 <style scoped lang="scss">
-
+  @use '@/assets/core/var' as var;
+  #user-permission-box {
+    margin-left: 1rem;
+    max-height: 10rem;
+    overflow-y: auto;
+  }
 </style>
