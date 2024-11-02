@@ -12,7 +12,7 @@ defmodule SolardocPhoenixWeb.FilePermissionJSON do
   Renders a single file_permission.
   """
   def show(%{file_permission: file_permission}) do
-    %{data: data(file_permission)}
+    data(file_permission)
   end
 
   defp data(%FilePermission{} = file_permission) do
