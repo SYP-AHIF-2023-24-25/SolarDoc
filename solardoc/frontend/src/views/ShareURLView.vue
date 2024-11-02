@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ProgressSpinner from '@/components/ProgressSpinner.vue'
+import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
 import { type Permission, useCurrentFileStore } from '@/stores/current-file'
 import type { File, ShareUrl } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'

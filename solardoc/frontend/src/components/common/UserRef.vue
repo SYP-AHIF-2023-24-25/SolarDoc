@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import InfoBox from "@/components/InfoBox.vue";
+import PaddedInfoBox from "@/components/common/PaddedInfoBox.vue";
 
-defineProps<{ user_name, id }>()
+defineProps<{ userName: string, id: string }>()
 </script>
 
 <template>
   <span class="user-ref">
-    <code>{{ user_name }}</code>
-    <InfoBox :info_text="id" />
+    <code>{{ userName }}</code>
+    <PaddedInfoBox :infoText="id" />
   </span>
 </template>
 

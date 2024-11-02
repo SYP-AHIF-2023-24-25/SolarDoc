@@ -2,7 +2,7 @@
 import { RouterView} from 'vue-router'
 import { ModalsContainer } from 'vue-final-modal'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import ProgressSpinner from '@/components/ProgressSpinner.vue'
+import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 

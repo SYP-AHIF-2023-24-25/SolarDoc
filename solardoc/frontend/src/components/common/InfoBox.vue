@@ -1,16 +1,18 @@
 <script setup lang="ts">
-defineProps<{ info_text }>()
+defineProps<{ infoText: any }>()
 </script>
 
 <template>
   <span class="info-box-wrapper">
-    <div class="info-box"><div class="info-box-content"><code>{{ info_text }}</code></div></div>
+    <span class="info-box">
+      <span class="info-box-content"><code>{{ infoText }}</code></span>
+    </span>
   </span>
 </template>
 
 <style scoped lang="scss">
 .info-box-wrapper {
-  margin-left: 0.25rem;
+  margin: 0;
   position: relative;
   top: 1px;
   cursor: pointer;

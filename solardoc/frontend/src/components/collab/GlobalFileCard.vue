@@ -1,24 +1,25 @@
 <script setup lang="ts">
 import type {GlobalFile} from "@/services/phoenix/gen/phoenix-rest-service";
-import {getHumanReadableTimeInfo} from "@/scripts/format-date";
-import UserRef from "@/components/UserRef.vue";
+import UserRef from "@/components/common/UserRef.vue";
+import TimeRef from "@/components/common/TimeRef.vue";
 
 const props = defineProps<{ file: GlobalFile }>()
 </script>
 
 <template>
   <div class="global-files-overview-file">
-    <div class="file-infos">      <p>
-      <span>Filename:</span><code>{{ file.file_name }}</code>
-    </p>
+    <div class="file-infos">
       <p>
-        <span>Owner:</span><UserRef :user_name="file.owner_name" :id="file.owner_id" />
+        <span>Filename:</span><code>{{ file.file_name }}</code>
       </p>
       <p>
-        <span>Last Edited:</span><code>{{ getHumanReadableTimeInfo(file.last_edited) }}</code>
+        <span>Owner:</span><UserRef :userName="file.owner_name" :id="file.owner_id" />
       </p>
       <p>
-        <span>Created:</span><code>{{ getHumanReadableTimeInfo(file.created) }}</code>
+        <span>Last Edited:</span><TimeRef :date-time="file.last_edited" />
+      </p>
+      <p>
+        <span>Created:</span><TimeRef :date-time="file.created" />
       </p>
     </div>
     <div>
@@ -136,6 +137,7 @@ const props = defineProps<{ file: GlobalFile }>()
 
     code {
       padding: 0 0 0 0.5rem;
+      margin: 0;
     }
   }
 

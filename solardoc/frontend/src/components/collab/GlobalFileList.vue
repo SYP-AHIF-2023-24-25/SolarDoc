@@ -39,7 +39,7 @@ async function fetchFiles(bearer: string, options: GlobalSearchQuery = {}) {
   }
 
   if (resp.status === 200) {
-    files.value = resp.data satisfies Array<File>
+    files.value = resp.data satisfies Array<GlobalFile>
     files.value.sort((a, b) => {
       return new Date(b.last_edited).getTime() - new Date(a.last_edited).getTime()
     })

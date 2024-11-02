@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import {
@@ -14,6 +13,7 @@ import { ref } from 'vue'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import {closeEditorRemoteFileConnection, openFileInEditor} from '@/scripts/editor/file'
 import {useLoadingStore} from "@/stores/loading";
+import TimeRef from "@/components/common/TimeRef.vue";
 
 const props = defineProps<{ file: File }>()
 const deleted = ref(false)
@@ -50,37 +50,20 @@ async function deleteFile() {
   await closeEditorRemoteFileConnection()
   loadingStore.setLoading(false)
 }
-
-// Last modified and created are refs which is updated every 0.5 second to show the last modified time
-const lastModified = ref(getLastModified())
-const created = ref(getCreated())
-
-function getLastModified(): string {
-  return getHumanReadableTimeInfo(props.file.last_edited)
-}
-
-function getCreated(): string {
-  return getHumanReadableTimeInfo(props.file.created)
-}
-
-setInterval(() => {
-  lastModified.value = getLastModified()
-  created.value = getCreated()
-}, 500)
 </script>
 
 <template>
   <div v-if="!deleted" class="profile-file-overview-file">
     <div id="slide-placeholder" @click="openFileInEditor($router, file)"></div>
     <div class="file-infos">
-      <p>
+      <p class="file-infos-filename">
         <span>Filename:</span><code>{{ file.file_name }}</code>
       </p>
       <p>
-        <span>Last Edited:</span><code>{{ lastModified }}</code>
+        <span>Changed:</span><TimeRef :date-time="props.file.last_edited" update />
       </p>
       <p>
-        <span>Created:</span><code>{{ created }}</code>
+        <span>Created:</span><TimeRef :date-time="props.file.created" update />
       </p>
     </div>
     <button class="highlighted-button" @click="interceptErrors(deleteFile())">Delete</button>
@@ -174,7 +157,7 @@ setInterval(() => {
     display: flex;
     flex-flow: column wrap;
     width: calc(var(--profile-file-card-width) - 2 * 1rem);
-    overflow-x: scroll;
+    overflow: visible;
     gap: 0.4rem;
 
     /* Hide scrollbar for Chrome, Safari and Opera */
@@ -191,6 +174,15 @@ setInterval(() => {
       display: flex;
       white-space: nowrap;
       margin: 0;
+    }
+
+    .file-infos-filename {
+      overflow-x: scroll;
+      width: 100%;
+
+      /* Hide scrollbar for IE, Edge and Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
     }
 
     code {
