@@ -53,6 +53,7 @@ export type UpdateFilePermissions = {
     permission: number;
     user_id: string;
 };
+export type GetAllPermissionsForFile = FilePermissions[];
 export type File = {
     channel_id?: string;
     content: string;
@@ -258,6 +259,30 @@ export function putV1FilePermissionById(authorization: string, id: string, updat
             Authorization: authorization
         }
     }));
+}
+/**
+ * Gets the permissions for one file for all users who have access to it
+ */
+export function getV1FileByFileIdPermission(authorization: string, fileId: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: GetAllPermissionsForFile;
+    } | {
+        status: 400;
+        data: ErrorsResp;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
+    }>(`/v1/file/${encodeURIComponent(fileId)}/permission`, {
+        ...opts,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    });
 }
 /**
  * Gets the permissions for one file from one specific user

@@ -4,9 +4,12 @@ import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { ref } from 'vue'
+import {useCurrentUserStore} from "@/stores/current-user";
+import CollaboratorList from "@/components/editor/dropdown/editor-settings/CollaboratorList.vue";
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
+const currentUserStore = useCurrentUserStore()
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
@@ -52,6 +55,10 @@ setInterval(updateTimeRefs, 500)
           <p><span>Owner:</span> {{ currentFileStore.ownerId }}</p>
           <p><span>Created:</span> {{ created }}</p>
           <p><span>Last Modified:</span> {{ lastModified }}</p>
+        </div>
+        <div v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id">
+          <p>Collaborators:</p>
+          <CollaboratorList></CollaboratorList>
         </div>
       </div>
     </div>
