@@ -3,7 +3,7 @@ import type {GlobalFile} from "@/services/phoenix/gen/phoenix-rest-service";
 import UserRef from "@/components/common/UserRef.vue";
 import TimeRef from "@/components/common/TimeRef.vue";
 
-const props = defineProps<{ file: GlobalFile }>()
+defineProps<{ file: GlobalFile }>()
 </script>
 
 <template>

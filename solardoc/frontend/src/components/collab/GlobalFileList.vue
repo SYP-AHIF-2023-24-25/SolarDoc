@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, watch} from "vue";
 import type {GlobalSearchQuery} from "@/scripts/collab/search";
-import type {File, GlobalFile} from "@/services/phoenix/gen/phoenix-rest-service";
+import type {GlobalFile} from "@/services/phoenix/gen/phoenix-rest-service";
 import {PhoenixInternalError, PhoenixInvalidCredentialsError} from "@/services/phoenix/errors";
 import {handleError} from "@/errors/handler/error-handler";
 import * as phoenixRestService from "@/services/phoenix/api-service";
