@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import JSZip from "jszip"; // Import JSZip
 import { useOverlayStateStore } from "@/stores/overlay-state";
 import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
 import { useCurrentFileStore } from "@/stores/current-file";
@@ -10,60 +11,128 @@ import { RenderBackendRestError } from "@/services/render/errors";
 const overlayStateStore = useOverlayStateStore();
 const currentFileStore = useCurrentFileStore();
 
-const selectedFormat = ref("PDF");
+const selectedFormats = ref<string[]>([]);
+
+function toggleFormat(format: string) {
+  if (selectedFormats.value.includes(format)) {
+    selectedFormats.value = selectedFormats.value.filter(item => item !== format);
+  } else {
+    selectedFormats.value.push(format);
+  }
+}
+
+const isFormatSelected = computed(() => selectedFormats.value.length > 0);
 
 async function handleFileExport() {
-  let fileType;
-  let resp;
-  let previewURL;
-  console.log("The format:", selectedFormat.value);
+  for (const format of selectedFormats.value) {
+    let resp, previewURL;
+    let presentationModel = {
+      fileContent: currentFileStore.content,
+      fileName: currentFileStore.fileName,
+    };
 
-  let presentationModel = {
-    fileContent: currentFileStore.content,
-    fileName: currentFileStore.fileName,
-  };
+    try {
+      switch (format.toUpperCase()) {
+        case "PDF":
+          resp = await postV1RenderPresentationPdf(presentationModel);
+          previewURL = resp.data.download?.downloadURL;
+          break;
+        case "HTML":
+          resp = await handleRender(currentFileStore.fileName, currentFileStore.content);
+          previewURL = resp.previewURL;
+          break;
+        case "ADOC":
+          previewURL = `data:text/plain,${encodeURIComponent(currentFileStore.content)}`;
+          break;
+        case "JPG":
+          resp = await postV1RenderPresentationImages(presentationModel);
+          previewURL = resp.data.download?.downloadURL;
+          break;
+        default:
+          console.warn(`Unsupported format: ${format}`);
+          continue;
+      }
 
-  try {
-    switch (selectedFormat.value.toUpperCase()) {
-      case "PDF":
-        fileType = "application/pdf";
-        resp = await postV1RenderPresentationPdf(presentationModel);
-        previewURL = resp.data.download?.downloadURL; // Accessing downloadURL from data
-        break;
-      case "HTML":
-      default:
-        fileType = "text/html";
-        resp = await handleRender(currentFileStore.fileName, currentFileStore.content);
-        previewURL = resp.previewURL;
-        break;
+      const content = await fetch(previewURL);
+      const value = await content.blob();
+      const extension = format.toLowerCase();
+      const fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.${extension}`;
+
+      const a = document.createElement('a');
+      a.download = fileName;
+      a.href = URL.createObjectURL(value);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (e) {
+      console.error("Error in file export:", e);
+      throw new RenderBackendRestError(
+          'Failed to render file. Cause: ' + (<Error>e).message,
+      );
     }
-
-    console.log("resp:",resp)
-
-    let content = await fetch(previewURL);
-    let value = await content.blob();
-
-    let extension = selectedFormat.value.toLowerCase();
-    let fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.${extension}`;
-
-    let a = document.createElement('a');
-    a.download = fileName;
-    a.href = URL.createObjectURL(value);
-    a.dataset.downloadurl = [fileType, fileName, a.href].join(':');
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    setTimeout(() => {
-      URL.revokeObjectURL(a.href);
-    }, 1500);
-  } catch (e) {
-    console.error("Error in file export:", e);
-    throw new RenderBackendRestError(
-        'Critically failed to render file. Cause: ' + (<Error>e).message,
-    );
   }
+}
+
+async function handleFileExportAsZip() {
+  const zip = new JSZip();
+  const promises = [];
+
+  for (const format of selectedFormats.value) {
+    let resp, previewURL;
+    let presentationModel = {
+      fileContent: currentFileStore.content,
+      fileName: currentFileStore.fileName,
+    };
+
+    try {
+      switch (format.toUpperCase()) {
+        case "PDF":
+          resp = await postV1RenderPresentationPdf(presentationModel);
+          previewURL = resp.data.download?.downloadURL;
+          break;
+        case "HTML":
+          resp = await handleRender(currentFileStore.fileName, currentFileStore.content);
+          previewURL = resp.previewURL;
+          break;
+        case "ADOC":
+          previewURL = `data:text/plain,${encodeURIComponent(currentFileStore.content)}`;
+          break;
+        case "JPG":
+          resp = await postV1RenderPresentationImages(presentationModel);
+          previewURL = resp.data.download?.downloadURL;
+          break;
+        default:
+          console.warn(`Unsupported format: ${format}`);
+          continue;
+      }
+
+      const content = await fetch(previewURL);
+      const value = await content.blob();
+      const extension = format.toLowerCase();
+      const fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.${extension}`;
+
+      promises.push(zip.folder("exports").file(fileName, value));
+    } catch (e) {
+      console.error("Error in file export:", e);
+      throw new RenderBackendRestError(
+          'Failed to render file. Cause: ' + (<Error>e).message,
+      );
+    }
+  }
+
+  Promise.all(promises).then(() => {
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      const zipFileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.zip`;
+      const a = document.createElement('a');
+      a.download = zipFileName;
+      a.href = URL.createObjectURL(content);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    });
+  });
 }
 </script>
 
@@ -80,16 +149,33 @@ async function handleFileExport() {
         </button>
         <h1>Export</h1>
       </div>
-      <Vueform>
-        <SelectElement
-            name="select"
-            v-model="selectedFormat"
-        :native="false"
-        :items="['HTML', 'PDF', 'JPG', 'ADOC']"
-        />
-        <span>Selected: {{ selectedFormat }}</span>
-      </Vueform>
-      <button id="export-button" class="highlighted-button" @click="handleFileExport">Export</button>
+      <div class="solardoc-style-form">
+        <div class="format-selection">
+          <div class="format-box"
+               :class="{ selected: selectedFormats.includes('HTML') }"
+               @click="toggleFormat('HTML')">
+            <span>HTML</span>
+          </div>
+          <div class="format-box"
+               :class="{ selected: selectedFormats.includes('PDF') }"
+               @click="toggleFormat('PDF')">
+            <span>PDF</span>
+          </div>
+          <div class="format-box"
+               :class="{ selected: selectedFormats.includes('JPG') }"
+               @click="toggleFormat('JPG')">
+            <span>JPG</span>
+          </div>
+          <div class="format-box"
+               :class="{ selected: selectedFormats.includes('ADOC') }"
+               @click="toggleFormat('ADOC')">
+            <span>AsciiDoc</span>
+          </div>
+        </div>
+
+        <button id="export-button" class="highlighted-button" @click="handleFileExport" :disabled="!isFormatSelected">Export</button>
+        <button id="zip-button" class="highlighted-button" @click="handleFileExportAsZip" :disabled="!isFormatSelected">Export as Zip</button>
+      </div>
     </div>
   </div>
 </template>
@@ -145,8 +231,44 @@ async function handleFileExport() {
     }
   }
 
-  #export-button {
-    margin-top: 1rem;
+  #export-button, #zip-button {
+    margin: 0.5rem 2rem;
+  }
+
+  .format-selection {
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem 0;
+  }
+
+  .format-box {
+    flex: 1;
+    margin: 0 1rem;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    color: black;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &.selected {
+      background-color: var.$stylised-button-text-color;
+    }
+
+    &:hover {
+      cursor: pointer;
+      color: white;
+      background-color: var.$stylised-button-text-color;
+    }
+
+    &:disabled {
+      color: var.$stylised-button-disabled-color;
+      border: 2px solid var.$stylised-button-disabled-color;
+      background-color: transparent;
+      cursor: not-allowed;
+
+    }
   }
 }
 </style>
