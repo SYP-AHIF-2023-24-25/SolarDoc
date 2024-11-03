@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import PaddedInfoBox from "@/components/common/PaddedInfoBox.vue";
+import PaddedInfoBox from '@/components/common/PaddedInfoBox.vue'
 
-defineProps<{ userName: string, id: string }>()
+defineProps<{ userName: string; id: string }>()
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type {GlobalFile} from "@/services/phoenix/gen/phoenix-rest-service";
-import UserRef from "@/components/common/UserRef.vue";
-import TimeRef from "@/components/common/TimeRef.vue";
+import type { GlobalFile } from '@/services/phoenix/gen/phoenix-rest-service'
+import UserRef from '@/components/common/UserRef.vue'
+import TimeRef from '@/components/common/TimeRef.vue'
 
 defineProps<{ file: GlobalFile }>()
 </script>
@@ -12,15 +12,9 @@ defineProps<{ file: GlobalFile }>()
       <p>
         <span>Filename:</span><code>{{ file.file_name }}</code>
       </p>
-      <p>
-        <span>Owner:</span><UserRef :userName="file.owner_name" :id="file.owner_id" />
-      </p>
-      <p>
-        <span>Last Edited:</span><TimeRef :date-time="file.last_edited" />
-      </p>
-      <p>
-        <span>Created:</span><TimeRef :date-time="file.created" />
-      </p>
+      <p><span>Owner:</span><UserRef :userName="file.owner_name" :id="file.owner_id" /></p>
+      <p><span>Last Edited:</span><TimeRef :date-time="file.last_edited" /></p>
+      <p><span>Created:</span><TimeRef :date-time="file.created" /></p>
     </div>
     <div>
       <button class="highlighted-button">Join</button>
@@ -89,15 +83,15 @@ defineProps<{ file: GlobalFile }>()
       width: calc(100% + $border-width * 2);
       height: calc(100% + $border-width * 2);
       background: linear-gradient(
-              60deg,
-              hsl(224, 85%, 66%),
-              hsl(269, 85%, 66%),
-              hsl(314, 85%, 66%),
-              hsl(359, 85%, 66%),
-              hsl(44, 85%, 66%),
-              hsl(89, 85%, 66%),
-              hsl(134, 85%, 66%),
-              hsl(179, 85%, 66%)
+        60deg,
+        hsl(224, 85%, 66%),
+        hsl(269, 85%, 66%),
+        hsl(314, 85%, 66%),
+        hsl(359, 85%, 66%),
+        hsl(44, 85%, 66%),
+        hsl(89, 85%, 66%),
+        hsl(134, 85%, 66%),
+        hsl(179, 85%, 66%)
       );
       background-size: 300% 300%;
       background-position: 0 50%;

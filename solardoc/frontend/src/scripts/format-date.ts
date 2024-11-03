@@ -32,7 +32,7 @@ export function getHumanReadableTimeInfo(date: Date | number): string {
  * @param date The date to format, can be a Date object or a number (timestamp)
  */
 export function getHumanReadablePreciseDate(date: Date | number): string {
-// If the date is a number, convert it to a Date object
+  // If the date is a number, convert it to a Date object
   if (typeof date === 'number') {
     date = new Date(date)
   }

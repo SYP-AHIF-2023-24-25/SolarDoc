@@ -1,9 +1,12 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+  <div class="lds-ellipsis">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -54,7 +57,6 @@
     animation: lds-ellipsis3 0.6s infinite;
   }
 }
-
 
 @keyframes lds-ellipsis1 {
   0% {

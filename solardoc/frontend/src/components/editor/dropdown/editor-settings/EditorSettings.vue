@@ -4,8 +4,8 @@ import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { ref } from 'vue'
-import {useCurrentUserStore} from "@/stores/current-user";
-import CollaboratorList from "@/components/editor/dropdown/editor-settings/CollaboratorList.vue";
+import { useCurrentUserStore } from '@/stores/current-user'
+import CollaboratorList from '@/components/editor/dropdown/editor-settings/CollaboratorList.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
@@ -56,7 +56,10 @@ setInterval(updateTimeRefs, 500)
           <p><span>Created:</span> {{ created }}</p>
           <p><span>Last Modified:</span> {{ lastModified }}</p>
         </div>
-        <div v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id" id="collaborators-list">
+        <div
+          v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id"
+          id="collaborators-list"
+        >
           <p><span>Collaborators:</span></p>
           <CollaboratorList></CollaboratorList>
         </div>
@@ -139,7 +142,7 @@ setInterval(updateTimeRefs, 500)
           background: transparent;
         }
       }
-      #collaborators-list{
+      #collaborators-list {
         display: flex;
         margin-left: 0.5rem;
         line-height: 2rem;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InfoBox from "@/components/common/InfoBox.vue";
+import InfoBox from '@/components/common/InfoBox.vue'
 
 defineProps<{ infoText: any }>()
 </script>
