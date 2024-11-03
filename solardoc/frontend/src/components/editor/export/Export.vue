@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import JSZip from "jszip"; // Import JSZip
+import JSZip from "jszip";
 import { useOverlayStateStore } from "@/stores/overlay-state";
 import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
 import { useCurrentFileStore } from "@/stores/current-file";
@@ -42,7 +42,7 @@ async function handleFileExport() {
           previewURL = resp.previewURL;
           break;
         case "ADOC":
-          previewURL = `data:text/plain,${encodeURIComponent(currentFileStore.content)}`;
+          previewURL = `data:text/asciidoc,${encodeURIComponent(currentFileStore.content)}`;
           break;
         case "JPG":
           resp = await postV1RenderPresentationImages(presentationModel);
@@ -158,7 +158,8 @@ async function handleFileExportAsZip() {
           </div>
           <div class="format-box"
                :class="{ selected: selectedFormats.includes('PDF') }"
-               @click="toggleFormat('PDF')">
+               @click="toggleFormat('PDF')"
+          >
             <span>PDF</span>
           </div>
           <div class="format-box"

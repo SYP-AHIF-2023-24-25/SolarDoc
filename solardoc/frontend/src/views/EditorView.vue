@@ -94,22 +94,7 @@ function handleCopyButtonClick() {
 }
 
 function handleDownloadButtonClick() {
-  let text: string = currentFileStore.content
-  let fileName: string = currentFileStore.fileName
-  let fileType: string = 'text/asciidoc'
-  let bloby: Blob = new Blob([text], { type: fileType })
-
-  let a = document.createElement('a')
-  a.download = fileName
-  a.href = URL.createObjectURL(bloby)
-  a.dataset.downloadurl = [fileType, a.download, a.href].join(':')
-  a.style.display = 'none'
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  setTimeout(function () {
-    URL.revokeObjectURL(a.href)
-  }, 1500)
+    overlayStateStore.setExportView(true)
 }
 
 function handleShareButtonClick() {

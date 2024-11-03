@@ -55,11 +55,6 @@ async function handleSaveButtonClick() {
   }
 }
 
-async function handleExportButtonClick() {
-  overlayStateStore.setExportView(true)
-  closeDropdown()
-
-}
 
 async function handleNewFileButtonClick() {
   closeDropdown()
@@ -86,7 +81,6 @@ async function handleNewFileButtonClick() {
     </template>
     <div id="dropdown-elements">
       <div class="dropdown-element" @click="handleNewFileButtonClick()">New File</div>
-      <div class="dropdown-element" @click="handleExportButtonClick()">Export File</div>
       <div class="dropdown-element" @click="handleSaveButtonClick()">Save in profile</div>
       <div class="dropdown-element" @click="handleJoinChannel()">Channels</div>
       <div class="dropdown-element">Settings (In work...)</div>
