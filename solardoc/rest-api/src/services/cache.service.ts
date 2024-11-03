@@ -1,4 +1,4 @@
-import { BindingScope, injectable } from '@loopback/core'
+import {BindingScope, injectable, LifeCycleObserver, lifeCycleObserver} from '@loopback/core'
 import { repository } from '@loopback/repository'
 import { CacheRepository, UUIDV4 } from '../repositories'
 import { CachedElement } from '../models'
@@ -12,21 +12,67 @@ import { CacheRedisKeyNotFoundError } from '../errors/cache-redis-key-not-found-
 import { CacheStoredFileNotFound } from '../errors/cache-stored-file-not-found'
 import { RedisDBDataSource } from '../datasources'
 
+@lifeCycleObserver('cache')
 @injectable({ scope: BindingScope.TRANSIENT })
-export class CacheService {
+export class CacheService implements LifeCycleObserver{
   private readonly persistentStoragePath: string
+  private cleanupInterval?: NodeJS.Timeout
+  private static readonly DEFAULT_EXPIRATION_TIME = 60 * 30 // 30 minutes
+  private static readonly DEFAULT_CLEANUP_INTERVAL = 15 * 60 * 1000 // 15 minutes
 
   constructor(@repository(CacheRepository) public cache: CacheRepository) {
     this.persistentStoragePath = getEnv('PERSISTENT_STORAGE_PATH', true)!
   }
-
-  private static readonly DEFAULT_EXPIRATION_TIME: number = 60 * 30 // 30 minutes
 
   /**
    * The {@link RedisDBDataSource} which is used for the cache.
    */
   public get redisDataSource(): RedisDBDataSource {
     return this.cache.dataSource
+  }
+
+
+  async start(): Promise<void> {
+    const interval = CacheService.DEFAULT_CLEANUP_INTERVAL;
+
+    console.log("in start of cleanup")
+
+    if (isNaN(interval) || interval <= 0) {
+      throw new Error('CACHE_CLEANUP_INTERVAL must be a positive number');
+    }
+
+    this.cleanupInterval = setInterval(() => {
+      this.cleanupExpiredEntries().catch(err => {
+        console.error('Error during cleanup:', err);
+      });
+    }, interval);
+  }
+
+
+
+  async stop(): Promise<void> {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval)
+    }
+  }
+
+
+  private async cleanupExpiredEntries(): Promise<void> {
+    console.log("in cleanup expired entries");
+    const expiredItems = await this.cache.find({
+      where: { expiresAt: { lt: getDateNowInSeconds() } },
+    })
+    for (const item of expiredItems) {
+      try {
+        await this.cache.deleteById(item.id)
+        if (item.storeFilename) {
+          const filePath = this.getStoreFilePath(item.storeFilename)
+          await fs.unlink(filePath)
+        }
+      } catch (e) {
+        console.error(`Error cleaning up cache item '${item.id}':`, e)
+      }
+    }
   }
 
   /**
