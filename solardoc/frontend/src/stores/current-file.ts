@@ -80,6 +80,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       created: new Date(storedCreated),
       permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : null),
       shareURLId: shareURLId || undefined,
+      isGlobal: false,
     }
   },
   getters: {
@@ -123,6 +124,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
         last_edited: this.lastModified.getTime(),
         owner_id: this.ownerId,
         channel_id: this.channelId,
+        is_global: this.isGlobal,
       }
     },
   },
@@ -140,13 +142,13 @@ export const useCurrentFileStore = defineStore('currentFile', {
 
       let resp: Awaited<
         ReturnType<
-          typeof phoenixRestService.getV1FilesById | typeof phoenixRestService.getV1ShareByIdFile
+          typeof phoenixRestService.getV2FilesById | typeof phoenixRestService.getV2ShareByIdFile
         >
       >
       try {
         resp = this.shareFile
-          ? await phoenixRestService.getV1ShareByIdFile(bearer || '', this.shareURLId!)
-          : await phoenixRestService.getV1FilesById(bearer || '', this.fileId)
+          ? await phoenixRestService.getV2ShareByIdFile(bearer || '', this.shareURLId!)
+          : await phoenixRestService.getV2FilesById(bearer || '', this.fileId)
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch file. Cause: ' + (<Error>e).message,
@@ -176,9 +178,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
     },
     async createFile(bearer: string) {
-      let resp: Awaited<ReturnType<typeof phoenixRestService.postV1Files>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.postV2Files>>
       try {
-        resp = await phoenixRestService.postV1Files(bearer, {
+        resp = await phoenixRestService.postV2Files(bearer, {
           file_name: this.fileName,
           content: this.content,
         })
@@ -205,9 +207,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
         return await this.createFile(bearer)
       }
 
-      let resp: Awaited<ReturnType<typeof phoenixRestService.putV1FilesById>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.putV2FilesById>>
       try {
-        resp = await phoenixRestService.putV1FilesById(bearer, this.fileId, {
+        resp = await phoenixRestService.putV2FilesById(bearer, this.fileId, {
           file_name: this.fileName,
           content: this.content,
         })
@@ -321,6 +323,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setPermissions(perm)
       this.setCreated(new Date(file.created))
       this.setChannelId(file.channel_id)
+      this.setIsGlobal(file.is_global)
     },
     setFileFromShared(file: File, shareURLId: string, perm: Permission = Permissions.Read) {
       this.setShareURLId(shareURLId)
@@ -358,6 +361,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.shareURLId = shareURLId
       localStorage.setItem(constants.localStorageShareURLIdKey, shareURLId)
     },
+    setIsGlobal(isGlobal: boolean) {
+      this.isGlobal = isGlobal
+    },
     clearFileId() {
       this.fileId = undefined
       localStorage.removeItem(constants.localStorageFileIdKey)
@@ -379,6 +385,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     resetCreated() {
       this.setCreated(new Date())
+    },
+    resetIsGlobal() {
+      this.isGlobal = false
     },
     setPermissions(permissions: Permission) {
       this.permissions = permissions
@@ -405,6 +414,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setPermissions(Permissions.Unknown)
       this.resetLastModified()
       this.resetCreated()
+      this.resetIsGlobal()
 
       if (!preserveContent) {
         this.setContent(constants.defaultFileContent)

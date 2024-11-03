@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Vueform } from '@vueform/vueform'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
-import SDRouterLink from '@/components/SDRouterLink.vue'
+import SDRouterLink from '@/components/common/SDRouterLink.vue'
 import { handleCopy } from '@/scripts/handle-copy'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { useCurrentUserStore } from '@/stores/current-user'
@@ -36,9 +36,9 @@ async function submitForm(
       if (form$.requestData.write) {
         perms = 3
       }
-      let resp: Awaited<ReturnType<typeof phoenixRestService.postV1Share>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.postV2Share>>
       try {
-        resp = await phoenixRestService.postV1Share(currentUserStore.bearer, {
+        resp = await phoenixRestService.postV2Share(currentUserStore.bearer, {
           file_id: currentFileStore.fileId,
           perms: perms,
         })

@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.FilePermissionControllerTest do
+defmodule SolardocPhoenixWeb.V2FilePermissionControllerTest do
   use SolardocPhoenixWeb.ConnCase
 
   import SolardocPhoenix.PermissionsFixtures

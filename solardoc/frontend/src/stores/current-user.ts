@@ -100,9 +100,9 @@ export const useCurrentUserStore = defineStore('currentUser', {
       if (!this.currentAuth) {
         return
       }
-      let resp: Awaited<ReturnType<typeof phoenixRestService.getV1UsersCurrent>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.getV2UsersCurrent>>
       try {
-        resp = await phoenixRestService.getV1UsersCurrent(this.bearer || '')
+        resp = await phoenixRestService.getV2UsersCurrent(this.bearer || '')
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
@@ -127,9 +127,9 @@ export const useCurrentUserStore = defineStore('currentUser', {
         this.clean()
         return
       }
-      let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1AuthBearer>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV2AuthBearer>>
       try {
-        resp = await phoenixRestService.deleteV1AuthBearer(`Bearer ${this.currentAuth.token}`)
+        resp = await phoenixRestService.deleteV2AuthBearer(`Bearer ${this.currentAuth.token}`)
       } catch (e) {
         throw new PhoenixInternalError('Critically failed to logout. Cause: ' + (<Error>e).message)
       }

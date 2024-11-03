@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.FilePermissionController do
+defmodule SolardocPhoenixWeb.V2FilePermissionController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger
 

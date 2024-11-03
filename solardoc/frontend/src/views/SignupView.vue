@@ -33,9 +33,9 @@ async function submitForm(
     intended_use: form$.requestData['intended-use'],
   } satisfies phoenixBackend.CreateUser
 
-  let resp: Awaited<ReturnType<typeof phoenixBackend.postV1Users>>
+  let resp: Awaited<ReturnType<typeof phoenixBackend.postV2Users>>
   try {
-    resp = await phoenixBackend.postV1Users(newUser)
+    resp = await phoenixBackend.postV2Users(newUser)
   } catch (e) {
     console.error('Signup rejected by backend. Cause: ', e)
     throw new SolardocUnreachableError('Encountered network error during sign up')

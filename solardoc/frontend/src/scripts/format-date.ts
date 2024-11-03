@@ -26,3 +26,26 @@ export function getHumanReadableTimeInfo(date: Date | number): string {
     return `${Math.round(diffSeconds / 86400)} days ago`
   }
 }
+
+/**
+ * Get the human-readable date of a Date object. (use the timezone of the client)
+ * @param date The date to format, can be a Date object or a number (timestamp)
+ */
+export function getHumanReadablePreciseDate(date: Date | number): string {
+// If the date is a number, convert it to a Date object
+  if (typeof date === 'number') {
+    date = new Date(date)
+  }
+
+  const day = date.getDate().toString().padStart(2, '0')
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const year = date.getFullYear().toString()
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+
+  // Get the timezone offset in hours
+  const timezoneOffset = -date.getTimezoneOffset() / 60
+  const timezoneOffsetString = `UTC${timezoneOffset >= 0 ? '+' : ''}${timezoneOffset}`
+
+  return `${day}.${month}.${year} ${hours}:${minutes} (${timezoneOffsetString})`
+}
