@@ -43,7 +43,9 @@ export class DecktapeSlim {
   ): Promise<PDFDocument> {
     const browser = await puppeteer.launch({
       headless: true,
-    })
+      executablePath: process.env.CHROMIUM_PATH,
+      args: ['--no-sandbox'],
+    });
     const page = await preparePage(rjsHTML, browser)
     const plugin = await preparePlugin(page)
     const pdfDocument = await PDFDocument.create()

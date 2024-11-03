@@ -1,44 +1,77 @@
 <script setup lang="ts">
-
-import {useOverlayStateStore} from "@/stores/overlay-state";
+import { ref } from "vue";
+import { useOverlayStateStore } from "@/stores/overlay-state";
 import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
-import {useCurrentFileStore} from "@/stores/current-file";
-import {handleRender} from "@/scripts/handle-render";
+import { useCurrentFileStore } from "@/stores/current-file";
+import { handleRender } from "@/scripts/handle-render";
+import { postV1RenderPresentationImages, postV1RenderPresentationPdf } from "@/services/render/gen/backend-rest-service";
+import { RenderBackendRestError } from "@/services/render/errors";
 
+const overlayStateStore = useOverlayStateStore();
+const currentFileStore = useCurrentFileStore();
 
-const overlayStateStore = useOverlayStateStore()
-const currentFileStore = useCurrentFileStore()
-let selectedFormat = "HTML"
+const selectedFormat = ref("PDF");
 
 async function handleFileExport() {
-  let resp = await handleRender(currentFileStore.fileName,currentFileStore.content);
-  let content = await fetch(resp.previewURL)
-  let value = await content.blob();
-  let fileType = "text/html"
+  let fileType;
+  let resp;
+  let previewURL;
+  console.log("The format:", selectedFormat.value);
 
+  let presentationModel = {
+    fileContent: currentFileStore.content,
+    fileName: currentFileStore.fileName,
+  };
 
+  try {
+    switch (selectedFormat.value.toUpperCase()) {
+      case "PDF":
+        fileType = "application/pdf";
+        resp = await postV1RenderPresentationPdf(presentationModel);
+        previewURL = resp.data.download?.downloadURL; // Accessing downloadURL from data
+        break;
+      case "HTML":
+      default:
+        fileType = "text/html";
+        resp = await handleRender(currentFileStore.fileName, currentFileStore.content);
+        previewURL = resp.previewURL;
+        break;
+    }
 
-    let a = document.createElement('a')
-    a.download = `${currentFileStore.fileName.substring(0,currentFileStore.fileName.length-4)}${selectedFormat.toLowerCase()}`
-    a.href = URL.createObjectURL(value)
-    a.dataset.downloadurl = [fileType, resp.previewURL, a.href].join(':')
-    a.style.display = 'none'
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    setTimeout(function () {
-      URL.revokeObjectURL(a.href)
-    }, 1500)
+    console.log("resp:",resp)
 
+    let content = await fetch(previewURL);
+    let value = await content.blob();
+
+    let extension = selectedFormat.value.toLowerCase();
+    let fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.${extension}`;
+
+    let a = document.createElement('a');
+    a.download = fileName;
+    a.href = URL.createObjectURL(value);
+    a.dataset.downloadurl = [fileType, fileName, a.href].join(':');
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    setTimeout(() => {
+      URL.revokeObjectURL(a.href);
+    }, 1500);
+  } catch (e) {
+    console.error("Error in file export:", e);
+    throw new RenderBackendRestError(
+        'Critically failed to render file. Cause: ' + (<Error>e).message,
+    );
+  }
 }
-
 </script>
 
 <template>
   <div
-    v-if="overlayStateStore.exportView"
-    id="full-screen-wrapper"
-    class="blurred-background-full-screen-overlay"
+      v-if="overlayStateStore.exportView"
+      id="full-screen-wrapper"
+      class="blurred-background-full-screen-overlay"
   >
     <div id="export-view">
       <div id="export-view-header">
@@ -46,25 +79,19 @@ async function handleFileExport() {
           <CloseButtonSVG />
         </button>
         <h1>Export</h1>
-        <span>Currently there is only HTML export available</span>
       </div>
-        <Vueform>
-          <SelectElement disabled
-              name="select"
-              v-model="selectedFormat"
-              :native="false"
-              :items="[
-        'HTML',
-        'PDF',
-        'JPG',
-        'PNG',
-      ]"
-          />
-        </Vueform>
-        <button id="export-button" class="highlighted-button" @click="handleFileExport()">Export</button>
-      </div>
+      <Vueform>
+        <SelectElement
+            name="select"
+            v-model="selectedFormat"
+        :native="false"
+        :items="['HTML', 'PDF', 'JPG', 'ADOC']"
+        />
+        <span>Selected: {{ selectedFormat }}</span>
+      </Vueform>
+      <button id="export-button" class="highlighted-button" @click="handleFileExport">Export</button>
     </div>
-
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -76,7 +103,7 @@ async function handleFileExport() {
 #full-screen-wrapper {
   @include align-center;
 
-  #export-view{
+  #export-view {
     position: relative;
     flex: 0 1 auto;
     height: max-content;
@@ -85,19 +112,14 @@ async function handleFileExport() {
     background-color: var.$overlay-background-color;
     box-shadow: 0 0 10px 0 var.$box-shadow-color;
 
-    // Adjust size depending on the screen width
     width: 90vw;
 
     @media screen and (min-width: var.$window-medium) {
-      & {
-        width: 60vw;
-      }
+      width: 60vw;
     }
 
     @media screen and (min-width: var.$window-xlarge) {
-      & {
-        width: 50vw;
-      }
+      width: 50vw;
     }
 
     #close-button {
@@ -126,6 +148,5 @@ async function handleFileExport() {
   #export-button {
     margin-top: 1rem;
   }
-
 }
 </style>
