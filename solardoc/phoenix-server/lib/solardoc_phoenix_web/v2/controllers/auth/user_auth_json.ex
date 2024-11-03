@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2UserAuthJSON do
+defmodule SolardocPhoenixWeb.V2.UserAuthJSON do
   def create(%{token: token, expires_at: expires_at}) do
     %{token: token, expires_at: expires_at}
   end

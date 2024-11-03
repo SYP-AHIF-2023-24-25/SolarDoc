@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2UserConfirmationController do
+defmodule SolardocPhoenixWeb.V2.UserConfirmationController do
   use SolardocPhoenixWeb, :controller
 
   alias SolardocPhoenix.Accounts

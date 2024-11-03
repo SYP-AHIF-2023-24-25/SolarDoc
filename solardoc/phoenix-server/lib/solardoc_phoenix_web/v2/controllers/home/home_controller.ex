@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2HomeController do
+defmodule SolardocPhoenixWeb.V2.HomeController do
   use SolardocPhoenixWeb, :controller
 
   action_fallback SolardocPhoenixWeb.FallbackController

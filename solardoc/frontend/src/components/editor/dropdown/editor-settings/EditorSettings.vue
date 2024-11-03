@@ -61,7 +61,7 @@ setInterval(updateTimeRefs, 500)
           id="collaborators-list"
         >
           <p><span>Collaborators:</span></p>
-          <CollaboratorList></CollaboratorList>
+          <CollaboratorList />
         </div>
       </div>
     </div>

@@ -4,8 +4,8 @@ import { type Permission, useCurrentFileStore } from '@/stores/current-file'
 import {
   type File,
   type ShareUrl,
-  type FilePermissions,
   type CreateFilePermissions,
+  type FilePermission,
 } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
@@ -99,14 +99,16 @@ async function handleShareURLReq(shareUrlId: string): Promise<void> {
     query: isShareFileOwner ? undefined : { shareId: shareUrlId },
   })
 }
-async function getFilePermissionsForUser(file: File, permissionsFromUrl: number) {
-  let perm: FilePermissions | undefined = await getFilePermission(file)
+
+async function getFilePermissionsForUser(file: File, permissionsFromUrl: number): Promise<number> {
+  let perm: FilePermission | undefined = await getFilePermissionsForCurrentUser(file)
   if (perm !== undefined) {
     return perm.permission
   }
   await createFilePermission(file, permissionsFromUrl)
   return permissionsFromUrl
 }
+
 async function createFilePermission(file: File, permissionsFromUrl: number) {
   try {
     let createFilePermissions: CreateFilePermissions = {
@@ -114,24 +116,25 @@ async function createFilePermission(file: File, permissionsFromUrl: number) {
       file_id: file.id,
       user_id: currentUserStore.currentUser?.id!,
     }
-    await phoenixRestService.postV1FilePermission(currentUserStore.bearer!, createFilePermissions)
+    await phoenixRestService.postV2FilesPermissions(currentUserStore.bearer!, createFilePermissions)
   } catch (e) {
     throw new PhoenixInternalError(
       'Critically failed to create permissions entry. Cause: ' + (<Error>e).message,
     )
   }
 }
-async function getFilePermission(file: File): Promise<FilePermissions | undefined> {
-  let getFilePermissionsForUser: Awaited<
-    ReturnType<typeof phoenixRestService.getV1FileByFileIdPermissionAndUserId>
+
+async function getFilePermissionsForCurrentUser(file: File): Promise<FilePermission | undefined> {
+  let currentUserFilePermissions: Awaited<
+    ReturnType<typeof phoenixRestService.getV2FilesByFileIdPermissionsAndUserId>
   >
   try {
-    getFilePermissionsForUser = await phoenixRestService.getV1FileByFileIdPermissionAndUserId(
+    currentUserFilePermissions = await phoenixRestService.getV2FilesByFileIdPermissionsAndUserId(
       currentUserStore.bearer!,
       file.id,
       currentUserStore.currentUser?.id!,
     )
-    if (getFilePermissionsForUser.status === 404) {
+    if (currentUserFilePermissions.status === 404) {
       return undefined
     }
   } catch (e) {
@@ -139,14 +142,14 @@ async function getFilePermission(file: File): Promise<FilePermissions | undefine
       'Criticaly faild to fetch file permission. Cause: ' + (<Error>e).message,
     )
   }
-  return <FilePermissions>getFilePermissionsForUser.data
+  return <FilePermission>currentUserFilePermissions.data
 }
 
 interceptErrors(handleShareURLReq(`${$route.params.shareUrlId}`))
 </script>
 
 <template>
-  <ProgressSpinner></ProgressSpinner>
+  <ProgressSpinner />
 </template>
 
 <style lang="scss" scoped></style>

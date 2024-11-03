@@ -99,8 +99,8 @@ defmodule SolardocPhoenix.Files do
       end
 
     dynamic_query =
-      if params["user_name"] do
-        dynamic([f, u], ^dynamic_query and ilike(u.name, ^"%#{params["user_name"]}%"))
+      if params["username"] do
+        dynamic([f, u], ^dynamic_query and ilike(u.name, ^"%#{params["username"]}%"))
       else
         dynamic_query
       end

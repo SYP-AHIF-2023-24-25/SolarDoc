@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2EditorChannelJSON do
+defmodule SolardocPhoenixWeb.V2.EditorChannelJSON do
   alias SolardocPhoenix.EditorChannels.EditorChannel
   alias SolardocPhoenix.Accounts.User
   alias SolardocPhoenix.Utils

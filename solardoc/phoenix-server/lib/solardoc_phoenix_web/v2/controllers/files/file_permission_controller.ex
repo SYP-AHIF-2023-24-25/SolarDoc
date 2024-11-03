@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2FilePermissionController do
+defmodule SolardocPhoenixWeb.V2.FilePermissionController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger
 
@@ -10,17 +10,18 @@ defmodule SolardocPhoenixWeb.V2FilePermissionController do
 
 
   action_fallback SolardocPhoenixWeb.FallbackController
-  @api_path SolardocPhoenixWeb.v1_api_path()
+  @api_path SolardocPhoenixWeb.v2_api_path()
 
   def swagger_definitions do
     %{
       FilePermission: swagger_schema do
-        title "FilePermissions"
+        title "FilePermission"
         description "The permissions for each user having access to the file via a share-url"
         properties do
           id :string, "The Permission entries UUID", required: true
           file_id :string, "The files UUID", required: true
           user_id :string, "The UUID of the user to whom the permission belongs", required: true
+          username :string, "The name of the user to whom the permission belongs", required: true
           permission :integer, "The permission the user has for the file (none/read/read-write)", required: true
         end
       end,
@@ -33,7 +34,7 @@ defmodule SolardocPhoenixWeb.V2FilePermissionController do
           user_id :string, "The users UUID", required: true
         end
       end,
-      UpdatePermission: swagger_schema do
+      UpdateFilePermissions: swagger_schema do
         title "UpdateFilePermissions"
         description "Arguments for updating a file permission"
         properties do
@@ -42,16 +43,8 @@ defmodule SolardocPhoenixWeb.V2FilePermissionController do
           user_id :string, "User UUID", required: true
         end
       end,
-      GetPermissionForUser: swagger_schema do
-        title "GetPermissionForUser"
-        description "Gets the permissions for one file from one specific user"
-        properties do
-          file_id :string, "File UUID", required: true
-          user_id :string, "User UUID", required: true
-        end
-      end,
-      GetAllPermissionsForFile: swagger_schema do
-        title "GetAllPermissionsForFile"
+      FilePermissions: swagger_schema do
+        title "FilePermissions"
         description "Gets the permissions for one file for all users having an entry with the file"
         type :array
         items Schema.ref(:FilePermission)
@@ -71,7 +64,7 @@ defmodule SolardocPhoenixWeb.V2FilePermissionController do
   end
 
   swagger_path :create do
-    post "#{@api_path}/file/permission"
+    post "#{@api_path}/files/permissions"
     consumes "application/json"
     produces "application/json"
     summary "Create a new file permission"
@@ -85,11 +78,12 @@ defmodule SolardocPhoenixWeb.V2FilePermissionController do
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
   def create(conn,  file_permission_params) do
-    with {:file_exists, %File{} = file} <- {:file_exists, Files.get_file!(file_permission_params["file_id"])} do
+    with {:file_exists, %File{}} <- {:file_exists, Files.get_file!(file_permission_params["file_id"])} do
       with {:ok, %FilePermission{} = file_permission} <- Permissions.create_file_permission(file_permission_params) do
+        file_permission = file_permission |> Repo.preload(:user)
         conn
         |> put_status(:created)
-        |> put_resp_header("location", ~p"/#{@api_path}/file/permissions/#{file_permission.id}")
+        |> put_resp_header("location", ~p"/#{@api_path}/files/permissionss/#{file_permission.id}")
         |> render(:show, file_permission: file_permission)
       end
     else
@@ -98,7 +92,7 @@ defmodule SolardocPhoenixWeb.V2FilePermissionController do
   end
 
   swagger_path :show do
-    get "#{@api_path}/file/permission/{id}"
+    get "#{@api_path}/files/permissions/{id}"
     produces "application/json"
     summary "Get a single file permission"
     deprecated false
@@ -120,14 +114,14 @@ defmodule SolardocPhoenixWeb.V2FilePermissionController do
   end
 
   swagger_path :update do
-    put "#{@api_path}/file/permission/{id}"
+    put "#{@api_path}/files/permissions/{id}"
     produces "application/json"
     summary "Update a single file"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameters do
       id :path, :string, "File permission ID", required: true
-      file_permission :body, Schema.ref(:UpdatePermission), "Arguments for updating a file permission", required: true
+      file_permission :body, Schema.ref(:UpdateFilePermissions), "Arguments for updating a file permission", required: true
     end
     response 200, "OK", Schema.ref(:FilePermission)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
@@ -151,7 +145,7 @@ defmodule SolardocPhoenixWeb.V2FilePermissionController do
   end
 
   swagger_path :show_permission_for_user do
-    get "#{@api_path}/file/{file_id}/permission/{user_id}"
+    get "#{@api_path}/files/{file_id}/permissions/{user_id}"
     produces "application/json"
     summary "Gets the permissions for one file from one specific user"
     deprecated false
@@ -176,13 +170,13 @@ defmodule SolardocPhoenixWeb.V2FilePermissionController do
   end
 
   swagger_path :show_permissions_for_file do
-    get "#{@api_path}/file/{file_id}/permission"
+    get "#{@api_path}/files/{file_id}/permissions"
     produces "application/json"
     summary "Gets the permissions for one file for all users who have access to it"
     deprecated false
     parameter("Authorization", :header, :string, "Bearer", required: true)
     parameter("file_id", :path, :string, "File ID", required: true)
-    response 200, "OK", Schema.ref(:GetAllPermissionsForFile)
+    response 200, "OK", Schema.ref(:FilePermissions)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
     response 404, "Not Found", Schema.ref(:ErrorResp)

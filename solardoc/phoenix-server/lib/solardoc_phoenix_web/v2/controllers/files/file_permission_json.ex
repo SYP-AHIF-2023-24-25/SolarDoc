@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.FilePermissionJSON do
+defmodule SolardocPhoenixWeb.V2.FilePermissionJSON do
   alias SolardocPhoenix.Permissions.FilePermission
 
   @doc """
@@ -19,7 +19,8 @@ defmodule SolardocPhoenixWeb.FilePermissionJSON do
     %{
       id: file_permission.id,
       permission: file_permission.permission,
-      user_id: file_permission.user_id,
+      user_id: file_permission.user.id,
+      username: file_permission.user.username,
       file_id: file_permission.file_id
     }
   end

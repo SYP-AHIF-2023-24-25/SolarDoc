@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Toggle from '@vueform/toggle'
 import type {
-  FilePermissions,
+  FilePermission,
   UpdateFilePermissions,
 } from '@/services/phoenix/gen/phoenix-rest-service'
 import { ref } from 'vue'
@@ -13,8 +13,9 @@ import {
   PhoenixBadRequestError,
   PhoenixInternalError,
 } from '@/services/phoenix/errors'
+import UserRef from "@/components/common/UserRef.vue";
 
-const props = defineProps<{ filePermission: FilePermissions }>()
+const props = defineProps<{ filePermission: FilePermission }>()
 const permissionValue = ref(props.filePermission.permission === 3)
 const currentUserStore = useCurrentUserStore()
 const currentPermission = ref(permissionValue.value ? 'read & write' : 'read')
@@ -30,14 +31,14 @@ function changePermission() {
 }
 
 async function saveChanges() {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.putV1FilePermissionById>>
+  let resp: Awaited<ReturnType<typeof phoenixRestService.putV2FilesPermissionsById>>
   try {
     const updatePermission: UpdateFilePermissions = {
       file_id: props.filePermission.file_id,
       user_id: props.filePermission.user_id,
       permission: permissionNumber,
     }
-    resp = await phoenixRestService.putV1FilePermissionById(
+    resp = await phoenixRestService.putV2FilesPermissionsById(
       currentUserStore.bearer!,
       props.filePermission.id!,
       updatePermission,
@@ -63,7 +64,7 @@ async function saveChanges() {
 <template>
   <div id="user-permission-card">
     <p>
-      <span>User:</span><code>{{ filePermission.user_id }}</code>
+      <span>User:</span><UserRef :id="filePermission.user_id" :user-name="filePermission.username" />
     </p>
     <p>
       <span id="permission-text">Permission:</span>

@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2UserAuthController do
+defmodule SolardocPhoenixWeb.V2.UserAuthController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger, except: [:delete]
 

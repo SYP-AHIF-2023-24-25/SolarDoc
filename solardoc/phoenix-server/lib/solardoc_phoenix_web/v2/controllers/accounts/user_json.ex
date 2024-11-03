@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2UserJSON do
+defmodule SolardocPhoenixWeb.V2.UserJSON do
   alias SolardocPhoenix.Accounts.User
   alias SolardocPhoenix.Utils
 

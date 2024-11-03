@@ -5,8 +5,7 @@ defineProps<{ infoText: any }>()
 <template>
   <span class="info-box-wrapper">
     <span class="info-box">
-      <span class="info-box-content"
-        ><code>{{ infoText }}</code></span
+      <span class="info-box-content"><code>{{ infoText }}</code></span
       >
     </span>
   </span>
@@ -50,7 +49,7 @@ defineProps<{ infoText: any }>()
     visibility: hidden;
     transition: 0.3s;
     z-index: 999;
-    width: 12.5rem;
+    max-width: 20rem;
 
     .info-box-content {
       background: rgba(0, 0, 0, 0.85);
@@ -63,6 +62,7 @@ defineProps<{ infoText: any }>()
       font-style: normal;
       display: inline-block;
       position: relative;
+      white-space: nowrap;
 
       code {
         color: white;

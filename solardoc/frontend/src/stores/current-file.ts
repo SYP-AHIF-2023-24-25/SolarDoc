@@ -68,18 +68,18 @@ export const useCurrentFileStore = defineStore('currentFile', {
     }
 
     return {
-      fileId: <string | undefined>storedFileId || undefined,
       fileName: storedFileName,
-      ownerId: storedFileOwner || undefined,
       content: storedFileContent,
+      fileId: <string | undefined>storedFileId || undefined,
+      ownerId: storedFileOwner || undefined,
+      channelId: storedChannelId || undefined,
+      shareURLId: shareURLId || undefined,
+      permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : null),
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,
       lastModified: new Date(storedLastModified),
-      channelId: storedChannelId || undefined,
       created: new Date(storedCreated),
-      permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : null),
-      shareURLId: shareURLId || undefined,
       isGlobal: false,
     }
   },
@@ -355,7 +355,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     setChannelId(channelId: string | undefined) {
       this.channelId = channelId
-      localStorage.setItem(constants.localStorageFileChannelIdKey, channelId ? channelId : '')
+      localStorage.setItem(constants.localStorageFileChannelIdKey, channelId ?? '')
     },
     setShareURLId(shareURLId: string) {
       this.shareURLId = shareURLId

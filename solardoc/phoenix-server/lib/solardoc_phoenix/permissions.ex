@@ -18,7 +18,7 @@ defmodule SolardocPhoenix.Permissions do
 
   """
   def list_file_permissions do
-    Repo.all(FilePermission)
+    Repo.all(FilePermission, preload: [:user])
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule SolardocPhoenix.Permissions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_file_permission!(id), do: Repo.get!(FilePermission, id)
+  def get_file_permission!(id), do: Repo.get!(FilePermission, id) |> Repo.preload(:user)
 
   @doc """
   Gets a single file_permission for a specific user and file.
@@ -53,6 +53,7 @@ defmodule SolardocPhoenix.Permissions do
   """
   def get_file_permission_by_user_file!(user_id, file_id) do
     Repo.get_by!(FilePermission, user_id: user_id, file_id: file_id)
+    |> Repo.preload(:user)
   end
 
   @doc """
@@ -70,7 +71,7 @@ defmodule SolardocPhoenix.Permissions do
 
   """
   def get_file_permissions_by_file!(file_id) do
-    query = from(fp in FilePermission, where: fp.file_id == ^file_id)
+    query = from(fp in FilePermission, where: fp.file_id == ^file_id, preload: [:user])
 
     case Repo.all(query) do
       [] -> raise Ecto.NoResultsError, "No file permissions found for file_id: #{file_id}"

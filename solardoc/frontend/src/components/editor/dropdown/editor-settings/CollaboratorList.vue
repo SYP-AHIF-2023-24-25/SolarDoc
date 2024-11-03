@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { useCurrentFileStore } from '@/stores/current-file'
 import { ref } from 'vue'
-import {
-  type FilePermissions,
-  type GetAllPermissionsForFile,
-} from '@/services/phoenix/gen/phoenix-rest-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Awaited } from '@vueuse/core'
@@ -12,32 +8,29 @@ import {
   type ActualPhxErrorResp,
   PhoenixBadRequestError,
   PhoenixInternalError,
-  PhoenixInvalidCredentialsError,
 } from '@/services/phoenix/errors'
-import { handleError } from '@/errors/handler/error-handler'
 import CollaboratorCard from '@/components/editor/dropdown/editor-settings/CollaboratorCard.vue'
+import type {FilePermission, FilePermissions} from "@/services/phoenix/api-service";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
-const permissionUsers = ref<Array<FilePermissions>>([])
+const permissionUsers = ref<Array<FilePermission>>([])
+
 ;(async () => {
   await fetchFilePermissions(currentUserStore.bearer!)
 })()
 
 async function fetchFilePermissions(bearerToken: string) {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.getV1FileByFileIdPermission>>
+  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2FilesByFileIdPermissions>>
   try {
-    resp = await phoenixRestService.getV1FileByFileIdPermission(
-      bearerToken,
-      currentFileStore.fileId!,
-    )
+    resp = await phoenixRestService.getV2FilesByFileIdPermissions(bearerToken, currentFileStore.fileId!)
   } catch (e) {
     throw new PhoenixInternalError(
       'Critically failed to fetch file permissions for file. Cause: ' + (<Error>e).message,
     )
   }
   if (resp.status === 200) {
-    permissionUsers.value = resp.data satisfies GetAllPermissionsForFile
+    permissionUsers.value = resp.data satisfies FilePermissions
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError(
       'Server rejected request to get file permissions',
@@ -48,7 +41,7 @@ async function fetchFilePermissions(bearerToken: string) {
 </script>
 
 <template>
-  <div v-if="permissionUsers.length !== 0" id="user-permission-box">
+  <div v-if="permissionUsers.length > 0" id="user-permission-box">
     <CollaboratorCard
       v-for="permission in permissionUsers"
       :key="permission.id"
