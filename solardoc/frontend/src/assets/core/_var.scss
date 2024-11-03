@@ -96,6 +96,11 @@
   --profile-file-card-width: 16rem;
   --profile-file-card-padding: 1rem;
 
+  // Collab File Card presets
+  --collab-file-card-height: 10rem;
+  --collab-file-card-width: 32rem;
+  --collab-file-card-padding: 1rem;
+
   // Page Content presets
   --page-content-wrapper-height: calc(100vh - var(--nav-bar-height));
   --page-content-wrapper-width: 100%;
@@ -267,6 +272,11 @@ $searchbar-border-radius: var(--searchbar-border-radius);
 $profile-file-card-height: var(--profile-file-card-height);
 $profile-file-card-width: var(--profile-file-card-width);
 $profile-file-card-padding: var(--profile-file-card-padding);
+
+// Collab File Card presets
+$collab-file-card-height: var(--collab-file-card-height);
+$collab-file-card-width: var(--collab-file-card-width);
+$collab-file-card-padding: var(--collab-file-card-padding);
 
 // Page Content presets
 $page-content-wrapper-height: var(--page-content-wrapper-height);

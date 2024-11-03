@@ -107,17 +107,17 @@ defmodule SolardocPhoenix.Files do
 
     dynamic_query =
       if params["organisation"] do
-        dynamic([f, u], ^dynamic_query and u.organisation == ^params["organisation"])
+        dynamic([f, u], ^dynamic_query and ilike(u.organisation, ^"%#{params["organisation"]}%"))
       else
         dynamic_query
       end
 
     (from f in base_query,
-       join: u in assoc(f, :owner),
-       where: ^dynamic_query,
-       select: %{f | organisation: u.organisation, owner_name: u.username},
-       preload: [:owner]
-    ) |> Repo.all
+      join: u in assoc(f, :owner),
+      where: ^dynamic_query,
+      preload: [:owner]
+    )
+      |> Repo.all
   end
 
   @doc """

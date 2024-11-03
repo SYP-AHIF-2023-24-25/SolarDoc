@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ProgressSpinner from '@/components/ProgressSpinner.vue'
+import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
 import { type Permission, useCurrentFileStore } from '@/stores/current-file'
 import type { File, ShareUrl } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
@@ -24,9 +24,9 @@ function throw404Error(): Promise<any> {
 }
 
 async function getFile(shareUrlId: string): Promise<File | undefined> {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.getV1ShareByIdFile>>
+  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2ShareByIdFile>>
   try {
-    resp = await phoenixRestService.getV1ShareByIdFile(currentUserStore.bearer!, shareUrlId)
+    resp = await phoenixRestService.getV2ShareByIdFile(currentUserStore.bearer!, shareUrlId)
   } catch (e) {
     throw new PhoenixInternalError('Critically failed to fetch file. Cause: ' + (<Error>e).message)
   }
@@ -39,9 +39,9 @@ async function getFile(shareUrlId: string): Promise<File | undefined> {
 }
 
 async function getShareURL(shareUrlId: string): Promise<ShareUrl | undefined> {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.getV1ShareById>>
+  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2ShareById>>
   try {
-    resp = await phoenixRestService.getV1ShareById(currentUserStore.bearer!, shareUrlId)
+    resp = await phoenixRestService.getV2ShareById(currentUserStore.bearer!, shareUrlId)
   } catch (e) {
     throw new PhoenixInternalError(
       'Critically failed to fetch share URL. Cause: ' + (<Error>e).message,
