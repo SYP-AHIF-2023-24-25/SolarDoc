@@ -31,7 +31,7 @@ const loading = ref(true)
 })()
 
 async function fetchFiles(bearer: string, options: GlobalSearchQuery = {}) {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2Files>>
+  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2FilesGlobal>>
   try {
     resp = await phoenixRestService.getV2FilesGlobal(bearer, options)
   } catch (e) {

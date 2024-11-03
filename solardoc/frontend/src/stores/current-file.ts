@@ -80,6 +80,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       created: new Date(storedCreated),
       permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : null),
       shareURLId: shareURLId || undefined,
+      isGlobal: false,
     }
   },
   getters: {
@@ -123,6 +124,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
         last_edited: this.lastModified.getTime(),
         owner_id: this.ownerId,
         channel_id: this.channelId,
+        is_global: this.isGlobal,
       }
     },
   },
@@ -321,6 +323,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setPermissions(perm)
       this.setCreated(new Date(file.created))
       this.setChannelId(file.channel_id)
+      this.setIsGlobal(file.is_global)
     },
     setFileFromShared(file: File, shareURLId: string, perm: Permission = Permissions.Read) {
       this.setShareURLId(shareURLId)
@@ -358,6 +361,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.shareURLId = shareURLId
       localStorage.setItem(constants.localStorageShareURLIdKey, shareURLId)
     },
+    setIsGlobal(isGlobal: boolean) {
+      this.isGlobal = isGlobal
+    },
     clearFileId() {
       this.fileId = undefined
       localStorage.removeItem(constants.localStorageFileIdKey)
@@ -379,6 +385,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     resetCreated() {
       this.setCreated(new Date())
+    },
+    resetIsGlobal() {
+      this.isGlobal = false
     },
     setPermissions(permissions: Permission) {
       this.permissions = permissions
@@ -405,6 +414,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setPermissions(Permissions.Unknown)
       this.resetLastModified()
       this.resetCreated()
+      this.resetIsGlobal()
 
       if (!preserveContent) {
         this.setContent(constants.defaultFileContent)
