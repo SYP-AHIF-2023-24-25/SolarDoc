@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {ref, watch} from "vue";
-import type {GlobalSearchQuery} from "@/scripts/collab/search";
-import type {GlobalFile} from "@/services/phoenix/gen/phoenix-rest-service";
-import {PhoenixInternalError, PhoenixInvalidCredentialsError} from "@/services/phoenix/errors";
-import {handleError} from "@/errors/handler/error-handler";
-import * as phoenixRestService from "@/services/phoenix/api-service";
-import GlobalFileCard from "@/components/collab/GlobalFileCard.vue";
-import {useCurrentUserStore} from "@/stores/current-user";
-import {useRouter} from "vue-router";
-import MinorProgressSpinner from "@/components/common/MinorProgressSpinner.vue";
+import { ref, watch } from 'vue'
+import type { GlobalSearchQuery } from '@/scripts/collab/search'
+import type { GlobalFile } from '@/services/phoenix/gen/phoenix-rest-service'
+import { PhoenixInternalError, PhoenixInvalidCredentialsError } from '@/services/phoenix/errors'
+import { handleError } from '@/errors/handler/error-handler'
+import * as phoenixRestService from '@/services/phoenix/api-service'
+import GlobalFileCard from '@/components/collab/GlobalFileCard.vue'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useRouter } from 'vue-router'
+import MinorProgressSpinner from '@/components/common/MinorProgressSpinner.vue'
 
 const currentUserStore = useCurrentUserStore()
 const $router = useRouter()
@@ -60,7 +60,7 @@ async function fetchFiles(bearer: string, options: GlobalSearchQuery = {}) {
 // to the server. This is to prevent spamming the server with requests.
 
 let cooldown: NodeJS.Timeout | null = null
-watch(props, async (newVal) => {
+watch(props, async newVal => {
   if (cooldown) {
     clearTimeout(cooldown)
   }
@@ -81,15 +81,9 @@ watch(props, async (newVal) => {
       </div>
     </template>
     <template v-else-if="files.length > 0">
-      <p id="files-available">
-        Found {{ files.length }} files ー Page 1/1
-      </p>
+      <p id="files-available">Found {{ files.length }} files ー Page 1/1</p>
       <div id="global-files-search-result">
-        <GlobalFileCard
-          v-for="file in files"
-          :key="file.id"
-          :file="file"
-        />
+        <GlobalFileCard v-for="file in files" :key="file.id" :file="file" />
       </div>
     </template>
     <template v-else>

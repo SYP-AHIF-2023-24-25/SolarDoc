@@ -64,6 +64,24 @@ export type GlobalFile = {
     owner_name: string;
 };
 export type GlobalFiles = GlobalFile[];
+export type CreateFilePermissions = {
+    file_id: string;
+    permission: number;
+    user_id: string;
+};
+export type FilePermission = {
+    file_id: string;
+    id: string;
+    permission: number;
+    user_id: string;
+    username: string;
+};
+export type UpdateFilePermissions = {
+    file_id: string;
+    permission: number;
+    user_id: string;
+};
+export type FilePermissions = FilePermission[];
 export type UpdateFile = {
     content?: string;
     file_name?: string;
@@ -231,13 +249,13 @@ export function postV2Files(authorization: string, createFile: CreateFile, opts?
 /**
  * List all global files
  */
-export function getV2FilesGlobal(authorization: string, { fileName, createdFrom, createdTo, updatedFrom, updatedTo, userName }: {
+export function getV2FilesGlobal(authorization: string, { fileName, createdFrom, createdTo, updatedFrom, updatedTo, username }: {
     fileName?: string;
     createdFrom?: number;
     createdTo?: number;
     updatedFrom?: number;
     updatedTo?: number;
-    userName?: string;
+    username?: string;
 } = {}, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
@@ -251,8 +269,126 @@ export function getV2FilesGlobal(authorization: string, { fileName, createdFrom,
         created_to: createdTo,
         updated_from: updatedFrom,
         updated_to: updatedTo,
-        user_name: userName
+        username
     }))}`, {
+        ...opts,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    });
+}
+/**
+ * Create a new file permission
+ */
+export function postV2FilesPermissions(authorization: string, createFilePermission: CreateFilePermissions, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 201;
+        data: FilePermission;
+    } | {
+        status: 400;
+        data: ErrorsResp;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    }>("/v2/files/permissions", oazapfts.json({
+        ...opts,
+        method: "POST",
+        body: createFilePermission,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    }));
+}
+/**
+ * Get a single file permission
+ */
+export function getV2FilesPermissionsById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: FilePermission;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
+    }>(`/v2/files/permissions/${encodeURIComponent(id)}`, {
+        ...opts,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    });
+}
+/**
+ * Update a single file
+ */
+export function putV2FilesPermissionsById(authorization: string, id: string, updateFilePermissions: UpdateFilePermissions, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: FilePermission;
+    } | {
+        status: 400;
+        data: ErrorsResp;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
+    }>(`/v2/files/permissions/${encodeURIComponent(id)}`, oazapfts.json({
+        ...opts,
+        method: "PUT",
+        body: updateFilePermissions,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    }));
+}
+/**
+ * Gets the permissions for one file for all users who have access to it
+ */
+export function getV2FilesByFileIdPermissions(authorization: string, fileId: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: FilePermissions;
+    } | {
+        status: 400;
+        data: ErrorsResp;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
+    }>(`/v2/files/${encodeURIComponent(fileId)}/permissions`, {
+        ...opts,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    });
+}
+/**
+ * Gets the permissions for one file from one specific user
+ */
+export function getV2FilesByFileIdPermissionsAndUserId(authorization: string, fileId: string, userId: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: FilePermission;
+    } | {
+        status: 400;
+        data: ErrorsResp;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
+    }>(`/v2/files/${encodeURIComponent(fileId)}/permissions/${encodeURIComponent(userId)}`, {
         ...opts,
         headers: {
             ...opts && opts.headers,

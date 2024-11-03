@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2UserSettingsController do
+defmodule SolardocPhoenixWeb.V2.UserSettingsController do
   use SolardocPhoenixWeb, :controller
 
   alias SolardocPhoenix.Accounts

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {type Ref, ref} from "vue";
-import type {GlobalSearchQuery} from "@/scripts/collab/search";
-import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
-import SandwichMenuDarkModeSVG from "@/components/icons/SandwichMenuDarkModeSVG.vue";
-import {useDarkModeStore} from "@/stores/dark-mode";
+import { type Ref, ref } from 'vue'
+import type { GlobalSearchQuery } from '@/scripts/collab/search'
+import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
+import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
+import { useDarkModeStore } from '@/stores/dark-mode'
 
 const darkModeStore = useDarkModeStore()
 

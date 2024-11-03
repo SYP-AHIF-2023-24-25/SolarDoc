@@ -64,7 +64,7 @@ export type RenderedSlideImageDtoModel = {
     cache: CacheDtoModel;
     download: DownloadDtoModel;
 };
-export function getV2Ping(opts?: Oazapfts.RequestOpts) {
+export function getV1Ping(opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
         data: PingDtoModel;
@@ -72,7 +72,7 @@ export function getV2Ping(opts?: Oazapfts.RequestOpts) {
         ...opts
     });
 }
-export function postV2RenderPresentationImages(renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
+export function postV1RenderPresentationImages(renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
         data: RenderedPresentationImagesDtoModel;
@@ -82,7 +82,7 @@ export function postV2RenderPresentationImages(renderPresentationDtoModel?: Rend
         body: renderPresentationDtoModel
     }));
 }
-export function postV2RenderPresentationPdf(renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
+export function postV1RenderPresentationPdf(renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
         data: RenderedPresentationPdfDtoModel;
@@ -92,7 +92,7 @@ export function postV2RenderPresentationPdf(renderPresentationDtoModel?: RenderP
         body: renderPresentationDtoModel
     }));
 }
-export function postV2RenderPresentationRjsHtml(renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
+export function postV1RenderPresentationRjsHtml(renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
         data: RenderedPresentationRjsHtmlDtoModel;
@@ -102,7 +102,7 @@ export function postV2RenderPresentationRjsHtml(renderPresentationDtoModel?: Ren
         body: renderPresentationDtoModel
     }));
 }
-export function postV2RenderSlideByIdImage(id: string, renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
+export function postV1RenderSlideByIdImage(id: string, renderPresentationDtoModel?: RenderPresentationDtoModel, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchJson<{
         status: 200;
         data: RenderedSlideImageDtoModel;
@@ -112,7 +112,7 @@ export function postV2RenderSlideByIdImage(id: string, renderPresentationDtoMode
         body: renderPresentationDtoModel
     }));
 }
-export function getV2ResultByUuid(uuid: string, { $static }: {
+export function getV1ResultByUuid(uuid: string, { $static }: {
     $static?: string;
 } = {}, opts?: Oazapfts.RequestOpts) {
     return oazapfts.fetchText(`/v1/result/${encodeURIComponent(uuid)}${QS.query(QS.explode({

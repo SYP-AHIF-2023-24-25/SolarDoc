@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2EditorChannelController do
+defmodule SolardocPhoenixWeb.V2.EditorChannelController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger, except: [:delete]
 

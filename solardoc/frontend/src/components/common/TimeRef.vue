@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {getHumanReadablePreciseDate, getHumanReadableTimeInfo} from "@/scripts/format-date";
-import PaddedInfoBox from "@/components/common/PaddedInfoBox.vue";
-import {ref} from "vue";
+import { getHumanReadablePreciseDate, getHumanReadableTimeInfo } from '@/scripts/format-date'
+import PaddedInfoBox from '@/components/common/PaddedInfoBox.vue'
+import { ref } from 'vue'
 
-const props = defineProps<{ dateTime: Date | number, update?: boolean }>()
+const props = defineProps<{ dateTime: Date | number; update?: boolean }>()
 
 const timeProp = ref(getHumanReadableTimeInfo(props.dateTime))
 if (props.update) {
@@ -16,7 +16,7 @@ if (props.update) {
 <template>
   <span :class="'time-ref-' + String(dateTime).replace(/[^a-zA-Z0-9]/g, '')">
     <code>{{ timeProp }}</code>
-    <PaddedInfoBox :infoText="getHumanReadablePreciseDate(dateTime)"/>
+    <PaddedInfoBox :infoText="getHumanReadablePreciseDate(dateTime)" />
   </span>
 </template>
 

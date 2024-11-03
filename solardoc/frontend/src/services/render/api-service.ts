@@ -22,9 +22,9 @@ if (!api.defaults.baseUrl.startsWith('http')) {
 console.log(`[backend/api-service.ts] Using render backend at '${api.defaults.baseUrl}'`)
 
 export async function ensureRenderBackendIsReachable(): Promise<void> {
-  let ping: Awaited<ReturnType<typeof api.getV2Ping>> | undefined = undefined
+  let ping: Awaited<ReturnType<typeof api.getV1Ping>> | undefined = undefined
   try {
-    ping = await api.getV2Ping()
+    ping = await api.getV1Ping()
   } catch (_ignore) {
     /* empty */
   }

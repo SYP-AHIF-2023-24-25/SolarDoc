@@ -4,9 +4,12 @@ import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { ref } from 'vue'
+import { useCurrentUserStore } from '@/stores/current-user'
+import CollaboratorList from '@/components/editor/dropdown/editor-settings/CollaboratorList.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
+const currentUserStore = useCurrentUserStore()
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
@@ -42,7 +45,7 @@ setInterval(updateTimeRefs, 500)
       </div>
       <div id="settings-file-info">
         <h2 id="settings-file-info-title">
-          File Information •<code>{{ currentFileStore.fileName }}</code>
+          File Information <code>{{ currentFileStore.fileName }}</code>
         </h2>
         <p id="settings-file-info-file-id">
           <i class="pi pi-wrench"></i>
@@ -52,6 +55,13 @@ setInterval(updateTimeRefs, 500)
           <p><span>Owner:</span> {{ currentFileStore.ownerId }}</p>
           <p><span>Created:</span> {{ created }}</p>
           <p><span>Last Modified:</span> {{ lastModified }}</p>
+        </div>
+        <div
+          v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id"
+          id="collaborators-list"
+        >
+          <p><span>Collaborators:</span></p>
+          <CollaboratorList />
         </div>
       </div>
     </div>
@@ -131,6 +141,15 @@ setInterval(updateTimeRefs, 500)
         & * {
           background: transparent;
         }
+      }
+      #collaborators-list {
+        display: flex;
+        margin-left: 0.5rem;
+        line-height: 2rem;
+        flex-grow: 1;
+        flex-direction: column;
+
+        margin-bottom: 1rem;
       }
 
       code {

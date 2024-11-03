@@ -46,10 +46,10 @@ export async function handleRender(
   }
   let error: Error | undefined = undefined
   let renderResp:
-    | Awaited<ReturnType<typeof backendAPI.postV2RenderPresentationRjsHtml>>
+    | Awaited<ReturnType<typeof backendAPI.postV1RenderPresentationRjsHtml>>
     | undefined = undefined
   try {
-    renderResp = await backendAPI.postV2RenderPresentationRjsHtml(renderPresentationDtoModel)
+    renderResp = await backendAPI.postV1RenderPresentationRjsHtml(renderPresentationDtoModel)
   } catch (e) {
     error = <Error>e
   }

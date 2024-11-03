@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import GlobalFilesOverview from "@/components/collab/GlobalFilesOverview.vue";
+import GlobalFilesOverview from '@/components/collab/GlobalFilesOverview.vue'
 </script>
 
 <template>
   <div id="collab-page">
     <div id="header">
       <h1>Team Collab<span id="experimental-tag">Experimental</span></h1>
-      <p>
-        Join and collaborate with your team members on projects.
-      </p>
+      <p>Join and collaborate with your team members on projects.</p>
     </div>
     <div id="content-view">
       <GlobalFilesOverview />

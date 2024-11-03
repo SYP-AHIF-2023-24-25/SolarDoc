@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2ShareURLController do
+defmodule SolardocPhoenixWeb.V2.ShareURLController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger, except: [:delete]
 

@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2FileController do
+defmodule SolardocPhoenixWeb.V2.FileController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger
 
@@ -105,7 +105,7 @@ defmodule SolardocPhoenixWeb.V2FileController do
       created_to :query, :integer, "Creation date to (UNIX timestamp)", required: false
       updated_from :query, :integer, "Update date from (UNIX timestamp)", required: false
       updated_to :query, :integer, "Update date to (UNIX timestamp)", required: false
-      user_name :query, :string, "User name", required: false
+      username :query, :string, "User name", required: false
     end
     response 200, "OK", Schema.ref(:GlobalFiles)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)

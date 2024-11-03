@@ -1,4 +1,4 @@
-defmodule SolardocPhoenixWeb.V2UserResetPasswordController do
+defmodule SolardocPhoenixWeb.V2.UserResetPasswordController do
   use SolardocPhoenixWeb, :controller
 
   alias SolardocPhoenix.Accounts

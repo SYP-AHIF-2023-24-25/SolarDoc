@@ -7,7 +7,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   alias SolardocPhoenix.EditorChannels.EditorChannel
   alias SolardocPhoenix.Files
   alias SolardocPhoenixWeb.ChangesetJSON
-  alias SolardocPhoenixWeb.V2EditorChannelJSON
+  alias SolardocPhoenixWeb.V2.EditorChannelJSON
   alias SolardocPhoenixWeb.EditorChannelState
   alias SolardocPhoenixWeb.EditorChannelTrans
   alias SolardocPhoenix.Utils

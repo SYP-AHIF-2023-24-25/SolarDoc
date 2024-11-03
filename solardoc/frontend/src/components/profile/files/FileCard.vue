@@ -11,9 +11,9 @@ import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { interceptErrors } from '@/errors/handler/error-handler'
-import {closeEditorRemoteFileConnection, openFileInEditor} from '@/scripts/editor/file'
-import {useLoadingStore} from "@/stores/loading";
-import TimeRef from "@/components/common/TimeRef.vue";
+import { closeEditorRemoteFileConnection, openFileInEditor } from '@/scripts/editor/file'
+import { useLoadingStore } from '@/stores/loading'
+import TimeRef from '@/components/common/TimeRef.vue'
 
 const props = defineProps<{ file: File }>()
 const deleted = ref(false)
@@ -59,12 +59,8 @@ async function deleteFile() {
       <p class="file-infos-filename">
         <span>Filename:</span><code>{{ file.file_name }}</code>
       </p>
-      <p>
-        <span>Changed:</span><TimeRef :date-time="props.file.last_edited" update />
-      </p>
-      <p>
-        <span>Created:</span><TimeRef :date-time="props.file.created" update />
-      </p>
+      <p><span>Changed:</span><TimeRef :date-time="props.file.last_edited" update /></p>
+      <p><span>Created:</span><TimeRef :date-time="props.file.created" update /></p>
     </div>
     <button class="highlighted-button" @click="interceptErrors(deleteFile())">Delete</button>
   </div>

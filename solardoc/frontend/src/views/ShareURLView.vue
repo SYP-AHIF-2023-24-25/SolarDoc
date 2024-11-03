@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
 import { type Permission, useCurrentFileStore } from '@/stores/current-file'
-import type { File, ShareUrl } from '@/services/phoenix/api-service'
+import {
+  type File,
+  type ShareUrl,
+  type CreateFilePermissions,
+  type FilePermission,
+} from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { PhoenixInternalError } from '@/services/phoenix/errors'
@@ -9,6 +14,7 @@ import { useLoadingStore } from '@/stores/loading'
 import { useRoute, useRouter } from 'vue-router'
 import { showWarnNotif } from '@/scripts/show-notif'
 import { interceptErrors } from '@/errors/handler/error-handler'
+import type { Awaited } from '@vueuse/core'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -84,7 +90,8 @@ async function handleShareURLReq(shareUrlId: string): Promise<void> {
   if (isShareFileOwner) {
     currentFileStore.setFile(file)
   } else {
-    currentFileStore.setFileFromShared(file, shareUrlId, <Permission>shareURL.perms)
+    let permissions = await getFilePermissionsForUser(file, shareURL.perms)
+    currentFileStore.setFileFromShared(file, shareUrlId, <Permission>permissions)
   }
   loadingStore.setLoading(false)
   await $router.push({
@@ -93,11 +100,56 @@ async function handleShareURLReq(shareUrlId: string): Promise<void> {
   })
 }
 
+async function getFilePermissionsForUser(file: File, permissionsFromUrl: number): Promise<number> {
+  let perm: FilePermission | undefined = await getFilePermissionsForCurrentUser(file)
+  if (perm !== undefined) {
+    return perm.permission
+  }
+  await createFilePermission(file, permissionsFromUrl)
+  return permissionsFromUrl
+}
+
+async function createFilePermission(file: File, permissionsFromUrl: number) {
+  try {
+    let createFilePermissions: CreateFilePermissions = {
+      permission: permissionsFromUrl,
+      file_id: file.id,
+      user_id: currentUserStore.currentUser?.id!,
+    }
+    await phoenixRestService.postV2FilesPermissions(currentUserStore.bearer!, createFilePermissions)
+  } catch (e) {
+    throw new PhoenixInternalError(
+      'Critically failed to create permissions entry. Cause: ' + (<Error>e).message,
+    )
+  }
+}
+
+async function getFilePermissionsForCurrentUser(file: File): Promise<FilePermission | undefined> {
+  let currentUserFilePermissions: Awaited<
+    ReturnType<typeof phoenixRestService.getV2FilesByFileIdPermissionsAndUserId>
+  >
+  try {
+    currentUserFilePermissions = await phoenixRestService.getV2FilesByFileIdPermissionsAndUserId(
+      currentUserStore.bearer!,
+      file.id,
+      currentUserStore.currentUser?.id!,
+    )
+    if (currentUserFilePermissions.status === 404) {
+      return undefined
+    }
+  } catch (e) {
+    throw new PhoenixInternalError(
+      'Criticaly faild to fetch file permission. Cause: ' + (<Error>e).message,
+    )
+  }
+  return <FilePermission>currentUserFilePermissions.data
+}
+
 interceptErrors(handleShareURLReq(`${$route.params.shareUrlId}`))
 </script>
 
 <template>
-  <ProgressSpinner></ProgressSpinner>
+  <ProgressSpinner />
 </template>
 
 <style lang="scss" scoped></style>

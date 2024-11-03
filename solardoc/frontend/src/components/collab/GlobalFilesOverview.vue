@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import GlobalFileList from "@/components/collab/GlobalFileList.vue";
-import GlobalFileSearch from "@/components/collab/GlobalFileSearch.vue";
-import {ref, type Ref} from "vue";
-import type {GlobalSearchQuery} from "@/scripts/collab/search";
+import GlobalFileList from '@/components/collab/GlobalFileList.vue'
+import GlobalFileSearch from '@/components/collab/GlobalFileSearch.vue'
+import { ref, type Ref } from 'vue'
+import type { GlobalSearchQuery } from '@/scripts/collab/search'
 
 const searchQuery: Ref<GlobalSearchQuery> = ref(<GlobalSearchQuery>{})
 </script>
