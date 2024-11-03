@@ -78,16 +78,16 @@ defmodule SolardocPhoenixWeb.V2.FilePermissionController do
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
   end
   def create(conn,  file_permission_params) do
-    with {:file_exists, %File{}} <- {:file_exists, Files.get_file!(file_permission_params["file_id"])} do
-      with {:ok, %FilePermission{} = file_permission} <- Permissions.create_file_permission(file_permission_params) do
+    with {:file_exists, %File{}} <- {:file_exists, Files.get_file!(file_permission_params["file_id"])},
+         {:ok, %FilePermission{} = file_permission} <- Permissions.create_file_permission(file_permission_params) do
         file_permission = file_permission |> Repo.preload(:user)
         conn
         |> put_status(:created)
         |> put_resp_header("location", ~p"/#{@api_path}/files/permissionss/#{file_permission.id}")
         |> render(:show, file_permission: file_permission)
-      end
     else
       {:file_exists, _} -> {:error, :not_found}
+      {:error, changeset} -> {:error, changeset}
     end
   end
 
@@ -108,8 +108,7 @@ defmodule SolardocPhoenixWeb.V2.FilePermissionController do
     case {:file_permission_exists, Permissions.get_file_permission!(id)} do
       {:file_permission_exists, %FilePermission{} = file_permission} ->
         render(conn, :show, file_permission: file_permission)
-      {:file_permission_exists,_} ->
-        {:error, :not_found}
+      {:file_permission_exists, _} -> {:error, :not_found}
     end
   end
 
@@ -159,9 +158,9 @@ defmodule SolardocPhoenixWeb.V2.FilePermissionController do
   end
 
   def show_permission_for_user(conn, %{"file_id" => file_id, "user_id" => user_id}) do
-    with %FilePermission{} = file_permission <- Permissions.get_file_permission_by_user_file!(user_id, file_id) do
-      render(conn, :show, file_permission: file_permission)
-    else
+    case Permissions.get_file_permission_by_user_file!(user_id, file_id) do
+      %FilePermission{} = file_permission ->
+        render(conn, :show, file_permission: file_permission)
       nil ->
         conn
         |> put_status(:not_found)
