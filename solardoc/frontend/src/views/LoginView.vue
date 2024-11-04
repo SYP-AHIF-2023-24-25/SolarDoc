@@ -52,9 +52,9 @@ async function submitForm(
     password: form$.requestData.password,
   } satisfies phoenixBackend.UserLogin
 
-  let resp: Awaited<ReturnType<typeof phoenixBackend.postV1AuthBearer>>
+  let resp: Awaited<ReturnType<typeof phoenixBackend.postV2AuthBearer>>
   try {
-    resp = await phoenixBackend.postV1AuthBearer(loginUser)
+    resp = await phoenixBackend.postV2AuthBearer(loginUser)
   } catch (e) {
     console.error('[Login] Encountered network error during login', e)
     throw new SolardocUnreachableError('Encountered network error during login')

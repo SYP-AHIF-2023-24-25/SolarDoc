@@ -6,3 +6,10 @@
   padding: $main-body-padding;
   margin: $main-body-margin;
 }
+
+@mixin scrollable-view-presets {
+  @include view-presets;
+  min-height: $main-body-height;
+  height: unset !important;
+  overflow-y: auto;
+}

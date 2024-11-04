@@ -10,6 +10,7 @@ defmodule SolardocPhoenix.Files.File do
     field :file_name, :string
     field :last_edited, :naive_datetime
     field :content, :string, default: ""
+    field :is_global, :boolean, default: false
     belongs_to :channel, SolardocPhoenix.EditorChannels.EditorChannel
     belongs_to :owner, SolardocPhoenix.Accounts.User
 
@@ -20,7 +21,7 @@ defmodule SolardocPhoenix.Files.File do
   def create_changeset(file, attrs) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     file
-    |> cast(attrs, [:file_name, :owner_id, :content])
+    |> cast(attrs, [:file_name, :owner_id, :content, :is_global])
     |> validate_required([:file_name, :owner_id])
     |> validate_length(:file_name, min: 1, max: 40)
     |> unique_constraint([:file_name, :owner_id])
@@ -32,7 +33,7 @@ defmodule SolardocPhoenix.Files.File do
   def update_changeset(file, attrs) do
     now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
     file
-    |> cast(attrs, [:file_name, :content, :channel_id])
+    |> cast(attrs, [:file_name, :content, :channel_id, :is_global])
     |> unique_constraint([:file_name, :owner_id])
     |> unique_constraint(:channel_id)
     |> validate_length(:file_name, min: 1, max: 40)

@@ -305,7 +305,6 @@ export class SolardocEditor {
     globalMonacoEditor!.render()
   }
 
-
   /**
    * @since 1.0.0
    * @private

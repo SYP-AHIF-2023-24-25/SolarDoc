@@ -20,6 +20,9 @@ defmodule SolardocPhoenixWeb do
   @v1_api_path "/v1"
   def v1_api_path, do: @v1_api_path
 
+  @v2_api_path "/v2"
+  def v2_api_path, do: @v2_api_path
+
   @version Mix.Project.config[:version]
   def version(), do: @version
 

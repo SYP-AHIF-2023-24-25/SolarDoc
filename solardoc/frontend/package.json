@@ -47,6 +47,7 @@
     "@solardoc/phoenix": "workspace:~",
     "@vueuse/core": "10.5.0",
     "@vueform/vueform": "1.8.0",
+    "@vueform/toggle": "2.1.4",
     "@import-meta-env/cli": "0.6.8",
     "@kyvg/vue3-notification": "3.2.1",
     "monaco-editor": "0.49.0",

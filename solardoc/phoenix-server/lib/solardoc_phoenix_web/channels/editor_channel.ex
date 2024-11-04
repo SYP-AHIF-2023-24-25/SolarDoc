@@ -7,7 +7,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   alias SolardocPhoenix.EditorChannels.EditorChannel
   alias SolardocPhoenix.Files
   alias SolardocPhoenixWeb.ChangesetJSON
-  alias SolardocPhoenixWeb.EditorChannelJSON
+  alias SolardocPhoenixWeb.V2.EditorChannelJSON
   alias SolardocPhoenixWeb.EditorChannelState
   alias SolardocPhoenixWeb.EditorChannelTrans
   alias SolardocPhoenix.Utils
@@ -83,7 +83,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
       "new_channel",
       %{
         body: "A new channel has been created",
-        editor_channel: EditorChannelJSON.show(%{editor_channel: editor_channel}),
+        editor_channel: V2EditorChannelJSON.show(%{editor_channel: editor_channel}),
         creator_id: socket.assigns.user_id,
         init_trans: init_trans,
       }

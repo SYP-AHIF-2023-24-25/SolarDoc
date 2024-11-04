@@ -2,7 +2,7 @@
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
-import SDRouterLink from '@/components/SDRouterLink.vue'
+import SDRouterLink from '@/components/common/SDRouterLink.vue'
 import CurrentChannel from '@/components/editor/dropdown/current-channel/CurrentChannel.vue'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentFileStore } from '@/stores/current-file'
