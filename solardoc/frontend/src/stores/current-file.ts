@@ -34,53 +34,65 @@ async function applyGlobalEditorOTransIfAvailable(oTrans: OTrans) {
   await SolardocEditor.applyOTrans(oTrans)
 }
 
+export interface LocalFile {
+  id: string | undefined
+  content: string
+  created: number
+  file_name: string
+  last_edited: number
+  owner_id: string | undefined
+  channel_id: string | undefined
+  is_global: boolean
+}
+
+function getDefaultFile(currentUserId?: string): LocalFile | File {
+  return {
+    id: undefined,
+    content: constants.defaultFileContent,
+    created: new Date().getTime(),
+    file_name: constants.defaultFileName,
+    last_edited: new Date().getTime(),
+    owner_id: currentUserId,
+    channel_id: undefined,
+    is_global: false
+  }
+}
+
+function ensureAllFileProperties(raw: object): LocalFile | File {
+  const file = getDefaultFile()
+  file.id = "id" in raw ? raw.id : file.id
+  file.content = "content" in raw && raw.content ? raw.content : file.content
+  file.created = "created" in raw && raw.created ? raw.created : file.created
+  file.file_name = "file_name" in raw && raw.file_name ? raw.file_name : file.file_name
+  file.last_edited = "last_edited" in raw && raw.last_edited ? raw.last_edited : file.last_edited
+  file.owner_id = "owner_id" in raw && raw.owner_id ? raw.owner_id : file.owner_id
+  file.channel_id = "channel_id" in raw && raw.channel_id ? raw.channel_id : file.channel_id
+  file.is_global = "is_global" in raw && raw.is_global ? raw.is_global : file.is_global
+  return file
+}
+
+function writeFileToLocalStorage(file: LocalFile | File): void {
+  localStorage.setItem(constants.localStorageFileKey, JSON.stringify(file))
+}
+
 export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
-    const storedFileId = localStorage.getItem(constants.localStorageFileIdKey)
-    const storedFileOwner = localStorage.getItem(constants.localStorageFileOwnerKey)
-    const storedChannelId = localStorage.getItem(constants.localStorageFileChannelIdKey)
-    const storedPermissions = localStorage.getItem(constants.localStorageFilePermissionsKey)
+    let storedFile: LocalFile | File;
+    try {
+      storedFile = ensureAllFileProperties(JSON.parse(localStorage.getItem(constants.localStorageFileKey) || ''))
+    } catch (e) {
+      console.warn("Failed to parse file from local storage. Reverting to default file.");
+      storedFile = getDefaultFile()
+    }
     const shareURLId = localStorage.getItem(constants.localStorageShareURLIdKey)
-    let storedFileName = localStorage.getItem(constants.localStorageFileNameKey)
-    let storedFileContent = localStorage.getItem(constants.localStorageFileContentKey)
-    let storedLastModified = localStorage.getItem(constants.localStorageLastModifiedKey)
-    let storedCreated = localStorage.getItem(constants.localStorageCreatedKey)
-
-    // Ensure the default is populated if the stored content is empty or the file name is empty
-    if (!storedFileName || storedFileName === '') {
-      storedFileName = constants.defaultFileName
-      localStorage.setItem(constants.localStorageFileNameKey, constants.defaultFileName)
-    }
-
-    if (!storedFileContent || storedFileContent === '') {
-      storedFileContent = constants.defaultFileContent
-      localStorage.setItem(constants.localStorageFileContentKey, constants.defaultFileContent)
-    }
-
-    if (!storedLastModified) {
-      storedLastModified = new Date().toISOString()
-      localStorage.setItem(constants.localStorageLastModifiedKey, storedLastModified)
-    }
-
-    if (!storedCreated) {
-      storedCreated = new Date().toISOString()
-      localStorage.setItem(constants.localStorageCreatedKey, storedCreated)
-    }
 
     return {
-      fileName: storedFileName,
-      content: storedFileContent,
-      fileId: <string | undefined>storedFileId || undefined,
-      ownerId: storedFileOwner || undefined,
-      channelId: storedChannelId || undefined,
+      file: storedFile,
       shareURLId: shareURLId || undefined,
-      permissions: <Permission>(storedPermissions ? parseInt(storedPermissions) : null),
+      accessPermissions: <Permission>Permissions.Unknown,
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,
-      lastModified: new Date(storedLastModified),
-      created: new Date(storedCreated),
-      isGlobal: false,
     }
   },
   getters: {
@@ -89,7 +101,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @since 0.6.0
      */
     remoteFile(): boolean {
-      return this.fileId !== undefined
+      return this.file.id !== undefined
     },
     /**
      * Returns true if the current file is shared with the user.
@@ -105,27 +117,87 @@ export const useCurrentFileStore = defineStore('currentFile', {
     isAccessibleShareFile(): boolean {
       return (
         this.shareFile &&
-        (this.permissions === Permissions.Read || this.permissions === Permissions.Write)
+        (this.accessPermissions === Permissions.Read || this.accessPermissions === Permissions.Write)
       )
     },
     /**
      * Returns the raw dto file object.
      * @since 0.7.0
      */
-    raw(): File | undefined {
-      if (!this.fileId || !this.ownerId) {
-        return undefined
-      }
-      return {
-        id: this.fileId,
-        content: this.content,
-        created: this.created.getTime(),
-        file_name: this.fileName,
-        last_edited: this.lastModified.getTime(),
-        owner_id: this.ownerId,
-        channel_id: this.channelId,
-        is_global: this.isGlobal,
-      }
+    raw(): LocalFile | File {
+      return this.file;
+    },
+    /**
+     * COMPATIBILITY MODE LAYER FOR FILE PROPERTIES
+     *
+     * Returns the current file id.
+     */
+    fileId(): string | undefined {
+      return this.file.id satisfies string | undefined
+    },
+    /**
+     * COMPATIBILITY MODE LAYER FOR FILE PROPERTIES
+     *
+     * Returns the current file owner id.
+     */
+    ownerId(): string | undefined {
+      return this.file.owner_id satisfies string | undefined
+    },
+    /**
+     * COMPATIBILITY MODE LAYER FOR FILE PROPERTIES
+     *
+     * Returns the current file name.
+     */
+    fileName(): string {
+      return this.file.file_name satisfies string
+    },
+    /**
+     * COMPATIBILITY MODE LAYER FOR FILE PROPERTIES
+     *
+     * Returns the current file content.
+     */
+    content(): string {
+      return this.file.content satisfies string
+    },
+    /**
+     * COMPATIBILITY MODE LAYER FOR FILE PROPERTIES
+     *
+     * Returns the last modified date of the current file.
+     */
+    lastModified(): Date {
+      return new Date(this.file.last_edited satisfies number)
+    },
+    /**
+     * COMPATIBILITY MODE LAYER FOR FILE PROPERTIES
+     *
+     * Returns the created date of the current file.
+     */
+    created(): Date {
+      return new Date(this.file.created satisfies number)
+    },
+    /**
+     * COMPATIBILITY MODE LAYER FOR FILE PROPERTIES
+     *
+     * Returns the channel id of the current file.
+     */
+    channelId(): string | undefined {
+      return this.file.channel_id satisfies string | undefined
+    },
+    /**
+     * COMPATIBILITY MODE LAYER FOR FILE PROPERTIES
+     *
+     * Returns the global flag of the current file.
+     */
+    isGlobal(): boolean {
+      return this.file.is_global satisfies boolean
+    },
+    /**
+     * COMPATIBILITY MODE LAYER FOR ACCESS PERMISSIONS
+     *
+     * Returns the current access permissions for the current file.
+     */
+    permissions(): Permission {
+      return this.accessPermissions satisfies Permission
     },
   },
   actions: {
@@ -136,7 +208,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @private
      */
     async fetchNewestRemoteFileVersionIfPossible(bearer?: string): Promise<void> {
-      if (this.fileId === undefined) {
+      if (this.file.id === undefined) {
         return
       }
 
@@ -148,7 +220,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       try {
         resp = this.shareFile
           ? await phoenixRestService.getV2ShareByIdFile(bearer || '', this.shareURLId!)
-          : await phoenixRestService.getV2FilesById(bearer || '', this.fileId)
+          : await phoenixRestService.getV2FilesById(bearer || '', this.file.id)
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch file. Cause: ' + (<Error>e).message,
@@ -165,13 +237,13 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
     },
     async ensureUserIsAuthorisedForFile(userId: string) {
-      if (this.fileId && (this.ownerId === userId || this.isAccessibleShareFile)) {
+      if (this.file.id && (this.file.owner_id === userId || this.isAccessibleShareFile)) {
         return
       }
       await this.closeFileGlobally()
     },
     async storeOnServer(bearer: string) {
-      if (this.fileId === undefined) {
+      if (this.file.id === undefined) {
         await this.createFile(bearer)
       } else {
         await this.updateFile(bearer)
@@ -181,8 +253,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
       let resp: Awaited<ReturnType<typeof phoenixRestService.postV2Files>>
       try {
         resp = await phoenixRestService.postV2Files(bearer, {
-          file_name: this.fileName,
-          content: this.content,
+          file_name: this.file.file_name,
+          content: this.file.content,
         })
       } catch (e) {
         throw new PhoenixInternalError(
@@ -203,15 +275,15 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
     },
     async updateFile(bearer: string) {
-      if (this.fileId === undefined) {
+      if (this.file.id === undefined) {
         return await this.createFile(bearer)
       }
 
       let resp: Awaited<ReturnType<typeof phoenixRestService.putV2FilesById>>
       try {
-        resp = await phoenixRestService.putV2FilesById(bearer, this.fileId, {
-          file_name: this.fileName,
-          content: this.content,
+        resp = await phoenixRestService.putV2FilesById(bearer, this.file.id, {
+          file_name: this.file.file_name,
+          content: this.file.content,
         })
       } catch (e) {
         throw new PhoenixInternalError(
@@ -302,14 +374,14 @@ export const useCurrentFileStore = defineStore('currentFile', {
       // Perform the transformation on the current content
       if (oTrans.trans.type === 'insert') {
         this.setContent(
-          this.content.slice(0, oTrans.trans.pos) +
+          this.file.content.slice(0, oTrans.trans.pos) +
             oTrans.trans.content +
-            this.content.slice(oTrans.trans.pos),
+            this.file.content.slice(oTrans.trans.pos),
         )
       } else if (oTrans.trans.type === 'delete') {
         this.setContent(
-          this.content.slice(0, oTrans.trans.pos - oTrans.trans.length) +
-            this.content.slice(oTrans.trans.pos),
+          this.file.content.slice(0, oTrans.trans.pos - oTrans.trans.length) +
+            this.file.content.slice(oTrans.trans.pos),
         )
       }
       this.setLastModified(new Date())
@@ -319,9 +391,9 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setOwnerId(file.owner_id)
       this.setFileName(file.file_name)
       this.setContent(file.content)
-      this.setLastModified(new Date(file.last_edited))
+      this.setLastModified(file.last_edited)
       this.setPermissions(perm)
-      this.setCreated(new Date(file.created))
+      this.setCreated(file.created)
       this.setChannelId(file.channel_id)
       this.setIsGlobal(file.is_global)
     },
@@ -330,51 +402,52 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setFile(file, perm)
     },
     setFileId(fileId: string) {
-      this.fileId = fileId
-      localStorage.setItem(constants.localStorageFileIdKey, fileId)
+      this.file.id = fileId
+      this.save()
     },
     setOwnerId(ownerId: string) {
-      this.ownerId = ownerId
-      localStorage.setItem(constants.localStorageFileOwnerKey, ownerId)
+      this.file.owner_id = ownerId
+      this.save()
     },
     setFileName(fileName: string) {
-      this.fileName = fileName
-      localStorage.setItem(constants.localStorageFileNameKey, fileName)
+      this.file.file_name = fileName
+      this.save()
     },
     setContent(content: string) {
-      this.content = content
-      localStorage.setItem(constants.localStorageFileContentKey, content)
+      this.file.content = content
+      this.save()
     },
-    setLastModified(lastModified: Date) {
-      this.lastModified = lastModified
-      localStorage.setItem(constants.localStorageLastModifiedKey, lastModified.toISOString())
+    setLastModified(lastModified: number | Date) {
+      this.file.last_edited = lastModified instanceof Date ? lastModified.getTime() : lastModified
+      this.save()
     },
-    setCreated(created: Date) {
-      this.created = created
-      localStorage.setItem(constants.localStorageCreatedKey, created.toISOString())
+    setCreated(created: number | Date) {
+      this.file.created = created instanceof Date ? created.getTime() : created
+      this.save()
     },
     setChannelId(channelId: string | undefined) {
-      this.channelId = channelId
-      localStorage.setItem(constants.localStorageFileChannelIdKey, channelId ?? '')
+      this.file.channel_id = channelId
+      this.save()
     },
     setShareURLId(shareURLId: string) {
       this.shareURLId = shareURLId
       localStorage.setItem(constants.localStorageShareURLIdKey, shareURLId)
     },
     setIsGlobal(isGlobal: boolean) {
-      this.isGlobal = isGlobal
+      this.file.is_global = isGlobal
+      this.save()
     },
     clearFileId() {
-      this.fileId = undefined
-      localStorage.removeItem(constants.localStorageFileIdKey)
+      this.file.id = undefined
+      this.save()
     },
     clearOwnerId() {
-      this.ownerId = undefined
-      localStorage.removeItem(constants.localStorageFileOwnerKey)
+      this.file.owner_id = undefined
+      this.save()
     },
     clearChannelId() {
-      this.channelId = undefined
-      localStorage.removeItem(constants.localStorageFileChannelIdKey)
+      this.file.channel_id = undefined
+      this.save()
     },
     clearShareURLId() {
       this.shareURLId = undefined
@@ -387,14 +460,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setCreated(new Date())
     },
     resetIsGlobal() {
-      this.isGlobal = false
+      this.file.is_global = false
     },
-    setPermissions(permissions: Permission) {
-      this.permissions = permissions
-      localStorage.setItem(
-        constants.localStorageFilePermissionsKey,
-        permissions ? String(permissions) : '',
-      )
+    setPermissions(accessPermissions: Permission) {
+      this.accessPermissions = accessPermissions
     },
     /**
      * Closes the file and resets the entire store, as well as resets the state of the global editor if it is present.
@@ -425,6 +494,12 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.oTransStack = new Map<string, OTrans>()
       this.oTransNotAcked = new Map<string, OTransReqDto>()
       this.lastTrans = undefined
+    },
+    /**
+     * Saves the current file to the local storage.
+     */
+    save(): void {
+      writeFileToLocalStorage(this.file)
     },
   },
 })
