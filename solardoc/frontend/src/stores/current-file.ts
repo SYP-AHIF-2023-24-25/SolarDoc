@@ -236,8 +236,16 @@ export const useCurrentFileStore = defineStore('currentFile', {
         showNotifFromErr(new FileGoneWarn())
       }
     },
+    /**
+     * This should only be called once the data was fetched and the file data was updated (in case it's a remote file).
+     * @param userId The user ID to check for authorisation.
+     */
     async ensureUserIsAuthorisedForFile(userId: string) {
-      if (this.file.id && (this.file.owner_id === userId || this.isAccessibleShareFile)) {
+      if (!this.file.id || !this.file.owner_id) {
+        // Local file
+        return
+      } else if (this.file.id && (this.file.owner_id === userId || this.isAccessibleShareFile)) {
+        // Remote file
         return
       }
       await this.closeFileGlobally()
