@@ -60,14 +60,14 @@ function getDefaultFile(currentUserId?: string): LocalFile | File {
 
 function ensureAllFileProperties(raw: object): LocalFile | File {
   const file = getDefaultFile()
-  file.id = "id" in raw ? raw.id : file.id
-  file.content = "content" in raw && raw.content ? raw.content : file.content
-  file.created = "created" in raw && raw.created ? raw.created : file.created
-  file.file_name = "file_name" in raw && raw.file_name ? raw.file_name : file.file_name
-  file.last_edited = "last_edited" in raw && raw.last_edited ? raw.last_edited : file.last_edited
-  file.owner_id = "owner_id" in raw && raw.owner_id ? raw.owner_id : file.owner_id
-  file.channel_id = "channel_id" in raw && raw.channel_id ? raw.channel_id : file.channel_id
-  file.is_global = "is_global" in raw && raw.is_global ? raw.is_global : file.is_global
+  file.id = <string | undefined>("id" in raw ? raw.id : file.id)
+  file.content = <string>("content" in raw && raw.content ? raw.content : file.content)
+  file.created = <number>("created" in raw && raw.created ? raw.created : file.created)
+  file.file_name = <string>("file_name" in raw && raw.file_name ? raw.file_name : file.file_name)
+  file.last_edited = <number>("last_edited" in raw && raw.last_edited ? raw.last_edited : file.last_edited)
+  file.owner_id = <string | undefined>("owner_id" in raw && raw.owner_id ? raw.owner_id : file.owner_id)
+  file.channel_id = <string | undefined>("channel_id" in raw && raw.channel_id ? raw.channel_id : file.channel_id)
+  file.is_global = <boolean>("is_global" in raw && raw.is_global ? raw.is_global : file.is_global)
   return file
 }
 
