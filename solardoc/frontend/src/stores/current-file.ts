@@ -54,20 +54,26 @@ function getDefaultFile(currentUserId?: string): LocalFile | File {
     last_edited: new Date().getTime(),
     owner_id: currentUserId,
     channel_id: undefined,
-    is_global: false
+    is_global: false,
   }
 }
 
 function ensureAllFileProperties(raw: object): LocalFile | File {
   const file = getDefaultFile()
-  file.id = <string | undefined>("id" in raw ? raw.id : file.id)
-  file.content = <string>("content" in raw && raw.content ? raw.content : file.content)
-  file.created = <number>("created" in raw && raw.created ? raw.created : file.created)
-  file.file_name = <string>("file_name" in raw && raw.file_name ? raw.file_name : file.file_name)
-  file.last_edited = <number>("last_edited" in raw && raw.last_edited ? raw.last_edited : file.last_edited)
-  file.owner_id = <string | undefined>("owner_id" in raw && raw.owner_id ? raw.owner_id : file.owner_id)
-  file.channel_id = <string | undefined>("channel_id" in raw && raw.channel_id ? raw.channel_id : file.channel_id)
-  file.is_global = <boolean>("is_global" in raw && raw.is_global ? raw.is_global : file.is_global)
+  file.id = <string | undefined>('id' in raw ? raw.id : file.id)
+  file.content = <string>('content' in raw && raw.content ? raw.content : file.content)
+  file.created = <number>('created' in raw && raw.created ? raw.created : file.created)
+  file.file_name = <string>('file_name' in raw && raw.file_name ? raw.file_name : file.file_name)
+  file.last_edited = <number>(
+    ('last_edited' in raw && raw.last_edited ? raw.last_edited : file.last_edited)
+  )
+  file.owner_id = <string | undefined>(
+    ('owner_id' in raw && raw.owner_id ? raw.owner_id : file.owner_id)
+  )
+  file.channel_id = <string | undefined>(
+    ('channel_id' in raw && raw.channel_id ? raw.channel_id : file.channel_id)
+  )
+  file.is_global = <boolean>('is_global' in raw && raw.is_global ? raw.is_global : file.is_global)
   return file
 }
 
@@ -77,11 +83,13 @@ function writeFileToLocalStorage(file: LocalFile | File): void {
 
 export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
-    let storedFile: LocalFile | File;
+    let storedFile: LocalFile | File
     try {
-      storedFile = ensureAllFileProperties(JSON.parse(localStorage.getItem(constants.localStorageFileKey) || ''))
+      storedFile = ensureAllFileProperties(
+        JSON.parse(localStorage.getItem(constants.localStorageFileKey) || ''),
+      )
     } catch (e) {
-      console.warn("Failed to parse file from local storage. Reverting to default file.");
+      console.warn('Failed to parse file from local storage. Reverting to default file.')
       storedFile = getDefaultFile()
     }
     const shareURLId = localStorage.getItem(constants.localStorageShareURLIdKey)
@@ -117,7 +125,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
     isAccessibleShareFile(): boolean {
       return (
         this.shareFile &&
-        (this.accessPermissions === Permissions.Read || this.accessPermissions === Permissions.Write)
+        (this.accessPermissions === Permissions.Read ||
+          this.accessPermissions === Permissions.Write)
       )
     },
     /**
@@ -125,7 +134,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @since 0.7.0
      */
     raw(): LocalFile | File {
-      return this.file;
+      return this.file
     },
     /**
      * COMPATIBILITY MODE LAYER FOR FILE PROPERTIES
@@ -353,11 +362,11 @@ export const useCurrentFileStore = defineStore('currentFile', {
         // This is a new transformation, which may happen concurrently with the user's own transformation
         // We need to make sure that the transformation is applied in the correct order and they are not doing the same
         // transformation. In this way they must result in `apply(apply(S, A), B') = apply(apply(S, B), A')`
-        let operation = OTrans = {
+        let operation = (OTrans = {
           ...oTrans,
           acknowledged: true,
           init: false,
-        }
+        })
         const concurrentTrans = this.oTransNotAcked.slice()
         for (let i = 0; i < concurrentTrans.length; i++) {
           operation = await this.transformOTrans(operation, concurrentTrans[i])
@@ -373,9 +382,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @param oTrans The OTrans object to transform.
      * @param concurrentOTrans The concurrent OTrans object to transform.
      */
-    async transformOTrans(oTrans: OTrans, concurrentOTrans: OTransReqDto): OTrans {
-
-    },
+    async transformOTrans(oTrans: OTrans, concurrentOTrans: OTransReqDto): OTrans {},
     /**
      * Pushes an OTrans to the stack of transformations which are not yet acknowledged, but have been already applied
      * to the content.

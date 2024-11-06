@@ -10,7 +10,7 @@ import {
   PhoenixInternalError,
 } from '@/services/phoenix/errors'
 import CollaboratorCard from '@/components/editor/dropdown/editor-settings/CollaboratorCard.vue'
-import type {FilePermission, FilePermissions} from "@/services/phoenix/api-service";
+import type { FilePermission, FilePermissions } from '@/services/phoenix/api-service'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -23,7 +23,10 @@ const permissionUsers = ref<Array<FilePermission>>([])
 async function fetchFilePermissions(bearerToken: string) {
   let resp: Awaited<ReturnType<typeof phoenixRestService.getV2FilesByFileIdPermissions>>
   try {
-    resp = await phoenixRestService.getV2FilesByFileIdPermissions(bearerToken, currentFileStore.fileId!)
+    resp = await phoenixRestService.getV2FilesByFileIdPermissions(
+      bearerToken,
+      currentFileStore.fileId!,
+    )
   } catch (e) {
     throw new PhoenixInternalError(
       'Critically failed to fetch file permissions for file. Cause: ' + (<Error>e).message,
