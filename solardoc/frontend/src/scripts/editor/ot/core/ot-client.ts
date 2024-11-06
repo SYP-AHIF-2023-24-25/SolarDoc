@@ -28,10 +28,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import type { Synchronised } from '@/scripts/editor/ot/client/synchronised'
-import type { TextTransformation } from '@/scripts/editor/ot/text-operation'
-import type {AwaitingConfirm} from "@/scripts/editor/ot/client/awaiting-confirm";
-import type {AwaitingWithBuffer} from "@/scripts/editor/ot/client/awaiting-with-buffer";
+import type { Synchronised } from '@/scripts/editor/ot/core/synchronised'
+import type { TextOperation } from '@/scripts/editor/ot/text-operation'
+import type {AwaitingConfirm} from "@/scripts/editor/ot/core/awaiting-confirm";
+import type {AwaitingWithBuffer} from "@/scripts/editor/ot/core/awaiting-with-buffer";
 
 /**
  * The possible states of the OT client.
@@ -79,7 +79,7 @@ export abstract class OTBaseClient {
    * Applies the user input to the client.
    * @param operation The operation to apply.
    */
-  async applyClient(operation: TextTransformation): Promise<void>  {
+  async applyClient(operation: TextOperation): Promise<void>  {
     this.setState(await this.getState().applyClient(operation))
   }
 
@@ -87,7 +87,7 @@ export abstract class OTBaseClient {
    * Applies the server operation to the client.
    * @param operation The operation to apply.
    */
-  async applyServer(operation: TextTransformation): Promise<void>  {
+  async applyServer(operation: TextOperation): Promise<void>  {
     this._revision += 1
     this.setState(await this.getState().applyServer(operation))
   }
@@ -118,7 +118,7 @@ export abstract class OTBaseClient {
    * @since 1.0.0
    * @abstract
    */
-  abstract sendOperation(revision: number, operation: TextTransformation): Promise<void>
+  abstract sendOperation(revision: number, operation: TextOperation): Promise<void>
 
   /**
    * Applies a server operation to the client.
@@ -126,5 +126,5 @@ export abstract class OTBaseClient {
    * @since 1.0.0
    * @abstract
    */
-  abstract applyOperation(operation: TextTransformation): Promise<void>
+  abstract applyOperation(operation: TextOperation): Promise<void>
 }

@@ -28,21 +28,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import  { type OTBaseClient } from '@/scripts/editor/ot/client/ot-client'
-import type { TextTransformation } from '@/scripts/editor/ot/text-operation'
-import  { type OTState } from '@/scripts/editor/ot/client/ot-state'
-import {AwaitingWithBuffer} from "@/scripts/editor/ot/client/awaiting-with-buffer";
-import {Synchronised} from "@/scripts/editor/ot/client/synchronised";
-import type {Selection} from "@/scripts/editor/ot/client/selection";
+import  { type OTBaseClient } from '@/scripts/editor/ot/core/ot-client'
+import type { TextOperation } from '@/scripts/editor/ot/text-operation'
+import  { type OTState } from '@/scripts/editor/ot/core/ot-state'
+import {AwaitingWithBuffer} from "@/scripts/editor/ot/core/awaiting-with-buffer";
+import {Synchronised} from "@/scripts/editor/ot/core/synchronised";
+import type {Selection} from "@/scripts/editor/ot/core/selection";
 
 /**
  * Represents the state of the client when it is waiting for the server to acknowledge an operation.
  * @since 1.0.0
  */
 export class AwaitingConfirm extends OTState {
-  private readonly _outstanding: TextTransformation
+  private readonly _outstanding: TextOperation
 
-  constructor(outstanding: TextTransformation) {
+  constructor(outstanding: TextOperation) {
     this._outstanding = outstanding
   }
 
@@ -50,7 +50,7 @@ export class AwaitingConfirm extends OTState {
    * The outstanding operation that has not been acknowledged by the server.
    * @since 1.0.0
    */
-  get outstanding(): TextTransformation {
+  get outstanding(): TextOperation {
     return this._outstanding
   }
 
@@ -59,7 +59,7 @@ export class AwaitingConfirm extends OTState {
    * @param client The client to apply the operation to.
    * @param operation The operation to apply.
    */
-  async applyClient(client: OTBaseClient, operation: TextTransformation): Promise<OTState> {
+  async applyClient(client: OTBaseClient, operation: TextOperation): Promise<OTState> {
     return new AwaitingWithBuffer(this._outstanding, operation)
   }
 
@@ -77,8 +77,8 @@ export class AwaitingConfirm extends OTState {
    * @param client The client to apply the operation to.
    * @param operation The operation from the server to apply.
    */
-  async applyServer(client: OTBaseClient, operation: TextTransformation): Promise<OTState> {
-    const pair = TextTransformation.transform(this._outstanding, operation)
+  async applyServer(client: OTBaseClient, operation: TextOperation): Promise<OTState> {
+    const pair = TextOperation.transform(this._outstanding, operation)
     await client.applyOperation(pair[1])
     return new AwaitingConfirm(pair[0])
   }

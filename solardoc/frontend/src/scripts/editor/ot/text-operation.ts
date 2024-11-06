@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Luna Klatzer
  *
- * This file contains the implementation of the TextTransformation class and is based on the original implementation in
+ * This file contains the implementation of the TextOperation class and is based on the original implementation in
  * ot.js from Tim Baumann and as such will be licensed under the MIT license.
  *
  * License:
@@ -38,7 +38,7 @@ import { OTLogicError } from '@/scripts/editor/ot/ot-logic-error'
  * It contains the operations that were applied to the text, the length of the original text, and the length of the
  * transformed text.
  */
-export class TextTransformation {
+export class TextOperation {
   private _ops: SingleOperation[]
   private _baseLength: number
   private _transformedLength: number
@@ -73,7 +73,7 @@ export class TextTransformation {
   /**
    * Compares this transformation with another transformation.
    */
-  equals(other: TextTransformation): boolean {
+  equals(other: TextOperation): boolean {
     if (this.baseLength !== other.baseLength) {
       return false
     }
@@ -96,7 +96,7 @@ export class TextTransformation {
    * @param length The number of characters to retain.
    * @returns This transformation object for chaining.
    */
-  retain(length: number): TextTransformation {
+  retain(length: number): TextOperation {
     if (length === 0) {
       return this
     }
@@ -119,7 +119,7 @@ export class TextTransformation {
    * @param text The text to insert.
    * @returns This transformation object for chaining.
    */
-  insert(text: string): TextTransformation {
+  insert(text: string): TextOperation {
     if (text.length === 0) {
       return this
     }
@@ -156,7 +156,7 @@ export class TextTransformation {
    * @param length The number of characters to delete. Must be positive.
    * @returns This transformation object for chaining.
    */
-  delete(length: number): TextTransformation {
+  delete(length: number): TextOperation {
     if (length === 0) {
       return this
     }
@@ -212,10 +212,10 @@ export class TextTransformation {
    * Computes the inverse of an operation. The inverse of an operation is the
    * operation that reverts the effects of the operation, e.g. when you have an
    * operation 'insert("hello "); skip(6);' then the inverse is 'delete("hello "); skip(6);'.
-   * @param str
+   * @param text The text to compute the inverse for.
    */
-  invert(str: string): TextTransformation {
-    const inverted = new TextTransformation()
+  invert(text: string): TextOperation {
+    const inverted = new TextOperation()
     inverted.baseLength = this.transformedLength
     inverted.transformedLength = this.baseLength
 
@@ -228,7 +228,7 @@ export class TextTransformation {
         inverted.delete(op.content.length)
       } else {
         // Delete
-        inverted.insert(str.slice(strIndex, strIndex + op.length))
+        inverted.insert(text.slice(strIndex, strIndex + op.length))
         strIndex += op.length
       }
     }
@@ -242,7 +242,7 @@ export class TextTransformation {
    * `apply(apply(S, A), B) = apply(S, compose(A, B))` must hold.
    * @param other The transformation to compose with this transformation.
    */
-  compose(other: TextTransformation): TextTransformation {
+  compose(other: TextOperation): TextOperation {
     const transf1 = this
     const transf2 = other
     if (transf1.transformedLength !== transf2.baseLength) {
@@ -251,7 +251,7 @@ export class TextTransformation {
       )
     }
 
-    const composed = new TextTransformation()
+    const composed = new TextOperation()
     let currOp1: SingleOperation = transf1.ops[0]
     let currOp2: SingleOperation = transf2.ops[0]
     let index1 = 1
@@ -344,15 +344,15 @@ export class TextTransformation {
    * @param trans2 The transformation to transform against.
    */
   static transform(
-    trans1: TextTransformation,
-    trans2: TextTransformation,
-  ): [TextTransformation, TextTransformation] {
+    trans1: TextOperation,
+    trans2: TextOperation,
+  ): [TextOperation, TextOperation] {
     if (trans1.baseLength !== trans2.baseLength) {
       throw new OTLogicError('The base lengths of the transformations must be equal.')
     }
 
-    const prime1 = new TextTransformation()
-    const prime2 = new TextTransformation()
+    const prime1 = new TextOperation()
+    const prime2 = new TextOperation()
     let currOp1: SingleOperation = trans1.ops[0]
     let currOp2: SingleOperation = trans2.ops[0]
     let index1 = 1

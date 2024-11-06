@@ -28,17 +28,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import type { TextTransformation } from '@/scripts/editor/ot/text-operation'
-import type {OTBaseClient} from "@/scripts/editor/ot/client/ot-client";
-import {AwaitingConfirm} from "@/scripts/editor/ot/client/awaiting-confirm";
-import {OTState} from "@/scripts/editor/ot/client/ot-state";
-import type {Selection} from "@/scripts/editor/ot/client/selection";
+import type { TextOperation } from '@/scripts/editor/ot/text-operation'
+import type {OTBaseClient} from "@/scripts/editor/ot/core/ot-client";
+import {AwaitingConfirm} from "@/scripts/editor/ot/core/awaiting-confirm";
+import {OTState} from "@/scripts/editor/ot/core/ot-state";
+import type {Selection} from "@/scripts/editor/ot/core/selection";
 
 export class AwaitingWithBuffer extends OTState {
-  private readonly _outstanding: TextTransformation
-  private readonly _buffer: TextTransformation
+  private readonly _outstanding: TextOperation
+  private readonly _buffer: TextOperation
 
-  constructor(outstanding: TextTransformation, buffer: TextTransformation) {
+  constructor(outstanding: TextOperation, buffer: TextOperation) {
     this._outstanding = outstanding
     this._buffer = buffer
   }
@@ -47,7 +47,7 @@ export class AwaitingWithBuffer extends OTState {
    * The outstanding operation that has not been acknowledged by the server.
    * @since 1.0.0
    */
-  get outstanding(): TextTransformation {
+  get outstanding(): TextOperation {
     return this._outstanding
   }
 
@@ -55,7 +55,7 @@ export class AwaitingWithBuffer extends OTState {
    * The buffer of operations that have not been acknowledged by the server.
    * @since 1.0.0
    */
-  get buffer(): TextTransformation {
+  get buffer(): TextOperation {
     return this._buffer
   }
 
@@ -64,7 +64,7 @@ export class AwaitingWithBuffer extends OTState {
    * @param client The client to apply the operation to.
    * @param operation The operation to apply.
    */
-  async applyClient(client: OTBaseClient, operation: TextTransformation): Promise<AwaitingWithBuffer> {
+  async applyClient(client: OTBaseClient, operation: TextOperation): Promise<AwaitingWithBuffer> {
     return new AwaitingWithBuffer(this._outstanding, this._buffer.compose(operation))
   }
 
@@ -86,9 +86,9 @@ export class AwaitingWithBuffer extends OTState {
    * @param client The client to apply the operation to.
    * @param operation The operation to apply.
    */
-  async applyServer(client: OTBaseClient, operation: TextTransformation): Promise<AwaitingWithBuffer> {
-    const pair1 = TextTransformation.transform(this.outstanding, operation) // -> [newOutstanding, transformedOperation]
-    const pair2 = TextTransformation.transform(this.buffer, pair1[1]) // -> [newBuffer, transformedOperation]
+  async applyServer(client: OTBaseClient, operation: TextOperation): Promise<AwaitingWithBuffer> {
+    const pair1 = TextOperation.transform(this.outstanding, operation) // -> [newOutstanding, transformedOperation]
+    const pair2 = TextOperation.transform(this.buffer, pair1[1]) // -> [newBuffer, transformedOperation]
     await client.applyServer(pair2[1]) // Apply the transformed received operation to the client's document
     return new AwaitingWithBuffer(pair1[0], pair2[0])
   }

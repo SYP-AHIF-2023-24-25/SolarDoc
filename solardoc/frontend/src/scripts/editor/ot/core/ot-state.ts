@@ -28,8 +28,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import type { OTBaseClient } from '@/scripts/editor/ot/client/ot-client'
-import type {TextTransformation} from "@/scripts/editor/ot/text-operation";
+import type { OTBaseClient } from '@/scripts/editor/ot/core/ot-client'
+import type {TextOperation} from "@/scripts/editor/ot/text-operation";
 
 /**
  * The possible states of the OT client.
@@ -41,14 +41,14 @@ export abstract class OTState {
    * @param client The client to apply the operation to.
    * @param operation The operation to apply.
    */
-  abstract applyClient(client: OTBaseClient, operation: TextTransformation): Promise<OTState>
+  abstract applyClient(client: OTBaseClient, operation: TextOperation): Promise<OTState>
 
   /**
    * Applies the server operation to the state.
    * @param client The client to apply the operation to.
    * @param operation The operation to apply.
    */
-  abstract applyServer(client: OTBaseClient, operation: TextTransformation): Promise<OTState>
+  abstract applyServer(client: OTBaseClient, operation: TextOperation): Promise<OTState>
 
   /**
    * Acknowledges the server operation.

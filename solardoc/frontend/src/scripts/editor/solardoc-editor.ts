@@ -21,6 +21,7 @@ import { createOTUpdates } from '@/scripts/editor/ot/create-ot'
 import { getMonacoUpdatesFromOT } from '@/scripts/editor/ot/get-monaco-updates'
 import { sendOTUpdates } from '@/scripts/editor/ot/send-ot'
 import { EditorModelNotFoundError } from '@/errors/editor-model-not-found-error'
+import {type ISelection, Selection as MonacoSelection} from "monaco-editor";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -84,7 +85,7 @@ let globalMonacoEditor!: editor.IStandaloneCodeEditor | null
  * @since 0.7.0
  */
 export class SolardocEditor {
-  public readonly name = 'SolardocEditor'
+  public static readonly name = 'SolardocEditor'
   private static _readonly?: boolean
   private static _locked?: boolean
 
@@ -120,6 +121,7 @@ export class SolardocEditor {
       automaticLayout: true,
       scrollBeyondLastLine: false,
     })
+    globalMonacoEditor.setSelections()
 
     // We need to set the content after the editor is created due to a weird bug in Monaco (See #146)
     this._applyInitContent(`${initialState.content}` || '')
@@ -178,6 +180,22 @@ export class SolardocEditor {
    */
   public static setContent(content: string) {
     globalMonacoEditor!.setValue(content)
+  }
+
+  /**
+   * Sets the selections in the editor.
+   * @param selections The selections to set.
+   */
+  public static setSelections(selections: Array<ISelection>) {
+    globalMonacoEditor!.setSelections(selections)
+  }
+
+  /**
+   * Returns all the selections in the editor.
+   * @since 1.0.0
+   */
+  public static getSelections(): Array<MonacoSelection> {
+    return globalMonacoEditor!.getSelections()
   }
 
   /**

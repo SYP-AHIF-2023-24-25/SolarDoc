@@ -28,7 +28,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import { Range } from '@/scripts/editor/ot/client/range'
+import { Range } from '@/scripts/editor/ot/core/range'
+import type {TextOperation} from "@/scripts/editor/ot/text-operation";
+import type {editor, ISelection} from "monaco-editor";
+import type {SelectionDto} from "@/services/phoenix/client-dto";
 
 function sortRanges(ranges: Array<Range>): Array<Range> {
   return ranges.slice().sort((a, b) => a.anchor - b.anchor || a.head - b.head)
@@ -46,6 +49,10 @@ export class Selection {
 
   get ranges(): Array<Range> {
     return this._ranges
+  }
+
+  toMonacoSelection(monacoEditor: editor.IStandaloneCodeEditor): Array<ISelection> {
+    return this.ranges.map(range => range.toMonacoSelection(monacoEditor))
   }
 
   /**
@@ -95,8 +102,18 @@ export class Selection {
    * Updates all selection according to the given operation.
    * @param operation The operation to transform the selection by.
    */
-  transform(operation: TextTransformation): Selection {
+  transform(operation: TextOperation): Selection {
     const newRanges = this._ranges.map(range => range.transform(operation))
     return new Selection(newRanges)
+  }
+
+  /**
+   * Transforms the selection from the latest known server state to the current client state.
+   * @param selection The selection to transform.
+   */
+  static fromDto(selection: SelectionDto): Selection {
+    return new Selection([
+      new Range(selection.anchor, selection.head)
+    ])
   }
 }
