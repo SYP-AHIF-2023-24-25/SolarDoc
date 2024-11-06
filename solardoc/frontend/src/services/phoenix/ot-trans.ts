@@ -7,7 +7,6 @@ import { v4 as uuidv4 } from 'uuid'
  */
 export interface RawInsertOTrans {
   readonly type: 'insert'
-  readonly pos: number
   readonly content: string
 }
 
@@ -16,14 +15,21 @@ export interface RawInsertOTrans {
  */
 export interface RawDeleteOTrans {
   readonly type: 'delete'
-  readonly pos: number
+  readonly length: number
+}
+
+/**
+ * A raw operational transformation which retains text.
+ */
+export interface RawRetainOTrans {
+  readonly type: 'retain'
   readonly length: number
 }
 
 /**
  * A raw operational transformation.
  */
-export type RawOTrans = RawInsertOTrans | RawDeleteOTrans
+export type RawOTrans = RawInsertOTrans | RawDeleteOTrans | RawRetainOTrans
 
 /**
  * A DTO for an operational transformation transaction request.
