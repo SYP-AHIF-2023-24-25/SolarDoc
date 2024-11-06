@@ -107,6 +107,6 @@ export default Object.freeze({
     server: 'Saved Remotely',
     unsavedChanges: 'Unsaved Changes',
   },
-  version: 'v1.0.0-dev.4',
+  version: 'v1.0.0-dev.5',
   copyright: 'Solardoc © 2023-2024 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
 })
