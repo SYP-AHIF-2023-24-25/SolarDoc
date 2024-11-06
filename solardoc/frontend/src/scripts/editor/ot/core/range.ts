@@ -28,9 +28,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import type { TextTransformation } from '@/scripts/editor/ot/text-operation'
+import type { TextOperation } from '@/scripts/editor/ot/text-operation'
+import {editor, type ISelection} from "monaco-editor";
+import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 
-function transformIndex(index: number, operation: TextTransformation): number {
+function transformIndex(index: number, operation: TextOperation): number {
   let newIndex = index
   for (const op of operation.ops) {
     if (op.isRetain) {
@@ -74,11 +76,22 @@ export class Range {
     return this.anchor === this.head
   }
 
-  transform(operation: TextTransformation): Range {
+  transform(operation: TextOperation): Range {
     const newAnchor = transformIndex(this.anchor, operation)
     if (this.anchor === this.head) {
       return new Range(newAnchor, newAnchor)
     }
     return new Range(newAnchor, transformIndex(this.head, operation))
+  }
+
+  toMonacoSelection(monacoEditor: IStandaloneCodeEditor): ISelection {
+    const anchorMonacoPos = monacoEditor.getModel()!.getPositionAt(this.anchor)
+    const headMonacoPos = monacoEditor.getModel()!.getPositionAt(this.head)
+    return {
+      startLineNumber: anchorMonacoPos.lineNumber,
+      startColumn: anchorMonacoPos.column,
+      endLineNumber: headMonacoPos.lineNumber,
+      endColumn: headMonacoPos.column,
+    }
   }
 }

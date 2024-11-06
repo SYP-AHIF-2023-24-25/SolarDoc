@@ -28,10 +28,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import { OTState } from '@/scripts/editor/ot/client/ot-state'
-import type { OTBaseClient } from '@/scripts/editor/ot/client/ot-client'
-import type {TextTransformation} from "@/scripts/editor/ot/text-operation";
-import {AwaitingConfirm} from "@/scripts/editor/ot/client/awaiting-confirm";
+import { OTState } from '@/scripts/editor/ot/core/ot-state'
+import type { OTBaseClient } from '@/scripts/editor/ot/core/ot-client'
+import type {TextOperation} from "@/scripts/editor/ot/text-operation";
+import {AwaitingConfirm} from "@/scripts/editor/ot/core/awaiting-confirm";
 import {OTLogicError} from "@/scripts/editor/ot/ot-logic-error";
 
 /**
@@ -53,12 +53,12 @@ export class Synchronised extends OTState {
     return Synchronised._instance
   }
 
-  async applyClient(client: OTBaseClient, operation: TextTransformation): Promise<OTState> {
+  async applyClient(client: OTBaseClient, operation: TextOperation): Promise<OTState> {
     await client.sendOperation(client.revision, operation)
     return new AwaitingConfirm(operation)
   }
 
-  async applyServer(client: OTBaseClient, operation: TextTransformation): Promise<OTState> {
+  async applyServer(client: OTBaseClient, operation: TextOperation): Promise<OTState> {
     await client.applyOperation(operation)
     return this
   }
