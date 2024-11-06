@@ -5,7 +5,8 @@ defineProps<{ infoText: any }>()
 <template>
   <span class="info-box-wrapper">
     <span class="info-box">
-      <span class="info-box-content"><code>{{ infoText }}</code></span
+      <span class="info-box-content"
+        ><code>{{ infoText }}</code></span
       >
     </span>
   </span>

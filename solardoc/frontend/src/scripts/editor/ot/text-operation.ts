@@ -1,5 +1,5 @@
 /**
- * @file This file contains the implementation of the TextTransformation class.
+ * @file text-operation.ts
  * @since 1.0.0
  * @author Luna Klatzer
  *
@@ -29,8 +29,8 @@
  * THE SOFTWARE.
  */
 
-import type {SingleOperation} from "@/scripts/editor/ot/single-operation";
-import {OTLogicError} from "@/scripts/editor/ot/ot-logic-error";
+import type { SingleOperation } from '@/scripts/editor/ot/single-operation'
+import { OTLogicError } from '@/scripts/editor/ot/ot-logic-error'
 
 /**
  * A class that represents a text transformation.
@@ -38,49 +38,57 @@ import {OTLogicError} from "@/scripts/editor/ot/ot-logic-error";
  * It contains the operations that were applied to the text, the length of the original text, and the length of the
  * transformed text.
  */
-class TextTransformation {
+export class TextTransformation {
   private _ops: SingleOperation[]
   private _baseLength: number
   private _transformedLength: number
 
   constructor() {
-    this.ops = [];
-    this.baseLength = 0;
-    this.transformedLength = 0;
+    this.ops = []
+    this.baseLength = 0
+    this.transformedLength = 0
   }
 
   /**
    * The operations that were applied to the text.
    */
   get ops() {
-    return this._ops;
+    return this._ops
   }
 
   /**
    * The base length is the length of every string that this transformation can be applied to.
    */
   get baseLength() {
-    return this._baseLength;
+    return this._baseLength
   }
 
   /**
    * The transformed length is the result length of applying the transformation to a string of length `baseLength`.
    */
   get transformedLength() {
-    return this._transformedLength;
+    return this._transformedLength
   }
 
   /**
    * Compares this transformation with another transformation.
    */
   equals(other: TextTransformation): boolean {
-    if (this.baseLength !== other.baseLength) { return false; }
-    if (this.targetLength !== other.targetLength) { return false; }
-    if (this.ops.length !== other.ops.length) { return false; }
-    for (let i = 0; i < this.ops.length; i++) {
-      if (this.ops[i].type !== other.ops[i].type) { return false; }
+    if (this.baseLength !== other.baseLength) {
+      return false
     }
-    return true;
+    if (this.targetLength !== other.targetLength) {
+      return false
+    }
+    if (this.ops.length !== other.ops.length) {
+      return false
+    }
+    for (let i = 0; i < this.ops.length; i++) {
+      if (this.ops[i].type !== other.ops[i].type) {
+        return false
+      }
+    }
+    return true
   }
 
   /**
@@ -89,19 +97,21 @@ class TextTransformation {
    * @returns This transformation object for chaining.
    */
   retain(length: number): TextTransformation {
-    if (length === 0) { return this; }
-    this._baseLength += length;
-    this._transformedLength += length;
+    if (length === 0) {
+      return this
+    }
+    this._baseLength += length
+    this._transformedLength += length
 
     // Check the last operation and see if it can be merged with the new operation
-    const lastOp = this.ops[this.ops.length - 1];
+    const lastOp = this.ops[this.ops.length - 1]
     if (lastOp && lastOp.isRetain) {
-      lastOp.length += length;
+      lastOp.length += length
     } else {
-      this.ops.push(new SingleOperation('retain', undefined, length));
+      this.ops.push(new SingleOperation('retain', undefined, length))
     }
 
-    return this; // For chaining
+    return this // For chaining
   }
 
   /**
@@ -111,15 +121,15 @@ class TextTransformation {
    */
   insert(text: string): TextTransformation {
     if (text.length === 0) {
-      return this;
+      return this
     }
-    this._transformedLength += text.length;
+    this._transformedLength += text.length
 
     // Check the last operation and see if it can be merged with the new operation
-    const lastOp = this.ops[this.ops.length - 1];
-    const secondLastOp = this.ops[this.ops.length - 2];
+    const lastOp = this.ops[this.ops.length - 1]
+    const secondLastOp = this.ops[this.ops.length - 2]
     if (lastOp && lastOp.isInsert) {
-      lastOp.content += text;
+      lastOp.content += text
     } else if (lastOp.isDelete) {
       // It doesn't matter when an operation is applied whether the operation
       // is delete(3), insert("something") or insert("something"), delete(3).
@@ -128,17 +138,17 @@ class TextTransformation {
       // a document of the right length equal in respect to the `equals` method.
       if (secondLastOp && secondLastOp.isInsert) {
         // -> insert(A), delete(N)
-        secondLastOp.content += text; // Merge with the second last operation
+        secondLastOp.content += text // Merge with the second last operation
       } else {
         // -> insert(A), delete(N)
-        this.ops[this.ops.length - 1] = new SingleOperation('insert', text); // Replace the last operation
-        this.ops.push(new SingleOperation('delete', undefined, lastOp.length)); // Recreate lastOp on top of the stack
+        this.ops[this.ops.length - 1] = new SingleOperation('insert', text) // Replace the last operation
+        this.ops.push(new SingleOperation('delete', undefined, lastOp.length)) // Recreate lastOp on top of the stack
       }
     } else {
-      this.ops.push(new SingleOperation('insert', text));
+      this.ops.push(new SingleOperation('insert', text))
     }
 
-    return this; // For chaining
+    return this // For chaining
   }
 
   /**
@@ -148,19 +158,19 @@ class TextTransformation {
    */
   delete(length: number): TextTransformation {
     if (length === 0) {
-      return this;
+      return this
     }
-    this._baseLength += length; // Delete doesn't change the transformed length, but changes the minimum length of the text
+    this._baseLength += length // Delete doesn't change the transformed length, but changes the minimum length of the text
 
     // Check the last operation and see if it can be merged with the new operation
-    const lastOp = this.ops[this.ops.length - 1];
+    const lastOp = this.ops[this.ops.length - 1]
     if (lastOp && lastOp.isDelete) {
-      lastOp.length += length;
+      lastOp.length += length
     } else {
-      this.ops.push(new SingleOperation('delete', undefined, length));
+      this.ops.push(new SingleOperation('delete', undefined, length))
     }
 
-    return this; // For chaining
+    return this // For chaining
   }
 
   /**
@@ -169,30 +179,33 @@ class TextTransformation {
    */
   apply(text: string): string {
     if (text.length !== this.baseLength) {
-      throw new OTLogicError(`The string is of length ${text.length}, but the transformation can only be applied to texts of length ${this.baseLength}.`);
+      throw new OTLogicError(
+        `The string is of length ${text.length}, but the transformation can only be applied to texts of length ${this.baseLength}.`,
+      )
     }
 
-    const newStr: Array<string> = [];
-    let strIndex = 0;
+    const newStr: Array<string> = []
+    let strIndex = 0
     for (const op of this.ops) {
       if (op.isRetain) {
         if (strIndex + op.length > text.length) {
-          throw new OTLogicError('The retain operation goes beyond the end of the string.');
+          throw new OTLogicError('The retain operation goes beyond the end of the string.')
         }
 
-        newStr.push(text.slice(strIndex, strIndex + op.length));
-        strIndex += op.length;
+        newStr.push(text.slice(strIndex, strIndex + op.length))
+        strIndex += op.length
       } else if (op.isInsert) {
-        newStr.push(op.content);
-      } else { // Delete
-        strIndex += op.length;
+        newStr.push(op.content)
+      } else {
+        // Delete
+        strIndex += op.length
       }
     }
 
     if (strIndex !== text.length) {
-      throw new OTLogicError('The transformation is not valid for the given text.');
+      throw new OTLogicError('The transformation is not valid for the given text.')
     }
-    return newStr.join('');
+    return newStr.join('')
   }
 
   /**
@@ -202,24 +215,25 @@ class TextTransformation {
    * @param str
    */
   invert(str: string): TextTransformation {
-    const inverted = new TextTransformation();
-    inverted.baseLength = this.transformedLength;
-    inverted.transformedLength = this.baseLength;
+    const inverted = new TextTransformation()
+    inverted.baseLength = this.transformedLength
+    inverted.transformedLength = this.baseLength
 
-    let strIndex = 0;
+    let strIndex = 0
     for (const op of this.ops) {
       if (op.isRetain) {
-        inverted.retain(op.length);
-        strIndex += op.length;
+        inverted.retain(op.length)
+        strIndex += op.length
       } else if (op.isInsert) {
-        inverted.delete(op.content.length);
-      } else { // Delete
-        inverted.insert(str.slice(strIndex, strIndex + op.length));
-        strIndex += op.length;
+        inverted.delete(op.content.length)
+      } else {
+        // Delete
+        inverted.insert(str.slice(strIndex, strIndex + op.length))
+        strIndex += op.length
       }
     }
 
-    return inverted;
+    return inverted
   }
 
   /**
@@ -229,94 +243,96 @@ class TextTransformation {
    * @param other The transformation to compose with this transformation.
    */
   compose(other: TextTransformation): TextTransformation {
-    const transf1 = this;
-    const transf2 = other;
+    const transf1 = this
+    const transf2 = other
     if (transf1.transformedLength !== transf2.baseLength) {
-      throw new OTLogicError('The base length of the second transformation must be the target length of the first transformation.');
+      throw new OTLogicError(
+        'The base length of the second transformation must be the target length of the first transformation.',
+      )
     }
 
-    const composed = new TextTransformation();
-    let currOp1: SingleOperation = transf1.ops[0];
-    let currOp2: SingleOperation = transf2.ops[0];
-    let index1 = 1;
-    let index2 = 1;
+    const composed = new TextTransformation()
+    let currOp1: SingleOperation = transf1.ops[0]
+    let currOp2: SingleOperation = transf2.ops[0]
+    let index1 = 1
+    let index2 = 1
 
     while (currOp1 || currOp2) {
       if (currOp1 && currOp1.isDelete) {
-        composed.delete(currOp1.length);
-        currOp1 = transf1.ops[index1++];
-        continue;
+        composed.delete(currOp1.length)
+        currOp1 = transf1.ops[index1++]
+        continue
       } else if (currOp2 && currOp2.isInsert) {
-        composed.insert(currOp2.content);
-        currOp2 = transf2.ops[index2++];
-        continue;
+        composed.insert(currOp2.content)
+        currOp2 = transf2.ops[index2++]
+        continue
       }
 
       if (!currOp1) {
-        throw new OTLogicError('Cannot compose operations: first transformation is too short.');
+        throw new OTLogicError('Cannot compose operations: first transformation is too short.')
       } else if (!currOp2) {
-        throw new OTLogicError('Cannot compose operations: first transformation is too long.');
+        throw new OTLogicError('Cannot compose operations: first transformation is too long.')
       }
 
       if (currOp1.isRetain && currOp2.isRetain) {
         if (currOp1.length > currOp2.length) {
-          composed.retain(currOp2.length);
-          currOp1.length -= currOp2.length;
-          currOp2 = transf2.ops[index2++];
+          composed.retain(currOp2.length)
+          currOp1.length -= currOp2.length
+          currOp2 = transf2.ops[index2++]
         } else if (currOp1.length === currOp2.length) {
-          composed.retain(currOp1.length);
-          currOp1 = transf1.ops[index1++];
-          currOp2 = transf2.ops[index2++];
+          composed.retain(currOp1.length)
+          currOp1 = transf1.ops[index1++]
+          currOp2 = transf2.ops[index2++]
         } else {
-          composed.retain(currOp1.length);
-          currOp2.length -= currOp1.length;
-          currOp1 = transf1.ops[index1++];
+          composed.retain(currOp1.length)
+          currOp2.length -= currOp1.length
+          currOp1 = transf1.ops[index1++]
         }
       } else if (currOp1.isInsert && currOp2.isDelete) {
         if (currOp1.content.length > currOp2.length) {
-          currOp1.content = currOp1.content.slice(currOp2.length);
-          currOp2 = transf2.ops[index2++];
+          currOp1.content = currOp1.content.slice(currOp2.length)
+          currOp2 = transf2.ops[index2++]
         } else if (currOp1.content.length === currOp2.length) {
-          currOp1 = transf1.ops[index1++];
-          currOp2 = transf2.ops[index2++];
+          currOp1 = transf1.ops[index1++]
+          currOp2 = transf2.ops[index2++]
         } else {
-          currOp2.length -= currOp1.content.length;
-          currOp1 = transf1.ops[index1++];
+          currOp2.length -= currOp1.content.length
+          currOp1 = transf1.ops[index1++]
         }
       } else if (currOp1.isInsert && currOp2.isRetain) {
         if (currOp1.content.length > currOp2.length) {
-          composed.insert(currOp1.content.slice(0, currOp2.length));
-          currOp1.content = currOp1.content.slice(currOp2.length);
-          currOp2 = transf2.ops[index2++];
+          composed.insert(currOp1.content.slice(0, currOp2.length))
+          currOp1.content = currOp1.content.slice(currOp2.length)
+          currOp2 = transf2.ops[index2++]
         } else if (currOp1.content.length === currOp2.length) {
-          composed.insert(currOp1.content);
-          currOp1 = transf1.ops[index1++];
-          currOp2 = transf2.ops[index2++];
+          composed.insert(currOp1.content)
+          currOp1 = transf1.ops[index1++]
+          currOp2 = transf2.ops[index2++]
         } else {
-          composed.insert(currOp1.content);
-          currOp2.length -= currOp1.content.length;
-          currOp1 = transf1.ops[index1++];
+          composed.insert(currOp1.content)
+          currOp2.length -= currOp1.content.length
+          currOp1 = transf1.ops[index1++]
         }
       } else if (currOp1.isRetain && currOp2.isDelete) {
         if (currOp1.length > currOp2.length) {
-          composed.delete(currOp2.length);
-          currOp1.length -= currOp2.length;
-          currOp2 = transf2.ops[index2++];
+          composed.delete(currOp2.length)
+          currOp1.length -= currOp2.length
+          currOp2 = transf2.ops[index2++]
         } else if (currOp1.length === currOp2.length) {
-          composed.delete(currOp2.length);
-          currOp1 = transf1.ops[index1++];
-          currOp2 = transf2.ops[index2++];
+          composed.delete(currOp2.length)
+          currOp1 = transf1.ops[index1++]
+          currOp2 = transf2.ops[index2++]
         } else {
-          composed.delete(currOp1.length);
-          currOp2.length -= currOp1.length;
-          currOp1 = transf1.ops[index1++];
+          composed.delete(currOp1.length)
+          currOp2.length -= currOp1.length
+          currOp1 = transf1.ops[index1++]
         }
       } else {
-        throw new OTLogicError('The operations are not compatible.');
+        throw new OTLogicError('The operations are not compatible.')
       }
     }
 
-    return composed;
+    return composed
   }
 
   /**
@@ -327,106 +343,109 @@ class TextTransformation {
    * @param trans1 The transformation to transform.
    * @param trans2 The transformation to transform against.
    */
-  static transform(trans1: TextTransformation, trans2: TextTransformation): [TextTransformation, TextTransformation] {
+  static transform(
+    trans1: TextTransformation,
+    trans2: TextTransformation,
+  ): [TextTransformation, TextTransformation] {
     if (trans1.baseLength !== trans2.baseLength) {
-      throw new OTLogicError('The base lengths of the transformations must be equal.');
+      throw new OTLogicError('The base lengths of the transformations must be equal.')
     }
 
-    const prime1 = new TextTransformation();
-    const prime2 = new TextTransformation();
-    let currOp1: SingleOperation = trans1.ops[0];
-    let currOp2: SingleOperation = trans2.ops[0];
-    let index1 = 1;
-    let index2 = 1;
+    const prime1 = new TextTransformation()
+    const prime2 = new TextTransformation()
+    let currOp1: SingleOperation = trans1.ops[0]
+    let currOp2: SingleOperation = trans2.ops[0]
+    let index1 = 1
+    let index2 = 1
 
     while (currOp1 || currOp2) {
       if (currOp1.isInsert) {
-        prime1.insert(currOp1.content);
-        prime2.retain(currOp1.content.length);
-        currOp1 = trans1.ops[index1++];
-        continue;
+        prime1.insert(currOp1.content)
+        prime2.retain(currOp1.content.length)
+        currOp1 = trans1.ops[index1++]
+        continue
       } else if (currOp2.isInsert) {
-        prime1.retain(currOp2.content.length);
-        prime2.insert(currOp2.content);
-        currOp2 = trans2.ops[index2++];
-        continue;
+        prime1.retain(currOp2.content.length)
+        prime2.insert(currOp2.content)
+        currOp2 = trans2.ops[index2++]
+        continue
       }
 
       if (!currOp1) {
-        throw new OTLogicError('Cannot transform operations: first transformation is too short.');
+        throw new OTLogicError('Cannot transform operations: first transformation is too short.')
       } else if (!currOp2) {
-        throw new OTLogicError('Cannot transform operations: first transformation is too long.');
+        throw new OTLogicError('Cannot transform operations: first transformation is too long.')
       }
 
       if (currOp1.isRetain && currOp2.isRetain) {
         // Case 1: retain/retain
-        let minl: number;
+        let minl: number
         if (currOp1.length > currOp2.length) {
-          minl = currOp2.length;
-          currOp1.length -= currOp2.length;
-          currOp2 = trans2.ops[index2++];
+          minl = currOp2.length
+          currOp1.length -= currOp2.length
+          currOp2 = trans2.ops[index2++]
         } else if (currOp1.length === currOp2.length) {
-          minl = currOp2.length;
-          currOp1 = trans1.ops[index1++];
-          currOp2 = trans2.ops[index2++];
+          minl = currOp2.length
+          currOp1 = trans1.ops[index1++]
+          currOp2 = trans2.ops[index2++]
         } else {
-          minl = currOp1.length;
-          currOp2.length -= currOp1.length;
-          currOp1 = trans1.ops[index1++];
+          minl = currOp1.length
+          currOp2.length -= currOp1.length
+          currOp1 = trans1.ops[index1++]
         }
-        prime1.retain(minl);
-        prime2.retain(minl);
+        prime1.retain(minl)
+        prime2.retain(minl)
       } else if (currOp1.isDelete && currOp2.isDelete) {
         // Case 2: delete/delete -- the order doesn't matter
         if (currOp1.length > currOp2.length) {
-          currOp1.length -= currOp2.length;
-          currOp2 = trans2.ops[index2++];
+          currOp1.length -= currOp2.length
+          currOp2 = trans2.ops[index2++]
         } else if (currOp1.length === currOp2.length) {
-          currOp1 = trans1.ops[index1++];
-          currOp2 = trans2.ops[index2++];
+          currOp1 = trans1.ops[index1++]
+          currOp2 = trans2.ops[index2++]
         } else {
-          currOp2.length -= currOp1.length;
-          currOp1 = trans1.ops[index1++];
+          currOp2.length -= currOp1.length
+          currOp1 = trans1.ops[index1++]
         }
       } else if (currOp1.isDelete && currOp2.isRetain) {
         // Case 3: delete/retain
-        let minl: number;
+        let minl: number
         if (currOp1.length > currOp2.length) {
-          minl = currOp2.length;
-          currOp1.length -= currOp2.length;
-          currOp2 = trans2.ops[index2++];
+          minl = currOp2.length
+          currOp1.length -= currOp2.length
+          currOp2 = trans2.ops[index2++]
         } else if (currOp1.length === currOp2.length) {
-          minl = currOp2.length;
-          currOp1 = trans1.ops[index1++];
-          currOp2 = trans2.ops[index2++];
+          minl = currOp2.length
+          currOp1 = trans1.ops[index1++]
+          currOp2 = trans2.ops[index2++]
         } else {
-          minl = currOp1.length;
-          currOp2.length -= currOp1.length;
-          currOp1 = trans1.ops[index1++];
+          minl = currOp1.length
+          currOp2.length -= currOp1.length
+          currOp1 = trans1.ops[index1++]
         }
-        prime1.delete(minl);
+        prime1.delete(minl)
       } else if (currOp1.isRetain && currOp2.isDelete) {
         // Case 4: retain/delete
-        let minl: number;
+        let minl: number
         if (currOp1.length > currOp2.length) {
-          minl = currOp2.length;
-          currOp1.length -= currOp2.length;
-          currOp2 = trans2.ops[index2++];
+          minl = currOp2.length
+          currOp1.length -= currOp2.length
+          currOp2 = trans2.ops[index2++]
         } else if (currOp1.length === currOp2.length) {
-          minl = currOp2.length;
-          currOp1 = trans1.ops[index1++];
-          currOp2 = trans2.ops[index2++];
+          minl = currOp2.length
+          currOp1 = trans1.ops[index1++]
+          currOp2 = trans2.ops[index2++]
         } else {
-          minl = currOp1.length;
-          currOp2.length -= currOp1.length;
-          currOp1 = trans1.ops[index1++];
+          minl = currOp1.length
+          currOp2.length -= currOp1.length
+          currOp1 = trans1.ops[index1++]
         }
-        prime2.delete(minl);
+        prime2.delete(minl)
       } else {
-        throw new OTLogicError('The operations are not compatible.');
+        throw new OTLogicError('The operations are not compatible.')
       }
     }
 
-    return [prime1, prime2];
+    return [prime1, prime2]
   }
 }

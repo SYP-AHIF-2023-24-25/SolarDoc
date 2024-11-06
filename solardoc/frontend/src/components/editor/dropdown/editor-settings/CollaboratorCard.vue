@@ -13,7 +13,7 @@ import {
   PhoenixBadRequestError,
   PhoenixInternalError,
 } from '@/services/phoenix/errors'
-import UserRef from "@/components/common/UserRef.vue";
+import UserRef from '@/components/common/UserRef.vue'
 
 const props = defineProps<{ filePermission: FilePermission }>()
 const permissionValue = ref(props.filePermission.permission === 3)
@@ -64,7 +64,8 @@ async function saveChanges() {
 <template>
   <div id="user-permission-card">
     <p>
-      <span>User:</span><UserRef :id="filePermission.user_id" :user-name="filePermission.username" />
+      <span>User:</span
+      ><UserRef :id="filePermission.user_id" :user-name="filePermission.username" />
     </p>
     <p>
       <span id="permission-text">Permission:</span>

@@ -1,4 +1,4 @@
-import type {OTrans, OTransReqDto, RawOTrans} from "@/services/phoenix/ot-trans";
+import type { OTrans, OTransReqDto, RawOTrans } from '@/services/phoenix/ot-trans'
 
 /**
  * Transform takes two operations A and B that happened concurrently and
