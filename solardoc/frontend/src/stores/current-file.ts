@@ -350,15 +350,31 @@ export const useCurrentFileStore = defineStore('currentFile', {
         }
         await this.pushOTrans(ackedTrans)
       } else {
-        // This is a new transformation
-        const newTrans: OTrans = {
+        // This is a new transformation, which may happen concurrently with the user's own transformation
+        // We need to make sure that the transformation is applied in the correct order and they are not doing the same
+        // transformation. In this way they must result in `apply(apply(S, A), B') = apply(apply(S, B), A')`
+        let operation = OTrans = {
           ...oTrans,
           acknowledged: true,
           init: false,
         }
-        await this.pushOTrans(newTrans)
-        this.applyOTrans(newTrans)
+        const concurrentTrans = this.oTransNotAcked.slice()
+        for (let i = 0; i < concurrentTrans.length; i++) {
+          operation = await this.transformOTrans(operation, concurrentTrans[i])
+        }
       }
+    },
+    /**
+     * Transform takes two operations A and B that happened concurrently and
+     * produces two operations A' and B' (in an array) such that
+     * `apply(apply(S, A), B') = apply(apply(S, B), A')`.
+     *
+     * This function is the heart of OT.
+     * @param oTrans The OTrans object to transform.
+     * @param concurrentOTrans The concurrent OTrans object to transform.
+     */
+    async transformOTrans(oTrans: OTrans, concurrentOTrans: OTransReqDto): OTrans {
+
     },
     /**
      * Pushes an OTrans to the stack of transformations which are not yet acknowledged, but have been already applied
