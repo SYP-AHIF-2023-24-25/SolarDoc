@@ -1,14 +1,7 @@
 export default Object.freeze({
   githubURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc',
   githubVersionURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc/releases/tag',
-  localStorageLastModifiedKey: 'last-modified',
-  localStorageCreatedKey: 'created',
-  localStorageFileIdKey: 'file-id',
-  localStorageFileNameKey: 'file-name',
-  localStorageFileOwnerKey: 'file-owner',
-  localStorageFileContentKey: 'file-content',
-  localStorageFilePermissionsKey: 'file-permissions',
-  localStorageFileChannelIdKey: 'file-channel-id',
+  localStorageFileKey: 'file',
   localStorageShareURLIdKey: 'share-url-id',
   localStorageThemeKey: 'user-theme',
   localStorageAuthKey: 'user-auth',
@@ -114,6 +107,6 @@ export default Object.freeze({
     server: 'Saved Remotely',
     unsavedChanges: 'Unsaved Changes',
   },
-  version: 'v1.0.0-dev.4',
+  version: 'v1.0.0-dev.5',
   copyright: 'Solardoc © 2023-2024 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
 })
