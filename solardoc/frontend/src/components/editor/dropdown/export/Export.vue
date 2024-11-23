@@ -7,6 +7,8 @@ import { useCurrentFileStore } from "@/stores/current-file";
 import { handleRender } from "@/scripts/handle-render";
 import { postV1RenderPresentationImages, postV1RenderPresentationPdf } from "@/services/render/gen/backend-rest-service";
 import { RenderBackendRestError } from "@/services/render/errors";
+import * as phoenixRestService from "@/services/phoenix/api-service";
+import {interceptErrors} from "@/errors/handler/error-handler";
 
 const overlayStateStore = useOverlayStateStore();
 const currentFileStore = useCurrentFileStore();
@@ -25,7 +27,7 @@ const isFormatSelected = computed(() => selectedFormats.value.length > 0);
 
 async function handleFileExport() {
   for (const format of selectedFormats.value) {
-    let resp, previewURL;
+    let previewURL: string;
     let presentationModel = {
       fileContent: currentFileStore.content,
       fileName: currentFileStore.fileName,
@@ -34,23 +36,22 @@ async function handleFileExport() {
     try {
       switch (format.toUpperCase()) {
         case "PDF":
-          resp = await postV1RenderPresentationPdf(presentationModel);
-          previewURL = resp.data.download?.downloadURL;
+          const pdfResp = await postV1RenderPresentationPdf(presentationModel);
+          previewURL = pdfResp.data.download?.downloadURL;
           break;
         case "HTML":
-          resp = await handleRender(currentFileStore.fileName, currentFileStore.content);
-          previewURL = resp.previewURL;
+          const htmlResp = await handleRender(currentFileStore.fileName, currentFileStore.content);
+          previewURL = htmlResp.previewURL;
           break;
         case "ADOC":
           previewURL = `data:text/asciidoc,${encodeURIComponent(currentFileStore.content)}`;
           break;
         case "JPG":
-          resp = await postV1RenderPresentationImages(presentationModel);
-          previewURL = resp.data.download?.downloadURL;
-          break;
+          // const resp = await postV1RenderPresentationImages(presentationModel);
+          // previewURL = resp.data.download?.downloadURL;
         default:
-          console.warn(`Unsupported format: ${format}`);
-          continue;
+          console.error(`Unsupported format: ${format}`);
+          return;
       }
 
       const content = await fetch(previewURL);
@@ -65,20 +66,17 @@ async function handleFileExport() {
       a.click();
       document.body.removeChild(a);
     } catch (e) {
-      console.error("Error in file export:", e);
-      throw new RenderBackendRestError(
-          'Failed to render file. Cause: ' + (<Error>e).message,
-      );
+      console.error("[Export.vue] Error in file export:", e);
+      throw new RenderBackendRestError('Failed to render file for download. Cause: ' + (<Error>e).message,);
     }
   }
 }
 
 async function handleFileExportAsZip() {
-  const zip = new JSZip();
-  const promises = [];
+  let zip: JSZip = new JSZip();
 
   for (const format of selectedFormats.value) {
-    let resp, previewURL;
+    let previewURL: string;
     let presentationModel = {
       fileContent: currentFileStore.content,
       fileName: currentFileStore.fileName,
@@ -87,23 +85,22 @@ async function handleFileExportAsZip() {
     try {
       switch (format.toUpperCase()) {
         case "PDF":
-          resp = await postV1RenderPresentationPdf(presentationModel);
-          previewURL = resp.data.download?.downloadURL;
+          const pdfResp = await postV1RenderPresentationPdf(presentationModel);
+          previewURL = pdfResp.data.download?.downloadURL;
           break;
         case "HTML":
-          resp = await handleRender(currentFileStore.fileName, currentFileStore.content);
-          previewURL = resp.previewURL;
+          const htmlResp = await handleRender(currentFileStore.fileName, currentFileStore.content);
+          previewURL = htmlResp.previewURL;
           break;
         case "ADOC":
           previewURL = `data:text/plain,${encodeURIComponent(currentFileStore.content)}`;
           break;
         case "JPG":
-          resp = await postV1RenderPresentationImages(presentationModel);
-          previewURL = resp.data.download?.downloadURL;
-          break;
+          // const resp = await postV1RenderPresentationImages(presentationModel);
+          // previewURL = resp.data.download?.downloadURL;
         default:
-          console.warn(`Unsupported format: ${format}`);
-          continue;
+          console.error(`Unsupported format: ${format}`);
+          return;
       }
 
       const content = await fetch(previewURL);
@@ -111,7 +108,8 @@ async function handleFileExportAsZip() {
       const extension = format.toLowerCase();
       const fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.${extension}`;
 
-      promises.push(zip.folder("exports").file(fileName, value));
+      // TODO! Remove the forced non-nullable type
+      zip = zip.folder("exports")!!.file(fileName, value);
     } catch (e) {
       console.error("Error in file export:", e);
       throw new RenderBackendRestError(
@@ -120,19 +118,16 @@ async function handleFileExportAsZip() {
     }
   }
 
-  Promise.all(promises).then(() => {
-    zip.generateAsync({ type: "blob" }).then((content) => {
-      const zipFileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.zip`;
-      const a = document.createElement('a');
-      a.download = zipFileName;
-      a.href = URL.createObjectURL(content);
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+  const blobData = await zip.generateAsync({ type: "blob" })
+  const zipFileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.zip`;
+  const a = document.createElement('a');
+  a.download = zipFileName;
+  a.href = URL.createObjectURL(blobData);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 
-      setTimeout(() => URL.revokeObjectURL(a.href), 1500);
-    });
-  });
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }
 </script>
 
@@ -174,8 +169,8 @@ async function handleFileExportAsZip() {
           </div>
         </div>
 
-        <button id="export-button" class="highlighted-button" @click="handleFileExport" :disabled="!isFormatSelected">Export</button>
-        <button id="zip-button" class="highlighted-button" @click="handleFileExportAsZip" :disabled="!isFormatSelected">Export as Zip</button>
+        <button id="export-button" class="highlighted-button" @click="async () => await interceptErrors(handleFileExport())" :disabled="!isFormatSelected">Export</button>
+        <button id="zip-button" class="highlighted-button" @click="async () => await interceptErrors(handleFileExportAsZip())" :disabled="!isFormatSelected">Export as Zip</button>
       </div>
     </div>
   </div>

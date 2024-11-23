@@ -19,7 +19,7 @@ import LoadAnywayButton from '@/components/editor/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
 import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
 import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
-import Export from "@/components/editor/export/Export.vue"
+import Export from "@/components/editor/dropdown/export/Export.vue"
 import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
