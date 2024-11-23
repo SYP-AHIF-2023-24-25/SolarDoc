@@ -291,6 +291,9 @@ export function postV2FilesPermissions(authorization: string, createFilePermissi
     } | {
         status: 401;
         data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
     }>("/v2/files/permissions", oazapfts.json({
         ...opts,
         method: "POST",
