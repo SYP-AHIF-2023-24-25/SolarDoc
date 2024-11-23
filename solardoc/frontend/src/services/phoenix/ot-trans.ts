@@ -60,7 +60,6 @@ export interface OTrans {
   init: boolean
 }
 
-let enabled = false
 const currentFileStore = useCurrentFileStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
 
@@ -84,16 +83,14 @@ export async function handleOutgoingUpdate(
 }
 
 /**
- * Starts the process which will handle the incoming and outgoing OT updates.
+ * Starts the process which will handle the incoming and outgoing OT updates. If the listener was already set up, this
+ * function will do nothing.
+ *
+ * If the WebSocket client is not connected, this function will do nothing.
  * @since 0.5.0
  */
 export function handleOTUpdates() {
-  if (enabled) {
-    return
-  }
-
   editorUpdateWSClient.wsClient?.listenForOTrans(handleIncomingUpdate)
-  enabled = true
 }
 
 /**

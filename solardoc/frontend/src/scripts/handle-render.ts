@@ -35,7 +35,7 @@ export async function handleRender(
   fileName: string,
   content: string,
 ): Promise<RenderedPresentation> {
-  initStateStore.setFalse()
+  initStateStore.setInit(false)
   previewLoadingStore.setPreviewLoading(true)
 
   const renderPresentationDtoModel: RenderPresentationDtoModel = {

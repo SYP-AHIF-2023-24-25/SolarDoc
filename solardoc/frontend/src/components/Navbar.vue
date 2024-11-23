@@ -8,7 +8,7 @@ import SunDarkModeSVG from '@/components/icons/SunDarkModeSVG.vue'
 import constants from '@/plugins/constants'
 import UserIconDarkModeSVG from '@/components/icons/UserIconDarkModeSVG.vue'
 import UserIconSVG from '@/components/icons/UserIconSVG.vue'
-import SDRouterLink from '@/components/SDRouterLink.vue'
+import SDRouterLink from '@/components/common/SDRouterLink.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 
 const darkModeStore = useDarkModeStore()
@@ -33,7 +33,7 @@ const darkModeStore = useDarkModeStore()
         <div id="router-links">
           <SDRouterLink to="/docs">docs</SDRouterLink>
           <SDRouterLink to="/editor">editor</SDRouterLink>
-          <SDRouterLink to="/about">about</SDRouterLink>
+          <SDRouterLink to="/collab">collab</SDRouterLink>
         </div>
       </div>
       <div id="clickable-icons">

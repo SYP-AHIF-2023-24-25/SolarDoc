@@ -5,7 +5,11 @@ import {
   type PhoenixSocket as SDSClientBare,
   socket,
 } from '@solardoc/phoenix'
-import { PhoenixInternalError, PhoenixInvalidOperationError } from '@/services/phoenix/errors'
+import {
+  PhoenixInternalError,
+  PhoenixInvalidOperationError,
+  PhoenixSDSError,
+} from '@/services/phoenix/errors'
 import type { CreateEditorChannel, EditorChannel } from '@/services/phoenix/editor-channel'
 import type { OTransReqDto, OTransRespDto } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/api-service'
@@ -21,13 +25,18 @@ import type { File } from '@/services/phoenix/api-service'
 export class SDSClient {
   private readonly socket: SDSClientBare
   private _currentChannel: Channel | undefined
+  private _stateTransListenerDefined: boolean
 
-  constructor(url: string, userToken?: string) {
+  constructor(url: string, userToken?: string, onOpen?: () => Promise<void>) {
     this._active = false
+    this._stateTransListenerDefined = false
     this.socket = socket(url, userToken)
-    this.socket.onOpen(() => {
-      this._active = true
+    this.socket.onOpen(async () => {
       console.log('[ws-client.ts] SDS Connection established!')
+      this._active = true
+      if (onOpen) {
+        await onOpen()
+      }
     })
     this.socket.onMessage(message => {
       console.log('[ws-client.ts] Received message:', message)
@@ -76,11 +85,36 @@ export class SDSClient {
   }
 
   /**
+   * Returns true if the client is listening for operational transformations, false otherwise.
+   * @since 0.7.0
+   */
+  public get listeningForOTChanges(): boolean {
+    return this._stateTransListenerDefined
+  }
+
+  /**
    * Disconnects the socket from the server.
+   *
+   * This returns a promise which will resolve once the client has successfully closed its connection to the remote
+   * server.
    * @since 0.4.0
    */
-  public disconnect() {
-    this.socket.disconnect(() => void (this._active = false))
+  public disconnect(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      let resolved = false
+      this.socket.disconnect(() => {
+        this._active = false
+        resolved = true
+        resolve()
+      })
+
+      // Ensure that if the function gets stuck we reject after a timeout of 2 seconds
+      setTimeout(() => {
+        if (!resolved) {
+          reject(new PhoenixSDSError('Failed to disconnect from the remote server'))
+        }
+      }, 2000)
+    })
   }
 
   /**
@@ -105,6 +139,8 @@ export class SDSClient {
     params?: T,
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
+    this._ensureNoChannelIsJoined()
+
     this._currentChannel = this.socket.channel(topic, params)
     this._currentChannel.on('user_join', resp => {
       this._handleJoinChannel(currUserId, onJoin, onError, resp)
@@ -159,6 +195,9 @@ export class SDSClient {
 
   /**
    * Listens for operational transformations from the server.
+   *
+   * If {@link this.listeningForOTChanges} is true, then we are already listening for changes and as such this function
+   * will do nothing.
    * @param onReceive The function to call when an operational transformation is received.
    * @throws PhoenixInvalidOperationError If the socket is not healthy.
    * @throws PhoenixInvalidOperationError If the channel is not healthy.
@@ -169,10 +208,14 @@ export class SDSClient {
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
     await this._ensureChannelIsHealthy()
-    this._currentChannel?.on('state_trans', resp => {
-      console.log(`[ws-client.ts] Received OT update:`, resp)
-      onReceive(resp)
-    })
+
+    if (this._currentChannel && !this.listeningForOTChanges) {
+      this._currentChannel.on('state_trans', resp => {
+        console.log(`[ws-client.ts] Received OT update:`, resp)
+        onReceive(resp)
+      })
+      this._stateTransListenerDefined = true
+    }
   }
 
   /**
@@ -306,6 +349,18 @@ export class SDSClient {
   }
 
   /**
+   * Internal function to ensure that no channel is currently joined.
+   * @private
+   */
+  private _ensureNoChannelIsJoined(): void {
+    if (this._currentChannel) {
+      throw new PhoenixInvalidOperationError(
+        '[ws-client.ts] Cannot perform another join operation when a channel is already joined.',
+      )
+    }
+  }
+
+  /**
    * Internal function to leave the current channel, this is primarily used for error handling cleanup.
    * @private
    */
@@ -314,6 +369,7 @@ export class SDSClient {
       this._currentChannel.leave()
       this.socket.remove(this._currentChannel)
       this._currentChannel = undefined
+      this._stateTransListenerDefined = false
     }
   }
 }

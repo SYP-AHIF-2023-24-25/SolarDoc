@@ -1,6 +1,6 @@
 {
   "name": "@solardoc/phoenix",
-  "version": "0.7.0-dev",
+  "version": "1.0.0-dev.5",
   "description": "Websocket server using Elixir for SolarDoc",
   "main": "dist/index.js",
   "dependencies": {
@@ -19,7 +19,7 @@
     "rollback": "mix ecto.rollback",
     "test": "mix test",
     "format": "mix format",
-    "lint": "mix credo --strict",
+    "lint": "mix credo --strict ./lib/**/*",
     "build": "tsc",
     "openapi-spec": "mix phx.swagger.generate"
   },

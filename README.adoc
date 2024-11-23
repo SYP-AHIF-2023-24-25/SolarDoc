@@ -6,6 +6,19 @@ SolarDoc is a dynamic online editor which allows you to create beautiful present
 
 🚀 The latest preview of Solardoc can be viewed https://solardoc.htl-leonding.ac.at[here]! 🚀
 
+## Team Capacity, Velocity 🫂
+
+|===
+| Sprint | Story Points Planned |Team Capacity | Story Points Done | Sprint Velocity | Average Velocity
+
+| https://github.com/SYP-AHIF-2023-24-25/SolarDoc/milestone/10[#9] 
+| 8 
+| 48h 
+| 
+| 
+| 
+|===
+
 == Problem & Background 🛑
 
 === Given Situation ⚡
@@ -28,37 +41,6 @@ To allow students and teachers to more efficiently create, edit and share presen
 
 - Conversion pipeline is too performance-heavy slowing down the browser of the user/client. (AsciiDoc -> Presentation)
 - The complexity of creating a presentation might get out of hand with big and detailed presentations.
-
-== Roadmap & Planning 🛣️
-
-The user stories and goals for the project are listed here in the https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions?discussions_q=is%3Aopen+label%3A%22user+story%22[discussions page].
-
-=== Roadmap
-
-* Sprint 1 (Finished 09.11.2023):
-** Project Setup & Docker Deployment
-** Website Structure & Layout
-** Editor (https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/2)
-* Sprint 2 (Finished 14.12.2023):
-** Presentation Rendering & Preview (https://github.com/SYP-AHIF-2023-24-25/SolarDoc/discussions/3)
-** Integration into editor view
-* Sprint 3 (Finished 18.01.2024):
-** PDF & Image Render Target
-** Additional frontend features
-** UX Enhancements
-* Sprint 4 (Finished 14.03.2024):
-** Phoenix Backend for Auth-API & WebSocket
-** Login & register pages
-** WebSocket backend with simple user pools to listen for changes
-* Sprint 5 (Finished 11.04.2024):
-** Collaborative Editing
-** Share Links
-** File Storage
-* Sprint 6 (Planned 02.05.2024):
-** Stabilise Channel API and OT library
-** Proper file explorer in the user profile
-** Share URLs can be created, accessed and modified using read/write permissions
-** Error modals and notifications to display user and API errors
 
 == Development 🛠
 

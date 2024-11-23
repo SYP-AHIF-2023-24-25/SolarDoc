@@ -2,9 +2,12 @@
 import { RouterView } from 'vue-router'
 import { ModalsContainer } from 'vue-final-modal'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import ProgressSpinner from '@/components/ProgressSpinner.vue'
+import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
+import { Notifications } from '@kyvg/vue3-notification'
+
+const NO_FOOTER_ROUTES = ['test-editor', 'editor']
 
 const darkModeStore = useDarkModeStore()
 darkModeStore.setThemeOnHTMLRoot()
@@ -25,7 +28,7 @@ darkModeStore.setThemeOnHTMLRoot()
       position="bottom right"
     />
   </main>
-  <footer>
+  <footer v-show="!NO_FOOTER_ROUTES.includes(String($route.name))">
     <Footer />
   </footer>
 </template>

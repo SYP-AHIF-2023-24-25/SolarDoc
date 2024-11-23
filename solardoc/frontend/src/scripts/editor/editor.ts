@@ -74,7 +74,7 @@ function setUpMonaco() {
  * caused reactivity errors in Vue. This makes it much more ugly and harder to manage, but it works.
  * @since 0.7.0
  */
-export let globalMonacoEditor!: editor.IStandaloneCodeEditor | null
+let globalMonacoEditor!: editor.IStandaloneCodeEditor | null
 
 /**
  * Class that manages the global Monaco editor instance.
@@ -104,7 +104,11 @@ export class SolardocEditor {
     },
   ) {
     setUpMonaco()
-    globalMonacoEditor! = monaco.editor.create(elementToBindTo.value, {
+    if (globalMonacoEditor != null) {
+      this._destroy()
+    }
+
+    globalMonacoEditor = monaco.editor.create(elementToBindTo.value, {
       theme: initialState.darkMode ? 'asciiDocDarkTheme' : 'asciiDocLightTheme',
       language: 'asciiDoc',
       value: undefined,
@@ -116,6 +120,7 @@ export class SolardocEditor {
       automaticLayout: true,
       scrollBeyondLastLine: false,
     })
+
     // We need to set the content after the editor is created due to a weird bug in Monaco (See #146)
     this._applyInitContent(`${initialState.content}` || '')
     this._locked = false
@@ -133,6 +138,14 @@ export class SolardocEditor {
 
   public static get monacoEditor() {
     return globalMonacoEditor!
+  }
+
+  /**
+   * Returns whether the Monaco editor has been initialised.
+   * @since 1.0.0
+   */
+  public static get initialised() {
+    return globalMonacoEditor != null
   }
 
   /**
@@ -160,17 +173,25 @@ export class SolardocEditor {
   }
 
   /**
+   * Sets the content of the editor.
    * @since 0.7.0
    */
   public static setContent(content: string) {
     globalMonacoEditor!.setValue(content)
   }
 
-  private static forceRerender() {
-    globalMonacoEditor!.render()
+  /**
+   * Sets the content of the editor if the editor has been initialised.
+   * @param content The content to set.
+   */
+  public static setContentIfAvailable(content: string) {
+    if (this.initialised) {
+      globalMonacoEditor!.setValue(content)
+    }
   }
 
   /**
+   * Returns the content of the editor.
    * @since 0.7.0
    */
   public static getContent() {
@@ -183,7 +204,7 @@ export class SolardocEditor {
     })
   }
 
-  public static async applyOTUpdates(oTrans: OTrans) {
+  public static async applyOTrans(oTrans: OTrans) {
     const editorModel = globalMonacoEditor!.getModel()
     if (oTrans.user_id == currentUserStore.currentUser!.id) {
       return
@@ -191,7 +212,6 @@ export class SolardocEditor {
       throw new EditorModelNotFoundError()
     } else if (oTrans.init) {
       // The init transformation should not be applied and only the init content should be set
-      //await this.runThreadSafe(async () => model.setValue(currentFileStore.content))
       await this._runThreadSafe(async () => globalMonacoEditor!.setValue(currentFileStore.content))
       return
     } else {
@@ -210,7 +230,7 @@ export class SolardocEditor {
     globalMonacoEditor!.onDidChangeModelContent(async (event: editor.IModelContentChangedEvent) => {
       // We always trigger the re-render of the preview when the editor content changes
       previewLoadingStore.setPreviewLoading(true)
-      initStateStore.setFalse()
+      initStateStore.setInit(false)
       await triggerPreviewRerender(globalMonacoEditor!)
 
       // If the editor is locked, then the server has sent an update, and we are currently updating the editor
@@ -277,7 +297,21 @@ export class SolardocEditor {
     globalMonacoEditor!.setValue(content)
     document.fonts.ready.then(() => {
       monaco.editor.remeasureFonts()
-      this.forceRerender()
+      this._forceRerender()
     })
+  }
+
+  private static _forceRerender() {
+    globalMonacoEditor!.render()
+  }
+
+  /**
+   * @since 1.0.0
+   * @private
+   */
+  private static _destroy(): void {
+    globalMonacoEditor?.setModel(null)
+    globalMonacoEditor?.dispose()
+    globalMonacoEditor = null
   }
 }

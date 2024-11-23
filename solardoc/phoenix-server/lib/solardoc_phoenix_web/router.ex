@@ -49,63 +49,75 @@ defmodule SolardocPhoenixWeb.Router do
   scope "/phx", SolardocPhoenixWeb do
     pipe_through :api
 
-    get "/", HomeController, :index
+    get "/", V2.HomeController, :index
   end
 
   ########## - v1 API - ##########
 
-  scope "/phx/api/v1/", SolardocPhoenixWeb do
+  scope "/phx/api/v2", SolardocPhoenixWeb do
     pipe_through :api
 
     # Ping route
-    get "/ping", PingController, :index
+    get "/ping", V2.PingController, :index
 
     # User registration and password reset routes
-    post "/users", UserController, :create
-    post "/users/reset_password", UserResetPasswordController, :create
-    put "/users/reset_password/:token", UserResetPasswordController, :update
+    post "/users", V2.UserController, :create
+    post "/users/reset_password", V2.UserResetPasswordController, :create
+    put "/users/reset_password/:token", V2.UserResetPasswordController, :update
 
     # Solardoc Auth API - Bearer token authentication
-    post "/auth/bearer", UserAuthController, :create
+    post "/auth/bearer", V2.UserAuthController, :create
   end
 
   # User routes requiring authentication
   # (This may also include routes which actually don't need authentication, but are only accessible to authenticated
   # users to avoid spam or other abuse)
-  scope "/phx/api/v1/", SolardocPhoenixWeb do
+  scope "/phx/api/v2", SolardocPhoenixWeb do
     pipe_through [:api, :api_auth]
 
-    # Get the current user
-    get "/users/current", UserController, :current
     # User routes
-    get "/users", UserController, :index
+    get "/users", V2.UserController, :index
+    get "/users/current", V2.UserController, :current
 
     # User confirmation routes
     # credo:disable-for-next-line
     # TODO! Finish the migration from the old user confirmation controller to the new API-only controller
-    # post "/users/confirm", UserConfirmationController, :create
-    # post "/users/confirm/:token", UserConfirmationController, :update
+    # post "/users/confirm", V2.UserConfirmationController, :create
+    # post "/users/confirm/:token", V2.UserConfirmationController, :update
 
     # User settings routes
     # credo:disable-for-next-line
     # TODO! Finish the migration from the old user settings controller to the new API-only controller
-    # put "/users/settings", UserSettingsController, :update
-    # get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    # put "/users/settings", V2.UserSettingsController, :update
+    # get "/users/settings/confirm_email/:token", V2.UserSettingsController, :confirm_email
 
     # Channel routes
-    resources "/editor_channels", EditorChannelController, only: [:index, :show, :update]
+    resources "/editor_channels", V2.EditorChannelController, only: [:index, :show, :update]
 
     # Solardoc Auth API - Logging out i.e. deleting the user bearer token
-    delete "/auth/bearer", UserAuthController, :delete
+    delete "/auth/bearer", V2.UserAuthController, :delete
 
     # File routes
-    resources "/files", FileController, only: [:index, :create, :show, :update, :delete]
+    get "/files", V2.FileController, :index
+    get "/files/global", V2.FileController, :global
+    get "/files/:id", V2.FileController, :show
+    post "/files", V2.FileController, :create
+    put "/files/:id", V2.FileController, :update
+    delete "/files/:id", V2.FileController, :delete
 
     # Share URL routes
-    get "/share/:id", ShareURLController, :show_share
-    get "/share/:id/file", ShareURLController, :show_file
-    delete "/share/:id", ShareURLController, :delete
-    post "/share", ShareURLController, :create
+    get "/share/:id", V2.ShareURLController, :show_share
+    get "/share/:id/file", V2.ShareURLController, :show_file
+    get "/share/:id/channel", V2.ShareURLController, :show_channel
+    delete "/share/:id", V2.ShareURLController, :delete
+    post "/share", V2.ShareURLController, :create
+
+    #File Permission routes
+    post "/files/permissions", V2.FilePermissionController, :create
+    get "/files/permissions/:id", V2.FilePermissionController, :show
+    put "/files/permissions/:id", V2.FilePermissionController, :update
+    get "/files/:file_id/permissions/:user_id", V2.FilePermissionController, :show_permission_for_user
+    get "/files/:file_id/permissions", V2.FilePermissionController, :show_permissions_for_file
   end
 
   ########## - General API Info - ##########
@@ -144,6 +156,7 @@ defmodule SolardocPhoenixWeb.Router do
         %{name: "EditorChannel", description: "Editor channel resources"},
         %{name: "File", description: "File resources"},
         %{name: "ShareURL", description: "Share URL resources"},
+        %{name: "FilePermission", description: "File Permission resources"},
       ]
     }
   end

@@ -75,7 +75,7 @@ RUN mkdir -p /home/node/build
 # We need to deploy the 'rest-api' package to get a proper standalone executable build
 RUN pnpm --filter @solardoc/rest-api --prod deploy /home/node/build
 
-FROM base as production-stage
+FROM base AS production-stage
 
 COPY --from=build-stage /home/node/build /home/node/app
 

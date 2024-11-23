@@ -1,6 +1,6 @@
 {
   "name": "@solardoc/rest-api",
-  "version": "0.7.0-dev",
+  "version": "1.0.0-dev.5",
   "description": "SolarDoc backend API",
   "keywords": [
     "solardoc",
@@ -11,7 +11,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": "16 || 18 || 20",
+    "node": "18 || 20 || 22",
     "pnpm": "8"
   },
   "scripts": {
@@ -80,7 +80,7 @@
     "@microsoft/eslint-formatter-sarif": "3.0.0",
     "@loopback/eslint-config": "^14.0.4",
     "@types/uuid": "9.0.7",
-    "eslint": "8.48.0",
+    "eslint": "8.57.0",
     "source-map-support": "^0.5.21",
     "typescript": "5.2.2"
   }

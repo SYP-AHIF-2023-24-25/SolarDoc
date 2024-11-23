@@ -12,6 +12,7 @@ categories:
     labels:
       - "other"
       - "maintenance"
+      - "optimisation"
       - "dev-env"
   - title: "Dependency Updates"
     label:

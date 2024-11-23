@@ -19,9 +19,9 @@ console.log(`[phoenix/api-service.ts] Using phoenix backend at '${api.defaults.b
 console.log(`[phoenix/api-service.ts] Using SDS at '${SDSCLIENT_URL}'`)
 
 export async function ensurePhoenixBackendIsReachable(): Promise<void> {
-  let ping: Awaited<ReturnType<typeof api.getV1Ping>> | undefined = undefined
+  let ping: Awaited<ReturnType<typeof api.getV2Ping>> | undefined = undefined
   try {
-    ping = await api.getV1Ping()
+    ping = await api.getV2Ping()
   } catch (_ignore) {
     /* empty */
   }

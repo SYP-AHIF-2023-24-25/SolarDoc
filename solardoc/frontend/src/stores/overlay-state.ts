@@ -4,8 +4,9 @@ export const useOverlayStateStore = defineStore('fullScreenPreview', {
   state: () => {
     return {
       fullScreenPreview: false,
-      channelView: false,
+      currentChannel: false,
       createShareUrl: false,
+      settings: false,
       exportView: false,
     }
   },
@@ -14,22 +15,27 @@ export const useOverlayStateStore = defineStore('fullScreenPreview', {
       this.resetAll()
       this.fullScreenPreview = fullScreenPreview
     },
-    setChannelView(channelView: boolean) {
+    setCurrentChannel(currentChannel: boolean) {
       this.resetAll()
-      this.channelView = channelView
+      this.currentChannel = currentChannel
     },
     setShareUrlView(createShareUrl: boolean) {
       this.resetAll()
       this.createShareUrl = createShareUrl
+    },
+    setSettings(settings: boolean) {
+      this.resetAll()
+      this.settings = settings
     },
     setExportView(exportView: boolean) {
       this.resetAll()
       this.exportView = exportView
     },
     resetAll() {
-      this.channelView = false
+      this.currentChannel = false
       this.createShareUrl = false
       this.fullScreenPreview = false
+      this.settings = false
       this.exportView = false
     },
   },
