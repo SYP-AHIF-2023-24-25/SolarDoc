@@ -75,7 +75,9 @@ function onClose() {
             <button
                 id="save-button"
                 class="highlighted-button"
-                @click="saveChanges">
+                @click="saveChanges"
+                :disabled="fileName === currentFileStore.fileName"
+            >
               ✓
             </button>
           </div>
