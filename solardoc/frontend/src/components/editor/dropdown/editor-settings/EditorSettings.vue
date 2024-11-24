@@ -45,7 +45,17 @@ setInterval(updateTimeRefs, 500)
       </div>
       <div id="settings-file-info">
         <h2 id="settings-file-info-title">
-          File Information <code>{{ currentFileStore.fileName }}</code>
+          File Information
+          <template v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id">
+            <input
+                type="text"
+                v-model="currentFileStore.fileName"
+                id="editable-file-name"
+            />
+          </template>
+          <template v-else>
+            <code>{{ currentFileStore.fileName }}</code>
+          </template>
         </h2>
         <p id="settings-file-info-file-id">
           <i class="pi pi-wrench"></i>
@@ -120,6 +130,14 @@ setInterval(updateTimeRefs, 500)
           font-size: 0.9em;
           padding-bottom: 0.3rem;
         }
+      }
+      #editable-file-name {
+        background-color: var.$overlay-background-color;
+        color: var.$text-color;
+        border: 1px solid var.$scheme-friendly-blue;
+        border-radius: 0.5rem;
+        margin-left: 0.5rem;
+        font-size: 0.9em;
       }
 
       #settings-file-info-file-id {
