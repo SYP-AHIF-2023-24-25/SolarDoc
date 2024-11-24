@@ -7,6 +7,7 @@ export const useOverlayStateStore = defineStore('fullScreenPreview', {
       currentChannel: false,
       createShareUrl: false,
       settings: false,
+      exportView: false,
     }
   },
   actions: {
@@ -26,10 +27,16 @@ export const useOverlayStateStore = defineStore('fullScreenPreview', {
       this.resetAll()
       this.settings = settings
     },
+    setExportView(exportView: boolean) {
+      this.resetAll()
+      this.exportView = exportView
+    },
     resetAll() {
       this.currentChannel = false
       this.createShareUrl = false
       this.fullScreenPreview = false
+      this.settings = false
+      this.exportView = false
     },
   },
 })

@@ -6,15 +6,21 @@ import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { ref } from 'vue'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CollaboratorList from '@/components/editor/dropdown/editor-settings/CollaboratorList.vue'
+import {interceptErrors} from "@/errors/handler/error-handler";
+import {ensureLoggedIn} from "@/scripts/ensure-logged-in";
+import {showInfoNotifFromObj} from "@/scripts/show-notif";
+import constants from "@/plugins/constants";
+import {useRouter} from "vue-router";
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
+const $router = useRouter()
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 let created = ref(getCreated())
-
+let fileName = currentFileStore.fileName;
 function getLastModified(): string {
   return getHumanReadableTimeInfo(currentFileStore.lastModified)
 }
@@ -28,6 +34,21 @@ const updateTimeRefs = () => {
   created.value = getCreated()
 }
 setInterval(updateTimeRefs, 500)
+
+async function saveChanges() {
+  currentFileStore.setFileName(fileName);
+  await interceptErrors(
+      ensureLoggedIn($router).then(
+          async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
+      ),
+  )
+  showInfoNotifFromObj(constants.notifMessages.fileSaved)
+}
+
+function onClose() {
+  fileName = currentFileStore.fileName;
+  overlayStateStore.setSettings(false)
+}
 </script>
 
 <template>
@@ -39,14 +60,30 @@ setInterval(updateTimeRefs, 500)
     <div id="file-settings" class="page-content-container large full-screen-overlay-content">
       <div id="settings-view-header">
         <h1>File Settings</h1>
-        <button id="close-button" @click="overlayStateStore.setSettings(false)">
+        <button id="close-button" @click="onClose">
           <CloseButtonSVG />
         </button>
       </div>
       <div id="settings-file-info">
-        <h2 id="settings-file-info-title">
-          File Information <code>{{ currentFileStore.fileName }}</code>
-        </h2>
+        <div id="settings-file-info-title">
+          <div v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id">
+            <input
+                type="text"
+                v-model="fileName"
+                id="editable-file-name"
+            />
+            <button
+                id="save-button"
+                class="highlighted-button"
+                @click="saveChanges"
+            >
+              ✓
+            </button>
+          </div>
+          <div v-else>
+            <h2>{{ currentFileStore.fileName }}</h2>
+          </div>
+        </div>
         <p id="settings-file-info-file-id">
           <i class="pi pi-wrench"></i>
           ID: {{ currentFileStore.fileId || 'Not registered' }}
@@ -115,13 +152,20 @@ setInterval(updateTimeRefs, 500)
         span {
           padding-top: 1px;
         }
-
-        code {
-          font-size: 0.9em;
-          padding-bottom: 0.3rem;
-        }
       }
 
+      #editable-file-name {
+        background-color: var.$overlay-background-color;
+        color: var.$text-color;
+        border: 1px solid var.$scheme-friendly-blue;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        font-size: 1.5em;
+      }
+
+      #save-button{
+        margin-left: 2rem;
+      }
       #settings-file-info-file-id {
         margin: 0.1rem 0 0 0;
         padding: 0 0 0 0.6rem;

@@ -67,16 +67,12 @@ defmodule SolardocPhoenix.Permissions do
       [%FilePermission{}, ...]
 
       iex> get_file_permissions_by_file!(456)
-      ** (Ecto.NoResultsError)
+      []
 
   """
   def get_file_permissions_by_file!(file_id) do
     query = from(fp in FilePermission, where: fp.file_id == ^file_id, preload: [:user])
-
-    case Repo.all(query) do
-      [] -> raise Ecto.NoResultsError, "No file permissions found for file_id: #{file_id}"
-      permissions -> permissions
-    end
+    Repo.all(query)
   end
 
   @doc """
