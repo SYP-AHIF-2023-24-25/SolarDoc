@@ -20,7 +20,7 @@ const $router = useRouter()
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 let created = ref(getCreated())
-
+let fileName = currentFileStore.fileName;
 function getLastModified(): string {
   return getHumanReadableTimeInfo(currentFileStore.lastModified)
 }
@@ -36,12 +36,18 @@ const updateTimeRefs = () => {
 setInterval(updateTimeRefs, 500)
 
 async function saveChanges() {
+  currentFileStore.fileName = fileName;
   await interceptErrors(
       ensureLoggedIn($router).then(
           async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
       ),
   )
   showInfoNotifFromObj(constants.notifMessages.fileSaved)
+}
+
+function onClose() {
+  fileName = currentFileStore.fileName;
+  overlayStateStore.setSettings(false)
 }
 </script>
 
@@ -54,7 +60,7 @@ async function saveChanges() {
     <div id="file-settings" class="page-content-container large full-screen-overlay-content">
       <div id="settings-view-header">
         <h1>File Settings</h1>
-        <button id="close-button" @click="overlayStateStore.setSettings(false)">
+        <button id="close-button" @click="onClose">
           <CloseButtonSVG />
         </button>
       </div>
@@ -63,7 +69,7 @@ async function saveChanges() {
           <div v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id">
             <input
                 type="text"
-                v-model="currentFileStore.fileName"
+                v-model="fileName"
                 id="editable-file-name"
             />
             <button
