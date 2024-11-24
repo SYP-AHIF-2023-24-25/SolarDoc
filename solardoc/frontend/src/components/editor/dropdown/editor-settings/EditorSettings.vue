@@ -6,10 +6,47 @@ import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { ref } from 'vue'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CollaboratorList from '@/components/editor/dropdown/editor-settings/CollaboratorList.vue'
+import UserRef from "@/components/common/UserRef.vue";
+import type {Awaited} from "@vueuse/core";
+import * as phoenixRestService from "@/services/phoenix/api-service";
+import {type ActualPhxErrorResp, PhoenixBadRequestError, PhoenixInternalError} from "@/services/phoenix/errors";
+import type {UserPublic} from "@/services/phoenix/api-service";
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
+const owner = ref<UserPublic>()
+
+;(async () => {
+  if(currentUserStore.bearer != null){
+    await fetchOwner(currentFileStore.ownerId!,currentUserStore.bearer);
+  }
+  else{
+    owner.value = { username: "Local User" }
+  }
+
+})()
+
+async function fetchOwner(id: string,bearerToken: string) {
+
+  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2UsersById>>
+  try {
+    resp = await phoenixRestService.getV2UsersById(bearerToken,id)
+  } catch (e) {
+    throw new PhoenixInternalError(
+        'Critically failed to fetch owner of the file. Cause: ' + (<Error>e).message,
+    )
+  }
+  if (resp.status === 200) {
+    owner.value = resp.data satisfies UserPublic
+  } else if (resp.status === 400) {
+    throw new PhoenixBadRequestError(
+        'Server rejected request to get file owner',
+        resp.data as ActualPhxErrorResp,
+    )
+  }
+}
+
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
@@ -45,14 +82,21 @@ setInterval(updateTimeRefs, 500)
       </div>
       <div id="settings-file-info">
         <h2 id="settings-file-info-title">
-          File Information <code>{{ currentFileStore.fileName }}</code>
+         <code>{{ currentFileStore.fileName }}</code>
         </h2>
         <p id="settings-file-info-file-id">
           <i class="pi pi-wrench"></i>
           ID: {{ currentFileStore.fileId || 'Not registered' }}
         </p>
         <div id="settings-file-info-details">
-          <p><span>Owner:</span> {{ currentFileStore.ownerId }}</p>
+          <p><span>Owner:</span>&nbsp;
+            <template v-if="owner.username === 'Local User'">
+              {{ owner.username }}
+            </template>
+            <template v-else>
+              <UserRef :id="currentFileStore.ownerId" :user-name="owner.username" />
+            </template>
+          </p>
           <p><span>Created:</span> {{ created }}</p>
           <p><span>Last Modified:</span> {{ lastModified }}</p>
         </div>
