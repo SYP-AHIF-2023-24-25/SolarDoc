@@ -44,12 +44,12 @@ import ArrowLeft from "@/components/icons/ArrowLeft.vue";
       right: 0;
       width: 2rem;
       height: 4rem;
-      background-color: var.$scheme-gray-200;
-      opacity: 0.5;
+      background-color: rgba(#e5e7eb, .5);
+      opacity: 0.9;
       border-radius: 5rem 0 0 5rem;
 
       &:hover {
-        opacity: 0.9;
+        background-color: rgba(#e5e7eb, .9);
         cursor: pointer;
       }
     }

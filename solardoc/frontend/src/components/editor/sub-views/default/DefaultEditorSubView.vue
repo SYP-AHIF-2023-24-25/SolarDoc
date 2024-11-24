@@ -125,7 +125,7 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
     #change-layout-to-slides-manager-button,
     #change-layout-to-full-screen-editor-button {
       display: flex;
-      flex-direction:row;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
       position: absolute;
