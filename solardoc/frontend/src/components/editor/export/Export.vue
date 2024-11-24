@@ -5,9 +5,8 @@ import { useOverlayStateStore } from "@/stores/overlay-state";
 import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
 import { useCurrentFileStore } from "@/stores/current-file";
 import { handleRender } from "@/scripts/handle-render";
-import { postV1RenderPresentationImages, postV1RenderPresentationPdf } from "@/services/render/gen/backend-rest-service";
+import { postV1RenderPresentationPdf } from "@/services/render/gen/backend-rest-service";
 import { RenderBackendRestError } from "@/services/render/errors";
-import * as phoenixRestService from "@/services/phoenix/api-service";
 import {interceptErrors} from "@/errors/handler/error-handler";
 
 const overlayStateStore = useOverlayStateStore();
@@ -157,29 +156,37 @@ async function handleFileExportAsZip() {
       </div>
       <div class="solardoc-style-form">
         <div class="format-selection">
-          <div class="format-box"
-               :class="{ selected: selectedFormats.includes('HTML') }"
-               @click="toggleFormat('HTML')">
-            <span>HTML</span>
-          </div>
-          <div class="format-box"
-               :class="{ selected: selectedFormats.includes('PDF'), disabled: true }"
-               @click="toggleFormat('PDF')"
+          <div
+            class="format-box"
+            :class="{ selected: selectedFormats.includes('ADOC') }"
+            @click="toggleFormat('ADOC')"
           >
-            <span>PDF</span>
-          </div>
-          <div class="format-box"
-               :class="{ selected: selectedFormats.includes('JPG') , disabled: true }"
-               @click="toggleFormat('JPG')">
-            <span>JPG</span>
-          </div>
-          <div class="format-box"
-               :class="{ selected: selectedFormats.includes('ADOC') }"
-               @click="toggleFormat('ADOC')">
             <span>AsciiDoc</span>
           </div>
+          <div
+            class="format-box"
+            :class="{ selected: selectedFormats.includes('HTML') }"
+            @click="toggleFormat('HTML')"
+          >
+            <span>HTML</span>
+          </div>
+          <div
+            class="format-box"
+            :class="{ selected: selectedFormats.includes('PDF'), disabled: true }"
+            @click="toggleFormat('PDF')"
+            v-tooltip="'Currently not supported'"
+          >
+            <span v-tooltip="'Currently not supported'">PDF</span>
+          </div>
+          <div
+            class="format-box"
+            :class="{ selected: selectedFormats.includes('JPG') , disabled: true }"
+            @click="toggleFormat('JPG')"
+            v-tooltip="'Currently not supported'"
+          >
+            <span>JPG</span>
+          </div>
         </div>
-
         <button id="export-button" class="highlighted-button" @click="async () => await interceptErrors(handleFileExport())" :disabled="!isFormatSelected">Export</button>
         <button id="zip-button" class="highlighted-button" @click="async () => await interceptErrors(handleFileExportAsZip())" :disabled="!isFormatSelected">Export as Zip</button>
       </div>
@@ -254,26 +261,41 @@ async function handleFileExportAsZip() {
     padding: 1rem;
     text-align: center;
     border-radius: 0.5rem;
-    color: black;
-    background-color: #f0f0f0;
+    background-color: var.$scheme-toggleable-button;
     cursor: pointer;
     transition: background-color 0.3s;
+    border: 2px solid var.$scheme-toggleable-button-border;
+
+    &, span {
+      color: var.$text-color;
+    }
 
     &.selected {
-      background-color: var.$stylised-button-text-color;
+      background-color: var.$scheme-toggleable-button-highlighted;
+
+      &, span {
+        color: var.$text-color-inverted;
+      }
     }
 
     &:hover {
       cursor: pointer;
-      color: white;
-      background-color: var.$stylised-button-text-color;
+      background-color: var.$scheme-toggleable-button-highlighted;
+
+      &, span {
+        color: var.$text-color-inverted;
+      }
     }
 
     &.disabled {
-      color: gray;
-      background-color: #e0e0e0;
+      border: 2px solid var.$scheme-toggleable-button-disabled-border;
+      background-color: var.$scheme-toggleable-button-disabled;
       pointer-events: none;
       cursor: not-allowed;
+
+      &, span {
+        color: var(--stylised-button-disabled-color);
+      }
     }
   }
 }

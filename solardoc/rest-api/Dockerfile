@@ -57,7 +57,6 @@ ca-certificates \
 ttf-freefont \
 nodejs
 
-
 # Set Chromium path and switch to node user
 ENV CHROMIUM_PATH /usr/bin/chromium-browser
 

@@ -438,6 +438,11 @@ html[data-theme='light'] {
   --scheme-background: transparent;
   --scheme-home-content-background-primary: white;
   --scheme-home-content-background-secondary: var(--scheme-gray-100);
+  --scheme-toggleable-button: var(--scheme-gray-100);
+  --scheme-toggleable-button-disabled: var(--scheme-gray-300);
+  --scheme-toggleable-button-highlighted: var(--scheme-lavender);
+  --scheme-toggleable-button-border: transparent;
+  --scheme-toggleable-button-disabled-border: transparent;
 }
 
 html[data-theme='dark'] {
@@ -468,6 +473,11 @@ html[data-theme='dark'] {
   --scheme-background: var(--scheme-background-black);
   --scheme-home-content-background-primary: var(--scheme-footer-black-primary);
   --scheme-home-content-background-secondary: var(--scheme-footer-black-secondary);
+  --scheme-toggleable-button: transparent;
+  --scheme-toggleable-button-disabled: transparent;
+  --scheme-toggleable-button-highlighted: white;
+  --scheme-toggleable-button-border: white;
+  --scheme-toggleable-button-disabled-border: var(--stylised-button-disabled-color);
 }
 
 $text-color: var(--text-color);
@@ -500,3 +510,8 @@ $scheme-pulse-color: var(--scheme-pulse-color);
 $scheme-background: var(--scheme-background);
 $scheme-home-content-background-primary: var(--scheme-home-content-background-primary);
 $scheme-home-content-background-secondary: var(--scheme-home-content-background-secondary);
+$scheme-toggleable-button: var(--scheme-toggleable-button);
+$scheme-toggleable-button-disabled: var(--scheme-toggleable-button-disabled);
+$scheme-toggleable-button-highlighted: var(--scheme-toggleable-button-highlighted);
+$scheme-toggleable-button-border: var(--scheme-toggleable-button-border);
+$scheme-toggleable-button-disabled-border: var(--scheme-toggleable-button-disabled-border);
