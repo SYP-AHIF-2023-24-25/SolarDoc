@@ -114,11 +114,11 @@ async function handleFileExportAsZip() {
       const extension = format.toLowerCase();
       const fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.${extension}`;
 
-      if(zip){
-        zip = zip.folder("exports").file(fileName, value);
-      }
-     else{
-       throw new Error("zip folder is null or undefined");
+      const exportsFolder = zip.folder("exports");
+      if (exportsFolder) {
+        exportsFolder.file(fileName, value);
+      } else {
+        throw new Error("Failed to create 'exports' folder in zip.");
       }
 
     } catch (e) {
@@ -163,13 +163,13 @@ async function handleFileExportAsZip() {
             <span>HTML</span>
           </div>
           <div class="format-box"
-               :class="{ selected: selectedFormats.includes('PDF') }"
+               :class="{ selected: selectedFormats.includes('PDF'), disabled: true }"
                @click="toggleFormat('PDF')"
           >
             <span>PDF</span>
           </div>
           <div class="format-box"
-               :class="{ selected: selectedFormats.includes('JPG') }"
+               :class="{ selected: selectedFormats.includes('JPG') , disabled: true }"
                @click="toggleFormat('JPG')">
             <span>JPG</span>
           </div>
@@ -269,12 +269,11 @@ async function handleFileExportAsZip() {
       background-color: var.$stylised-button-text-color;
     }
 
-    &:disabled {
-      color: var.$stylised-button-disabled-color;
-      border: 2px solid var.$stylised-button-disabled-color;
-      background-color: transparent;
+    &.disabled {
+      color: gray;
+      background-color: #e0e0e0;
+      pointer-events: none;
       cursor: not-allowed;
-
     }
   }
 }
