@@ -36,10 +36,12 @@ async function handleFileExport() {
     try {
       switch (format.toUpperCase()) {
         case "PDF":
+          // eslint-disable-next-line no-case-declarations
           const pdfResp = await postV1RenderPresentationPdf(presentationModel);
           previewURL = pdfResp.data.download?.downloadURL;
           break;
         case "HTML":
+          // eslint-disable-next-line no-case-declarations
           const htmlResp = await handleRender(currentFileStore.fileName, currentFileStore.content);
           previewURL = htmlResp.previewURL;
           break;
@@ -49,6 +51,7 @@ async function handleFileExport() {
         case "JPG":
           // const resp = await postV1RenderPresentationImages(presentationModel);
           // previewURL = resp.data.download?.downloadURL;
+          // eslint-disable-next-line no-fallthrough
         default:
           console.error(`Unsupported format: ${format}`);
           return;
@@ -85,10 +88,12 @@ async function handleFileExportAsZip() {
     try {
       switch (format.toUpperCase()) {
         case "PDF":
+          // eslint-disable-next-line no-case-declarations
           const pdfResp = await postV1RenderPresentationPdf(presentationModel);
           previewURL = pdfResp.data.download?.downloadURL;
           break;
         case "HTML":
+          // eslint-disable-next-line no-case-declarations
           const htmlResp = await handleRender(currentFileStore.fileName, currentFileStore.content);
           previewURL = htmlResp.previewURL;
           break;
@@ -98,6 +103,7 @@ async function handleFileExportAsZip() {
         case "JPG":
           // const resp = await postV1RenderPresentationImages(presentationModel);
           // previewURL = resp.data.download?.downloadURL;
+          // eslint-disable-next-line no-fallthrough
         default:
           console.error(`Unsupported format: ${format}`);
           return;
@@ -108,8 +114,13 @@ async function handleFileExportAsZip() {
       const extension = format.toLowerCase();
       const fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.${extension}`;
 
-      // TODO! Remove the forced non-nullable type
-      zip = zip.folder("exports")!!.file(fileName, value);
+      const exportsFolder = zip.folder("exports");
+      if (exportsFolder) {
+        exportsFolder.file(fileName, value);
+      } else {
+        throw new Error("Failed to create 'exports' folder in zip.");
+      }
+
     } catch (e) {
       console.error("Error in file export:", e);
       throw new RenderBackendRestError(
@@ -152,13 +163,13 @@ async function handleFileExportAsZip() {
             <span>HTML</span>
           </div>
           <div class="format-box"
-               :class="{ selected: selectedFormats.includes('PDF') }"
+               :class="{ selected: selectedFormats.includes('PDF'), disabled: true }"
                @click="toggleFormat('PDF')"
           >
             <span>PDF</span>
           </div>
           <div class="format-box"
-               :class="{ selected: selectedFormats.includes('JPG') }"
+               :class="{ selected: selectedFormats.includes('JPG') , disabled: true }"
                @click="toggleFormat('JPG')">
             <span>JPG</span>
           </div>
@@ -258,12 +269,11 @@ async function handleFileExportAsZip() {
       background-color: var.$stylised-button-text-color;
     }
 
-    &:disabled {
-      color: var.$stylised-button-disabled-color;
-      border: 2px solid var.$stylised-button-disabled-color;
-      background-color: transparent;
+    &.disabled {
+      color: gray;
+      background-color: #e0e0e0;
+      pointer-events: none;
       cursor: not-allowed;
-
     }
   }
 }
