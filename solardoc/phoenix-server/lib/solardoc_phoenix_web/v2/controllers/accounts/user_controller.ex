@@ -15,6 +15,7 @@ defmodule SolardocPhoenixWeb.V2.UserController do
         description "A user of the application (public data)"
         properties do
           id :string, "Unique identifier", required: true
+          username :string, "Users username", required: false
         end
       end,
       UserPrivate: swagger_schema do
@@ -54,6 +55,25 @@ defmodule SolardocPhoenixWeb.V2.UserController do
         properties do end
       end
     }
+  end
+
+  swagger_path :show do
+    get "#{@api_path}/users/{id}"
+    produces "application/json"
+    summary "Get a single user by id"
+    deprecated false
+    parameter("Authorization", :header, :string, "Bearer", required: true)
+    parameters do
+      id :path, :string, "User ID", required: true
+    end
+    response 200, "OK", Schema.ref(:UserPublic)
+    response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not Found", Schema.ref(:ErrorResp)
+  end
+
+  def show(conn, %{"id" => id}) do
+    account = Accounts.get_user!(id)
+    render(conn, :show_publ, user: account)
   end
 
   swagger_path :index do

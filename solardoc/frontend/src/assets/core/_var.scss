@@ -166,6 +166,46 @@
     var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
+
+  // Slides Manager presets
+  --editor-slides-manager-slides-preview-height: var(--editor-monaco-and-preview-menu-height);
+  --editor-slides-manager-slides-preview-width: min(40vw, 25rem);
+  --editor-slides-manager-preview-and-sub-slides-navigator-height: var(--editor-monaco-and-preview-menu-height);
+  --editor-slides-manager-preview-and-sub-slides-navigator-width: calc(100vw - var(--editor-slides-manager-slides-preview-width));
+  --editor-slides-manager-sub-slides-navigator-height: min(30vh, 15rem);
+  --editor-slides-manager-sub-slides-navigator-width: var(--editor-slides-manager-preview-and-sub-slides-navigator-width);
+  --editor-slides-manager-sub-slides-navigator-padding: 1rem;
+  --editor-slides-manager-preview-height: calc(
+    var(--editor-slides-manager-preview-and-sub-slides-navigator-height)
+    - var(--editor-slides-manager-sub-slides-navigator-height)
+    - var(--editor-preview-meta-info-height)
+  );
+  --editor-slides-manager-preview-width: var(--editor-slides-manager-preview-and-sub-slides-navigator-width);
+
+  // Slides Manager preview presets (Has a ratio of 2:1)
+  --editor-slides-manager-preview-frame-height: calc(var(--editor-slides-manager-preview-height) - 1rem);
+  --editor-slides-manager-preview-frame-width: calc(var(--editor-slides-manager-preview-frame-height) * 2 - 1rem);
+  --editor-slides-manager-preview-frame-padding: 0;
+  --editor-slides-manager-preview-frame-margin: 0;
+
+  // Slides Manager remaining presets
+  --editor-slides-manager-slides-navigator-padding: 1rem;
+  --editor-slides-manager-slides-navigator-height: var(--editor-slides-manager-slides-preview-height);
+  --editor-slides-manager-slides-navigator-width: var(--editor-slides-manager-slides-preview-width);
+  --editor-slides-manager-navigator-element-height: calc(var(--editor-slides-manager-slides-preview-width) * 0.5);
+  --editor-slides-manager-navigator-element-width: calc(var(--editor-slides-manager-slides-preview-width) - 2rem);
+  --editor-slides-manager-navigator-element-margin: 1rem;
+  --editor-slides-manager-sub-slides-navigator-list-height: calc(
+    var(--editor-slides-manager-sub-slides-navigator-height)
+  );
+  --editor-slides-manager-sub-slides-navigator-list-width: calc(var(--editor-slides-manager-sub-slides-navigator-list-height) * 2 - 2rem);
+  --editor-slides-manager-sub-slides-navigator-list-element-height: calc(
+    var(--editor-slides-manager-sub-slides-navigator-list-height) - 2rem
+  );
+  --editor-slides-manager-sub-slides-navigator-list-element-width: calc(
+    var(--editor-slides-manager-sub-slides-navigator-list-element-height) * 2
+  );
+  --editor-slides-manager-sub-slides-navigator-list-element-margin: 1rem;
 }
 
 // Color-scheme presets
@@ -301,8 +341,8 @@ $editor-border-width: var(--editor-border-width);
 $editor-border: var(--editor-border);
 
 // Editor preview presets (Has a ratio of 2:1)
-$editor-preview-frame-width: var(--editor-preview-frame-width);
 $editor-preview-frame-height: var(--editor-preview-frame-height);
+$editor-preview-frame-width: var(--editor-preview-frame-width);
 $editor-preview-frame-padding: var(--editor-preview-frame-padding);
 $editor-preview-frame-margin: var(--editor-preview-frame-margin);
 
@@ -338,6 +378,36 @@ $editor-preview-sub-slides-navigator-list-element-margin: var(
   --editor-preview-sub-slides-navigator-list-element-margin
 );
 
+// Slides Manager presets
+$editor-slides-manager-slides-preview-height: var(--editor-slides-manager-slides-preview-height);
+$editor-slides-manager-slides-preview-width: var(--editor-slides-manager-slides-preview-width);
+$editor-slides-manager-preview-and-sub-slides-navigator-height: var(--editor-slides-manager-preview-and-sub-slides-navigator-height);
+$editor-slides-manager-preview-and-sub-slides-navigator-width: var(--editor-slides-manager-preview-and-sub-slides-navigator-width);
+$editor-slides-manager-sub-slides-navigator-height: var(--editor-slides-manager-sub-slides-navigator-height);
+$editor-slides-manager-sub-slides-navigator-width: var(--editor-slides-manager-sub-slides-navigator-width);
+$editor-slides-manager-sub-slides-navigator-padding: var(--editor-slides-manager-sub-slides-navigator-padding);
+$editor-slides-manager-preview-height: var(--editor-slides-manager-preview-height);
+$editor-slides-manager-preview-width: var(--editor-slides-manager-preview-width);
+
+// Slides Manager preview presets (Has a ratio of 2:1)
+$editor-slides-manager-preview-frame-height: var(--editor-slides-manager-preview-frame-height);
+$editor-slides-manager-preview-frame-width: var(--editor-slides-manager-preview-frame-width);
+$editor-slides-manager-preview-frame-padding: var(--editor-slides-manager-preview-frame-padding);
+$editor-slides-manager-preview-frame-margin: var(--editor-slides-manager-preview-frame-margin);
+
+// Slides Manager remaining presets
+$editor-slides-manager-slides-navigator-padding: var(--editor-slides-manager-slides-navigator-padding);
+$editor-slides-manager-slides-navigator-height: var(--editor-slides-manager-slides-navigator-height);
+$editor-slides-manager-slides-navigator-width: var(--editor-slides-manager-slides-navigator-width);
+$editor-slides-manager-navigator-element-height: var(--editor-slides-manager-navigator-element-height);
+$editor-slides-manager-navigator-element-width: var(--editor-slides-manager-navigator-element-width);
+$editor-slides-manager-navigator-element-margin: var(--editor-slides-manager-navigator-element-margin);
+$editor-slides-manager-sub-slides-navigator-list-height: var(--editor-slides-manager-sub-slides-navigator-list-height);
+$editor-slides-manager-sub-slides-navigator-list-width: var(--editor-slides-manager-sub-slides-navigator-list-width);
+$editor-slides-manager-sub-slides-navigator-list-element-height: var(--editor-slides-manager-sub-slides-navigator-list-element-height);
+$editor-slides-manager-sub-slides-navigator-list-element-width: var(--editor-slides-manager-sub-slides-navigator-list-element-width);
+$editor-slides-manager-sub-slides-navigator-list-element-margin: var(--editor-slides-manager-sub-slides-navigator-list-element-margin);
+
 // Light & Dark Theme
 html,
 html[data-theme='light'] {
@@ -368,6 +438,11 @@ html[data-theme='light'] {
   --scheme-background: transparent;
   --scheme-home-content-background-primary: white;
   --scheme-home-content-background-secondary: var(--scheme-gray-100);
+  --scheme-toggleable-button: var(--scheme-gray-100);
+  --scheme-toggleable-button-disabled: var(--scheme-gray-300);
+  --scheme-toggleable-button-highlighted: var(--scheme-lavender);
+  --scheme-toggleable-button-border: transparent;
+  --scheme-toggleable-button-disabled-border: transparent;
 }
 
 html[data-theme='dark'] {
@@ -398,6 +473,11 @@ html[data-theme='dark'] {
   --scheme-background: var(--scheme-background-black);
   --scheme-home-content-background-primary: var(--scheme-footer-black-primary);
   --scheme-home-content-background-secondary: var(--scheme-footer-black-secondary);
+  --scheme-toggleable-button: transparent;
+  --scheme-toggleable-button-disabled: transparent;
+  --scheme-toggleable-button-highlighted: white;
+  --scheme-toggleable-button-border: white;
+  --scheme-toggleable-button-disabled-border: var(--stylised-button-disabled-color);
 }
 
 $text-color: var(--text-color);
@@ -430,3 +510,8 @@ $scheme-pulse-color: var(--scheme-pulse-color);
 $scheme-background: var(--scheme-background);
 $scheme-home-content-background-primary: var(--scheme-home-content-background-primary);
 $scheme-home-content-background-secondary: var(--scheme-home-content-background-secondary);
+$scheme-toggleable-button: var(--scheme-toggleable-button);
+$scheme-toggleable-button-disabled: var(--scheme-toggleable-button-disabled);
+$scheme-toggleable-button-highlighted: var(--scheme-toggleable-button-highlighted);
+$scheme-toggleable-button-border: var(--scheme-toggleable-button-border);
+$scheme-toggleable-button-disabled-border: var(--scheme-toggleable-button-disabled-border);

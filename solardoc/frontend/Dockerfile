@@ -69,7 +69,7 @@ RUN pnpm run --filter @solardoc/rest-api openapi-spec:write:no-build
 # Build 'phoenix-server' package
 # This very unfurtunately requires a fully operational Elixir + Phoenix environment
 # (Which is not available in the current Docker image, as such we need to add them here)
-FROM hexpm/elixir:1.16.0-erlang-26.2.1-debian-bullseye-20231009-slim as build-stage-2
+FROM hexpm/elixir:1.16.0-erlang-26.2.1-debian-bullseye-20231009-slim AS build-stage-2
 
 # install build dependencies
 RUN apt-get update -y && apt-get install -y build-essential git \
@@ -134,7 +134,7 @@ RUN npx pkg ./solardoc/frontend/node_modules/@import-meta-env/cli/bin/import-met
 RUN cat ./package.json | grep version | head -n 1 | cut -d: -f2 | tr -d '",' | tr -d ' ' > ./version.txt
 
 # -- PRODUCTION STAGE --
-FROM nginx:stable-alpine as production-stage
+FROM nginx:stable-alpine AS production-stage
 
 # We will work in the default nginx directory though (for simplicity)
 WORKDIR /etc/nginx/

@@ -35,7 +35,7 @@ export const API_VERSIONED_FULL_BASE_PATH = `/${API_BASE_PATH}/v${API_VERSION}`
  * The port of the API.
  * @since 0.4.0
  */
-export const PORT = +(getEnv('PORT', false) || 3000)
+export const PORT: number = +(getEnv('PORT', false) ?? '3000')
 
 /**
  * The path to the persistent storage directory.
@@ -65,11 +65,7 @@ export async function main(options: ApplicationConfig = {}) {
 
   // Then start the application
   const app = new SolardocRestApiApplication(options)
-
-  // Set the base path for the API
   app.basePath(API_BASE_PATH)
-
-  // Start the application
   await app.boot()
   await app.start()
 
