@@ -36,7 +36,7 @@ const updateTimeRefs = () => {
 setInterval(updateTimeRefs, 500)
 
 async function saveChanges() {
-  currentFileStore.fileName = fileName;
+  currentFileStore.setFileName(fileName);
   await interceptErrors(
       ensureLoggedIn($router).then(
           async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
@@ -76,7 +76,6 @@ function onClose() {
                 id="save-button"
                 class="highlighted-button"
                 @click="saveChanges"
-                :disabled="fileName === currentFileStore.fileName"
             >
               ✓
             </button>
