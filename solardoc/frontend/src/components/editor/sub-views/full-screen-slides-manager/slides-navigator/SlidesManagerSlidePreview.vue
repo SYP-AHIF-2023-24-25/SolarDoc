@@ -1,15 +1,11 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { useRenderDataStore } from '@/stores/render-data'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
-import { storeToRefs } from 'pinia'
 
 defineProps({
   slideIndex: {
-    type: Number,
-    required: true,
-  },
-  subSlideIndex: {
     type: Number,
     required: true,
   },
@@ -24,40 +20,33 @@ const { previewURL } = storeToRefs(renderDataStore)
 
 <template>
   <div
-    :id="'slide-preview-' + slideIndex + '-' + subSlideIndex"
-    :class="`sub-slide-preview ${previewLoadingStore.previewLoading ? 'loading' : ''}`"
-    @click="previewSelectedSlide.setSlide(slideIndex, subSlideIndex)"
+    :id="'slide-manager-slide-preview-' + slideIndex"
+    :class="`slide-manager-slide-preview ${previewLoadingStore.previewLoading ? 'loading' : ''}`"
+    @click="previewSelectedSlide.setSlide(slideIndex, undefined)"
   >
-    <h2 id="loading-wrapper" v-if="previewLoadingStore.previewLoading">
+    <h2 v-if="previewLoadingStore.previewLoading" id="loading-wrapper">
       <span class="dot-dot-dot-flashing"></span>
     </h2>
     <template v-else>
-      <p id="slide-index">{{ slideIndex + 1 }}.{{ subSlideIndex + 1 }}</p>
-      <iframe
-        :src="`${previewURL}?static=true&slide=${slideIndex}/${subSlideIndex + 1}#/${slideIndex}/${
-          subSlideIndex + 1
-        }`"
-      ></iframe>
+      <p id="slide-index">{{ slideIndex + 1 }}</p>
+      <iframe :src="`${previewURL}?static=true&slide=${slideIndex}#/${slideIndex}`"></iframe>
     </template>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
 
-.sub-slide-preview {
+.slide-manager-slide-preview {
   flex: 0 0 auto;
-  height: var.$editor-preview-sub-slides-navigator-list-element-height;
-  width: var.$editor-preview-sub-slides-navigator-list-element-width;
+  height: var.$editor-slides-manager-navigator-element-height;
+  width: var.$editor-slides-manager-navigator-element-width;
+  margin: 0 0 var.$editor-slides-manager-navigator-element-margin 0;
+  padding: 0;
+  border-radius: 0.5rem;
   position: relative;
   overflow: hidden;
-  border-radius: 0.5rem;
-  margin: 0 0 var.$editor-preview-sub-slides-navigator-list-element-margin 0;
-
-  &:first-child {
-    margin-top: var.$editor-preview-slides-navigator-element-margin;
-  }
 
   &:hover {
     cursor: pointer;
@@ -68,17 +57,17 @@ const { previewURL } = storeToRefs(renderDataStore)
     transform: scale(0.99);
   }
 
-  &.loading {
-    @include align-center;
-    border: 2px solid var.$scheme-cs-2;
-  }
-
   #slide-index {
     position: absolute;
     top: 0.75rem;
     left: 0.75rem;
     z-index: 1;
     color: rgba(255, 255, 255, 0.6);
+  }
+
+  &.loading {
+    @include align-center;
+    border: 2px solid var.$scheme-cs-2;
   }
 
   iframe {
