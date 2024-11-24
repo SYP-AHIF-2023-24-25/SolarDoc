@@ -74,7 +74,7 @@ export async function createEditorRemoteFileConnection(): Promise<boolean> {
   ) {
     await currentFileStore.fetchNewestRemoteFileVersionIfPossible(currentUserStore.bearer!)
     await createOrJoinChannelForFile(
-      currentFileStore.raw,
+      <File>currentFileStore.raw, // Since this is a remote file we know it's not a LocalFile
       currentUserStore.bearer!,
       currentFileStore.shareURLId,
     )

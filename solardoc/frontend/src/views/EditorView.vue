@@ -145,7 +145,7 @@ setInterval(updateLastModified, 500)
           <input
             id="file-name-input"
             :disabled="currentFileStore.shareFile"
-            v-model="currentFileStore.fileName"
+            v-model="currentFileStore.file.file_name"
             @input="event => currentFileStore.setFileName(event.target!.value)"
           />
         </div>

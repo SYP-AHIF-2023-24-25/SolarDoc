@@ -91,8 +91,11 @@ export class ResultController {
         finalFileContent = this.transformToStaticPresentation(<string>fileContent)
       }
 
+      // Ensure that the file name is UTF-8 percentage encoded
+      const encodedFilename = encodeURIComponent(originalFilename)
+
       res.setHeader('Content-Type', mimeType)
-      res.setHeader('Content-Disposition', `inline; filename="${originalFilename}"`)
+      res.setHeader('Content-Disposition', `inline; filename="${encodedFilename}"`)
       res.status(200).send(finalFileContent)
     } catch (e) {
       if (e instanceof CacheError) {
@@ -100,6 +103,10 @@ export class ResultController {
           error: 'Specified file not found',
         })
       }
+      console.debug(`Failed critically to load file ${uuid} from cache: ${e}`)
+      res.status(500).send({
+        error: 'Internal server error',
+      })
     }
   }
 }
