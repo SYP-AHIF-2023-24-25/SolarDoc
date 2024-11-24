@@ -42,7 +42,8 @@ onMounted(async () => await interceptErrors(initEditor()))
 
 <style scoped>
 #editor {
-  width: 50vw;
-  height: 100vh;
+  width: inherit;
+  height: inherit;
+  box-sizing: border-box;
 }
 </style>

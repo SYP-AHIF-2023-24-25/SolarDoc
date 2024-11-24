@@ -1,10 +1,10 @@
-<script lang="ts" setup>
-import { useRenderDataStore } from '@/stores/render-data'
+<script setup lang="ts">
+import SubSlidesPreview from '@/components/editor/sub-views/default/sub-slides-navigator/SubSlidesPreview.vue'
 import { storeToRefs } from 'pinia'
+import { useRenderDataStore } from '@/stores/render-data'
 import { useInitStateStore } from '@/stores/init-state'
-import SlidePreview from '@/components/editor/slides-navigator/SlidePreview.vue'
-import { ref, watch } from 'vue'
 import { useScroll } from '@vueuse/core'
+import { ref, watch } from 'vue'
 import { usePreviewMenuSlideStateStore } from '@/stores/preview-menu-slide-state'
 
 const renderDataStore = useRenderDataStore()
@@ -14,8 +14,8 @@ const previewMenuSlideStateStore = usePreviewMenuSlideStateStore()
 const { slideCount, previewURL } = storeToRefs(renderDataStore)
 const { x: globalY } = storeToRefs(previewMenuSlideStateStore)
 
-const slidesNavigatorEl = ref<HTMLElement | null>(null)
-const { x } = useScroll(slidesNavigatorEl)
+const subSlidesNavigatorEl = ref<HTMLElement | null>(null)
+const { x } = useScroll(subSlidesNavigatorEl)
 
 // Automatically update scroll state when the user scrolls
 watch(x, () => {
@@ -23,16 +23,20 @@ watch(x, () => {
 })
 
 watch(globalY, () => {
-  if (slidesNavigatorEl.value) {
+  if (subSlidesNavigatorEl.value) {
     x.value = globalY.value
   }
 })
 </script>
 
 <template>
-  <div v-if="!initStateStore.init && previewURL" id="slides-navigator" ref="slidesNavigatorEl">
-    <!-- For every *main* slide, create a slide preview -->
-    <SlidePreview
+  <div
+    id="sub-slides-navigator"
+    v-if="!initStateStore.init && previewURL"
+    ref="subSlidesNavigatorEl"
+  >
+    <!-- For every *main* slide, create a sub-slide preview -->
+    <SubSlidesPreview
       v-for="i in Array(slideCount || 2)
         .fill(null)
         .map((_, i) => i)"
@@ -42,18 +46,15 @@ watch(globalY, () => {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 @use '@/assets/core/var' as var;
 
-#slides-navigator {
+#sub-slides-navigator {
   display: flex;
   flex-flow: row nowrap;
-  padding: var.$editor-preview-slides-navigator-padding;
-  margin: 0;
-  height: var.$editor-preview-slides-navigator-height;
-  width: var.$editor-preview-slides-navigator-width;
-
-  // This element will be scrolled but by the sub-slides-navigator (weird workaround but it works)
-  overflow: hidden;
+  height: var.$editor-preview-sub-slides-navigator-height;
+  max-height: var.$editor-preview-sub-slides-navigator-height;
+  width: 100%;
+  overflow: scroll hidden;
 }
 </style>
