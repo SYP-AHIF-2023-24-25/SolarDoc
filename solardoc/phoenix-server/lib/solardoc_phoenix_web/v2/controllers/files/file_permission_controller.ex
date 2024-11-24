@@ -1,7 +1,9 @@
 defmodule SolardocPhoenixWeb.V2.FilePermissionController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger
+  import Ecto.Query, warn: false
 
+  alias SolardocPhoenix.Repo
   alias SolardocPhoenix.Permissions
   alias SolardocPhoenix.Permissions.FilePermission
   alias SolardocPhoenix.Files
@@ -76,6 +78,7 @@ defmodule SolardocPhoenixWeb.V2.FilePermissionController do
     response 201, "Created", Schema.ref(:FilePermission)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
     response 401, "Unauthorized", Schema.ref(:ErrorResp)
+    response 404, "Not found", Schema.ref(:ErrorResp)
   end
   def create(conn,  file_permission_params) do
     with {:file_exists, %File{}} <- {:file_exists, Files.get_file!(file_permission_params["file_id"])},
@@ -83,7 +86,7 @@ defmodule SolardocPhoenixWeb.V2.FilePermissionController do
         file_permission = file_permission |> Repo.preload(:user)
         conn
         |> put_status(:created)
-        |> put_resp_header("location", ~p"/#{@api_path}/files/permissionss/#{file_permission.id}")
+        |> put_resp_header("location", ~p"/#{@api_path}/files/permissions/#{file_permission.id}")
         |> render(:show, file_permission: file_permission)
     else
       {:file_exists, _} -> {:error, :not_found}
@@ -182,15 +185,8 @@ defmodule SolardocPhoenixWeb.V2.FilePermissionController do
   end
 
   def show_permissions_for_file(conn, %{"file_id" => file_id}) do
-    case Permissions.get_file_permissions_by_file!(file_id) do
-      [] ->
-        conn
-        |> put_status(:not_found)
-        |> render("error.json", message: "File permissions not found")
-
-      file_permissions ->
-        render(conn, :index, file_permissions: file_permissions)
-    end
+    file_permissions = Permissions.get_file_permissions_by_file!(file_id)
+    render(conn, :index, file_permissions: file_permissions)
   end
 
   #def delete(conn, %{"id" => id}) do

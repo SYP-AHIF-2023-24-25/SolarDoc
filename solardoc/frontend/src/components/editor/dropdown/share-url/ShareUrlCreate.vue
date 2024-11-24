@@ -99,7 +99,7 @@ async function submitForm(
           add-class="solardoc-style-form"
           @submit="submitForm"
         >
-          <CheckboxElement disabled name="write" size="lg" text="Write access" default="true" />
+          <CheckboxElement name="write" size="lg" text="Write access" default="true" />
           <ButtonElement
             :columns="{
               container: 1,
