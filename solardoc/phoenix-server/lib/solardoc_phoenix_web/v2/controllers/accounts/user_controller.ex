@@ -73,7 +73,7 @@ defmodule SolardocPhoenixWeb.V2.UserController do
 
   def show(conn, %{"id" => id}) do
     account = Accounts.get_user!(id)
-    render(conn, :show, account: account)
+    render(conn, :show_publ, user: account)
   end
 
   swagger_path :index do
