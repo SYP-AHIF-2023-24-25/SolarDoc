@@ -22,7 +22,7 @@ const owner = ref<UserPublic>()
     await fetchOwner(currentFileStore.ownerId!,currentUserStore.bearer);
   }
   else{
-    owner.value = { username: "Local User" }
+    owner.value = { username: "Local User", id: "local-user-id"}
   }
 
 })()
@@ -39,7 +39,7 @@ async function fetchOwner(id: string,bearerToken: string) {
   }
   if (resp.status === 200) {
     owner.value = resp.data satisfies UserPublic
-  } else if (resp.status === 400) {
+  } else if (resp.status === 401) {
     throw new PhoenixBadRequestError(
         'Server rejected request to get file owner',
         resp.data as ActualPhxErrorResp,
@@ -90,11 +90,11 @@ setInterval(updateTimeRefs, 500)
         </p>
         <div id="settings-file-info-details">
           <p><span>Owner:</span>&nbsp;
-            <template v-if="owner.username === 'Local User'">
-              {{ owner.username }}
+            <template v-if="owner!.username === 'Local User'">
+              {{ owner!.username }}
             </template>
-            <template v-else>
-              <UserRef :id="currentFileStore.ownerId" :user-name="owner.username" />
+            <template v-else-if="currentFileStore!.ownerId && owner!.username">
+              <UserRef :id="currentFileStore.ownerId" :user-name="owner!.username" />
             </template>
           </p>
           <p><span>Created:</span> {{ created }}</p>
