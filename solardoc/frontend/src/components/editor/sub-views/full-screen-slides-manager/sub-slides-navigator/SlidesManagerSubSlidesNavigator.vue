@@ -5,12 +5,12 @@ import { useInitStateStore } from '@/stores/init-state'
 import SlideManagerSubSlidePreview
   from "@/components/editor/sub-views/full-screen-slides-manager/sub-slides-navigator/SlideManagerSubSlidePreview.vue";
 import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
+import type {Ref} from "vue";
 
 const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()
 const previewSelectedSlideStore = usePreviewSelectedSlideStore()
-
-const { previewURL, subslideCountPerSlide } = storeToRefs(renderDataStore)
+const { previewURL, subslideCountPerSlide } = <{ previewURL: Ref<string>, subslideCountPerSlide: Ref<Array<number>> }>storeToRefs(renderDataStore)
 const { slideIndex } = storeToRefs(previewSelectedSlideStore)
 </script>
 
