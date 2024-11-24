@@ -107,6 +107,7 @@ export type ShareUrl = {
 };
 export type UserPublic = {
     id: string;
+    username?: string;
 };
 export type UsersPublic = UserPublic[];
 export type CreateUser = {
@@ -630,6 +631,27 @@ export function getV2UsersCurrent(authorization: string, opts?: Oazapfts.Request
         status: 401;
         data: ErrorsResp;
     }>("/v2/users/current", {
+        ...opts,
+        headers: {
+            ...opts && opts.headers,
+            Authorization: authorization
+        }
+    });
+}
+/**
+ * Get a single user by id
+ */
+export function getV2UsersById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+    return oazapfts.fetchJson<{
+        status: 200;
+        data: UserPublic;
+    } | {
+        status: 401;
+        data: ErrorsResp;
+    } | {
+        status: 404;
+        data: ErrorsResp;
+    }>(`/v2/users/${encodeURIComponent(id)}`, {
         ...opts,
         headers: {
             ...opts && opts.headers,

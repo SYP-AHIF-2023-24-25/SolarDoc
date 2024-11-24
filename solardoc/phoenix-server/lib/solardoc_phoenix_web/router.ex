@@ -78,6 +78,7 @@ defmodule SolardocPhoenixWeb.Router do
     # User routes
     get "/users", V2.UserController, :index
     get "/users/current", V2.UserController, :current
+    get "/users/:id", V2.UserController, :show
 
     # User confirmation routes
     # credo:disable-for-next-line

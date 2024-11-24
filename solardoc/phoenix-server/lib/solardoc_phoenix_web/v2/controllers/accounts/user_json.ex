@@ -32,7 +32,8 @@ defmodule SolardocPhoenixWeb.V2.UserJSON do
 
   defp publ_data(%User{} = user) do
     %{
-      id: user.id
+      id: user.id,
+      username: user.username
     }
   end
 
