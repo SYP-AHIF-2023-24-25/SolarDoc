@@ -176,7 +176,7 @@ async function handleFileExportAsZip() {
             @click="toggleFormat('PDF')"
             v-tooltip="'Currently not supported'"
           >
-            <span v-tooltip="'Currently not supported'">PDF</span>
+            <span>PDF</span>
           </div>
           <div
             class="format-box"
@@ -187,8 +187,20 @@ async function handleFileExportAsZip() {
             <span>JPG</span>
           </div>
         </div>
-        <button id="export-button" class="highlighted-button" @click="async () => await interceptErrors(handleFileExport())" :disabled="!isFormatSelected">Export</button>
-        <button id="zip-button" class="highlighted-button" @click="async () => await interceptErrors(handleFileExportAsZip())" :disabled="!isFormatSelected">Export as Zip</button>
+        <button
+          id="export-button"
+          class="highlighted-button"
+          @click="async () => await interceptErrors(handleFileExport())"
+          :disabled="!isFormatSelected"
+          v-tooltip="isFormatSelected ? undefined : 'Please select at least one document type'"
+        >Export</button>
+        <button
+          id="zip-button"
+          class="highlighted-button"
+          @click="async () => await interceptErrors(handleFileExportAsZip())"
+          :disabled="!isFormatSelected"
+          v-tooltip="isFormatSelected ? undefined : 'Please select at least one document type'"
+        >Export as Zip</button>
       </div>
     </div>
   </div>
@@ -290,7 +302,6 @@ async function handleFileExportAsZip() {
     &.disabled {
       border: 2px solid var.$scheme-toggleable-button-disabled-border;
       background-color: var.$scheme-toggleable-button-disabled;
-      pointer-events: none;
       cursor: not-allowed;
 
       &, span {
