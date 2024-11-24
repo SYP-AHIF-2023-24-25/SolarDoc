@@ -1,7 +1,9 @@
 defmodule SolardocPhoenixWeb.V2.FilePermissionController do
   use SolardocPhoenixWeb, :controller
   use PhoenixSwagger
+  import Ecto.Query, warn: false
 
+  alias SolardocPhoenix.Repo
   alias SolardocPhoenix.Permissions
   alias SolardocPhoenix.Permissions.FilePermission
   alias SolardocPhoenix.Files
