@@ -19,6 +19,7 @@ import LoadAnywayButton from '@/components/editor/LoadAnywayButton.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
 import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
 import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
+import Export from "@/components/editor/dropdown/export/Export.vue"
 import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
@@ -80,22 +81,7 @@ function handleCopyButtonClick() {
 }
 
 function handleDownloadButtonClick() {
-  let text: string = currentFileStore.content
-  let fileName: string = currentFileStore.fileName
-  let fileType: string = 'text/asciidoc'
-  let bloby: Blob = new Blob([text], { type: fileType })
-
-  let a = document.createElement('a')
-  a.download = fileName
-  a.href = URL.createObjectURL(bloby)
-  a.dataset.downloadurl = [fileType, a.download, a.href].join(':')
-  a.style.display = 'none'
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  setTimeout(function () {
-    URL.revokeObjectURL(a.href)
-  }, 1500)
+  overlayStateStore.setExportView(true)
 }
 
 function handleShareButtonClick() {
@@ -116,8 +102,9 @@ setInterval(updateLastModified, 500)
 <template>
   <ShareUrlCreate />
   <ChannelView />
-  <EditorSettings />
   <FullScreenPreview />
+  <EditorSettings />
+  <Export />
   <div id="editor-page">
     <div id="menu">
       <div id="menu-left-side">
