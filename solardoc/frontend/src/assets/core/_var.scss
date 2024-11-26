@@ -112,7 +112,7 @@
   --editor-menu-height: 2rem;
   --editor-menu-padding: 0;
   --editor-menu-margin: 0;
-  --editor-menu-file-name-padding: 1rem;
+  --editor-menu-file-name-padding: 1rem 1rem 1rem 0;
   --editor-menu-file-name-margin: 0;
   --editor-monaco-and-preview-menu-height: calc(
     var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
@@ -493,6 +493,15 @@ html[data-theme='light'] {
   --scheme-toggleable-button-highlighted: var(--scheme-lavender);
   --scheme-toggleable-button-border: transparent;
   --scheme-toggleable-button-disabled-border: transparent;
+  --scheme-file-name-input-background-color: var(--scheme-gray-100);
+  --scheme-file-name-input-background-color-highlighted: var(--scheme-gray-200);
+  --scheme-file-name-input-background-color-selection: #b3d4fc;
+
+  ::-moz-selection,
+  ::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+  }
 }
 
 html[data-theme='dark'] {
@@ -528,6 +537,15 @@ html[data-theme='dark'] {
   --scheme-toggleable-button-highlighted: white;
   --scheme-toggleable-button-border: white;
   --scheme-toggleable-button-disabled-border: var(--stylised-button-disabled-color);
+  --scheme-file-name-input-background-color: var(--scheme-purple-subtle);
+  --scheme-file-name-input-background-color-highlighted: var(--scheme-purple-subtle);
+  --scheme-file-name-input-background-color-selection: var(--scheme-purple-intense);
+
+  ::-moz-selection,
+  ::selection {
+    background: #2e3b4d;
+    text-shadow: none;
+  }
 }
 
 $text-color: var(--text-color);
@@ -565,3 +583,6 @@ $scheme-toggleable-button-disabled: var(--scheme-toggleable-button-disabled);
 $scheme-toggleable-button-highlighted: var(--scheme-toggleable-button-highlighted);
 $scheme-toggleable-button-border: var(--scheme-toggleable-button-border);
 $scheme-toggleable-button-disabled-border: var(--scheme-toggleable-button-disabled-border);
+$scheme-file-name-input-background-color: var(--scheme-file-name-input-background-color); 
+$scheme-file-name-input-background-color-highlighted: var(--scheme-file-name-input-background-color-highlighted);
+$scheme-file-name-input-background-color-selection: var(--scheme-file-name-input-background-color-selection);
