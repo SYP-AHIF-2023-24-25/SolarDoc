@@ -27,6 +27,7 @@ import {
   FULL_SCREEN_EDITOR,
   FULL_SCREEN_SLIDES_MANGER,
 } from '@/scripts/editor/sub-view-state'
+import AsciidocIcon from "@/components/icons/AsciidocIcon.vue";
 
 const previewLoadingStore = usePreviewLoadingStore()
 const overlayStateStore = useOverlayStateStore()
@@ -82,14 +83,17 @@ setInterval(updateLastModified, 500)
     <div id="menu">
       <div id="menu-left-side">
         <EditorSandwichDropdown />
-        <label for="file-name-input"></label>
-        <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
-        <input
-          id="file-name-input"
-          :disabled="currentFileStore.shareFile"
-          v-model="currentFileStore.file.file_name"
-          @input="event => currentFileStore.setFileName(event.target!.value)"
-        />
+        <div id="file-name-input-wrapper">
+          <span id="asciidoc-icon"><AsciidocIcon /></span>
+          <label for="file-name-input"></label>
+          <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
+          <input
+            id="file-name-input"
+            :disabled="currentFileStore.shareFile"
+            v-model="currentFileStore.file.file_name"
+            @input="event => currentFileStore.setFileName(event.target!.value)"
+          />
+        </div>
       </div>
       <div id="menu-right-side">
         <div>
@@ -146,6 +150,8 @@ $total-width: 100vw;
   padding: 0;
 }
 
+$menu-height: 2rem;
+
 div#editor-page {
   @include view-presets;
 
@@ -155,7 +161,7 @@ div#editor-page {
     justify-content: space-between;
     padding: var.$editor-menu-padding;
     margin: var.$editor-menu-margin;
-    height: 2rem;
+    height: $menu-height;
 
     p {
       height: 1rem;
@@ -165,20 +171,50 @@ div#editor-page {
       @include menu-child-presets;
       width: $left-menu-width;
 
-      #file-name-input {
-        border: none;
-        background-color: transparent;
-        text-align: left;
-        width: fit-content;
-        height: calc(100% - 2px);
-        padding: var.$editor-menu-file-name-padding;
-        margin: var.$editor-menu-file-name-margin;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.85em;
+      #file-name-input-wrapper {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        height: $menu-height;
+        box-sizing: border-box;
+        background-color: var.$scheme-file-name-input-background-color;
+        box-shadow: 0 -2px var.$scheme-link-hover-color inset;
+        border-radius: 0.3em 0.3em 0 0;
+        margin-left: 4px;
 
-        &:focus {
-          outline: var.$scheme-link-hover-color solid 2px;
-          border-radius: 2px;
+        #asciidoc-icon {
+          display: inline-flex;
+          align-content: center;
+          justify-content: center;
+          flex-direction: column;
+          height: 100%;
+          margin: 0 0.5rem;
+        }
+
+        ::selection {
+          background-color: var.$scheme-file-name-input-background-color-selection;
+        }
+
+        #file-name-input {
+          height: inherit;
+          box-sizing: border-box;
+          border: none;
+          text-align: left;
+          width: fit-content;
+          padding: var.$editor-menu-file-name-padding;
+          margin: var.$editor-menu-file-name-margin;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.85em;
+          background: transparent;
+        }
+
+        &, * {
+          outline: transparent;
+        }
+
+        &:has(#file-name-input:focus),
+        &:hover {
+          background: var.$scheme-file-name-input-background-color-highlighted;
         }
       }
     }
