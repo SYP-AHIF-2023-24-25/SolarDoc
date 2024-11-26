@@ -61,28 +61,6 @@ function handlePreviewButtonPress() {
   console.log('[Editor] Preview button clicked')
 }
 
-let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
-const copyButtonContent = ref('Copy')
-
-function handleCopyButtonClick() {
-  handleCopy(currentFileStore.content)
-  copyButtonContent.value = 'Copied!'
-  if (copyButtonTimeout) {
-    clearTimeout(copyButtonTimeout)
-  }
-  copyButtonTimeout = setTimeout(() => {
-    copyButtonContent.value = 'Copy'
-  }, 1000)
-}
-
-function handleDownloadButtonClick() {
-  overlayStateStore.setExportView(true)
-}
-
-function handleShareButtonClick() {
-  overlayStateStore.setShareUrlView(true)
-}
-
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 
@@ -104,50 +82,34 @@ setInterval(updateLastModified, 500)
     <div id="menu">
       <div id="menu-left-side">
         <EditorSandwichDropdown />
-        <div id="button-menu">
-          <button class="editor-button" @click="handleCopyButtonClick()">
-            {{ copyButtonContent }}
-          </button>
-          <button
-            v-if="!currentFileStore.shareFile"
-            class="editor-button"
-            @click="handleShareButtonClick()"
-            v-tooltip="'Creates a URL to let others join your workspace'"
-          >
-            Share
-          </button>
-          <button class="editor-button" @click="handleDownloadButtonClick()">Download</button>
-        </div>
-        <SaveStateBadge />
-      </div>
-      <div id="menu-center">
-        <div>
-          <label for="file-name-input"></label>
-          <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
-          <input
-            id="file-name-input"
-            :disabled="currentFileStore.shareFile"
-            v-model="currentFileStore.file.file_name"
-            @input="event => currentFileStore.setFileName(event.target!.value)"
-          />
-        </div>
+        <label for="file-name-input"></label>
+        <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
+        <input
+          id="file-name-input"
+          :disabled="currentFileStore.shareFile"
+          v-model="currentFileStore.file.file_name"
+          @input="event => currentFileStore.setFileName(event.target!.value)"
+        />
       </div>
       <div id="menu-right-side">
         <div>
-          <p>
-            Last edited:
-            {{
-              previewLoadingStore.previewLoading
-                ? (updateLastModified() && false) || 'now'
-                : lastModified
-            }}
-          </p>
+          <SaveStateBadge />
+          <div>
+            <p>
+              Last edited:
+              {{
+                previewLoadingStore.previewLoading
+                    ? (updateLastModified() && false) || 'now'
+                    : lastModified
+              }}
+            </p>
+          </div>
         </div>
         <div>
           <button
-            id="fullscreen-preview-button"
-            class="editor-button"
-            @click="handlePreviewButtonPress()"
+              id="fullscreen-preview-button"
+              class="editor-button"
+              @click="handlePreviewButtonPress()"
           >
             Fullscreen
           </button>
@@ -175,8 +137,7 @@ setInterval(updateLastModified, 500)
 @use '@/assets/core/var' as var;
 
 $left-menu-width: calc(40vw - 0.5rem);
-$center-menu-width: 20vw;
-$right-menu-width: calc(40vw - 0.5rem);
+$right-menu-width: calc(35vw - 8px);
 $total-width: 100vw;
 
 @mixin menu-child-presets {
@@ -204,36 +165,20 @@ div#editor-page {
       @include menu-child-presets;
       width: $left-menu-width;
 
-      #button-menu {
-        display: flex;
-        flex-flow: row nowrap;
-        padding: var.$editor-menu-button-menu-padding;
-        margin: var.$editor-menu-button-menu-margin;
-      }
-    }
+      #file-name-input {
+        border: none;
+        background-color: transparent;
+        text-align: left;
+        width: fit-content;
+        height: calc(100% - 2px);
+        padding: var.$editor-menu-file-name-padding;
+        margin: var.$editor-menu-file-name-margin;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85em;
 
-    #menu-center {
-      @include menu-child-presets;
-      width: $center-menu-width;
-      justify-content: center;
-      align-content: center;
-
-      div {
-        @include align-center;
-
-        #file-name-input {
-          border: none;
-          background-color: transparent;
-          text-align: center;
-          width: 100%;
-          height: calc(100% - 2px);
-          padding: 0;
-          margin: 0;
-
-          &:focus {
-            outline: var.$scheme-link-hover-color solid 2px;
-            border-radius: 2px;
-          }
+        &:focus {
+          outline: var.$scheme-link-hover-color solid 2px;
+          border-radius: 2px;
         }
       }
     }
@@ -241,10 +186,19 @@ div#editor-page {
     #menu-right-side {
       @include menu-child-presets;
       width: $right-menu-width;
-      justify-content: flex-end;
+      justify-content: space-between;
 
       div {
         @include align-center;
+
+        &:first-child {
+          display: flex;
+          gap: 0.5rem;
+        }
+
+        &:last-child {
+          justify-content: flex-end;
+        }
       }
 
       #fullscreen-preview-button {

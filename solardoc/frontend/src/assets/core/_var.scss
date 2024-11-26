@@ -112,8 +112,8 @@
   --editor-menu-height: 2rem;
   --editor-menu-padding: 0;
   --editor-menu-margin: 0;
-  --editor-menu-button-menu-padding: 0;
-  --editor-menu-button-menu-margin: 0;
+  --editor-menu-file-name-padding: 1rem;
+  --editor-menu-file-name-margin: 0;
   --editor-monaco-and-preview-menu-height: calc(
     var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
   );
@@ -349,8 +349,8 @@ $editor-body-height: var(--editor-body-height);
 $editor-menu-height: var(--editor-menu-height);
 $editor-menu-padding: var(--editor-menu-padding);
 $editor-menu-margin: var(--editor-menu-margin);
-$editor-menu-button-menu-padding: var(--editor-menu-button-menu-padding);
-$editor-menu-button-menu-margin: var(--editor-menu-button-menu-margin);
+$editor-menu-file-name-padding: var(--editor-menu-file-name-padding);
+$editor-menu-file-name-margin: var(--editor-menu-file-name-margin);
 $editor-monaco-and-preview-menu-height: var(--editor-monaco-and-preview-menu-height);
 $editor-preview-menu-height: var(--editor-preview-menu-height);
 $editor-monaco-height: var(--editor-monaco-height);
