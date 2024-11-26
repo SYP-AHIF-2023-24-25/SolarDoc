@@ -6,8 +6,7 @@ import { useInitStateStore } from '@/stores/init-state'
 import { ref, watch } from 'vue'
 import { useScroll } from '@vueuse/core'
 import { usePreviewMenuSlideStateStore } from '@/stores/preview-menu-slide-state'
-import SlidesManagerSlidePreview
-  from "@/components/editor/sub-views/full-screen-slides-manager/slides-navigator/SlidesManagerSlidePreview.vue";
+import SlidesManagerSlidePreview from '@/components/editor/sub-views/full-screen-slides-manager/slides-navigator/SlidesManagerSlidePreview.vue'
 
 const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()
@@ -36,8 +35,8 @@ watch(globalX, () => {
     <!-- For every *main* slide, create a slide preview -->
     <SlidesManagerSlidePreview
       v-for="i in Array(slideCount || 2)
-      .fill(null)
-      .map((_, i) => i)"
+        .fill(null)
+        .map((_, i) => i)"
       :key="i"
       :slide-index="i"
     />

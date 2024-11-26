@@ -34,7 +34,7 @@ const { previewURL } = storeToRefs(renderDataStore)
     <template v-else>
       <p id="slide-index">{{ slideIndex + 1 }}.{{ subSlideIndex + 1 }}</p>
       <iframe
-          :src="`${previewURL}?static=true&slide=${slideIndex}/${subSlideIndex + 1}#/${slideIndex}/${
+        :src="`${previewURL}?static=true&slide=${slideIndex}/${subSlideIndex + 1}#/${slideIndex}/${
           subSlideIndex + 1
         }`"
       ></iframe>

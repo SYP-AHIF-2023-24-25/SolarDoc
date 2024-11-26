@@ -9,7 +9,6 @@ import constants from '@/plugins/constants'
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 
-
 /**
  * The data returned by the backend when rendering a presentation.
  *

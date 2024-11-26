@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Editor from "@/components/editor/Editor.vue";
-import ArrowLeft from "@/components/icons/ArrowLeft.vue";
+import Editor from '@/components/editor/Editor.vue'
+import ArrowLeft from '@/components/icons/ArrowLeft.vue'
 </script>
 
 <template>
@@ -36,7 +36,7 @@ import ArrowLeft from "@/components/icons/ArrowLeft.vue";
 
     #change-layout-to-default {
       display: flex;
-      flex-direction:row;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
       position: absolute;
@@ -44,12 +44,12 @@ import ArrowLeft from "@/components/icons/ArrowLeft.vue";
       right: 0;
       width: 2rem;
       height: 4rem;
-      background-color: rgba(#e5e7eb, .5);
+      background-color: rgba(#e5e7eb, 0.5);
       opacity: 0.9;
       border-radius: 5rem 0 0 5rem;
 
       &:hover {
-        background-color: rgba(#e5e7eb, .9);
+        background-color: rgba(#e5e7eb, 0.9);
         cursor: pointer;
       }
     }

@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import LoadAnywayButton from "@/components/editor/LoadAnywayButton.vue";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import {useDarkModeStore} from "@/stores/dark-mode";
-import {useInitStateStore} from "@/stores/init-state";
-import {useRenderDataStore} from "@/stores/render-data";
-import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
-import {storeToRefs} from "pinia";
-import ArrowRight from "@/components/icons/ArrowRight.vue";
-import SlidesManagerSlidesNavigator
-  from "@/components/editor/sub-views/full-screen-slides-manager/slides-navigator/SlidesManagerSlidesNavigator.vue";
-import SlidesManagerSubSlidesNavigator
-  from "@/components/editor/sub-views/full-screen-slides-manager/sub-slides-navigator/SlidesManagerSubSlidesNavigator.vue";
+import LoadAnywayButton from '@/components/editor/LoadAnywayButton.vue'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import { useDarkModeStore } from '@/stores/dark-mode'
+import { useInitStateStore } from '@/stores/init-state'
+import { useRenderDataStore } from '@/stores/render-data'
+import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
+import { storeToRefs } from 'pinia'
+import ArrowRight from '@/components/icons/ArrowRight.vue'
+import SlidesManagerSlidesNavigator from '@/components/editor/sub-views/full-screen-slides-manager/slides-navigator/SlidesManagerSlidesNavigator.vue'
+import SlidesManagerSubSlidesNavigator from '@/components/editor/sub-views/full-screen-slides-manager/sub-slides-navigator/SlidesManagerSubSlidesNavigator.vue'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const darkModeStore = useDarkModeStore()
@@ -41,20 +39,22 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
               <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
             </div>
             <h2
-                v-else-if="(previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL"
+              v-else-if="
+                (previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL
+              "
             >
               <span class="dot-dot-dot-flashing"></span>
             </h2>
             <iframe
-                v-else
-                :src="`${previewURL}?static=true#${slideIndex}/${(subSlideIndex ?? -1) + 1}`"
+              v-else
+              :src="`${previewURL}?static=true#${slideIndex}/${(subSlideIndex ?? -1) + 1}`"
             ></iframe>
           </div>
         </div>
         <div
-            v-if="previewLoadingStore.previewLoading && !initStateStore.init"
-            id="preview-meta-info"
-            class="loading"
+          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
+          id="preview-meta-info"
+          class="loading"
         >
           <div>
             <div class="dot-dot-dot-flashing-mini"></div>
@@ -79,7 +79,7 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
           <p>{{ rawSize ? Math.round(rawSize! * 100) / 100 : '?' }} KB Raw Size</p>
         </div>
         <div id="sub-slides-navigator-wrapper">
-          <SlidesManagerSubSlidesNavigator/>
+          <SlidesManagerSubSlidesNavigator />
         </div>
       </div>
     </div>
@@ -111,7 +111,7 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
 
     #change-layout-to-default {
       display: flex;
-      flex-direction:row;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
       position: absolute;
@@ -119,12 +119,12 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
       left: 0;
       width: 2rem;
       height: 4rem;
-      background-color: rgba(#e5e7eb, .5);
+      background-color: rgba(#e5e7eb, 0.5);
       opacity: 0.9;
       border-radius: 0 5rem 5rem 0;
 
       &:hover {
-        background-color: rgba(#e5e7eb, .9);
+        background-color: rgba(#e5e7eb, 0.9);
         cursor: pointer;
       }
     }

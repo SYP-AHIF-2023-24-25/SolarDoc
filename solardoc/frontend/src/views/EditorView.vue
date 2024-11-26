@@ -10,7 +10,7 @@ import FullScreenPreview from '@/components/editor/FullScreenPreview.vue'
 import EditorSandwichDropdown from '@/components/editor/dropdown/EditorSandwichDropdown.vue'
 import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
 import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
-import Export from "@/components/editor/export/Export.vue"
+import Export from '@/components/editor/export/Export.vue'
 import * as backendAPI from '@/services/render/api-service'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
@@ -19,10 +19,14 @@ import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorS
 import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
 import { useLoadingStore } from '@/stores/loading'
 import SaveStateBadge from '@/components/editor/SaveStateBadge.vue'
-import DefaultEditorSubView from "@/components/editor/sub-views/default/DefaultEditorSubView.vue";
-import FullScreenEditor from "@/components/editor/sub-views/full-screen-editor/FullScreenEditor.vue";
-import FullScreenSlidesManager from "@/components/editor/sub-views/full-screen-slides-manager/FullScreenSlidesManager.vue";
-import {DEFAULT_VIEW, FULL_SCREEN_EDITOR, FULL_SCREEN_SLIDES_MANGER} from "@/scripts/editor/sub-view-state";
+import DefaultEditorSubView from '@/components/editor/sub-views/default/DefaultEditorSubView.vue'
+import FullScreenEditor from '@/components/editor/sub-views/full-screen-editor/FullScreenEditor.vue'
+import FullScreenSlidesManager from '@/components/editor/sub-views/full-screen-slides-manager/FullScreenSlidesManager.vue'
+import {
+  DEFAULT_VIEW,
+  FULL_SCREEN_EDITOR,
+  FULL_SCREEN_SLIDES_MANGER,
+} from '@/scripts/editor/sub-view-state'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const overlayStateStore = useOverlayStateStore()
@@ -151,9 +155,15 @@ setInterval(updateLastModified, 500)
       </div>
     </div>
     <div id="editor-and-preview-wrapper">
-      <FullScreenEditor v-if="viewState === FULL_SCREEN_EDITOR" @viewStateUpdate="_ => (viewState = DEFAULT_VIEW)"/>
-      <FullScreenSlidesManager v-else-if="viewState === FULL_SCREEN_SLIDES_MANGER" @viewStateUpdate="_ => (viewState = DEFAULT_VIEW)" />
-      <DefaultEditorSubView v-else @viewStateUpdate="payload => (viewState = payload)"/>
+      <FullScreenEditor
+        v-if="viewState === FULL_SCREEN_EDITOR"
+        @viewStateUpdate="_ => (viewState = DEFAULT_VIEW)"
+      />
+      <FullScreenSlidesManager
+        v-else-if="viewState === FULL_SCREEN_SLIDES_MANGER"
+        @viewStateUpdate="_ => (viewState = DEFAULT_VIEW)"
+      />
+      <DefaultEditorSubView v-else @viewStateUpdate="payload => (viewState = payload)" />
     </div>
   </div>
 </template>

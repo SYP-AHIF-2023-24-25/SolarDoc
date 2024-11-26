@@ -170,35 +170,55 @@
   // Slides Manager presets
   --editor-slides-manager-slides-preview-height: var(--editor-monaco-and-preview-menu-height);
   --editor-slides-manager-slides-preview-width: min(40vw, 25rem);
-  --editor-slides-manager-preview-and-sub-slides-navigator-height: var(--editor-monaco-and-preview-menu-height);
-  --editor-slides-manager-preview-and-sub-slides-navigator-width: calc(100vw - var(--editor-slides-manager-slides-preview-width));
+  --editor-slides-manager-preview-and-sub-slides-navigator-height: var(
+    --editor-monaco-and-preview-menu-height
+  );
+  --editor-slides-manager-preview-and-sub-slides-navigator-width: calc(
+    100vw - var(--editor-slides-manager-slides-preview-width)
+  );
   --editor-slides-manager-sub-slides-navigator-height: min(30vh, 15rem);
-  --editor-slides-manager-sub-slides-navigator-width: var(--editor-slides-manager-preview-and-sub-slides-navigator-width);
+  --editor-slides-manager-sub-slides-navigator-width: var(
+    --editor-slides-manager-preview-and-sub-slides-navigator-width
+  );
   --editor-slides-manager-sub-slides-navigator-padding: 1rem;
   --editor-slides-manager-preview-height: calc(
-    var(--editor-slides-manager-preview-and-sub-slides-navigator-height)
-    - var(--editor-slides-manager-sub-slides-navigator-height)
-    - var(--editor-preview-meta-info-height)
+    var(--editor-slides-manager-preview-and-sub-slides-navigator-height) - var(
+        --editor-slides-manager-sub-slides-navigator-height
+      ) - var(--editor-preview-meta-info-height)
   );
-  --editor-slides-manager-preview-width: var(--editor-slides-manager-preview-and-sub-slides-navigator-width);
+  --editor-slides-manager-preview-width: var(
+    --editor-slides-manager-preview-and-sub-slides-navigator-width
+  );
 
   // Slides Manager preview presets (Has a ratio of 2:1)
-  --editor-slides-manager-preview-frame-height: calc(var(--editor-slides-manager-preview-height) - 1rem);
-  --editor-slides-manager-preview-frame-width: calc(var(--editor-slides-manager-preview-frame-height) * 2 - 1rem);
+  --editor-slides-manager-preview-frame-height: calc(
+    var(--editor-slides-manager-preview-height) - 1rem
+  );
+  --editor-slides-manager-preview-frame-width: calc(
+    var(--editor-slides-manager-preview-frame-height) * 2 - 1rem
+  );
   --editor-slides-manager-preview-frame-padding: 0;
   --editor-slides-manager-preview-frame-margin: 0;
 
   // Slides Manager remaining presets
   --editor-slides-manager-slides-navigator-padding: 1rem;
-  --editor-slides-manager-slides-navigator-height: var(--editor-slides-manager-slides-preview-height);
+  --editor-slides-manager-slides-navigator-height: var(
+    --editor-slides-manager-slides-preview-height
+  );
   --editor-slides-manager-slides-navigator-width: var(--editor-slides-manager-slides-preview-width);
-  --editor-slides-manager-navigator-element-height: calc(var(--editor-slides-manager-slides-preview-width) * 0.5);
-  --editor-slides-manager-navigator-element-width: calc(var(--editor-slides-manager-slides-preview-width) - 2rem);
+  --editor-slides-manager-navigator-element-height: calc(
+    var(--editor-slides-manager-slides-preview-width) * 0.5
+  );
+  --editor-slides-manager-navigator-element-width: calc(
+    var(--editor-slides-manager-slides-preview-width) - 2rem
+  );
   --editor-slides-manager-navigator-element-margin: 1rem;
   --editor-slides-manager-sub-slides-navigator-list-height: calc(
     var(--editor-slides-manager-sub-slides-navigator-height)
   );
-  --editor-slides-manager-sub-slides-navigator-list-width: calc(var(--editor-slides-manager-sub-slides-navigator-list-height) * 2 - 2rem);
+  --editor-slides-manager-sub-slides-navigator-list-width: calc(
+    var(--editor-slides-manager-sub-slides-navigator-list-height) * 2 - 2rem
+  );
   --editor-slides-manager-sub-slides-navigator-list-element-height: calc(
     var(--editor-slides-manager-sub-slides-navigator-list-height) - 2rem
   );
@@ -381,11 +401,21 @@ $editor-preview-sub-slides-navigator-list-element-margin: var(
 // Slides Manager presets
 $editor-slides-manager-slides-preview-height: var(--editor-slides-manager-slides-preview-height);
 $editor-slides-manager-slides-preview-width: var(--editor-slides-manager-slides-preview-width);
-$editor-slides-manager-preview-and-sub-slides-navigator-height: var(--editor-slides-manager-preview-and-sub-slides-navigator-height);
-$editor-slides-manager-preview-and-sub-slides-navigator-width: var(--editor-slides-manager-preview-and-sub-slides-navigator-width);
-$editor-slides-manager-sub-slides-navigator-height: var(--editor-slides-manager-sub-slides-navigator-height);
-$editor-slides-manager-sub-slides-navigator-width: var(--editor-slides-manager-sub-slides-navigator-width);
-$editor-slides-manager-sub-slides-navigator-padding: var(--editor-slides-manager-sub-slides-navigator-padding);
+$editor-slides-manager-preview-and-sub-slides-navigator-height: var(
+  --editor-slides-manager-preview-and-sub-slides-navigator-height
+);
+$editor-slides-manager-preview-and-sub-slides-navigator-width: var(
+  --editor-slides-manager-preview-and-sub-slides-navigator-width
+);
+$editor-slides-manager-sub-slides-navigator-height: var(
+  --editor-slides-manager-sub-slides-navigator-height
+);
+$editor-slides-manager-sub-slides-navigator-width: var(
+  --editor-slides-manager-sub-slides-navigator-width
+);
+$editor-slides-manager-sub-slides-navigator-padding: var(
+  --editor-slides-manager-sub-slides-navigator-padding
+);
 $editor-slides-manager-preview-height: var(--editor-slides-manager-preview-height);
 $editor-slides-manager-preview-width: var(--editor-slides-manager-preview-width);
 
@@ -396,17 +426,37 @@ $editor-slides-manager-preview-frame-padding: var(--editor-slides-manager-previe
 $editor-slides-manager-preview-frame-margin: var(--editor-slides-manager-preview-frame-margin);
 
 // Slides Manager remaining presets
-$editor-slides-manager-slides-navigator-padding: var(--editor-slides-manager-slides-navigator-padding);
-$editor-slides-manager-slides-navigator-height: var(--editor-slides-manager-slides-navigator-height);
+$editor-slides-manager-slides-navigator-padding: var(
+  --editor-slides-manager-slides-navigator-padding
+);
+$editor-slides-manager-slides-navigator-height: var(
+  --editor-slides-manager-slides-navigator-height
+);
 $editor-slides-manager-slides-navigator-width: var(--editor-slides-manager-slides-navigator-width);
-$editor-slides-manager-navigator-element-height: var(--editor-slides-manager-navigator-element-height);
-$editor-slides-manager-navigator-element-width: var(--editor-slides-manager-navigator-element-width);
-$editor-slides-manager-navigator-element-margin: var(--editor-slides-manager-navigator-element-margin);
-$editor-slides-manager-sub-slides-navigator-list-height: var(--editor-slides-manager-sub-slides-navigator-list-height);
-$editor-slides-manager-sub-slides-navigator-list-width: var(--editor-slides-manager-sub-slides-navigator-list-width);
-$editor-slides-manager-sub-slides-navigator-list-element-height: var(--editor-slides-manager-sub-slides-navigator-list-element-height);
-$editor-slides-manager-sub-slides-navigator-list-element-width: var(--editor-slides-manager-sub-slides-navigator-list-element-width);
-$editor-slides-manager-sub-slides-navigator-list-element-margin: var(--editor-slides-manager-sub-slides-navigator-list-element-margin);
+$editor-slides-manager-navigator-element-height: var(
+  --editor-slides-manager-navigator-element-height
+);
+$editor-slides-manager-navigator-element-width: var(
+  --editor-slides-manager-navigator-element-width
+);
+$editor-slides-manager-navigator-element-margin: var(
+  --editor-slides-manager-navigator-element-margin
+);
+$editor-slides-manager-sub-slides-navigator-list-height: var(
+  --editor-slides-manager-sub-slides-navigator-list-height
+);
+$editor-slides-manager-sub-slides-navigator-list-width: var(
+  --editor-slides-manager-sub-slides-navigator-list-width
+);
+$editor-slides-manager-sub-slides-navigator-list-element-height: var(
+  --editor-slides-manager-sub-slides-navigator-list-element-height
+);
+$editor-slides-manager-sub-slides-navigator-list-element-width: var(
+  --editor-slides-manager-sub-slides-navigator-list-element-width
+);
+$editor-slides-manager-sub-slides-navigator-list-element-margin: var(
+  --editor-slides-manager-sub-slides-navigator-list-element-margin
+);
 
 // Light & Dark Theme
 html,
