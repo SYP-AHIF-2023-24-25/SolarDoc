@@ -25,9 +25,6 @@ async function routeWithLoading(to: string) {
           <button class="home-button no-wrap-button" @click="routeWithLoading('editor')">
             Try now
           </button>
-          <button class="home-button no-wrap-button transparent" @click="routeWithLoading('docs')">
-            Docs
-          </button>
         </div>
       </div>
       <div id="stream-svg">
