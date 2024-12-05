@@ -81,12 +81,14 @@ async function routeWithLoading(to: string) {
     flex-flow: row nowrap;
     justify-content: space-between;
     align-self: flex-end;
-    padding: 0 0 0 3rem;
+    padding: 0 0 0 2rem;
 
-    @include r-max(var.$window-medium) {
-      & {
-        padding: 0 0 0 2rem;
-      }
+    @include r-min(var.$window-medium) {
+      padding: 0 0 0 3rem;
+    }
+
+    @include r-min(var.$window-xlarge) {
+      padding: 0 0 0 7.5rem;
     }
 
     #text-and-buttons {
@@ -101,18 +103,18 @@ async function routeWithLoading(to: string) {
         p {
           margin: 0;
           padding: 0;
-          font-size: 6rem;
+          font-size: 3rem;
 
-          @include r-max(var.$window-xlarge) {
-            & {
-              font-size: 4rem;
-            }
+          @include r-min(var.$window-small) {
+            font-size: 4rem;
           }
 
-          @include r-max(var.$window-small) {
-            & {
-              font-size: 3rem;
-            }
+          @include r-min(var.$window-large) {
+            font-size: 6rem;
+          }
+
+          @include r-min(var.$window-2xlarge) {
+            font-size: 7.5rem;
           }
         }
       }
