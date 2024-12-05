@@ -9,6 +9,8 @@ import { useCurrentFileStore } from '@/stores/current-file'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 import { ref } from 'vue'
+import QrcodeVue from 'qrcode.vue'
+import type {  RenderAs, GradientType } from 'qrcode.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()
@@ -16,6 +18,12 @@ const currentFileStore = useCurrentFileStore()
 
 const generatedLink = ref('')
 
+const renderAs = ref<RenderAs>('svg')
+const qrCodeSize:number = 250
+const gradient = ref(true)
+const gradientType = ref<GradientType>('linear')
+const gradientStartColor = ref('#EC53B0FF')
+const gradientEndColor = ref('#0E21A0FF')
 async function handleGeneratedLinkCopyButtonClick() {
   if (generatedLink.value) {
     await handleCopy(generatedLink.value)
@@ -91,6 +99,17 @@ async function submitForm(
             @click="handleGeneratedLinkCopyButtonClick()"
           ></i>
           <p>{{ generatedLink || 'Your generated link~ °^°' }}</p>
+        </div>
+        <div v-if="generatedLink" id="qr-code">
+          <qrcode-vue
+              :value="generatedLink"
+              :size="qrCodeSize"
+              :render-as="renderAs"
+              :gradient="gradient"
+              :gradient-type="gradientType"
+              :gradient-start-color="gradientStartColor"
+              :gradient-end-color="gradientEndColor"
+          />
         </div>
         <Vueform
           ref="form$"
@@ -180,6 +199,11 @@ async function submitForm(
       width: 100%;
       height: 8rem;
       font-size: 1.4rem;
+    }
+
+    #qr-code{
+      max-width: fit-content;
+      margin: 2rem auto;
     }
 
     #generated-link-display {
