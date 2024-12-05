@@ -74,6 +74,8 @@
   --nav-bar-width: 100%;
   --nav-bar-padding: 0 1rem;
   --nav-bar-margin: 0;
+  --nav-bar-phone-padding: 0 0 0 0.5rem;
+  --nav-bar-phone-margin: 0;
 
   // Main body presets
   --main-body-height: calc(100vh - var(--nav-bar-height));
@@ -311,6 +313,8 @@ $nav-bar-height: var(--nav-bar-height);
 $nav-bar-width: var(--nav-bar-width);
 $nav-bar-padding: var(--nav-bar-padding);
 $nav-bar-margin: var(--nav-bar-margin);
+$nav-bar-phone-padding: var(--nav-bar-phone-padding);
+$nav-bar-phone-margin: var(--nav-bar-phone-margin);
 
 // Main body presets
 $main-body-height: var(--main-body-height);
@@ -583,6 +587,6 @@ $scheme-toggleable-button-disabled: var(--scheme-toggleable-button-disabled);
 $scheme-toggleable-button-highlighted: var(--scheme-toggleable-button-highlighted);
 $scheme-toggleable-button-border: var(--scheme-toggleable-button-border);
 $scheme-toggleable-button-disabled-border: var(--scheme-toggleable-button-disabled-border);
-$scheme-file-name-input-background-color: var(--scheme-file-name-input-background-color); 
+$scheme-file-name-input-background-color: var(--scheme-file-name-input-background-color);
 $scheme-file-name-input-background-color-highlighted: var(--scheme-file-name-input-background-color-highlighted);
 $scheme-file-name-input-background-color-selection: var(--scheme-file-name-input-background-color-selection);

@@ -143,14 +143,13 @@ setInterval(updateLastModified, 500)
 $left-menu-width: calc(40vw - 0.5rem);
 $right-menu-width: calc(35vw - 8px);
 $total-width: 100vw;
+$menu-height: 2rem;
 
 @mixin menu-child-presets {
   display: flex;
   margin: 0;
   padding: 0;
 }
-
-$menu-height: 2rem;
 
 div#editor-page {
   @include view-presets;
