@@ -28,11 +28,6 @@ const router = createRouter({
       component: () => import('@/views/CollabView.vue'),
     },
     {
-      path: '/docs' + htmlExtMatcher,
-      name: 'docs',
-      component: () => import('@/views/DocsView.vue'),
-    },
-    {
       path: '/editor' + htmlExtMatcher,
       name: 'editor',
       component: () => import('@/views/EditorView.vue'),

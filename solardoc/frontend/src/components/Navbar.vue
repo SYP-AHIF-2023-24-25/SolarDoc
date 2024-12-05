@@ -31,7 +31,6 @@ const darkModeStore = useDarkModeStore()
     <div id="right-components">
       <div id="navigation-links">
         <div id="router-links">
-          <SDRouterLink to="/docs">docs</SDRouterLink>
           <SDRouterLink to="/editor">editor</SDRouterLink>
           <SDRouterLink to="/collab">collab</SDRouterLink>
         </div>
@@ -117,7 +116,7 @@ const darkModeStore = useDarkModeStore()
       gap: 1rem;
 
       #router-links {
-        width: 30rem;
+        width: 15rem;
         display: flex;
         justify-content: space-between;
 
