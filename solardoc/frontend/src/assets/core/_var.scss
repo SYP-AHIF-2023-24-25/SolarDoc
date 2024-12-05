@@ -490,6 +490,7 @@ html[data-theme='light'] {
   --scheme-footer-black-primary: #0f111a;
   --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: transparent;
+  --scheme-background-no-transparent: white;
   --scheme-home-content-background-primary: white;
   --scheme-home-content-background-secondary: var(--scheme-gray-100);
   --scheme-toggleable-button: var(--scheme-gray-100);
@@ -534,6 +535,7 @@ html[data-theme='dark'] {
   --scheme-footer-black-primary: #0f111a;
   --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: var(--scheme-background-black);
+  --scheme-background-no-transparent: var(--scheme-background-black);
   --scheme-home-content-background-primary: var(--scheme-footer-black-primary);
   --scheme-home-content-background-secondary: var(--scheme-footer-black-secondary);
   --scheme-toggleable-button: transparent;
@@ -580,6 +582,7 @@ $dot-dot-dot-color: var(--dot-dot-dot-color);
 $dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);
 $scheme-pulse-color: var(--scheme-pulse-color);
 $scheme-background: var(--scheme-background);
+$scheme-background-no-transparent: var(--scheme-background-no-transparent);
 $scheme-home-content-background-primary: var(--scheme-home-content-background-primary);
 $scheme-home-content-background-secondary: var(--scheme-home-content-background-secondary);
 $scheme-toggleable-button: var(--scheme-toggleable-button);

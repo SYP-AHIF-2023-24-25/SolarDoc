@@ -68,7 +68,11 @@ async function routeWithLoading(to: string) {
   /* Ensuring the welcome section doesn't take up too much space and feels appropriately spaced for smaller screens */
   #home-page-welcome,
   #home-page-welcome * {
-    max-height: 30rem;
+    max-height: 20rem;
+    @include r-min(var.$window-small) {
+      max-height: 30rem;
+    }
+
     @include r-min(var.$window-medium) {
       max-height: unset;
     }
@@ -81,14 +85,50 @@ async function routeWithLoading(to: string) {
     flex-flow: row nowrap;
     justify-content: space-between;
     align-self: flex-end;
-    padding: 0 0 0 2rem;
+    overflow: hidden;
 
+    /* Background */
+    &::before {
+      z-index: -1;
+      content: "";
+      position: absolute;
+      top: -200vh;
+      left: -400vw;
+      height: max(400vh, 400rem);
+      width: max(400vw, 400rem);
+      --c: var(--scheme-background-no-transparent);
+      --l: var(--c) 11%, #0000 0;
+      --g: 17%, var(--scheme-cs-3) 0 22%, var(--c) 0;
+      background:
+          linear-gradient(45deg, var(--l) 22%, var(--c) 0 60%, #0000 0),
+          linear-gradient(-45deg, var(--l) var(--g) 60%, #0000 0),
+          linear-gradient(45deg, var(--c) var(--g), #0000 0);
+      transform: rotate(-20deg);
+      opacity: 0.3;
+
+      background-size: 4rem 4rem;
+      @include r-min(var.$window-medium) {
+        background-size: 7rem 7rem;
+      }
+
+      @include r-min(var.$window-xlarge) {
+        background-size: 10rem 10rem;
+      }
+    }
+
+    padding: 0 0 0 2rem;
     @include r-min(var.$window-medium) {
       padding: 0 0 0 3rem;
+      &::before {
+        left: -6rem;
+      }
     }
 
     @include r-min(var.$window-xlarge) {
       padding: 0 0 0 7.5rem;
+      &::before {
+        left: -10.5rem;
+      }
     }
 
     #text-and-buttons {
@@ -134,25 +174,61 @@ async function routeWithLoading(to: string) {
       z-index: 0;
       margin: 0;
 
-      svg {
-        height: 80vh;
+      &::after {
         position: absolute;
-        bottom: 0;
+        content: "";
+        z-index: -1;
         right: 0;
+        bottom: 0;
+        background-color: var.$scheme-background-no-transparent;
+        width: 30%;
 
-        @include r-max(var.$window-xlarge) {
-          & {
-            height: 75vh;
-          }
+        display: none;
+        height: 0;
+        @include r-min(var.$window-xsmall) {
+          display: block;
+          height: calc(30vh - 10px);
         }
 
-        @include r-max(var.$window-medium) {
-          & {
-            height: 70vh;
-          }
+        @include r-min(var.$window-small) {
+          height: calc(40vh - 10px);
         }
-        width: unset;
-        align-self: flex-end;
+
+        @include r-min(var.$window-medium) {
+          height: calc(60vh - 10px);
+        }
+
+        @include r-min(var.$window-xlarge) {
+          height: calc(80vh - 10px);
+        }
+      }
+
+      svg {
+        display: none;
+        width: 0;
+        height: 0;
+
+        @include r-min(var.$window-xsmall) {
+          display: block;
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: unset;
+          height: 30vh;
+          align-self: flex-end;
+        }
+
+        @include r-min(var.$window-small) {
+          height: 40vh;
+        }
+
+        @include r-min(var.$window-medium) {
+          height: 60vh;
+        }
+
+        @include r-min(var.$window-xlarge) {
+          height: 80vh;
+        }
       }
     }
   }
@@ -164,11 +240,6 @@ async function routeWithLoading(to: string) {
   #home-page-welcome-content-separator {
     @include align-center;
     width: 100%;
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 60%,
-      rgba(0, 0, 0, 0)
-    ), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='393' height='327.5' viewBox='0 0 1080 900'%3E%3Cg fill-opacity='.1'%3E%3Cpolygon fill='%23444' points='90 150 0 300 180 300'/%3E%3Cpolygon points='90 150 180 0 0 0'/%3E%3Cpolygon fill='%23AAA' points='270 150 360 0 180 0'/%3E%3Cpolygon fill='%23DDD' points='450 150 360 300 540 300'/%3E%3Cpolygon fill='%23999' points='450 150 540 0 360 0'/%3E%3Cpolygon points='630 150 540 300 720 300'/%3E%3Cpolygon fill='%23DDD' points='630 150 720 0 540 0'/%3E%3Cpolygon fill='%23444' points='810 150 720 300 900 300'/%3E%3Cpolygon fill='%23FFF' points='810 150 900 0 720 0'/%3E%3Cpolygon fill='%23DDD' points='990 150 900 300 1080 300'/%3E%3Cpolygon fill='%23444' points='990 150 1080 0 900 0'/%3E%3Cpolygon fill='%23DDD' points='90 450 0 600 180 600'/%3E%3Cpolygon points='90 450 180 300 0 300'/%3E%3Cpolygon fill='%23666' points='270 450 180 600 360 600'/%3E%3Cpolygon fill='%23AAA' points='270 450 360 300 180 300'/%3E%3Cpolygon fill='%23DDD' points='450 450 360 600 540 600'/%3E%3Cpolygon fill='%23999' points='450 450 540 300 360 300'/%3E%3Cpolygon fill='%23999' points='630 450 540 600 720 600'/%3E%3Cpolygon fill='%23FFF' points='630 450 720 300 540 300'/%3E%3Cpolygon points='810 450 720 600 900 600'/%3E%3Cpolygon fill='%23DDD' points='810 450 900 300 720 300'/%3E%3Cpolygon fill='%23AAA' points='990 450 900 600 1080 600'/%3E%3Cpolygon fill='%23444' points='990 450 1080 300 900 300'/%3E%3Cpolygon fill='%23222' points='90 750 0 900 180 900'/%3E%3Cpolygon points='270 750 180 900 360 900'/%3E%3Cpolygon fill='%23DDD' points='270 750 360 600 180 600'/%3E%3Cpolygon points='450 750 540 600 360 600'/%3E%3Cpolygon points='630 750 540 900 720 900'/%3E%3Cpolygon fill='%23444' points='630 750 720 600 540 600'/%3E%3Cpolygon fill='%23AAA' points='810 750 720 900 900 900'/%3E%3Cpolygon fill='%23666' points='810 750 900 600 720 600'/%3E%3Cpolygon fill='%23999' points='990 750 900 900 1080 900'/%3E%3Cpolygon fill='%23999' points='180 0 90 150 270 150'/%3E%3Cpolygon fill='%23444' points='360 0 270 150 450 150'/%3E%3Cpolygon fill='%23FFF' points='540 0 450 150 630 150'/%3E%3Cpolygon points='900 0 810 150 990 150'/%3E%3Cpolygon fill='%23222' points='0 300 -90 450 90 450'/%3E%3Cpolygon fill='%23FFF' points='0 300 90 150 -90 150'/%3E%3Cpolygon fill='%23FFF' points='180 300 90 450 270 450'/%3E%3Cpolygon fill='%23666' points='180 300 270 150 90 150'/%3E%3Cpolygon fill='%23222' points='360 300 270 450 450 450'/%3E%3Cpolygon fill='%23FFF' points='360 300 450 150 270 150'/%3E%3Cpolygon fill='%23444' points='540 300 450 450 630 450'/%3E%3Cpolygon fill='%23222' points='540 300 630 150 450 150'/%3E%3Cpolygon fill='%23AAA' points='720 300 630 450 810 450'/%3E%3Cpolygon fill='%23666' points='720 300 810 150 630 150'/%3E%3Cpolygon fill='%23FFF' points='900 300 810 450 990 450'/%3E%3Cpolygon fill='%23999' points='900 300 990 150 810 150'/%3E%3Cpolygon points='0 600 -90 750 90 750'/%3E%3Cpolygon fill='%23666' points='0 600 90 450 -90 450'/%3E%3Cpolygon fill='%23AAA' points='180 600 90 750 270 750'/%3E%3Cpolygon fill='%23444' points='180 600 270 450 90 450'/%3E%3Cpolygon fill='%23444' points='360 600 270 750 450 750'/%3E%3Cpolygon fill='%23999' points='360 600 450 450 270 450'/%3E%3Cpolygon fill='%23666' points='540 600 630 450 450 450'/%3E%3Cpolygon fill='%23222' points='720 600 630 750 810 750'/%3E%3Cpolygon fill='%23FFF' points='900 600 810 750 990 750'/%3E%3Cpolygon fill='%23222' points='900 600 990 450 810 450'/%3E%3Cpolygon fill='%23DDD' points='0 900 90 750 -90 750'/%3E%3Cpolygon fill='%23444' points='180 900 270 750 90 750'/%3E%3Cpolygon fill='%23FFF' points='360 900 450 750 270 750'/%3E%3Cpolygon fill='%23AAA' points='540 900 630 750 450 750'/%3E%3Cpolygon fill='%23FFF' points='720 900 810 750 630 750'/%3E%3Cpolygon fill='%23222' points='900 900 990 750 810 750'/%3E%3Cpolygon fill='%23222' points='1080 300 990 450 1170 450'/%3E%3Cpolygon fill='%23FFF' points='1080 300 1170 150 990 150'/%3E%3Cpolygon points='1080 600 990 750 1170 750'/%3E%3Cpolygon fill='%23666' points='1080 600 1170 450 990 450'/%3E%3Cpolygon fill='%23DDD' points='1080 900 1170 750 990 750'/%3E%3C/g%3E%3C/svg%3E");
 
     height: 10rem;
     h2 {
@@ -206,12 +277,26 @@ async function routeWithLoading(to: string) {
     flex-flow: column nowrap;
     background: var.$scheme-home-content-background-primary;
 
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    @include r-min(var.$window-small) {
+      h2 {
+        font-size: 2rem;
+      }
+    }
+
     @include r-min(var.$window-xmedium) {
       & {
         height: 40rem;
         gap: max(6rem, 10vw);
         flex-flow: row wrap;
         padding: 4rem;
+      }
+
+      h2 {
+        font-size: 2.5rem;
       }
     }
   }
