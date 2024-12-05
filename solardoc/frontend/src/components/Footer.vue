@@ -22,6 +22,7 @@ import constants from '@/plugins/constants'
   &,
   p {
     color: white;
+    text-align: center;
   }
 
   // We want a very gentle but cool looking gradient which is slightly tilted (only slightly visible)
