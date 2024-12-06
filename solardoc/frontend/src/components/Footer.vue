@@ -17,7 +17,7 @@ import constants from '@/plugins/constants'
   align-items: center;
   height: 10rem;
   margin: 0;
-  padding: 0;
+  padding: 1rem;
 
   &,
   p {
