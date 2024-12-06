@@ -14,6 +14,7 @@ import SandwichMenuDarkModeSVG from "@/components/icons/SandwichMenuDarkModeSVG.
 import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
 
 const darkModeStore = useDarkModeStore()
+
 </script>
 
 <template>

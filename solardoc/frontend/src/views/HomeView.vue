@@ -103,17 +103,9 @@ async function routeWithLoading(to: string) {
           linear-gradient(45deg, var(--l) 22%, var(--c) 0 60%, #0000 0),
           linear-gradient(-45deg, var(--l) var(--g) 60%, #0000 0),
           linear-gradient(45deg, var(--c) var(--g), #0000 0);
-      transform: rotate(-20deg) scale(1.2);
+      transform: rotate(-190deg) scale(1.2);
       opacity: 0.3;
-
-      background-size: 4rem 4rem;
-      @include r-min(var.$window-medium) {
-        background-size: 7rem 7rem;
-      }
-
-      @include r-min(var.$window-xlarge) {
-        background-size: 10rem 10rem;
-      }
+      background-size: 3rem 3rem;
     }
 
     padding: 0 0 0 2rem;
@@ -174,52 +166,19 @@ async function routeWithLoading(to: string) {
       z-index: 0;
       margin: 0;
 
-      &::after {
-        position: absolute;
-        content: "";
-        z-index: -1;
-        right: 0;
-        bottom: 0;
-        background-color: var.$scheme-background-no-transparent;
-        width: 30%;
-
-        display: none;
-        height: 0;
-        @include r-min(var.$window-xsmall) {
-          display: block;
-          height: calc(30vh - 10px);
-        }
-
-        @include r-min(var.$window-small) {
-          height: calc(40vh - 10px);
-        }
-
-        @include r-min(var.$window-medium) {
-          height: calc(60vh - 10px);
-        }
-
-        @include r-min(var.$window-xlarge) {
-          height: calc(80vh - 10px);
-        }
-      }
-
       svg {
         display: none;
         width: 0;
         height: 0;
 
-        @include r-min(var.$window-xsmall) {
+        @include r-min(var.$window-small) {
           display: block;
           position: absolute;
           bottom: 0;
           right: 0;
           width: unset;
-          height: 30vh;
-          align-self: flex-end;
-        }
-
-        @include r-min(var.$window-small) {
           height: 40vh;
+          align-self: flex-end;
         }
 
         @include r-min(var.$window-medium) {
@@ -273,7 +232,7 @@ async function routeWithLoading(to: string) {
     min-height: 30vw;
     width: 100%;
     gap: 4rem;
-    padding: 2rem 2rem 4rem 2rem;
+    padding: 0 2rem 4rem 2rem;
     flex-flow: column nowrap;
     background: var.$scheme-home-content-background-primary;
 
@@ -292,7 +251,7 @@ async function routeWithLoading(to: string) {
         height: 40rem;
         gap: max(6rem, 10vw);
         flex-flow: row wrap;
-        padding: 4rem;
+        padding: 0 4rem 4rem 4rem;
       }
 
       h2 {
