@@ -18,6 +18,7 @@ import GlobalFilesOverview from '@/components/collab/GlobalFilesOverview.vue'
 
 <style lang="scss" scoped>
 @use '@/assets/core/var' as var;
+@use '@/assets/page-content' as *;
 @use '@/assets/core/mixins/view-presets' as *;
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/mixins/screen-size' as *;
@@ -49,28 +50,50 @@ import GlobalFilesOverview from '@/components/collab/GlobalFilesOverview.vue'
       display: flex;
       flex-flow: column nowrap;
       width: 100%;
-      margin-bottom: 1.5rem;
+      margin: 0;
 
       h1 {
-        font-size: 4rem;
+        font-size: 2rem;
         margin-bottom: 1rem;
 
         span#experimental-tag {
           position: relative;
-          font-size: 1.25rem;
-          top: -2.5rem;
-          left: -0.5rem;
           color: var.$text-color;
+          font-size: 1rem;
           font-style: italic;
+          top: -1rem;
+          left: 0;
+
+          @include r-min(var.$window-medium) {
+            font-size: 1.25rem;
+            top: -2.5rem;
+            left: -0.5rem;
+          }
         }
       }
 
       p {
-        font-size: 1.5rem;
+        font-size: 1rem;
         text-align: center;
         margin: 0;
         padding: 0;
         width: 80%;
+      }
+
+      @include r-min(var.$window-medium) {
+        margin-bottom: 1.5rem;
+        h1 {
+          font-size: 3rem;
+        }
+        p {
+          font-size: 1.5rem;
+        }
+      }
+
+      @include r-min(var.$window-large) {
+        h1 {
+          font-size: 4rem;
+        }
       }
     }
 
@@ -79,16 +102,15 @@ import GlobalFilesOverview from '@/components/collab/GlobalFilesOverview.vue'
       flex-flow: column nowrap;
       margin-bottom: 2rem;
       width: 100%;
-      padding: 2rem;
+      padding: 0;
 
       @include r-min(var.$window-medium) {
         width: 80%;
-        padding: 0;
       }
 
       @include r-min(var.$window-large) {
         width: 70%;
-        padding: 0;
+        padding: 2rem;
       }
     }
   }
