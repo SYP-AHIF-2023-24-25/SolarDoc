@@ -103,7 +103,7 @@ async function routeWithLoading(to: string) {
           linear-gradient(45deg, var(--l) 22%, var(--c) 0 60%, #0000 0),
           linear-gradient(-45deg, var(--l) var(--g) 60%, #0000 0),
           linear-gradient(45deg, var(--c) var(--g), #0000 0);
-      transform: rotate(-20deg);
+      transform: rotate(-20deg) scale(1.2);
       opacity: 0.3;
 
       background-size: 4rem 4rem;
