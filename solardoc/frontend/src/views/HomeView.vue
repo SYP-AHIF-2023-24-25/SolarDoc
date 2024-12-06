@@ -15,7 +15,7 @@ async function routeWithLoading(to: string) {
 
 <template>
   <div id="home-page-wrapper" class="page-content-wrapper">
-    <div id="home-page-welcome">
+    <div id="home-page-welcome" class="heart-background">
       <div id="text-and-buttons">
         <div id="welcome-text">
           <p>Create <br />presentations</p>
@@ -52,6 +52,7 @@ async function routeWithLoading(to: string) {
 @use '@/assets/core/var' as var;
 @use '@/assets/gradient-text' as *;
 @use '@/assets/page-content' as *;
+@use '@/assets/heart-background' as *;
 @use '@/assets/core/mixins/view-presets' as *;
 @use '@/assets/core/mixins/screen-size' as *;
 @use '@/assets/core/mixins/align-center' as *;
@@ -87,27 +88,7 @@ async function routeWithLoading(to: string) {
     align-self: flex-end;
     overflow: hidden;
 
-    /* Background */
-    &::before {
-      z-index: -1;
-      content: "";
-      position: absolute;
-      top: -200vh;
-      left: -400vw;
-      height: max(400vh, 400rem);
-      width: max(400vw, 400rem);
-      --c: var(--scheme-background-no-transparent);
-      --l: var(--c) 11%, #0000 0;
-      --g: 17%, var(--scheme-cs-3) 0 22%, var(--c) 0;
-      background:
-          linear-gradient(45deg, var(--l) 22%, var(--c) 0 60%, #0000 0),
-          linear-gradient(-45deg, var(--l) var(--g) 60%, #0000 0),
-          linear-gradient(45deg, var(--c) var(--g), #0000 0);
-      transform: rotate(-190deg) scale(1.2);
-      opacity: 0.3;
-      background-size: 3rem 3rem;
-    }
-
+    min-height: 20rem;
     padding: 0 0 0 2rem;
     @include r-min(var.$window-medium) {
       padding: 0 0 0 3rem;
@@ -118,6 +99,7 @@ async function routeWithLoading(to: string) {
 
     @include r-min(var.$window-xlarge) {
       padding: 0 0 0 7.5rem;
+      min-height: 30rem;
       &::before {
         left: -10.5rem;
       }
