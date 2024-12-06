@@ -17,7 +17,7 @@ if (!currentUserStore.loggedIn) {
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-content-wrapper">
+  <div id="profile-wrapper" class="page-content-wrapper heart-background">
     <div id="profile-container" class="page-content-container large">
       <div id="profile-body">
         <ProfileHeader />
@@ -29,9 +29,10 @@ if (!currentUserStore.loggedIn) {
 </template>
 
 <style lang="scss" scoped>
-@use '@/assets/core/var' as var;
 @use '@/assets/page-content' as *;
+@use '@/assets/heart-background' as *;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/var' as var;
 
 #profile-container {
   display: flex;

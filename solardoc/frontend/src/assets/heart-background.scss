@@ -1,0 +1,24 @@
+.heart-background {
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    top: -100vh;
+    left: -200vw;
+    height: max(400vh, 400rem);
+    width: max(400vw, 400rem);
+    --c: var(--scheme-background-no-transparent);
+    --l: var(--c) 11%, #0000 0;
+    --g: 17%, var(--scheme-cs-3) 0 22%, var(--c) 0;
+    background:
+            linear-gradient(45deg, var(--l) 22%, var(--c) 0 60%, #0000 0),
+            linear-gradient(-45deg, var(--l) var(--g) 60%, #0000 0),
+            linear-gradient(45deg, var(--c) var(--g), #0000 0);
+    transform: rotate(-190deg) scale(1.2);
+    opacity: 0.3;
+    background-size: 3rem 3rem;
+  }
+}

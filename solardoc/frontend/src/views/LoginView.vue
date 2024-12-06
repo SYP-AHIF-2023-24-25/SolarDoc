@@ -81,7 +81,7 @@ async function submitForm(
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-content-wrapper">
+  <div id="profile-wrapper" class="page-content-wrapper heart-background">
     <div id="profile-container" class="page-content-container">
       <div id="do-not-have-an-account">
         <p>Don't have an account yet?</p>
@@ -139,9 +139,10 @@ async function submitForm(
 </template>
 
 <style lang="scss" scoped>
-@use '@/assets/core/var' as var;
 @use '@/assets/page-content' as *;
+@use '@/assets/heart-background' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
+@use '@/assets/core/var' as var;
 
 #profile-wrapper {
   #profile-container {
