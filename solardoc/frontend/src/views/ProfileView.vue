@@ -31,6 +31,8 @@ if (!currentUserStore.loggedIn) {
 <style lang="scss" scoped>
 @use '@/assets/page-content' as *;
 @use '@/assets/heart-background' as *;
+@use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/mixins/hide' as *;
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/var' as var;
 
@@ -43,9 +45,15 @@ if (!currentUserStore.loggedIn) {
   #profile-body {
     display: flex;
     flex: 1 1 auto;
-    flex-flow: row nowrap;
+    flex-flow: column nowrap;
     justify-content: space-between;
+    padding: 0;
+    margin: 0;
     width: 100%;
+
+    @include r-min(var.$window-medium) {
+      flex-flow: row nowrap;
+    }
   }
 }
 </style>
