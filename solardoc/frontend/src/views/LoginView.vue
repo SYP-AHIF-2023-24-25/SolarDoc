@@ -92,7 +92,7 @@ async function submitForm(
         ref="form$"
         :display-errors="false"
         :endpoint="false"
-        add-class="solardoc-style-form"
+        add-class="solardoc-style-form desktop"
         @submit="(value: any) => interceptErrors(submitForm(value))"
       >
         <TextElement
@@ -134,6 +134,46 @@ async function submitForm(
           >
         </div>
       </Vueform>
+      <Vueform
+          ref="form$"
+          :display-errors="false"
+          :endpoint="false"
+          add-class="solardoc-style-form phone"
+          @submit="(value: any) => interceptErrors(submitForm(value))"
+      >
+        <TextElement
+            :rules="['required', 'email']"
+            input-type="email"
+            label="Email"
+            name="email"
+            autocomplete="username"
+        />
+        <TextElement
+            :rules="['required', 'min:0']"
+            input-type="password"
+            label="Password"
+            name="password"
+            autocomplete="current-password"
+        />
+        <div id="forgot-my-password">
+          <a class="emphasised-link" @click="$router.push('reset-password')"
+          >Forgot your password?</a
+          >
+        </div>
+        <ButtonElement
+          :submits="true"
+          align="left"
+          button-label="Login"
+          name="login"
+          @submit="submitForm"
+        />
+        <ButtonElement
+          :resets="true"
+          :secondary="true"
+          button-label="Reset"
+          name="reset"
+        />
+      </Vueform>
     </div>
   </div>
 </template>
@@ -142,6 +182,8 @@ async function submitForm(
 @use '@/assets/page-content' as *;
 @use '@/assets/heart-background' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
+@use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/mixins/hide' as *;
 @use '@/assets/core/var' as var;
 
 #profile-wrapper {
@@ -175,6 +217,20 @@ async function submitForm(
     p {
       margin: 0;
     }
+  }
+}
+
+.solardoc-style-form.desktop {
+  @include hide;
+}
+
+@include r-min(var.$window-medium) {
+  .solardoc-style-form.desktop {
+    @include show;
+  }
+
+  .solardoc-style-form.phone {
+    @include hide;
   }
 }
 </style>
