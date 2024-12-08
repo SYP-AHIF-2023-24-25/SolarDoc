@@ -153,44 +153,44 @@ async function submitForm(
         />
       </Vueform>
       <Vueform
-          ref="form$"
-          :display-errors="false"
-          :endpoint="false"
-          add-class="solardoc-style-form phone"
-          @submit="(value: any) => interceptErrors(submitForm(value))"
+        ref="form$"
+        :display-errors="false"
+        :endpoint="false"
+        add-class="solardoc-style-form phone"
+        @submit="(value: any) => interceptErrors(submitForm(value))"
       >
         <TextElement
-            :rules="['required', 'email']"
-            info="The email that will be used when contacting you regarding info or important matters e.g. resetting your password."
-            input-type="email"
-            label="Email"
-            name="email"
-            autocomplete="username"
+          :rules="['required', 'email']"
+          info="The email that will be used when contacting you regarding info or important matters e.g. resetting your password."
+          input-type="email"
+          label="Email"
+          name="email"
+          autocomplete="username"
         />
         <TextElement
-            :rules="['required', 'min:6', 'max:20']"
-            label="Display Name"
-            name="display-name"
+          :rules="['required', 'min:6', 'max:20']"
+          label="Display Name"
+          name="display-name"
         />
         <TextElement
-            :rules="[
+          :rules="[
             'required',
             'min:12',
             'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!?@#$%^&*_<>~]).{12,}$/',
           ]"
-            info="Use at least 12 characters, at least one uppercase and lowercase letter, one number and one special character."
-            input-type="password"
-            label="Password"
-            name="password"
-            autocomplete="new-password"
+          info="Use at least 12 characters, at least one uppercase and lowercase letter, one number and one special character."
+          input-type="password"
+          label="Password"
+          name="password"
+          autocomplete="new-password"
         />
         <TextElement
-            info="Potentially allows you to be eligible for organisation-specific benefits."
-            label="Organisation"
-            name="organisation"
+          info="Potentially allows you to be eligible for organisation-specific benefits."
+          label="Organisation"
+          name="organisation"
         />
         <SelectElement
-            :items="[
+          :items="[
             {
               value: 0,
               label: 'Creating presentations',
@@ -208,33 +208,24 @@ async function submitForm(
               label: 'Other',
             },
           ]"
-            :native="false"
-            :rules="['required']"
-            :search="true"
-            autocomplete="off"
-            info="What you are planning to use Solardoc for."
-            input-type="search"
-            label="Intended Use"
-            name="intended-use"
+          :native="false"
+          :rules="['required']"
+          :search="true"
+          autocomplete="off"
+          info="What you are planning to use Solardoc for."
+          input-type="search"
+          label="Intended Use"
+          name="intended-use"
         />
         <CheckboxElement
-            :rules="['required', 'accepted']"
-            field-name="usage conditions"
-            name="accepts-conditions"
-            size="lg"
-            text="You, as the user, acknowledge that Solardoc is still in development and as such can not provide any guarantee for satisfaction or consistent user experience."
+          :rules="['required', 'accepted']"
+          field-name="usage conditions"
+          name="accepts-conditions"
+          size="lg"
+          text="You, as the user, acknowledge that Solardoc is still in development and as such can not provide any guarantee for satisfaction or consistent user experience."
         />
-        <ButtonElement
-          :submits="true"
-          button-label="Submit"
-          name="submit"
-        />
-        <ButtonElement
-          :resets="true"
-          :secondary="true"
-          button-label="Reset"
-          name="reset"
-        />
+        <ButtonElement :submits="true" button-label="Submit" name="submit" />
+        <ButtonElement :resets="true" :secondary="true" button-label="Reset" name="reset" />
       </Vueform>
     </div>
   </div>

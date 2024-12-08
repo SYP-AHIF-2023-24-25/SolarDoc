@@ -189,7 +189,7 @@ async function routeWithLoading(to: string) {
       font-size: 2rem;
 
       &::before {
-        content: "";
+        content: '';
         position: absolute;
         display: inline-block;
         margin: 0 5%;

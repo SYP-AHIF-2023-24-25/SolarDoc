@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import PaddedInfoBox from '@/components/common/PaddedInfoBox.vue'
 
-defineProps<{ userName: string; id: string, noPadding?: boolean, top?: number }>()
+defineProps<{ userName: string; id: string; noPadding?: boolean; top?: number }>()
 </script>
 
 <template>
-  <span
-    :class="'user-ref ' + (noPadding ? 'no-padding ' : '')"
-  >
+  <span :class="'user-ref ' + (noPadding ? 'no-padding ' : '')">
     <code>{{ userName }}</code>
-    <PaddedInfoBox :infoText="id" :top="top"/>
+    <PaddedInfoBox :infoText="id" :top="top" />
   </span>
 </template>
 

@@ -1,13 +1,20 @@
 <script lang="ts" setup>
 import { useCurrentUserStore } from '@/stores/current-user'
-import UserRef from "@/components/common/UserRef.vue";
+import UserRef from '@/components/common/UserRef.vue'
 
 const currentUserStore = useCurrentUserStore()
 </script>
 
 <template>
   <div class="profile-header desktop">
-    <h1 class="profile-header-text"><UserRef :id="currentUserStore.currentUser!!.id!!" :user-name="currentUserStore.currentUser!!.username!!" no-padding :top="-20"/></h1>
+    <h1 class="profile-header-text">
+      <UserRef
+        :id="currentUserStore.currentUser!!.id!!"
+        :user-name="currentUserStore.currentUser!!.username!!"
+        no-padding
+        :top="-20"
+      />
+    </h1>
     <div class="profile-description">
       <p><span>Email:</span> {{ currentUserStore.currentUser?.email || '' }}</p>
       <p><span>Role:</span> {{ currentUserStore.currentUser?.role || '' }}</p>
@@ -18,7 +25,9 @@ const currentUserStore = useCurrentUserStore()
     </div>
   </div>
   <div class="profile-header phone">
-    <h1 class="profile-header-text"><code>{{ currentUserStore.currentUser?.username || '' }}</code></h1>
+    <h1 class="profile-header-text">
+      <code>{{ currentUserStore.currentUser?.username || '' }}</code>
+    </h1>
     <div class="profile-description">
       <p><span>Email:</span> {{ currentUserStore.currentUser?.email || '' }}</p>
       <p><span>Role:</span> {{ currentUserStore.currentUser?.role || '' }}</p>

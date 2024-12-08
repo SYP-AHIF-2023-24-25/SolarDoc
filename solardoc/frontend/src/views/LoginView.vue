@@ -135,29 +135,29 @@ async function submitForm(
         </div>
       </Vueform>
       <Vueform
-          ref="form$"
-          :display-errors="false"
-          :endpoint="false"
-          add-class="solardoc-style-form phone"
-          @submit="(value: any) => interceptErrors(submitForm(value))"
+        ref="form$"
+        :display-errors="false"
+        :endpoint="false"
+        add-class="solardoc-style-form phone"
+        @submit="(value: any) => interceptErrors(submitForm(value))"
       >
         <TextElement
-            :rules="['required', 'email']"
-            input-type="email"
-            label="Email"
-            name="email"
-            autocomplete="username"
+          :rules="['required', 'email']"
+          input-type="email"
+          label="Email"
+          name="email"
+          autocomplete="username"
         />
         <TextElement
-            :rules="['required', 'min:0']"
-            input-type="password"
-            label="Password"
-            name="password"
-            autocomplete="current-password"
+          :rules="['required', 'min:0']"
+          input-type="password"
+          label="Password"
+          name="password"
+          autocomplete="current-password"
         />
         <div id="forgot-my-password">
           <a class="emphasised-link" @click="$router.push('reset-password')"
-          >Forgot your password?</a
+            >Forgot your password?</a
           >
         </div>
         <ButtonElement
@@ -167,12 +167,7 @@ async function submitForm(
           name="login"
           @submit="submitForm"
         />
-        <ButtonElement
-          :resets="true"
-          :secondary="true"
-          button-label="Reset"
-          name="reset"
-        />
+        <ButtonElement :resets="true" :secondary="true" button-label="Reset" name="reset" />
       </Vueform>
     </div>
   </div>

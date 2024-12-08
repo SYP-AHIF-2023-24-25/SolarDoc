@@ -10,11 +10,10 @@ import UserIconDarkModeSVG from '@/components/icons/UserIconDarkModeSVG.vue'
 import UserIconSVG from '@/components/icons/UserIconSVG.vue'
 import SDRouterLink from '@/components/common/SDRouterLink.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import SandwichMenuDarkModeSVG from "@/components/icons/SandwichMenuDarkModeSVG.vue";
-import SandwichMenuSVG from "@/components/icons/SandwichMenuSVG.vue";
+import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
+import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 
 const darkModeStore = useDarkModeStore()
-
 </script>
 
 <template>
@@ -27,8 +26,8 @@ const darkModeStore = useDarkModeStore()
       <div id="title">
         <SDRouterLink to="/">SolarDoc</SDRouterLink>
         <a id="version-tag" :href="`${constants.githubVersionURL}/${constants.version}`">{{
-            constants.version
-          }}</a>
+          constants.version
+        }}</a>
       </div>
     </div>
     <div id="right-components">
@@ -63,8 +62,8 @@ const darkModeStore = useDarkModeStore()
       <div id="title">
         <SDRouterLink to="/">SolarDoc</SDRouterLink>
         <a id="version-tag" :href="`${constants.githubVersionURL}/${constants.version}`">{{
-            constants.version
-          }}</a>
+          constants.version
+        }}</a>
       </div>
     </div>
     <div id="right-components">
@@ -223,7 +222,6 @@ const darkModeStore = useDarkModeStore()
             font-size: 1.5rem;
 
             // Add a nice fading box shadow with the text-color
-
 
             &:hover {
               @include link-hover-presets;

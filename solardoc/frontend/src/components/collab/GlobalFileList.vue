@@ -133,8 +133,6 @@ watch(props, async newVal => {
         font-size: 2em;
       }
 
-
-
       @include r-min(var.$window-large) {
         font-size: 2.5em;
       }

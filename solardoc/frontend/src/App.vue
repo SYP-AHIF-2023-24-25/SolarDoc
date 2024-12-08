@@ -14,7 +14,9 @@ darkModeStore.setThemeOnHTMLRoot()
 </script>
 
 <template>
-  <header :class="NO_FOOTER_OR_STYLED_NAV_ROUTES.includes(String($route.name)) ? '' : 'nav-underline'">
+  <header
+    :class="NO_FOOTER_OR_STYLED_NAV_ROUTES.includes(String($route.name)) ? '' : 'nav-underline'"
+  >
     <Navbar />
   </header>
   <main>
