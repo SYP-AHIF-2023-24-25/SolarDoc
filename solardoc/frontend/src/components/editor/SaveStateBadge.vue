@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCurrentFileStore } from '@/stores/current-file'
 import constants from '@/plugins/constants'
+import UploadIconSVG from "@/components/icons/UploadIconSVG.vue";
 
 const currentFileStore = useCurrentFileStore()
 
@@ -21,6 +22,9 @@ function getSaveState() {
   <div id="save-state" v-tooltip="'Indicates whether the file is saved remotely on the server'">
     <p :class="getSaveStateCSSClass()">
       {{ getSaveState() }}
+      <span v-if="getSaveState() === 'Saved Locally'">
+        <UploadIconSVG />
+      </span>
     </p>
   </div>
 </template>
@@ -49,6 +53,21 @@ function getSaveState() {
     @media screen and (min-width: var.$window-xlarge) {
       & {
         padding: 2px 0.5rem 0;
+      }
+    }
+
+    span {
+      @include align-center;
+      height: calc(100% - 0.3rem);
+      width: 1.5rem;
+      margin: 0.1rem 0 0.2rem 0.1rem;
+      border-radius: 0.25rem;
+      padding: 0 0.25rem;
+      box-sizing: border-box;
+
+      &:hover {
+        cursor: pointer;
+        background-color: var.$scheme-catastrophic-red;
       }
     }
 
