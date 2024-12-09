@@ -17,7 +17,6 @@ const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
 
 const generatedLink = ref('')
-
 const renderAs = ref<RenderAs>('svg')
 const qrCodeSize:number = 250
 const gradient = ref(true)
@@ -93,23 +92,24 @@ async function submitForm(
         </p>
       </div>
       <template v-else>
+        <div v-if="generatedLink" id="qr-code">
+          <qrcode-vue
+            :value="generatedLink"
+            :size="qrCodeSize"
+            :render-as="renderAs"
+            :gradient="gradient"
+            :gradient-type="gradientType"
+            :gradient-start-color="gradientStartColor"
+            :gradient-end-color="gradientEndColor"
+            :background="'var(--scheme-home-content-background-secondary)'"
+          />
+        </div>
         <div id="generated-link-display">
           <i
             :class="'pi pi-clipboard' + (generatedLink ? '' : ' disabled')"
             @click="handleGeneratedLinkCopyButtonClick()"
           ></i>
           <p>{{ generatedLink || 'Your generated link~ °^°' }}</p>
-        </div>
-        <div v-if="generatedLink" id="qr-code">
-          <qrcode-vue
-              :value="generatedLink"
-              :size="qrCodeSize"
-              :render-as="renderAs"
-              :gradient="gradient"
-              :gradient-type="gradientType"
-              :gradient-start-color="gradientStartColor"
-              :gradient-end-color="gradientEndColor"
-          />
         </div>
         <Vueform
           ref="form$"
@@ -201,9 +201,14 @@ async function submitForm(
       font-size: 1.4rem;
     }
 
-    #qr-code{
-      max-width: fit-content;
-      margin: 2rem auto;
+    #qr-code {
+      $width-height: calc(250px + 2rem);
+      width: $width-height;
+      height: $width-height;
+      box-sizing: border-box;
+      margin: 0 auto 2rem auto;
+      padding: 1rem;
+      background-color: var.$scheme-home-content-background-secondary;
     }
 
     #generated-link-display {
