@@ -1,0 +1,21 @@
+@mixin hide {
+  display: none;
+  visibility: hidden;
+}
+
+@mixin hide-that-respects-svg {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+@mixin show {
+  display: unset;
+  visibility: visible;
+}
+
+@mixin show-that-respects-svg {
+  width: unset;
+  height: unset;
+  overflow: unset;
+}

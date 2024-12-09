@@ -27,7 +27,7 @@ import {
   FULL_SCREEN_EDITOR,
   FULL_SCREEN_SLIDES_MANGER,
 } from '@/scripts/editor/sub-view-state'
-import AsciidocIcon from "@/components/icons/AsciidocIcon.vue";
+import AsciidocIcon from '@/components/icons/AsciidocIcon.vue'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const overlayStateStore = useOverlayStateStore()
@@ -103,17 +103,17 @@ setInterval(updateLastModified, 500)
               Last edited:
               {{
                 previewLoadingStore.previewLoading
-                    ? (updateLastModified() && false) || 'now'
-                    : lastModified
+                  ? (updateLastModified() && false) || 'now'
+                  : lastModified
               }}
             </p>
           </div>
         </div>
         <div>
           <button
-              id="fullscreen-preview-button"
-              class="editor-button"
-              @click="handlePreviewButtonPress()"
+            id="fullscreen-preview-button"
+            class="editor-button"
+            @click="handlePreviewButtonPress()"
           >
             Fullscreen
           </button>
@@ -143,14 +143,13 @@ setInterval(updateLastModified, 500)
 $left-menu-width: calc(40vw - 0.5rem);
 $right-menu-width: calc(35vw - 8px);
 $total-width: 100vw;
+$menu-height: 2rem;
 
 @mixin menu-child-presets {
   display: flex;
   margin: 0;
   padding: 0;
 }
-
-$menu-height: 2rem;
 
 div#editor-page {
   @include view-presets;
@@ -208,7 +207,8 @@ div#editor-page {
           background: transparent;
         }
 
-        &, * {
+        &,
+        * {
           outline: transparent;
         }
 

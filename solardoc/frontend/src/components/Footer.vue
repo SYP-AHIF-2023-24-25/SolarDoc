@@ -17,11 +17,12 @@ import constants from '@/plugins/constants'
   align-items: center;
   height: 10rem;
   margin: 0;
-  padding: 0;
+  padding: 1rem;
 
   &,
   p {
     color: white;
+    text-align: center;
   }
 
   // We want a very gentle but cool looking gradient which is slightly tilted (only slightly visible)
