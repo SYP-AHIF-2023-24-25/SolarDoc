@@ -2,8 +2,19 @@
 import { useCurrentFileStore } from '@/stores/current-file'
 import constants from '@/plugins/constants'
 import UploadIconSVG from "@/components/icons/UploadIconSVG.vue";
+import {showDummyLoading} from "@/scripts/show-dummy-loading";
+import {interceptErrors} from "@/errors/handler/error-handler";
+import {ensureLoggedIn} from "@/scripts/ensure-logged-in";
+import {showInfoNotifFromObj} from "@/scripts/show-notif";
+import {createEditorRemoteFileConnection} from "@/scripts/editor/file";
+import {useRouter} from "vue-router";
+import {useCurrentUserStore} from "@/stores/current-user";
+import {useLoadingStore} from "@/stores/loading";
 
+const $router = useRouter()
 const currentFileStore = useCurrentFileStore()
+const currentUserStore = useCurrentUserStore()
+const loadingStore = useLoadingStore()
 
 function getSaveStateCSSClass() {
   return currentFileStore.remoteFile ? (currentFileStore.shareFile ? 'shared' : 'saved') : 'error'
@@ -16,13 +27,34 @@ function getSaveState() {
       : constants.saveStates.server
     : constants.saveStates.local
 }
+
+async function uploadFile() {
+  const wasAlreadyUploaded = !!currentFileStore.fileId
+  showDummyLoading()
+  try{
+    await interceptErrors(
+        ensureLoggedIn($router).then(
+            async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
+        ),
+    )
+    if (wasAlreadyUploaded) {
+      showInfoNotifFromObj(constants.notifMessages.fileSaved)
+    } else {
+      showInfoNotifFromObj(constants.notifMessages.fileUploaded)
+      await createEditorRemoteFileConnection()
+    }
+  } catch (e) {
+    loadingStore.setLoading(false)
+    throw e
+  }
+}
 </script>
 
 <template>
   <div id="save-state" v-tooltip="'Indicates whether the file is saved remotely on the server'">
     <p :class="getSaveStateCSSClass()">
       {{ getSaveState() }}
-      <span v-if="getSaveState() === 'Saved Locally'">
+      <span v-if="getSaveState() === 'Saved Locally'" @click="uploadFile()">
         <UploadIconSVG />
       </span>
     </p>
