@@ -1,4 +1,5 @@
 export default Object.freeze({
+  MAX_PHONE_SIZE: 768,
   revealJsCdnUrl: 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/',
   githubURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc',
   githubVersionURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc/releases/tag',

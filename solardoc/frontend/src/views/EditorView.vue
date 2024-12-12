@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { handleCopy } from '@/scripts/handle-copy'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
@@ -28,6 +27,7 @@ import {
   FULL_SCREEN_SLIDES_MANGER,
 } from '@/scripts/editor/sub-view-state'
 import AsciidocIcon from '@/components/icons/AsciidocIcon.vue'
+import constants from "@/plugins/constants";
 
 const previewLoadingStore = usePreviewLoadingStore()
 const overlayStateStore = useOverlayStateStore()
@@ -37,6 +37,8 @@ const loadingStore = useLoadingStore()
 
 // Manage the three different modes of the editor
 const viewState = ref(DEFAULT_VIEW)
+const phoneState = ref(FULL_SCREEN_EDITOR)
+const isPhone = () => window.innerWidth < constants.MAX_PHONE_SIZE
 
 // We need to be friendly after all :D
 showWelcomeIfNeverShownBefore()
@@ -121,15 +123,15 @@ setInterval(updateLastModified, 500)
       </div>
     </div>
     <div id="editor-and-preview-wrapper">
-      <FullScreenEditor
-        v-if="viewState === FULL_SCREEN_EDITOR"
-        @viewStateUpdate="_ => (viewState = DEFAULT_VIEW)"
-      />
       <FullScreenSlidesManager
-        v-else-if="viewState === FULL_SCREEN_SLIDES_MANGER"
-        @viewStateUpdate="_ => (viewState = DEFAULT_VIEW)"
+        v-if="viewState === FULL_SCREEN_SLIDES_MANGER || phoneState === FULL_SCREEN_SLIDES_MANGER && isPhone()"
+        @viewStateUpdate="_ => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_EDITOR)"
       />
-      <DefaultEditorSubView v-else @viewStateUpdate="payload => (viewState = payload)" />
+      <FullScreenEditor
+        v-else-if="viewState === FULL_SCREEN_EDITOR || phoneState === FULL_SCREEN_EDITOR && isPhone()"
+        @viewStateUpdate="_ => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_SLIDES_MANGER)"
+      />
+      <DefaultEditorSubView v-else @viewStateUpdate="payload => (viewState = payload) & (phoneState = FULL_SCREEN_EDITOR)" />
     </div>
   </div>
 </template>

@@ -28,7 +28,7 @@ import ArrowLeft from '@/components/icons/ArrowLeft.vue'
 
   #change-view-buttons {
     position: absolute;
-    top: calc(var(--editor-preview-frame-height) - 4rem);
+    top: var.$editor-change-view-button-position;
     right: 0;
     width: 1rem;
     height: 3rem;

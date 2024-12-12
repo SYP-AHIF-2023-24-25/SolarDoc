@@ -168,6 +168,10 @@
     var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
+  --editor-change-view-button-position: min(
+    calc(var(--editor-preview-frame-height) - 4rem),
+    calc(var(--nav-bar-height) + var(--editor-menu-height) + 1rem)
+  );
 
   // Slides Manager presets
   --editor-slides-manager-slides-preview-height: var(--editor-monaco-and-preview-menu-height);
@@ -401,6 +405,7 @@ $editor-preview-sub-slides-navigator-list-element-width: var(
 $editor-preview-sub-slides-navigator-list-element-margin: var(
   --editor-preview-sub-slides-navigator-list-element-margin
 );
+$editor-change-view-button-position: var(--editor-change-view-button-position);
 
 // Slides Manager presets
 $editor-slides-manager-slides-preview-height: var(--editor-slides-manager-slides-preview-height);

@@ -103,7 +103,7 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
 
   #change-view-buttons {
     position: absolute;
-    top: calc(var(--editor-preview-frame-height) - 4rem);
+    top: var.$editor-change-view-button-position;
     left: 0;
     width: 1rem;
     height: 3rem;
