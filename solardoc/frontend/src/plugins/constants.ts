@@ -106,8 +106,8 @@ export default Object.freeze({
     '== Enjoy!',
   saveStates: {
     shared: 'Shared File',
-    local: 'Saved Locally',
-    server: 'Saved Remotely',
+    local: 'Local File',
+    server: 'Cloud File',
     unsavedChanges: 'Unsaved Changes',
   },
   version: 'v1.0.0-beta.0',
