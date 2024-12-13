@@ -150,7 +150,7 @@ function handleSettingsClick() {
       <div
         class="dropdown-element"
         @click="handleDownloadButtonClick()"
-        v-tooltip="'Download the source code or presentation'"
+        v-tooltip="'Download source code or presentation'"
       >
         Download
       </div>
