@@ -12,8 +12,8 @@ import SDRouterLink from '@/components/common/SDRouterLink.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.vue'
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
-import NavbarOverlay from "@/components/navbar/NavbarOverlay.vue";
-import {ref} from "vue";
+import NavbarOverlay from '@/components/navbar/NavbarOverlay.vue'
+import { ref } from 'vue'
 
 const darkModeStore = useDarkModeStore()
 
@@ -22,7 +22,7 @@ const showNavbarOverlay = ref(false)
 
 <template>
   <NavbarOverlay
-    @toggleNavbar="_ => showNavbarOverlay = !showNavbarOverlay"
+    @toggleNavbar="_ => (showNavbarOverlay = !showNavbarOverlay)"
     :showNavbarOverlay="showNavbarOverlay"
   />
   <nav class="navbar desktop">
@@ -75,7 +75,11 @@ const showNavbarOverlay = ref(false)
       </div>
     </div>
     <div id="right-components">
-      <button id="sandwich-menu-button" class="sandwich-button" @click="showNavbarOverlay = !showNavbarOverlay">
+      <button
+        id="sandwich-menu-button"
+        class="sandwich-button"
+        @click="showNavbarOverlay = !showNavbarOverlay"
+      >
         <SandwichMenuDarkModeSVG v-show="darkModeStore.darkMode" />
         <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
       </button>

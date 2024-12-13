@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
-import SDRouterLink from "@/components/common/SDRouterLink.vue";
-import constants from "@/plugins/constants";
-import UserIconSVG from "@/components/icons/UserIconSVG.vue";
-import SunDarkModeSVG from "@/components/icons/SunDarkModeSVG.vue";
-import GithubLogoDarkModeSVG from "@/components/icons/GithubLogoDarkModeSVG.vue";
-import HalfMoonSVG from "@/components/icons/HalfMoonSVG.vue";
-import UserIconDarkModeSVG from "@/components/icons/UserIconDarkModeSVG.vue";
-import GithubLogoSVG from "@/components/icons/GithubLogoSVG.vue";
-import {useDarkModeStore} from "@/stores/dark-mode";
+import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
+import SDRouterLink from '@/components/common/SDRouterLink.vue'
+import constants from '@/plugins/constants'
+import UserIconSVG from '@/components/icons/UserIconSVG.vue'
+import SunDarkModeSVG from '@/components/icons/SunDarkModeSVG.vue'
+import GithubLogoDarkModeSVG from '@/components/icons/GithubLogoDarkModeSVG.vue'
+import HalfMoonSVG from '@/components/icons/HalfMoonSVG.vue'
+import UserIconDarkModeSVG from '@/components/icons/UserIconDarkModeSVG.vue'
+import GithubLogoSVG from '@/components/icons/GithubLogoSVG.vue'
+import { useDarkModeStore } from '@/stores/dark-mode'
 
 defineProps<{ showNavbarOverlay: boolean }>()
 
@@ -16,10 +16,7 @@ const darkModeStore = useDarkModeStore()
 </script>
 
 <template>
-  <div
-    id="phone-navbar-overlay-background-wrapper"
-    :class="{'active': showNavbarOverlay}"
-  >
+  <div id="phone-navbar-overlay-background-wrapper" :class="{ active: showNavbarOverlay }">
     <div id="phone-navbar-overlay-wrapper">
       <div id="phone-navbar-overlay">
         <button id="close-button" @click="$emit('toggleNavbar', void 0)">
@@ -37,7 +34,12 @@ const darkModeStore = useDarkModeStore()
             <UserIconDarkModeSVG v-show="darkModeStore.darkMode" />
             <UserIconSVG v-show="!darkModeStore.darkMode" />
           </SDRouterLink>
-          <a :href="constants.githubURL" rel="noopener noreferrer" target="_blank" @click="$emit('toggleNavbar', void 0)">
+          <a
+            :href="constants.githubURL"
+            rel="noopener noreferrer"
+            target="_blank"
+            @click="$emit('toggleNavbar', void 0)"
+          >
             <GithubLogoDarkModeSVG v-show="darkModeStore.darkMode" />
             <GithubLogoSVG v-show="!darkModeStore.darkMode" />
           </a>
@@ -68,7 +70,9 @@ const darkModeStore = useDarkModeStore()
   background-color: transparent;
   opacity: 0;
   transform: translateY(-100%);
-  transition: opacity 0.4s ease, background-color 0.4s ease;
+  transition:
+    opacity 0.4s ease,
+    background-color 0.4s ease;
 
   &.active {
     opacity: 1;
@@ -92,7 +96,9 @@ const darkModeStore = useDarkModeStore()
     z-index: 1001; // Make sure it's above everything else
     opacity: 0;
     transform: translateY(-100%);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition:
+      opacity 0.4s ease,
+      transform 0.4s ease;
 
     #phone-navbar-overlay {
       display: flex;
@@ -126,7 +132,6 @@ const darkModeStore = useDarkModeStore()
           fill: var.$text-color;
         }
       }
-
 
       #navigation-links {
         display: flex;

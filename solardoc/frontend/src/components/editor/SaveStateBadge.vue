@@ -26,8 +26,9 @@ function getSaveState() {
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/var' as var;
 
 #save-state {
   @include align-center;
@@ -46,10 +47,8 @@ function getSaveState() {
     overflow: hidden;
 
     padding: 0 0.25rem;
-    @media screen and (min-width: var.$window-xlarge) {
-      & {
-        padding: 2px 0.5rem 0;
-      }
+    @include r-min(var.$window-xlarge) {
+      padding: 2px 0.5rem 0;
     }
 
     background-color: var.$scheme-gray-300;
