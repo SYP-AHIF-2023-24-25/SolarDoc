@@ -168,9 +168,9 @@
     var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
-  --editor-change-view-button-position: min(
+  --editor-change-view-button-position: max(
     calc(var(--editor-preview-frame-height) - 4rem),
-    calc(var(--nav-bar-height) + var(--editor-menu-height) + 1rem)
+    calc(var(--nav-bar-height) + var(--editor-menu-height) - 4rem)
   );
 
   // Slides Manager presets
