@@ -119,6 +119,8 @@ defmodule SolardocPhoenixWeb.V2.UserController do
 
   def create(conn, user_params) do
     with {:ok, user} <- Accounts.register_user(user_params) do
+      token = Accounts.generate_user_session_token(user)
+
 # credo:disable-for-next-line
 # TODO! Uncomment this when email is working
 #      {:ok, _} =
@@ -131,6 +133,9 @@ defmodule SolardocPhoenixWeb.V2.UserController do
       conn
       |> put_status(:created)
       |> render(:new, user: user)
+      |> renew_session()
+      |> put_token_in_session(token)
+      |> maybe_write_remember_me_cookie(token, params)
     end
   end
 end
