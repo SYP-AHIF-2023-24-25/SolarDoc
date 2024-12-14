@@ -138,6 +138,11 @@ async function handleFileExportAsZip() {
 
   setTimeout(() => URL.revokeObjectURL(a.href), 1500)
 }
+
+async function unselectOptionsAndclose(){
+  selectedFormats.value = [];
+  overlayStateStore.setExportView(false)
+}
 </script>
 
 <template>
@@ -148,7 +153,7 @@ async function handleFileExportAsZip() {
   >
     <div id="export-view">
       <div id="export-view-header">
-        <button id="close-button" @click="overlayStateStore.setExportView(false)">
+        <button id="close-button" @click="unselectOptionsAndclose">
           <CloseButtonSVG />
         </button>
         <h1>Export</h1>
@@ -168,22 +173,6 @@ async function handleFileExportAsZip() {
             @click="toggleFormat('HTML')"
           >
             <span>HTML</span>
-          </div>
-          <div
-            class="format-box"
-            :class="{ selected: selectedFormats.includes('PDF'), disabled: true }"
-            @click="toggleFormat('PDF')"
-            v-tooltip="'Currently not supported'"
-          >
-            <span>PDF</span>
-          </div>
-          <div
-            class="format-box"
-            :class="{ selected: selectedFormats.includes('JPG'), disabled: true }"
-            @click="toggleFormat('JPG')"
-            v-tooltip="'Currently not supported'"
-          >
-            <span>JPG</span>
           </div>
         </div>
         <button
