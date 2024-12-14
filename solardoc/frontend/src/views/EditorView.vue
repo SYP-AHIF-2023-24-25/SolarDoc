@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { handleCopy } from '@/scripts/handle-copy'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
@@ -28,7 +27,11 @@ import {
   FULL_SCREEN_SLIDES_MANGER,
 } from '@/scripts/editor/sub-view-state'
 import AsciidocIcon from "@/components/icons/AsciidocIcon.vue";
+import PresentationIconSVG from "@/components/icons/PresentationIconSVG.vue";
+import {useDarkModeStore} from "@/stores/dark-mode";
+import PresentationIconDarkModeSVG from "@/components/icons/PresentationIconDarkModeSVG.vue";
 
+const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()
@@ -109,14 +112,11 @@ setInterval(updateLastModified, 500)
             </p>
           </div>
         </div>
-        <div>
-          <button
-              id="fullscreen-preview-button"
-              class="editor-button"
-              @click="handlePreviewButtonPress()"
-          >
-            Fullscreen
-          </button>
+        <div  @click="handlePreviewButtonPress()">
+          <span  >
+            <PresentationIconDarkModeSVG v-show="darkModeStore.darkMode"/>
+            <PresentationIconSVG v-show="!darkModeStore.darkMode"/>
+          </span>
         </div>
       </div>
     </div>
@@ -237,15 +237,18 @@ div#editor-page {
         }
       }
 
-      #fullscreen-preview-button {
-        border: none;
-        text-align: center;
-        width: 100%;
-        height: calc(100% - 2px);
-        margin: 0 0 0 0.25rem;
+      span {
+        @include align-center;
+        height: calc(100% - 0.3rem);
+        width: 1.7rem;
+        margin: 0.1rem 0 0.2rem 0.1rem;
+        border-radius: 0.25rem;
+        padding: 0 0.25rem;
+        box-sizing: border-box;
 
-        &:focus {
-          outline: var.$scheme-cs-1 solid 2px;
+        &:hover {
+          cursor: pointer;
+          background: var.$scheme-file-name-input-background-color-highlighted;
         }
       }
     }
