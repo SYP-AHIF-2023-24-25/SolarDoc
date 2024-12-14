@@ -101,9 +101,14 @@ export const useCurrentFileStore = defineStore('currentFile', {
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,
+      fileNameUpdated: false
     }
   },
   getters: {
+
+    isFileNameUpdated():boolean{
+      return this.fileNameUpdated
+    },
     /**
      * Returns true if a remotely opened file is currently being edited.
      * @since 0.6.0
@@ -265,6 +270,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       } else {
         await this.updateFile(bearer)
       }
+      this.setIsFileNameUpdated(false)
     },
     async createFile(bearer: string) {
       let resp: Awaited<ReturnType<typeof phoenixRestService.postV2Files>>
@@ -414,6 +420,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setChannelId(file.channel_id)
       this.setIsGlobal(file.is_global)
     },
+    setIsFileNameUpdated(isUpdated:boolean){
+      this.fileNameUpdated = isUpdated;
+    },
+
     setFileFromShared(file: File, shareURLId: string, perm: Permission = Permissions.Read) {
       this.setShareURLId(shareURLId)
       this.setFile(file, perm)
@@ -501,7 +511,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.resetLastModified()
       this.resetCreated()
       this.resetIsGlobal()
-
+      this.setIsFileNameUpdated(false)
       if (!preserveContent) {
         this.setContent(constants.defaultFileContent)
         await setGlobalEditorContentIfAvailable(constants.defaultFileContent)

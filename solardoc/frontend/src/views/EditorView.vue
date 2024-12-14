@@ -85,13 +85,17 @@ setInterval(updateLastModified, 500)
         <EditorSandwichDropdown />
         <div id="file-name-input-wrapper">
           <span id="asciidoc-icon"><AsciidocIcon /></span>
+          <span id="file-name-star" v-if="currentFileStore.isFileNameUpdated">*</span>
           <label for="file-name-input"></label>
           <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
           <input
             id="file-name-input"
             :disabled="currentFileStore.shareFile"
             v-model="currentFileStore.file.file_name"
-            @input="event => currentFileStore.setFileName(event.target!.value)"
+            @input="event => {
+              currentFileStore.setFileName(event.target!.value);
+              currentFileStore.setIsFileNameUpdated(true)
+            }"
           />
         </div>
       </div>
@@ -189,6 +193,12 @@ div#editor-page {
           flex-direction: column;
           height: 100%;
           margin: 0 0.5rem;
+        }
+
+        #file-name-star{
+          padding: 0.22rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.85em;
         }
 
         ::selection {
