@@ -133,9 +133,8 @@ function handleSettingsClick() {
         class="dropdown-element"
         v-if="!currentFileStore.shareFile"
         @click="handleSaveButtonClick()"
-        v-tooltip="'Upload your file/save any changes'"
-      >
-        Save
+        v-tooltip="'Upload your file/save any changes'">
+        {{ currentFileStore.remoteFile ? 'Update File Name' : 'Save Remotely' }}
       </div>
       <div
         v-if="!currentFileStore.shareFile"
