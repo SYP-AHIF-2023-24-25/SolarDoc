@@ -5,9 +5,13 @@ import SaveStateBadge from '@/components/editor/SaveStateBadge.vue'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import { useCurrentFileStore } from '@/stores/current-file'
 import LastModified from '@/components/editor/editor-navbar/LastModified.vue'
+import PresentationIconDarkModeSVG from '@/components/icons/PresentationIconDarkModeSVG.vue'
+import PresentationIconSVG from '@/components/icons/PresentationIconSVG.vue'
+import {useDarkModeStore} from "@/stores/dark-mode";
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
+const darkModeStore = useDarkModeStore()
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
@@ -25,10 +29,10 @@ function handlePreviewButtonPress() {
           <label for="file-name-input"></label>
           <!-- @vue-ignore We need the value property and TypeScript can't find it so we have to force it -->
           <input
-              id="file-name-input"
-              :disabled="currentFileStore.shareFile"
-              v-model="currentFileStore.file.file_name"
-              @input="event => currentFileStore.setFileName(event.target!.value)"
+            id="file-name-input"
+            :disabled="currentFileStore.shareFile"
+            v-model="currentFileStore.file.file_name"
+            @input="event => currentFileStore.setFileName(event.target!.value)"
           />
         </div>
       </div>
@@ -41,14 +45,11 @@ function handlePreviewButtonPress() {
         <SaveStateBadge />
         <LastModified />
       </div>
-      <div>
-        <button
-          id="fullscreen-preview-button"
-          class="editor-button"
-          @click="handlePreviewButtonPress()"
-        >
-          Fullscreen
-        </button>
+      <div @click="handlePreviewButtonPress()">
+        <span>
+          <PresentationIconDarkModeSVG v-show="darkModeStore.darkMode" />
+          <PresentationIconSVG v-show="!darkModeStore.darkMode" />
+        </span>
       </div>
     </div>
   </div>
@@ -181,6 +182,20 @@ $total-width: 100vw;
 
       &:last-child {
         justify-content: flex-end;
+
+        span {
+          @include align-center;
+          height: 100%;
+          width: 1.7rem;
+          margin: 0 0 0 0.1rem;
+          padding: 0 0.25rem;
+          box-sizing: border-box;
+
+          &:hover {
+            cursor: pointer;
+            background: var.$scheme-file-name-input-background-color-highlighted;
+          }
+        }
       }
     }
 

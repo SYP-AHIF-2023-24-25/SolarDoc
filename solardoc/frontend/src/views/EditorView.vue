@@ -1,10 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { usePreviewLoadingStore } from '@/stores/preview-loading'
-import { useOverlayStateStore } from '@/stores/overlay-state'
 import { useCurrentUserStore } from '@/stores/current-user'
-import { useCurrentFileStore } from '@/stores/current-file'
-import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import FullScreenPreview from '@/components/editor/FullScreenPreview.vue'
 import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
 import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
