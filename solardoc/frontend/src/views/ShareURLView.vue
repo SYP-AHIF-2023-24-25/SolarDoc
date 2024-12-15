@@ -15,10 +15,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { showWarnNotif } from '@/scripts/show-notif'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import type { Awaited } from '@vueuse/core'
+import { useContributorsStore } from '@/stores/contributors';
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
 const loadingStore = useLoadingStore()
+const contributorsStore = useContributorsStore()
 
 const $route = useRoute()
 const $router = useRouter()
@@ -117,6 +119,7 @@ async function createFilePermission(file: File, permissionsFromUrl: number) {
       user_id: currentUserStore.currentUser?.id!,
     }
     await phoenixRestService.postV2FilesPermissions(currentUserStore.bearer!, createFilePermissions)
+    await contributorsStore.fetchAndUpdateContributors(currentUserStore.bearer!, file.id);
   } catch (e) {
     throw new PhoenixInternalError(
       'Critically failed to create permissions entry. Cause: ' + (<Error>e).message,

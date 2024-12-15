@@ -9,11 +9,13 @@ import type {FilePermission, FilePermissions} from "@/services/phoenix/gen/phoen
 import type {Awaited} from "@vueuse/core";
 import * as phoenixRestService from "@/services/phoenix/api-service";
 import {type ActualPhxErrorResp, PhoenixBadRequestError, PhoenixInternalError} from "@/services/phoenix/errors";
+import {useContributorsStore} from "@/stores/contributors";
 
 const darkModeStore = useDarkModeStore();
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
-const contributors = ref<Array<FilePermission>>([])
+const contributorsStore = useContributorsStore();
+const contributors = contributorsStore.contributors;
 
 ;(async () => {
   await fetchFilePermissions(currentUserStore.bearer!)
