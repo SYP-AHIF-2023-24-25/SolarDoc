@@ -7,7 +7,7 @@ import { useCurrentFileStore } from '@/stores/current-file'
 import LastModified from '@/components/editor/editor-navbar/LastModified.vue'
 import PresentationIconDarkModeSVG from '@/components/icons/PresentationIconDarkModeSVG.vue'
 import PresentationIconSVG from '@/components/icons/PresentationIconSVG.vue'
-import {useDarkModeStore} from "@/stores/dark-mode";
+import { useDarkModeStore } from '@/stores/dark-mode'
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()

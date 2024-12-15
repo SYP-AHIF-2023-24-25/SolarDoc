@@ -22,7 +22,9 @@ function toggleFillWholeScreen() {
 <template>
   <div
     id="full-screen-wrapper"
-    :class="'blurred-background-full-screen-overlay ' + (fillWholeScreen ? 'fill-whole-screen' : '')"
+    :class="
+      'blurred-background-full-screen-overlay ' + (fillWholeScreen ? 'fill-whole-screen' : '')
+    "
     v-if="overlayStateStore.fullScreenPreview"
   >
     <button id="close-button" @click="overlayStateStore.setFullScreenPreview(false)">
@@ -67,7 +69,7 @@ function toggleFillWholeScreen() {
     svg {
       width: 2rem;
       height: 2rem;
-      fill: #EA71B7;
+      fill: #ea71b7;
     }
   }
 
@@ -79,7 +81,7 @@ function toggleFillWholeScreen() {
     svg {
       width: 2rem;
       height: 2rem;
-      fill: #EA71B7;
+      fill: #ea71b7;
     }
   }
 

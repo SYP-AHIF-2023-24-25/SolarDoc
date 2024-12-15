@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import SlidePreview from '@/components/editor/sub-views/default/slides-navigator/SlidePreview.vue'
 import { useRenderDataStore } from '@/stores/render-data'
 import { storeToRefs } from 'pinia'
 import { useInitStateStore } from '@/stores/init-state'
 import { ref, watch } from 'vue'
 import { useScroll } from '@vueuse/core'
 import { usePreviewMenuSlideStateStore } from '@/stores/preview-menu-slide-state'
-import SlidesManagerSlidePreview from '@/components/editor/sub-views/full-screen-slides-manager/slides-navigator/SlidesManagerSlidePreview.vue'
+import SlidesManagerSlidePreview
+  from "@/components/editor/sub-views/full-screen-slides-manager/slides-navigator/SlidesManagerSlidePreview.vue";
+
+defineEmits(["slideSelected"])
 
 const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()
@@ -39,11 +41,13 @@ watch(globalX, () => {
         .map((_, i) => i)"
       :key="i"
       :slide-index="i"
+      @slideSelected="slideIndex => $emit('slideSelected', slideIndex)"
     />
   </div>
 </template>
 
 <style scoped lang="scss">
+@use '@/assets/core/mixins/screen-size' as *;
 @use '@/assets/core/var' as var;
 
 #slides-navigator {
@@ -51,9 +55,14 @@ watch(globalX, () => {
   flex-flow: column nowrap;
   padding: var.$editor-slides-manager-slides-navigator-padding;
   margin: 0;
-  height: var.$editor-slides-manager-slides-navigator-height;
-  width: var.$editor-slides-manager-slides-navigator-width;
   overflow: hidden;
   overflow-y: scroll;
+
+  height: 100%;
+  width: 100%;
+  @include r-min(var.$window-medium) {
+    height: var.$editor-slides-manager-slides-navigator-height;
+    width: var.$editor-slides-manager-slides-navigator-width;
+  }
 }
 </style>

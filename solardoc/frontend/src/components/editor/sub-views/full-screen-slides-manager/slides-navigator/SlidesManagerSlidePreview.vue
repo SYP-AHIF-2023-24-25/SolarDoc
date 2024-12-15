@@ -4,6 +4,7 @@ import { useRenderDataStore } from '@/stores/render-data'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 
+defineEmits(["slideSelected"])
 defineProps({
   slideIndex: {
     type: Number,
@@ -30,23 +31,31 @@ const { previewURL } = storeToRefs(renderDataStore)
     <template v-else>
       <p id="slide-index">{{ slideIndex + 1 }}</p>
       <iframe :src="`${previewURL}?static=true&slide=${slideIndex}#/${slideIndex}`"></iframe>
+      <div id="slide-click-event-catch" @click="$emit('slideSelected', slideIndex)"></div>
     </template>
   </div>
 </template>
 
 <style lang="scss" scoped>
-@use '@/assets/core/var' as var;
+@use '@/assets/core/mixins/screen-size' as *;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/var' as var;
 
 .slide-manager-slide-preview {
   flex: 0 0 auto;
-  height: var.$editor-slides-manager-navigator-element-height;
-  width: var.$editor-slides-manager-navigator-element-width;
-  margin: 0 0 var.$editor-slides-manager-navigator-element-margin 0;
   padding: 0;
   border-radius: 0.5rem;
   position: relative;
   overflow: hidden;
+  margin: 0 0 var.$editor-slides-manager-navigator-element-margin 0;
+
+  $width: calc(100vw - 2 * var(--editor-slides-manager-slides-navigator-padding));
+  height: calc($width / 2);
+  width: $width;
+  @include r-min(var.$window-medium) {
+    height: var.$editor-slides-manager-navigator-element-height;
+    width: var.$editor-slides-manager-navigator-element-width;
+  }
 
   &:hover {
     cursor: pointer;
@@ -70,10 +79,20 @@ const { previewURL } = storeToRefs(renderDataStore)
     border: 2px solid var.$scheme-cs-2;
   }
 
+  #slide-click-event-catch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+
   iframe {
     width: 100%;
     height: 100%;
     border: none;
+    z-index: 0;
 
     &,
     & * {

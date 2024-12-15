@@ -30,10 +30,9 @@ const loadingStore = useLoadingStore()
 const viewState = ref(DEFAULT_VIEW)
 const phoneState = ref(FULL_SCREEN_EDITOR)
 
+// Check if the user is on a phone (handle resizing)
 const checkIfPhone = () => window.innerWidth < constants.MAX_PHONE_SIZE
 const isPhone = ref(checkIfPhone())
-
-// Check if the user is on a phone (handle resizing)
 window.addEventListener('resize', () => {
   isPhone.value = checkIfPhone()
 })

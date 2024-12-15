@@ -124,6 +124,7 @@ const showNavbarOverlay = ref(false)
   }
 }
 
+/* Window size is standard/large desktop */
 .navbar.desktop {
   @include hide-that-respects-svg;
 }
