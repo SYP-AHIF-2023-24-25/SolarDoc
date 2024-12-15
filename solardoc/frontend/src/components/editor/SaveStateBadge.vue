@@ -54,7 +54,7 @@ async function uploadFile() {
   <div id="save-state" v-tooltip="'Indicates whether the file is saved remotely on the server'">
     <p :class="getSaveStateCSSClass()">
       {{ getSaveState() }}
-      <span v-if="getSaveState() === 'Saved Locally'" @click="uploadFile()">
+      <span v-if="getSaveState() === constants.saveStates.local" @click="uploadFile()">
         <UploadIconSVG />
       </span>
     </p>
@@ -89,9 +89,9 @@ async function uploadFile() {
 
     span {
       @include align-center;
-      height: calc(100% - 0.3rem);
+      height: calc(100% - 0.35rem);
       width: 1.5rem;
-      margin: 0.1rem 0 0.2rem 0.1rem;
+      margin: 0.1rem 0 0.25rem 0.1rem;
       border-radius: 0.25rem;
       padding: 0 0.25rem;
       box-sizing: border-box;
