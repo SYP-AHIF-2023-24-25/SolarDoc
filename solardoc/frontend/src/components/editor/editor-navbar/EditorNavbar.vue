@@ -8,6 +8,7 @@ import LastModified from '@/components/editor/editor-navbar/LastModified.vue'
 import PresentationIconDarkModeSVG from '@/components/icons/PresentationIconDarkModeSVG.vue'
 import PresentationIconSVG from '@/components/icons/PresentationIconSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
+import ViewPrintableDropdown from '@/components/editor/editor-navbar/ViewInOtherWindowDropdown.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
@@ -56,11 +57,16 @@ function handlePreviewButtonPress() {
         <SaveStateBadge />
         <LastModified />
       </div>
-      <div @click="handlePreviewButtonPress()">
-        <span>
-          <PresentationIconDarkModeSVG v-show="darkModeStore.darkMode" />
-          <PresentationIconSVG v-show="!darkModeStore.darkMode" />
-        </span>
+      <div id="right-side-icon-menu">
+        <div>
+          <ViewPrintableDropdown />
+        </div>
+        <div @click="handlePreviewButtonPress()">
+          <span>
+            <PresentationIconDarkModeSVG v-show="darkModeStore.darkMode" />
+            <PresentationIconSVG v-show="!darkModeStore.darkMode" />
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -107,7 +113,7 @@ $total-width: 100vw;
     justify-content: space-between;
 
     #phone-save-state-badge {
-      @include show-that-respects-svg;
+      @include show-that-respects-svg();
       margin-right: 0.5rem;
     }
 
@@ -115,7 +121,7 @@ $total-width: 100vw;
       width: $left-menu-width;
 
       #phone-save-state-badge {
-        @include hide-that-respects-svg;
+        @include hide-that-respects-svg();
       }
     }
 
@@ -184,11 +190,11 @@ $total-width: 100vw;
 
   #menu-right-side {
     @include menu-child-presets;
-    @include hide-that-respects-svg;
+    @include hide-that-respects-svg();
     justify-content: space-between;
 
     @include r-min(var.$window-medium) {
-      @include show-that-respects-svg;
+      @include show-that-respects-svg();
       width: $right-menu-width;
     }
 

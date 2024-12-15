@@ -48,12 +48,15 @@ function handlePrintPdfViewClick() {
         <ScreenIconDarkModeSVG v-show="darkModeStore.darkMode" />
       </button>
     </template>
-    <div id="dropdown-elements">
+    <div
+      id="dropdown-elements"
+      :disabled="initStateStore.init || !previewURL"
+      v-tooltip="initStateStore.init || !previewURL ? 'Please load the preview first' : ''"
+    >
       <div
         class="dropdown-element"
         @click="handlePresentationViewClick()"
         v-tooltip="'Switch to presentation mode'"
-        :disabled="initStateStore.init || !previewURL"
       >
         Presentation View
       </div>
@@ -61,7 +64,6 @@ function handlePrintPdfViewClick() {
         class="dropdown-element"
         @click="handlePrintPdfViewClick()"
         v-tooltip="'Prepare and print as PDF'"
-        :disabled="initStateStore.init || !previewURL"
       >
         Print-PDF View
       </div>
@@ -70,8 +72,8 @@ function handlePrintPdfViewClick() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/link-hover-presets' as *;
+@use '@/assets/core/var' as var;
 
 #dropdown-elements {
   width: 200px;
@@ -97,15 +99,14 @@ function handlePrintPdfViewClick() {
     &:not(:last-child) {
       border-bottom: 1px solid #e0e0e0;
     }
+  }
 
-    &[disabled='true'] {
-      cursor: not-allowed;
-      color: var.$disabled-text-color;
+  &[disabled='true'] {
+    cursor: not-allowed;
+    color: var.$disabled-text-color;
 
-      &:hover {
-        background-color: unset;
-        color: var.$disabled-text-color !important;
-      }
+    & > .dropdown-element {
+      pointer-events: none;
     }
   }
 }
