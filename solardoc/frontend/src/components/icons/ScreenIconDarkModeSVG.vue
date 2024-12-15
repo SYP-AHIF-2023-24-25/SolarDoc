@@ -5,9 +5,3 @@
     <rect x="10" y="21" width="10" height="2" fill="#fff" />
   </svg>
 </template>
-
-<style scoped>
-svg {
-  fill: #fff;
-}
-</style>

@@ -507,7 +507,7 @@ html[data-theme='light'] {
   --scheme-toggleable-button-border: transparent;
   --scheme-toggleable-button-disabled-border: transparent;
   --scheme-file-name-input-background-color: var(--scheme-gray-100);
-  --scheme-file-name-input-background-color-highlighted: var(--scheme-gray-200);
+  --scheme-interactive-element-background-color-highlighted: var(--scheme-gray-200);
   --scheme-file-name-input-background-color-selection: #b3d4fc;
 
   ::-moz-selection,
@@ -552,7 +552,7 @@ html[data-theme='dark'] {
   --scheme-toggleable-button-border: white;
   --scheme-toggleable-button-disabled-border: var(--stylised-button-disabled-color);
   --scheme-file-name-input-background-color: var(--scheme-purple-subtle);
-  --scheme-file-name-input-background-color-highlighted: var(--scheme-purple-subtle);
+  --scheme-interactive-element-background-color-highlighted: var(--scheme-purple-subtle);
   --scheme-file-name-input-background-color-selection: var(--scheme-purple-intense);
 
   ::-moz-selection,
@@ -601,8 +601,8 @@ $scheme-toggleable-button-highlighted: var(--scheme-toggleable-button-highlighte
 $scheme-toggleable-button-border: var(--scheme-toggleable-button-border);
 $scheme-toggleable-button-disabled-border: var(--scheme-toggleable-button-disabled-border);
 $scheme-file-name-input-background-color: var(--scheme-file-name-input-background-color);
-$scheme-file-name-input-background-color-highlighted: var(
-  --scheme-file-name-input-background-color-highlighted
+$scheme-interactive-element-background-color-highlighted: var(
+  --scheme-interactive-element-background-color-highlighted
 );
 $scheme-file-name-input-background-color-selection: var(
   --scheme-file-name-input-background-color-selection

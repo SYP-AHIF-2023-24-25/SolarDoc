@@ -12,6 +12,7 @@ const darkModeStore = useDarkModeStore()
 const renderData = useRenderDataStore()
 const initStateStore = useInitStateStore()
 
+const { init } = <{ init: Ref<boolean>; }>storeToRefs(initStateStore)
 const { previewURL } = <{ previewURL: Ref<string>; }>storeToRefs(renderData)
 
 const dropdown = ref(null)
@@ -42,7 +43,7 @@ function handlePrintPdfViewClick() {
       <button
         id="simple-sandwich-menu-button"
         :class="{ highlighted: visible.value }"
-        class="sandwich-button"
+        class="sandwich-button no-colorful-hover"
       >
         <ScreenIconSVG v-show="!darkModeStore.darkMode" />
         <ScreenIconDarkModeSVG v-show="darkModeStore.darkMode" />
@@ -50,8 +51,8 @@ function handlePrintPdfViewClick() {
     </template>
     <div
       id="dropdown-elements"
-      :disabled="initStateStore.init || !previewURL"
-      v-tooltip="initStateStore.init || !previewURL ? 'Please load the preview first' : ''"
+      :disabled="init || !previewURL"
+      v-tooltip="'Please load the preview first'"
     >
       <div
         class="dropdown-element"
@@ -72,6 +73,7 @@ function handlePrintPdfViewClick() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/core/mixins/hide' as *;
 @use '@/assets/core/mixins/link-hover-presets' as *;
 @use '@/assets/core/var' as var;
 
@@ -101,9 +103,17 @@ function handlePrintPdfViewClick() {
     }
   }
 
+  &::after {
+    @include hide();
+  }
+
   &[disabled='true'] {
     cursor: not-allowed;
     color: var.$disabled-text-color;
+
+    &::after {
+      @include show();
+    }
 
     & > .dropdown-element {
       pointer-events: none;

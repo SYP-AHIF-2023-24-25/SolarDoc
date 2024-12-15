@@ -62,10 +62,10 @@ function handlePreviewButtonPress() {
           <ViewPrintableDropdown />
         </div>
         <div @click="handlePreviewButtonPress()">
-          <span>
+          <button class="sandwich-button no-colorful-hover">
             <PresentationIconDarkModeSVG v-show="darkModeStore.darkMode" />
             <PresentationIconSVG v-show="!darkModeStore.darkMode" />
-          </span>
+          </button>
         </div>
       </div>
     </div>
@@ -182,7 +182,7 @@ $total-width: 100vw;
 
         &:has(#file-name-input:focus),
         &:hover {
-          background: var.$scheme-file-name-input-background-color-highlighted;
+          background: var.$scheme-interactive-element-background-color-highlighted;
         }
       }
     }
@@ -209,18 +209,11 @@ $total-width: 100vw;
       &:last-child {
         justify-content: flex-end;
 
-        span {
+        button {
           @include align-center;
-          height: 100%;
-          width: 1.7rem;
-          margin: 0 0 0 0.1rem;
-          padding: 0 0.25rem;
+          padding: 0.3rem;
+          margin: 0;
           box-sizing: border-box;
-
-          &:hover {
-            cursor: pointer;
-            background: var.$scheme-file-name-input-background-color-highlighted;
-          }
         }
       }
     }
