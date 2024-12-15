@@ -76,7 +76,7 @@ const showNavbarOverlay = ref(false)
     </div>
     <div id="right-components">
       <button
-        id="sandwich-menu-button"
+        id="navbar-menu-button"
         class="sandwich-button"
         @click="showNavbarOverlay = !showNavbarOverlay"
       >
@@ -162,13 +162,19 @@ const showNavbarOverlay = ref(false)
     height: var.$nav-bar-height;
     width: var.$nav-bar-height;
 
-    #sandwich-menu-button {
+    #navbar-menu-button {
       height: var.$nav-bar-height;
       width: var.$nav-bar-height;
 
       svg {
         width: 1.5rem;
         height: 1.5rem;
+      }
+
+      &:hover,
+      &.highlighted {
+        @include link-hover-presets;
+        background-color: rgba(0, 0, 0, 0.1);
       }
     }
   }
