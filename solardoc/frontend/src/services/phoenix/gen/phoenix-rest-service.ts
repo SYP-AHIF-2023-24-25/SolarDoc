@@ -765,13 +765,13 @@ export function getV2Users(authorization: string, opts?: Oazapfts.RequestOpts) {
   })
 }
 /**
- * Create a new user
+ * Register a new user and get a session token
  */
 export function postV2Users(createUser: CreateUser, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 201
-        data: UserPrivate
+        data: UserToken
       }
     | {
         status: 400
