@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useOverlayStateStore } from '@/stores/overlay-state'
-import { handleCopy } from '@/scripts/handle-copy'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { getHumanReadableTimeInfo } from '@/scripts/format-date'
@@ -28,6 +27,7 @@ import {
   FULL_SCREEN_SLIDES_MANGER,
 } from '@/scripts/editor/sub-view-state'
 import AsciidocIcon from "@/components/icons/AsciidocIcon.vue";
+import LiveContributorsCount from "@/components/editor/LiveContributorsCount.vue";
 
 const previewLoadingStore = usePreviewLoadingStore()
 const overlayStateStore = useOverlayStateStore()
@@ -95,6 +95,7 @@ setInterval(updateLastModified, 500)
           />
         </div>
       </div>
+      <LiveContributorsCount />
       <div id="menu-right-side">
         <div>
           <SaveStateBadge />
