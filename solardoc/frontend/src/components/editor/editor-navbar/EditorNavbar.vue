@@ -43,7 +43,8 @@ function handlePreviewButtonPress() {
             id="file-name-star"
             v-if="currentFileStore.isFileNameUpdated"
             v-tooltip="'This file name has been modified'"
-          >*</span>
+            >*</span
+          >
         </div>
       </div>
       <div id="phone-save-state-badge">

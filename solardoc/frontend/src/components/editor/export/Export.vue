@@ -139,8 +139,8 @@ async function handleFileExportAsZip() {
   setTimeout(() => URL.revokeObjectURL(a.href), 1500)
 }
 
-async function unselectOptionsAndclose(){
-  selectedFormats.value = [];
+async function unselectOptionsAndClose() {
+  selectedFormats.value = []
   overlayStateStore.setExportView(false)
 }
 </script>
@@ -153,7 +153,7 @@ async function unselectOptionsAndclose(){
   >
     <div id="export-view">
       <div id="export-view-header">
-        <button id="close-button" @click="unselectOptionsAndclose">
+        <button id="close-button" @click="unselectOptionsAndClose">
           <CloseButtonSVG />
         </button>
         <h1>Export</h1>
