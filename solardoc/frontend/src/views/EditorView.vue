@@ -30,6 +30,7 @@ import AsciidocIcon from "@/components/icons/AsciidocIcon.vue";
 import PresentationIconSVG from "@/components/icons/PresentationIconSVG.vue";
 import {useDarkModeStore} from "@/stores/dark-mode";
 import PresentationIconDarkModeSVG from "@/components/icons/PresentationIconDarkModeSVG.vue";
+import ViewPrintableDropdown from "@/components/editor/ViewPrintableDropdown.vue";
 
 const darkModeStore = useDarkModeStore()
 const previewLoadingStore = usePreviewLoadingStore()
@@ -112,6 +113,7 @@ setInterval(updateLastModified, 500)
             </p>
           </div>
         </div>
+        <ViewPrintableDropdown/>
         <div  @click="handlePreviewButtonPress()">
           <span  >
             <PresentationIconDarkModeSVG v-show="darkModeStore.darkMode"/>
