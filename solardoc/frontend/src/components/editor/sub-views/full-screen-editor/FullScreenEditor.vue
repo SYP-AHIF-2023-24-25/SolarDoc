@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import Editor from '@/components/editor/Editor.vue'
 import ArrowLeft from '@/components/icons/ArrowLeft.vue'
-import {showDummyLoading} from "@/scripts/show-dummy-loading";
+import { showDummyLoading } from '@/scripts/show-dummy-loading'
 </script>
 
 <template>
   <div id="editor-wrapper">
     <div id="change-view-buttons">
-      <div id="change-layout-to-default" @click="_ => { $emit('viewStateUpdate'); showDummyLoading(); }">
+      <div
+        id="change-layout-to-default"
+        @click="
+          _ => {
+            $emit('viewStateUpdate')
+            showDummyLoading()
+          }
+        "
+      >
         <ArrowLeft />
       </div>
     </div>

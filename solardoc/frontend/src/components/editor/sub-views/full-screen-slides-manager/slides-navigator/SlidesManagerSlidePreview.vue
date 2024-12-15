@@ -4,7 +4,7 @@ import { useRenderDataStore } from '@/stores/render-data'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 
-defineEmits(["slideSelected"])
+defineEmits(['slideSelected'])
 defineProps({
   slideIndex: {
     type: Number,

@@ -115,7 +115,7 @@
   --editor-menu-padding: 0;
   --editor-menu-margin: 0;
   --editor-menu-file-name-padding: 1rem 1rem 1rem 0;
-  --editor-menu-file-name-margin: 0;
+  --editor-menu-file-name-margin: 0 0.25rem 0 0;
   --editor-monaco-and-preview-menu-height: calc(
     var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
   );

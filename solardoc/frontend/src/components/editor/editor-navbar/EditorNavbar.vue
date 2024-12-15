@@ -32,8 +32,18 @@ function handlePreviewButtonPress() {
             id="file-name-input"
             :disabled="currentFileStore.shareFile"
             v-model="currentFileStore.file.file_name"
-            @input="event => currentFileStore.setFileName(event.target!.value)"
+            @input="
+              event => {
+                currentFileStore.setFileName(event.target!.value)
+                currentFileStore.setIsFileNameUpdated(true)
+              }
+            "
           />
+          <span
+            id="file-name-star"
+            v-if="currentFileStore.isFileNameUpdated"
+            v-tooltip="'This file name has been modified'"
+          >*</span>
         </div>
       </div>
       <div id="phone-save-state-badge">
@@ -83,7 +93,7 @@ $total-width: 100vw;
   height: $menu-height;
   width: 100%;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: visible;
 
   p {
     height: 1rem;
@@ -116,6 +126,7 @@ $total-width: 100vw;
         display: flex;
         align-content: center;
         justify-content: center;
+        position: relative;
         height: $menu-height;
         box-sizing: border-box;
         background-color: var.$scheme-file-name-input-background-color;
@@ -130,6 +141,14 @@ $total-width: 100vw;
           flex-direction: column;
           height: 100%;
           margin: 0 0.5rem;
+        }
+
+        #file-name-star {
+          position: absolute;
+          right: 0.5rem;
+          padding: 0.22rem;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.85em;
         }
 
         ::selection {

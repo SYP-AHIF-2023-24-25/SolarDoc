@@ -22,15 +22,15 @@ const { slideIndex } = storeToRefs(previewSelectedSlideStore)
     v-if="!initStateStore.init && previewURL"
     ref="subSlidesNavigatorEl"
   >
-    <button id="phone-return-to-slides-manager" @click="$emit('slideUnselected')">&lt;&lt; Go back to slides view</button>
+    <button id="phone-return-to-slides-manager" @click="$emit('slideUnselected')">
+      &lt;&lt; Go back to slides view
+    </button>
     <div id="phone-sub-slides-info-bar">
       <p id="phone-sub-slides-info">Slide {{ slideIndex }}</p>
       <p id="phone-sub-slides-info">Sub-slides {{ subslideCountPerSlide[slideIndex] }}</p>
     </div>
     <div id="phone-nothing-to-see-here" v-if="subslideCountPerSlide[slideIndex] === 0">
-      <p>
-        Nothing to see here :(
-      </p>
+      <p>Nothing to see here :(</p>
     </div>
     <!-- For every *main* slide, create a sub-slide preview -->
     <SlideManagerSubSlidePreview

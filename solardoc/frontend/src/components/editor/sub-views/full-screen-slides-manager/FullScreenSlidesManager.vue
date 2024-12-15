@@ -9,8 +9,8 @@ import { storeToRefs } from 'pinia'
 import ArrowRight from '@/components/icons/ArrowRight.vue'
 import SlidesManagerSlidesNavigator from '@/components/editor/sub-views/full-screen-slides-manager/slides-navigator/SlidesManagerSlidesNavigator.vue'
 import SlidesManagerSubSlidesNavigator from '@/components/editor/sub-views/full-screen-slides-manager/sub-slides-navigator/SlidesManagerSubSlidesNavigator.vue'
-import {ref} from "vue";
-import {showDummyLoading} from "@/scripts/show-dummy-loading";
+import { ref } from 'vue'
+import { showDummyLoading } from '@/scripts/show-dummy-loading'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const darkModeStore = useDarkModeStore()
@@ -27,7 +27,15 @@ const slideSelected = ref<undefined | number>(undefined)
 <template>
   <div class="slides-manager-wrapper desktop">
     <div id="change-view-buttons">
-      <div id="change-layout-to-default" @click="_ => { $emit('viewStateUpdate'); showDummyLoading(); }">
+      <div
+        id="change-layout-to-default"
+        @click="
+          _ => {
+            $emit('viewStateUpdate')
+            showDummyLoading()
+          }
+        "
+      >
         <ArrowRight />
       </div>
     </div>
@@ -90,7 +98,15 @@ const slideSelected = ref<undefined | number>(undefined)
   </div>
   <div class="slides-manager-wrapper phone">
     <div id="change-view-buttons">
-      <div id="change-layout-to-default" @click="_ => { $emit('viewStateUpdate'); showDummyLoading(); }">
+      <div
+        id="change-layout-to-default"
+        @click="
+          _ => {
+            $emit('viewStateUpdate')
+            showDummyLoading()
+          }
+        "
+      >
         <ArrowRight />
       </div>
     </div>
@@ -100,10 +116,24 @@ const slideSelected = ref<undefined | number>(undefined)
         <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
       </div>
       <div id="slides-navigator-wrapper" v-else-if="slideSelected === undefined">
-        <SlidesManagerSlidesNavigator @slideSelected="slide => { slideSelected = slide; showDummyLoading(); }" />
+        <SlidesManagerSlidesNavigator
+          @slideSelected="
+            slide => {
+              slideSelected = slide
+              showDummyLoading()
+            }
+          "
+        />
       </div>
       <div id="subslides-navigator-wrapper" v-else>
-        <SlidesManagerSubSlidesNavigator @slideUnselected="_ => { slideSelected = undefined; showDummyLoading() }" />
+        <SlidesManagerSubSlidesNavigator
+          @slideUnselected="
+            _ => {
+              slideSelected = undefined
+              showDummyLoading()
+            }
+          "
+        />
       </div>
     </div>
   </div>
@@ -158,7 +188,6 @@ const slideSelected = ref<undefined | number>(undefined)
       }
     }
   }
-
 
   #slides-manager {
     display: flex;

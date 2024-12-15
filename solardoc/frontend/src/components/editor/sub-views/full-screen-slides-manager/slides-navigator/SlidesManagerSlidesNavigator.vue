@@ -5,10 +5,9 @@ import { useInitStateStore } from '@/stores/init-state'
 import { ref, watch } from 'vue'
 import { useScroll } from '@vueuse/core'
 import { usePreviewMenuSlideStateStore } from '@/stores/preview-menu-slide-state'
-import SlidesManagerSlidePreview
-  from "@/components/editor/sub-views/full-screen-slides-manager/slides-navigator/SlidesManagerSlidePreview.vue";
+import SlidesManagerSlidePreview from '@/components/editor/sub-views/full-screen-slides-manager/slides-navigator/SlidesManagerSlidePreview.vue'
 
-defineEmits(["slideSelected"])
+defineEmits(['slideSelected'])
 
 const renderDataStore = useRenderDataStore()
 const initStateStore = useInitStateStore()
