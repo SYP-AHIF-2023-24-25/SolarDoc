@@ -56,8 +56,6 @@ async function submitForm(
     await redirect()
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp)
-  } else if (resp.status === 401) {
-    throw new PhoenixInvalidCredentialsError()
   } else {
     console.error('[Signup] Server rejected sign up. Cause: Unknown error', resp)
     throw new SolardocUnreachableError(
