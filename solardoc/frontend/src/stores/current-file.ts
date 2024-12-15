@@ -101,12 +101,11 @@ export const useCurrentFileStore = defineStore('currentFile', {
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
       lastTrans: <OTrans | undefined>undefined,
-      fileNameUpdated: false
+      fileNameUpdated: false,
     }
   },
   getters: {
-
-    isFileNameUpdated():boolean{
+    isFileNameUpdated(): boolean {
       return this.fileNameUpdated
     },
     /**
@@ -420,8 +419,8 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setChannelId(file.channel_id)
       this.setIsGlobal(file.is_global)
     },
-    setIsFileNameUpdated(isUpdated:boolean){
-      this.fileNameUpdated = isUpdated;
+    setIsFileNameUpdated(isUpdated: boolean) {
+      this.fileNameUpdated = isUpdated
     },
 
     setFileFromShared(file: File, shareURLId: string, perm: Permission = Permissions.Read) {

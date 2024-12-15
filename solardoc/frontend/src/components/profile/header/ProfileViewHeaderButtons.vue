@@ -39,13 +39,21 @@ async function logout() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/mixins/hide' as *;
+@use '@/assets/core/var' as var;
+
 #profile-view-header-buttons {
   display: flex;
-  margin-top: 2rem;
+  margin: 0;
   gap: 1rem;
 
   .highlighted-button {
     height: 2rem;
+  }
+
+  @include r-min(var.$window-medium) {
+    margin-top: 2rem;
   }
 }
 </style>
