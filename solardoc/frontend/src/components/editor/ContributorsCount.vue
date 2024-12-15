@@ -5,43 +5,19 @@ import PersonCountDarkMode from "@/components/icons/PersonCountIconDarkModeSVG.v
 import { useDarkModeStore } from "@/stores/dark-mode";
 import {useCurrentFileStore} from "@/stores/current-file";
 import {useCurrentUserStore} from "@/stores/current-user";
-import type {FilePermission, FilePermissions} from "@/services/phoenix/gen/phoenix-rest-service";
-import type {Awaited} from "@vueuse/core";
-import * as phoenixRestService from "@/services/phoenix/api-service";
-import {type ActualPhxErrorResp, PhoenixBadRequestError, PhoenixInternalError} from "@/services/phoenix/errors";
 import {useContributorsStore} from "@/stores/contributors";
 
 const darkModeStore = useDarkModeStore();
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
 const contributorsStore = useContributorsStore();
-const contributors = contributorsStore.contributors;
 
-;(async () => {
-  await fetchFilePermissions(currentUserStore.bearer!)
-})()
-
-async function fetchFilePermissions(bearerToken: string) {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2FilesByFileIdPermissions>>
-  try {
-    resp = await phoenixRestService.getV2FilesByFileIdPermissions(
-        bearerToken,
-        currentFileStore.fileId!,
-    )
-  } catch (e) {
-    throw new PhoenixInternalError(
-        'Critically failed to fetch file permissions for file. Cause: ' + (<Error>e).message,
-    )
-  }
-  if (resp.status === 200) {
-    contributors.value = resp.data satisfies FilePermissions
-  } else if (resp.status === 400) {
-    throw new PhoenixBadRequestError(
-        'Server rejected request to get file permissions',
-        resp.data as ActualPhxErrorResp,
-    )
-  }
-}
+(async () => {
+  await contributorsStore.fetchAndUpdateContributors(
+      currentUserStore.bearer!,
+      currentFileStore.fileId!
+  );
+})();
 
 const dropdown = ref(false);
 
@@ -60,7 +36,7 @@ const toggleDropdown = (visible: boolean) => {
       <button class="contributor-button">
         <PersonCount v-show="!darkModeStore.darkMode" />
         <PersonCountDarkMode v-show="darkModeStore.darkMode" />
-        <span class="contributor-count">{{ contributors.length }}</span>
+        <span class="contributor-count"> {{ contributorsStore.contributors.length }}</span>
       </button>
     </div>
 
@@ -70,7 +46,11 @@ const toggleDropdown = (visible: boolean) => {
         @mouseenter="toggleDropdown(true)"
         @mouseleave="toggleDropdown(false)"
     >
-      <div v-for="contributor in contributors" :key="contributor.name" class="dropdown-element">
+      <div
+          v-for="contributor in contributorsStore.contributors"
+          :key="contributor.user_id"
+          class="dropdown-element"
+      >
         {{ contributor.username }}
       </div>
     </div>
