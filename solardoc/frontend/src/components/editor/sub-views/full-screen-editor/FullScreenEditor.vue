@@ -7,7 +7,7 @@ import {showDummyLoading} from "@/scripts/show-dummy-loading";
 <template>
   <div id="editor-wrapper">
     <div id="change-view-buttons">
-      <div id="change-layout-to-default" @click="$emit('viewStateUpdate') & showDummyLoading()">
+      <div id="change-layout-to-default" @click="_ => { $emit('viewStateUpdate'); showDummyLoading(); }">
         <ArrowLeft />
       </div>
     </div>
