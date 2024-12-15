@@ -110,6 +110,6 @@ export default Object.freeze({
     server: 'Cloud File',
     unsavedChanges: 'Unsaved Changes',
   },
-  version: 'v1.0.0-beta.0',
+  version: 'v1.0.0-beta.1',
   copyright: 'Solardoc © 2023-2024 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
 })
