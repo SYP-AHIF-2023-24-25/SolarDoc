@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { useCurrentFileStore } from '@/stores/current-file'
 import constants from '@/plugins/constants'
-import UploadIconSVG from "@/components/icons/UploadIconSVG.vue";
-import {showDummyLoading} from "@/scripts/show-dummy-loading";
-import {interceptErrors} from "@/errors/handler/error-handler";
-import {ensureLoggedIn} from "@/scripts/ensure-logged-in";
-import {showInfoNotifFromObj} from "@/scripts/show-notif";
-import {createEditorRemoteFileConnection} from "@/scripts/editor/file";
-import {useRouter} from "vue-router";
-import {useCurrentUserStore} from "@/stores/current-user";
-import {useLoadingStore} from "@/stores/loading";
+import UploadIconSVG from '@/components/icons/UploadIconSVG.vue'
+import { showDummyLoading } from '@/scripts/show-dummy-loading'
+import { interceptErrors } from '@/errors/handler/error-handler'
+import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
+import { showInfoNotifFromObj } from '@/scripts/show-notif'
+import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
+import { useRouter } from 'vue-router'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useLoadingStore } from '@/stores/loading'
 
 const $router = useRouter()
 const currentFileStore = useCurrentFileStore()
@@ -31,11 +31,11 @@ function getSaveState() {
 async function uploadFile() {
   const wasAlreadyUploaded = !!currentFileStore.fileId
   showDummyLoading()
-  try{
+  try {
     await interceptErrors(
-        ensureLoggedIn($router).then(
-            async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
-        ),
+      ensureLoggedIn($router).then(
+        async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
+      ),
     )
     if (wasAlreadyUploaded) {
       showInfoNotifFromObj(constants.notifMessages.fileSaved)
@@ -62,8 +62,9 @@ async function uploadFile() {
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/var' as var;
 
 #save-state {
   @include align-center;
@@ -82,10 +83,8 @@ async function uploadFile() {
     overflow: hidden;
 
     padding: 0 0.25rem;
-    @media screen and (min-width: var.$window-xlarge) {
-      & {
-        padding: 2px 0.5rem 0;
-      }
+    @include r-min(var.$window-xlarge) {
+      padding: 2px 0.5rem 0;
     }
 
     span {

@@ -12,6 +12,7 @@ import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import ArrowLeft from '@/components/icons/ArrowLeft.vue'
 import ArrowRight from '@/components/icons/ArrowRight.vue'
 import { FULL_SCREEN_EDITOR, FULL_SCREEN_SLIDES_MANGER } from '@/scripts/editor/sub-view-state'
+import {showDummyLoading} from "@/scripts/show-dummy-loading";
 
 const previewLoadingStore = usePreviewLoadingStore()
 const darkModeStore = useDarkModeStore()
@@ -31,13 +32,13 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
     <div id="change-view-buttons">
       <div
         id="change-layout-to-slides-manager-button"
-        @click="$emit('viewStateUpdate', FULL_SCREEN_SLIDES_MANGER)"
+        @click="_ => { $emit('viewStateUpdate', FULL_SCREEN_SLIDES_MANGER); showDummyLoading(); }"
       >
         <ArrowLeft />
       </div>
       <div
         id="change-layout-to-full-screen-editor-button"
-        @click="$emit('viewStateUpdate', FULL_SCREEN_EDITOR)"
+        @click="_ => { $emit('viewStateUpdate', FULL_SCREEN_EDITOR); showDummyLoading(); }"
       >
         <ArrowRight />
       </div>
