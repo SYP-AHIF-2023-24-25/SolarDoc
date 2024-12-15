@@ -7,7 +7,6 @@ import { SolardocUnreachableError } from '@/errors/unreachable-error'
 import {
   type ActualPhxErrorResp,
   PhoenixBadRequestError,
-  PhoenixInvalidCredentialsError
 } from '@/services/phoenix/errors'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import {isValidPath} from "@/scripts/is-valid-path";
