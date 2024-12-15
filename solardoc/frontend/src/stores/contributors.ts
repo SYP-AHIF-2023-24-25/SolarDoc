@@ -25,7 +25,6 @@ export const useContributorsStore = defineStore('contributors', () => {
     return {
         contributors,
         getContributorsCount,
-        fetchAndUpdateContributors,
-        addContributor,
+        fetchAndUpdateContributors
     };
 });
