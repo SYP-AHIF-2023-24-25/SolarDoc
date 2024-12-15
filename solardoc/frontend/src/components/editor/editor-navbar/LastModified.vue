@@ -35,7 +35,7 @@ setInterval(updateLastModified, 500)
 @use '@/assets/core/var' as var;
 
 #last-modified {
-  @include hide-that-respects-svg;
+  @include hide-that-respects-svg();
   height: 100%;
   color: var(--text-color);
 
@@ -44,7 +44,7 @@ setInterval(updateLastModified, 500)
   }
 
   @include r-min(var.$window-xmedium) {
-    @include show-that-respects-svg;
+    @include show-that-respects-svg();
     font-size: 0.9rem;
   }
 

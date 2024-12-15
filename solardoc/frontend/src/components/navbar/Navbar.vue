@@ -126,12 +126,12 @@ const showNavbarOverlay = ref(false)
 
 /* Window size is standard/large desktop */
 .navbar.desktop {
-  @include hide-that-respects-svg;
+  @include hide-that-respects-svg();
 }
 
 /* Window size is small - small tablet or smaller */
 .navbar.phone {
-  @include show-that-respects-svg;
+  @include show-that-respects-svg();
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -177,7 +177,7 @@ const showNavbarOverlay = ref(false)
 /* Window size is medium or larger */
 @include r-min(var.$window-medium) {
   .navbar:not(.phone) {
-    @include show-that-respects-svg;
+    @include show-that-respects-svg();
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -262,7 +262,7 @@ const showNavbarOverlay = ref(false)
   }
 
   .navbar.phone {
-    @include hide-that-respects-svg;
+    @include hide-that-respects-svg();
   }
 }
 </style>

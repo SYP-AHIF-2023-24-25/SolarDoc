@@ -4,7 +4,6 @@ import { useRenderDataStore } from '@/stores/render-data'
 import { useInitStateStore } from '@/stores/init-state'
 import SlideManagerSubSlidePreview from '@/components/editor/sub-views/full-screen-slides-manager/sub-slides-navigator/SlideManagerSubSlidePreview.vue'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
-import { showDummyLoading } from '@/scripts/show-dummy-loading'
 import type { Ref } from 'vue'
 
 const renderDataStore = useRenderDataStore()

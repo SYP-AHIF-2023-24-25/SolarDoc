@@ -8,6 +8,7 @@ import LastModified from '@/components/editor/editor-navbar/LastModified.vue'
 import PresentationIconDarkModeSVG from '@/components/icons/PresentationIconDarkModeSVG.vue'
 import PresentationIconSVG from '@/components/icons/PresentationIconSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
+import ViewPrintableDropdown from '@/components/editor/editor-navbar/ViewInOtherWindowDropdown.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
@@ -56,11 +57,16 @@ function handlePreviewButtonPress() {
         <SaveStateBadge />
         <LastModified />
       </div>
-      <div @click="handlePreviewButtonPress()">
-        <span>
-          <PresentationIconDarkModeSVG v-show="darkModeStore.darkMode" />
-          <PresentationIconSVG v-show="!darkModeStore.darkMode" />
-        </span>
+      <div id="right-side-icon-menu">
+        <div>
+          <ViewPrintableDropdown />
+        </div>
+        <div @click="handlePreviewButtonPress()">
+          <button class="sandwich-button no-colorful-hover">
+            <PresentationIconDarkModeSVG v-show="darkModeStore.darkMode" />
+            <PresentationIconSVG v-show="!darkModeStore.darkMode" />
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -107,7 +113,7 @@ $total-width: 100vw;
     justify-content: space-between;
 
     #phone-save-state-badge {
-      @include show-that-respects-svg;
+      @include show-that-respects-svg();
       margin-right: 0.5rem;
     }
 
@@ -115,7 +121,7 @@ $total-width: 100vw;
       width: $left-menu-width;
 
       #phone-save-state-badge {
-        @include hide-that-respects-svg;
+        @include hide-that-respects-svg();
       }
     }
 
@@ -176,7 +182,7 @@ $total-width: 100vw;
 
         &:has(#file-name-input:focus),
         &:hover {
-          background: var.$scheme-file-name-input-background-color-highlighted;
+          background: var.$scheme-interactive-element-background-color-highlighted;
         }
       }
     }
@@ -184,11 +190,11 @@ $total-width: 100vw;
 
   #menu-right-side {
     @include menu-child-presets;
-    @include hide-that-respects-svg;
+    @include hide-that-respects-svg();
     justify-content: space-between;
 
     @include r-min(var.$window-medium) {
-      @include show-that-respects-svg;
+      @include show-that-respects-svg();
       width: $right-menu-width;
     }
 
@@ -203,18 +209,11 @@ $total-width: 100vw;
       &:last-child {
         justify-content: flex-end;
 
-        span {
+        button {
           @include align-center;
-          height: 100%;
-          width: 1.7rem;
-          margin: 0 0 0 0.1rem;
-          padding: 0 0.25rem;
+          padding: 0.3rem;
+          margin: 0;
           box-sizing: border-box;
-
-          &:hover {
-            cursor: pointer;
-            background: var.$scheme-file-name-input-background-color-highlighted;
-          }
         }
       }
     }
