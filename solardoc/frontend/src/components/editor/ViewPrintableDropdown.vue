@@ -21,7 +21,7 @@ function handlePresentationViewClick() {
 
 function handlePrintPdfViewClick() {
   closeDropdown()
-  const printPdfUrl = `${this.renderData.previewURL}?print-pdf`;
+  const printPdfUrl = `${renderData.previewURL}?print-pdf`;
   window.open(printPdfUrl, '_blank');
 }
 </script>
@@ -29,6 +29,9 @@ function handlePrintPdfViewClick() {
 <template>
   <Dropdown ref="dropdown">
     <template #trigger="{ visible }">
+      <!-- @vue-expect-error The types from the library seem to be wrong. Property "visible" can only be used when
+      "value" is also used.
+      -->
       <button
           id="simple-sandwich-menu-button"
           :class="{ highlighted: visible.value }"
