@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   # Run tests with 'pnpm install --frozen-lockfile' dependencies
   tests-with-pck-lock-dependencies:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
@@ -29,7 +29,7 @@ jobs:
 
   # Run tests with 'pnpm i' dependencies
   tests-with-pck-dependencies:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:

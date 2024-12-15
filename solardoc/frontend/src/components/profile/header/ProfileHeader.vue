@@ -1,18 +1,21 @@
 <script lang="ts" setup>
 import { useCurrentUserStore } from '@/stores/current-user'
+import UserRef from '@/components/common/UserRef.vue'
 
 const currentUserStore = useCurrentUserStore()
 </script>
 
 <template>
-  <div id="profile-header">
-    <h1 id="profile-header-text">
-      Profile Page ~<code>{{ currentUserStore.currentUser?.username || '' }}</code>
+  <div class="profile-header desktop">
+    <h1 class="profile-header-text">
+      <UserRef
+        :id="currentUserStore.currentUser!!.id!!"
+        :user-name="currentUserStore.currentUser!!.username!!"
+        no-padding
+        :top="-20"
+      />
     </h1>
-    <div id="profile-description">
-      <p>
-        <span>Id:</span><code>{{ currentUserStore.currentUser?.id || '' }}</code>
-      </p>
+    <div class="profile-description">
       <p><span>Email:</span> {{ currentUserStore.currentUser?.email || '' }}</p>
       <p><span>Role:</span> {{ currentUserStore.currentUser?.role || '' }}</p>
       <p>
@@ -21,15 +24,36 @@ const currentUserStore = useCurrentUserStore()
       <p><span>Organisation:</span> {{ currentUserStore.currentUser?.organisation || '' }}</p>
     </div>
   </div>
+  <div class="profile-header phone">
+    <h1 class="profile-header-text">
+      <code>{{ currentUserStore.currentUser?.username || '' }}</code>
+    </h1>
+    <div class="profile-description">
+      <p><span>Email:</span> {{ currentUserStore.currentUser?.email || '' }}</p>
+      <p><span>Role:</span> {{ currentUserStore.currentUser?.role || '' }}</p>
+      <p>
+        <span>Confirmed At:</span> {{ currentUserStore.currentUser?.confirmed_at || 'Unknown' }}
+      </p>
+      <p><span>Organisation:</span> {{ currentUserStore.currentUser?.organisation || 'None' }}</p>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-#profile-header {
+@use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/mixins/hide' as *;
+@use '@/assets/core/var' as var;
+
+.profile-header {
   margin-right: 2rem;
 
-  h1 {
-    // Avoid line break
+  .profile-header-text {
     white-space: nowrap;
+
+    & span span {
+      position: relative;
+      top: -20px;
+    }
   }
 
   p {
@@ -41,11 +65,35 @@ const currentUserStore = useCurrentUserStore()
   }
 
   code {
-    padding: 0 0.25rem;
+    padding: 0;
+    margin: 0;
   }
 
   span {
     font-weight: bold;
+  }
+}
+
+.profile-header.phone {
+  @include show;
+
+  .profile-header-text {
+    line-height: 1;
+    margin: 0.33em 0;
+  }
+}
+
+.profile-header.desktop {
+  @include hide;
+}
+
+@include r-min(var.$window-medium) {
+  .profile-header.desktop {
+    @include show;
+  }
+
+  .profile-header.phone {
+    @include hide;
   }
 }
 </style>
