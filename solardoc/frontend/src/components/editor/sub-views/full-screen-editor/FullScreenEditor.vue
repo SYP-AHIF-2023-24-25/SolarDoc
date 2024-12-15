@@ -1,12 +1,21 @@
 <script setup lang="ts">
-import Editor from "@/components/editor/Editor.vue";
-import ArrowLeft from "@/components/icons/ArrowLeft.vue";
+import Editor from '@/components/editor/Editor.vue'
+import ArrowLeft from '@/components/icons/ArrowLeft.vue'
+import { showDummyLoading } from '@/scripts/show-dummy-loading'
 </script>
 
 <template>
   <div id="editor-wrapper">
     <div id="change-view-buttons">
-      <div id="change-layout-to-default" @click="$emit('viewStateUpdate')">
+      <div
+        id="change-layout-to-default"
+        @click="
+          _ => {
+            $emit('viewStateUpdate')
+            showDummyLoading()
+          }
+        "
+      >
         <ArrowLeft />
       </div>
     </div>
@@ -28,7 +37,7 @@ import ArrowLeft from "@/components/icons/ArrowLeft.vue";
 
   #change-view-buttons {
     position: absolute;
-    top: calc(var(--editor-preview-frame-height) - 4rem);
+    top: var.$editor-change-view-button-position;
     right: 0;
     width: 1rem;
     height: 3rem;
@@ -36,7 +45,7 @@ import ArrowLeft from "@/components/icons/ArrowLeft.vue";
 
     #change-layout-to-default {
       display: flex;
-      flex-direction:row;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
       position: absolute;
@@ -44,12 +53,12 @@ import ArrowLeft from "@/components/icons/ArrowLeft.vue";
       right: 0;
       width: 2rem;
       height: 4rem;
-      background-color: rgba(#e5e7eb, .5);
+      background-color: rgba(#e5e7eb, 0.5);
       opacity: 0.9;
       border-radius: 5rem 0 0 5rem;
 
       &:hover {
-        background-color: rgba(#e5e7eb, .9);
+        background-color: rgba(#e5e7eb, 0.9);
         cursor: pointer;
       }
     }

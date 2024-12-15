@@ -1,5 +1,6 @@
 export default Object.freeze({
-  revealJsCdnUrl : 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/',
+  MAX_PHONE_SIZE: 768,
+  revealJsCdnUrl: 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/',
   githubURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc',
   githubVersionURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc/releases/tag',
   localStorageFileKey: 'file',
@@ -48,66 +49,67 @@ export default Object.freeze({
     },
   } satisfies { [key: string]: { title: string; text: string } },
   defaultFileName: 'untitled.adoc',
-  defaultFileContent: '= Welcome to SolarDoc\n' +
-      ':revealjs_theme: dracula\n' +
-      ':revealjs_progress: true\n' +
-      '\n' +
-      '== Getting Started\n' +
-      '\n' +
-      '*AsciiDoc* - a powerful, simple markup language.\n' +
-      '\n' +
-      '- Lightweight\n' +
-      '- Converts to many formats\n' +
-      '- Perfect for presentations!\n' +
-      '\n' +
-      '== Headings & Text Styles\n' +
-      '\n' +
-      '=== Subheading Example\n' +
-      'Basic paragraph of text with **bold**, _italic_, and `monospaced` styles.\n' +
-      '\n' +
-      '== Lists\n' +
-      '\n' +
-      '. First ordered item\n' +
-      '. Second ordered item\n' +
-      '. Third ordered item\n' +
-      '\n' +
-      '* Unordered item A\n' +
-      '* Unordered item B\n' +
-      '\n' +
-      '== Code Example\n' +
-      '\n' +
-      '[source,python]\n' +
-      '----\n' +
-      '# Simple Python function\n' +
-      'def greet(name):\n' +
-      '    return f"Hello, {name}!"\n' +
-      'print(greet("AsciiDoc"))\n' +
-      '----\n' +
-      '\n' +
-      '== Tables\n' +
-      '\n' +
-      '[cols="1,1,1", options="header"]\n' +
-      '|===\n' +
-      '| Header 1 | Header 2 | Header 3\n' +
-      '| A1       | A2       | A3\n' +
-      '| B1       | B2       | B3\n' +
-      '|===\n' +
-      '\n' +
-      '== Images\n' +
-      '\n' +
-      'image::https://i0.wp.com/picjumbo.com/wp-content/uploads/portrait-of-a-cat-lying-in-a-sweater-free-image.jpeg?w=600&quality=80[width=800, align="center"]\n' +
-      '\n' +
-      '== Links\n' +
-      '\n' +
-      'https://asciidoctor.org[AsciiDoctor Site]\n' +
-      '\n' +
-      '== Enjoy!',
+  defaultFileContent:
+    '= Welcome to SolarDoc\n' +
+    ':revealjs_theme: dracula\n' +
+    ':revealjs_progress: true\n' +
+    '\n' +
+    '== Getting Started\n' +
+    '\n' +
+    '*AsciiDoc* - a powerful, simple markup language.\n' +
+    '\n' +
+    '- Lightweight\n' +
+    '- Converts to many formats\n' +
+    '- Perfect for presentations!\n' +
+    '\n' +
+    '== Headings & Text Styles\n' +
+    '\n' +
+    '=== Subheading Example\n' +
+    'Basic paragraph of text with **bold**, _italic_, and `monospaced` styles.\n' +
+    '\n' +
+    '== Lists\n' +
+    '\n' +
+    '. First ordered item\n' +
+    '. Second ordered item\n' +
+    '. Third ordered item\n' +
+    '\n' +
+    '* Unordered item A\n' +
+    '* Unordered item B\n' +
+    '\n' +
+    '== Code Example\n' +
+    '\n' +
+    '[source,python]\n' +
+    '----\n' +
+    '# Simple Python function\n' +
+    'def greet(name):\n' +
+    '    return f"Hello, {name}!"\n' +
+    'print(greet("AsciiDoc"))\n' +
+    '----\n' +
+    '\n' +
+    '== Tables\n' +
+    '\n' +
+    '[cols="1,1,1", options="header"]\n' +
+    '|===\n' +
+    '| Header 1 | Header 2 | Header 3\n' +
+    '| A1       | A2       | A3\n' +
+    '| B1       | B2       | B3\n' +
+    '|===\n' +
+    '\n' +
+    '== Images\n' +
+    '\n' +
+    'image::https://i0.wp.com/picjumbo.com/wp-content/uploads/portrait-of-a-cat-lying-in-a-sweater-free-image.jpeg?w=600&quality=80[width=800, align="center"]\n' +
+    '\n' +
+    '== Links\n' +
+    '\n' +
+    'https://asciidoctor.org[AsciiDoctor Site]\n' +
+    '\n' +
+    '== Enjoy!',
   saveStates: {
     shared: 'Shared File',
-    local: 'Saved Locally',
-    server: 'Saved Remotely',
+    local: 'Local File',
+    server: 'Cloud File',
     unsavedChanges: 'Unsaved Changes',
   },
-  version: 'v1.0.0-dev.7',
+  version: 'v1.0.0-beta.2',
   copyright: 'Solardoc © 2023-2024 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
 })

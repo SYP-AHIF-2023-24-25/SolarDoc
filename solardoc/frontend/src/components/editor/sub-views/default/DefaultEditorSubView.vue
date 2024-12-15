@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import Editor from "@/components/editor/Editor.vue";
-import SubSlidesNavigator from "@/components/editor/sub-views/default/sub-slides-navigator/SubSlidesNavigator.vue";
-import LoadAnywayButton from "@/components/editor/LoadAnywayButton.vue";
-import SlidesNavigator from "@/components/editor/sub-views/default/slides-navigator/SlidesNavigator.vue";
-import {useDarkModeStore} from "@/stores/dark-mode";
-import {useInitStateStore} from "@/stores/init-state";
-import {storeToRefs} from "pinia";
-import {useRenderDataStore} from "@/stores/render-data";
-import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
-import {usePreviewLoadingStore} from "@/stores/preview-loading";
-import ArrowLeft from "@/components/icons/ArrowLeft.vue";
-import ArrowRight from "@/components/icons/ArrowRight.vue";
-import {FULL_SCREEN_EDITOR, FULL_SCREEN_SLIDES_MANGER} from "@/scripts/editor/sub-view-state";
+import Editor from '@/components/editor/Editor.vue'
+import SubSlidesNavigator from '@/components/editor/sub-views/default/sub-slides-navigator/SubSlidesNavigator.vue'
+import LoadAnywayButton from '@/components/editor/LoadAnywayButton.vue'
+import SlidesNavigator from '@/components/editor/sub-views/default/slides-navigator/SlidesNavigator.vue'
+import { useDarkModeStore } from '@/stores/dark-mode'
+import { useInitStateStore } from '@/stores/init-state'
+import { storeToRefs } from 'pinia'
+import { useRenderDataStore } from '@/stores/render-data'
+import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import ArrowLeft from '@/components/icons/ArrowLeft.vue'
+import ArrowRight from '@/components/icons/ArrowRight.vue'
+import { FULL_SCREEN_EDITOR, FULL_SCREEN_SLIDES_MANGER } from '@/scripts/editor/sub-view-state'
+import { showDummyLoading } from '@/scripts/show-dummy-loading'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const darkModeStore = useDarkModeStore()
@@ -21,7 +22,6 @@ const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
-
 </script>
 
 <template>
@@ -30,10 +30,26 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
       <Editor></Editor>
     </div>
     <div id="change-view-buttons">
-      <div id="change-layout-to-slides-manager-button" @click="$emit('viewStateUpdate', FULL_SCREEN_SLIDES_MANGER)">
+      <div
+        id="change-layout-to-slides-manager-button"
+        @click="
+          _ => {
+            $emit('viewStateUpdate', FULL_SCREEN_SLIDES_MANGER)
+            showDummyLoading()
+          }
+        "
+      >
         <ArrowLeft />
       </div>
-      <div id="change-layout-to-full-screen-editor-button" @click="$emit('viewStateUpdate', FULL_SCREEN_EDITOR)">
+      <div
+        id="change-layout-to-full-screen-editor-button"
+        @click="
+          _ => {
+            $emit('viewStateUpdate', FULL_SCREEN_EDITOR)
+            showDummyLoading()
+          }
+        "
+      >
         <ArrowRight />
       </div>
     </div>
@@ -43,20 +59,18 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
           <p id="init-msg">Start typing and see preview!</p>
           <LoadAnywayButton :color-mode="darkModeStore.darkMode ? 'dark' : 'light'" />
         </div>
-        <h2
-            v-else-if="(previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL"
-        >
+        <h2 v-else-if="(previewLoadingStore.previewLoading && !initStateStore.init) || !previewURL">
           <span class="dot-dot-dot-flashing"></span>
         </h2>
         <iframe
-            v-else
-            :src="`${previewURL}?static=true#${slideIndex}/${(subSlideIndex ?? -1) + 1}`"
+          v-else
+          :src="`${previewURL}?static=true#${slideIndex}/${(subSlideIndex ?? -1) + 1}`"
         ></iframe>
       </div>
       <div
-          v-if="previewLoadingStore.previewLoading && !initStateStore.init"
-          id="preview-meta-info"
-          class="loading"
+        v-if="previewLoadingStore.previewLoading && !initStateStore.init"
+        id="preview-meta-info"
+        class="loading"
       >
         <div>
           <div class="dot-dot-dot-flashing-mini"></div>
@@ -74,9 +88,7 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
           {{ slideCount ? slideCount! : '?' }} {{ slideCount == 1 ? 'slide' : 'slides' }} ({{
             slideCount && slideCountInclSubslides ? slideCountInclSubslides - slideCount : '?'
           }}
-          {{
-            (slideCountInclSubslides ?? 0) - (slideCount ?? 0) == 1 ? 'subslide' : 'subslides'
-          }})
+          {{ (slideCountInclSubslides ?? 0) - (slideCount ?? 0) == 1 ? 'subslide' : 'subslides' }})
         </p>
         <p>{{ rawSize ? Math.round(rawSize! * 100) / 100 : '?' }} KB Raw Size</p>
       </div>
@@ -133,15 +145,16 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
       right: 0;
       width: 1.5rem;
       height: 3rem;
-      background-color: rgba(#e5e7eb, .5);
+      background-color: rgba(#e5e7eb, 0.5);
       opacity: 0.9;
 
-      &, * {
+      &,
+      * {
         color: var.$text-color;
       }
 
       &:hover {
-        background-color: rgba(#e5e7eb, .9);
+        background-color: rgba(#e5e7eb, 0.9);
         cursor: pointer;
       }
     }

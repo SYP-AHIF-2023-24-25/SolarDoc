@@ -10,6 +10,10 @@
 @use './core/dotdotdot' as *;
 @use './core/emphasised-link' as *;
 
+// Sizing and spacing utilities
+@use './core/mixins/screen-size' as screen-size;
+@use './core/mixins/hide' as hide;
+
 // Other dependencies
 @use './vueform' as *;
 @use './notif' as *;
@@ -26,6 +30,7 @@ body > #app {
   width: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 // Set background color based on the selected theme (dark/light)
@@ -39,4 +44,5 @@ html {
 .v-dropdown-container {
   margin-left: 0.25rem !important;
   z-index: 50 !important;
+  overflow: visible !important;
 }

@@ -9,13 +9,20 @@ import { useCurrentFileStore } from '@/stores/current-file'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 import { ref } from 'vue'
+import QrcodeVue from 'qrcode.vue'
+import type { RenderAs, GradientType } from 'qrcode.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()
 const currentFileStore = useCurrentFileStore()
 
 const generatedLink = ref('')
-
+const renderAs = ref<RenderAs>('svg')
+const qrCodeSize: number = 250
+const gradient = ref(true)
+const gradientType = ref<GradientType>('linear')
+const gradientStartColor = ref('#EC53B0FF')
+const gradientEndColor = ref('#0E21A0FF')
 async function handleGeneratedLinkCopyButtonClick() {
   if (generatedLink.value) {
     await handleCopy(generatedLink.value)
@@ -85,6 +92,18 @@ async function submitForm(
         </p>
       </div>
       <template v-else>
+        <div v-if="generatedLink" id="qr-code">
+          <qrcode-vue
+            :value="generatedLink"
+            :size="qrCodeSize"
+            :render-as="renderAs"
+            :gradient="gradient"
+            :gradient-type="gradientType"
+            :gradient-start-color="gradientStartColor"
+            :gradient-end-color="gradientEndColor"
+            :background="'var(--scheme-home-content-background-secondary)'"
+          />
+        </div>
         <div id="generated-link-display">
           <i
             :class="'pi pi-clipboard' + (generatedLink ? '' : ' disabled')"
@@ -180,6 +199,16 @@ async function submitForm(
       width: 100%;
       height: 8rem;
       font-size: 1.4rem;
+    }
+
+    #qr-code {
+      $width-height: calc(250px + 2rem);
+      width: $width-height;
+      height: $width-height;
+      box-sizing: border-box;
+      margin: 0 auto 2rem auto;
+      padding: 1rem;
+      background-color: var.$scheme-home-content-background-secondary;
     }
 
     #generated-link-display {

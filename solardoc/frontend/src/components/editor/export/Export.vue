@@ -1,155 +1,159 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import JSZip from "jszip";
-import { useOverlayStateStore } from "@/stores/overlay-state";
-import CloseButtonSVG from "@/components/icons/CloseButtonSVG.vue";
-import { useCurrentFileStore } from "@/stores/current-file";
-import { handleRender } from "@/scripts/handle-render";
-import { postV1RenderPresentationPdf } from "@/services/render/gen/backend-rest-service";
-import { RenderBackendRestError } from "@/services/render/errors";
-import {interceptErrors} from "@/errors/handler/error-handler";
+import { ref, computed } from 'vue'
+import JSZip from 'jszip'
+import { useOverlayStateStore } from '@/stores/overlay-state'
+import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { handleRender } from '@/scripts/handle-render'
+import { postV1RenderPresentationPdf } from '@/services/render/gen/backend-rest-service'
+import { RenderBackendRestError } from '@/services/render/errors'
+import { interceptErrors } from '@/errors/handler/error-handler'
 
-const overlayStateStore = useOverlayStateStore();
-const currentFileStore = useCurrentFileStore();
+const overlayStateStore = useOverlayStateStore()
+const currentFileStore = useCurrentFileStore()
 
-const selectedFormats = ref<string[]>([]);
+const selectedFormats = ref<string[]>([])
 
 function toggleFormat(format: string) {
   if (selectedFormats.value.includes(format)) {
-    selectedFormats.value = selectedFormats.value.filter(item => item !== format);
+    selectedFormats.value = selectedFormats.value.filter(item => item !== format)
   } else {
-    selectedFormats.value.push(format);
+    selectedFormats.value.push(format)
   }
 }
 
-const isFormatSelected = computed(() => selectedFormats.value.length > 0);
+const isFormatSelected = computed(() => selectedFormats.value.length > 0)
 
 async function handleFileExport() {
   for (const format of selectedFormats.value) {
-    let previewURL: string;
+    let previewURL: string
     let presentationModel = {
       fileContent: currentFileStore.content,
       fileName: currentFileStore.fileName,
-    };
+    }
 
     try {
       switch (format.toUpperCase()) {
-        case "PDF":
+        case 'PDF':
           // eslint-disable-next-line no-case-declarations
-          const pdfResp = await postV1RenderPresentationPdf(presentationModel);
-          previewURL = pdfResp.data.download?.downloadURL;
-          break;
-        case "HTML":
+          const pdfResp = await postV1RenderPresentationPdf(presentationModel)
+          previewURL = pdfResp.data.download?.downloadURL
+          break
+        case 'HTML':
           // eslint-disable-next-line no-case-declarations
-          const htmlResp = await handleRender(currentFileStore.fileName, currentFileStore.content);
-          previewURL = htmlResp.previewURL;
-          break;
-        case "ADOC":
-          previewURL = `data:text/asciidoc,${encodeURIComponent(currentFileStore.content)}`;
-          break;
-        case "JPG":
-          // const resp = await postV1RenderPresentationImages(presentationModel);
-          // previewURL = resp.data.download?.downloadURL;
-          // eslint-disable-next-line no-fallthrough
+          const htmlResp = await handleRender(currentFileStore.fileName, currentFileStore.content)
+          previewURL = htmlResp.previewURL
+          break
+        case 'ADOC':
+          previewURL = `data:text/asciidoc,${encodeURIComponent(currentFileStore.content)}`
+          break
+        case 'JPG':
+        // const resp = await postV1RenderPresentationImages(presentationModel);
+        // previewURL = resp.data.download?.downloadURL;
+        // eslint-disable-next-line no-fallthrough
         default:
-          console.error(`Unsupported format: ${format}`);
-          return;
+          console.error(`Unsupported format: ${format}`)
+          return
       }
 
-      const content = await fetch(previewURL);
-      const value = await content.blob();
-      const extension = format.toLowerCase();
-      const fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.${extension}`;
+      const content = await fetch(previewURL)
+      const value = await content.blob()
+      const extension = format.toLowerCase()
+      const fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, '')}.${extension}`
 
-      const a = document.createElement('a');
-      a.download = fileName;
-      a.href = URL.createObjectURL(value);
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const a = document.createElement('a')
+      a.download = fileName
+      a.href = URL.createObjectURL(value)
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
     } catch (e) {
-      console.error("[Export.vue] Error in file export:", e);
-      throw new RenderBackendRestError('Failed to render file for download. Cause: ' + (<Error>e).message,);
+      console.error('[Export.vue] Error in file export:', e)
+      throw new RenderBackendRestError(
+        'Failed to render file for download. Cause: ' + (<Error>e).message,
+      )
     }
   }
 }
 
 async function handleFileExportAsZip() {
-  let zip: JSZip = new JSZip();
+  let zip: JSZip = new JSZip()
 
   for (const format of selectedFormats.value) {
-    let previewURL: string;
+    let previewURL: string
     let presentationModel = {
       fileContent: currentFileStore.content,
       fileName: currentFileStore.fileName,
-    };
+    }
 
     try {
       switch (format.toUpperCase()) {
-        case "PDF":
+        case 'PDF':
           // eslint-disable-next-line no-case-declarations
-          const pdfResp = await postV1RenderPresentationPdf(presentationModel);
-          previewURL = pdfResp.data.download?.downloadURL;
-          break;
-        case "HTML":
+          const pdfResp = await postV1RenderPresentationPdf(presentationModel)
+          previewURL = pdfResp.data.download?.downloadURL
+          break
+        case 'HTML':
           // eslint-disable-next-line no-case-declarations
-          const htmlResp = await handleRender(currentFileStore.fileName, currentFileStore.content);
-          previewURL = htmlResp.previewURL;
-          break;
-        case "ADOC":
-          previewURL = `data:text/plain,${encodeURIComponent(currentFileStore.content)}`;
-          break;
-        case "JPG":
-          // const resp = await postV1RenderPresentationImages(presentationModel);
-          // previewURL = resp.data.download?.downloadURL;
-          // eslint-disable-next-line no-fallthrough
+          const htmlResp = await handleRender(currentFileStore.fileName, currentFileStore.content)
+          previewURL = htmlResp.previewURL
+          break
+        case 'ADOC':
+          previewURL = `data:text/plain,${encodeURIComponent(currentFileStore.content)}`
+          break
+        case 'JPG':
+        // const resp = await postV1RenderPresentationImages(presentationModel);
+        // previewURL = resp.data.download?.downloadURL;
+        // eslint-disable-next-line no-fallthrough
         default:
-          console.error(`Unsupported format: ${format}`);
-          return;
+          console.error(`Unsupported format: ${format}`)
+          return
       }
 
-      const content = await fetch(previewURL);
-      const value = await content.blob();
-      const extension = format.toLowerCase();
-      const fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.${extension}`;
+      const content = await fetch(previewURL)
+      const value = await content.blob()
+      const extension = format.toLowerCase()
+      const fileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, '')}.${extension}`
 
-      const exportsFolder = zip.folder("exports");
+      const exportsFolder = zip.folder('exports')
       if (exportsFolder) {
-        exportsFolder.file(fileName, value);
+        exportsFolder.file(fileName, value)
       } else {
-        throw new Error("Failed to create 'exports' folder in zip.");
+        throw new Error("Failed to create 'exports' folder in zip.")
       }
-
     } catch (e) {
-      console.error("Error in file export:", e);
-      throw new RenderBackendRestError(
-          'Failed to render file. Cause: ' + (<Error>e).message,
-      );
+      console.error('Error in file export:', e)
+      throw new RenderBackendRestError('Failed to render file. Cause: ' + (<Error>e).message)
     }
   }
 
-  const blobData = await zip.generateAsync({ type: "blob" })
-  const zipFileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, "")}.zip`;
-  const a = document.createElement('a');
-  a.download = zipFileName;
-  a.href = URL.createObjectURL(blobData);
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  const blobData = await zip.generateAsync({ type: 'blob' })
+  const zipFileName = `${currentFileStore.fileName.replace(/\.[^/.]+$/, '')}.zip`
+  const a = document.createElement('a')
+  a.download = zipFileName
+  a.href = URL.createObjectURL(blobData)
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
 
-  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500)
+}
+
+async function unselectOptionsAndClose() {
+  selectedFormats.value = []
+  overlayStateStore.setExportView(false)
 }
 </script>
 
 <template>
   <div
-      v-if="overlayStateStore.exportView"
-      id="full-screen-wrapper"
-      class="blurred-background-full-screen-overlay"
+    v-if="overlayStateStore.exportView"
+    id="full-screen-wrapper"
+    class="blurred-background-full-screen-overlay"
   >
     <div id="export-view">
       <div id="export-view-header">
-        <button id="close-button" @click="overlayStateStore.setExportView(false)">
+        <button id="close-button" @click="unselectOptionsAndClose">
           <CloseButtonSVG />
         </button>
         <h1>Export</h1>
@@ -170,22 +174,6 @@ async function handleFileExportAsZip() {
           >
             <span>HTML</span>
           </div>
-          <div
-            class="format-box"
-            :class="{ selected: selectedFormats.includes('PDF'), disabled: true }"
-            @click="toggleFormat('PDF')"
-            v-tooltip="'Currently not supported'"
-          >
-            <span>PDF</span>
-          </div>
-          <div
-            class="format-box"
-            :class="{ selected: selectedFormats.includes('JPG') , disabled: true }"
-            @click="toggleFormat('JPG')"
-            v-tooltip="'Currently not supported'"
-          >
-            <span>JPG</span>
-          </div>
         </div>
         <button
           id="export-button"
@@ -193,14 +181,18 @@ async function handleFileExportAsZip() {
           @click="async () => await interceptErrors(handleFileExport())"
           :disabled="!isFormatSelected"
           v-tooltip="isFormatSelected ? undefined : 'Please select at least one document type'"
-        >Export</button>
+        >
+          Export
+        </button>
         <button
           id="zip-button"
           class="highlighted-button"
           @click="async () => await interceptErrors(handleFileExportAsZip())"
           :disabled="!isFormatSelected"
           v-tooltip="isFormatSelected ? undefined : 'Please select at least one document type'"
-        >Export as Zip</button>
+        >
+          Export as Zip
+        </button>
       </div>
     </div>
   </div>
@@ -257,7 +249,8 @@ async function handleFileExportAsZip() {
     }
   }
 
-  #export-button, #zip-button {
+  #export-button,
+  #zip-button {
     margin: 0.5rem 2rem;
   }
 
@@ -278,14 +271,16 @@ async function handleFileExportAsZip() {
     transition: background-color 0.3s;
     border: 2px solid var.$scheme-toggleable-button-border;
 
-    &, span {
+    &,
+    span {
       color: var.$text-color;
     }
 
     &.selected {
       background-color: var.$scheme-toggleable-button-highlighted;
 
-      &, span {
+      &,
+      span {
         color: var.$text-color-inverted;
       }
     }
@@ -294,7 +289,8 @@ async function handleFileExportAsZip() {
       cursor: pointer;
       background-color: var.$scheme-toggleable-button-highlighted;
 
-      &, span {
+      &,
+      span {
         color: var.$text-color-inverted;
       }
     }
@@ -304,7 +300,8 @@ async function handleFileExportAsZip() {
       background-color: var.$scheme-toggleable-button-disabled;
       cursor: not-allowed;
 
-      &, span {
+      &,
+      span {
         color: var(--stylised-button-disabled-color);
       }
     }
