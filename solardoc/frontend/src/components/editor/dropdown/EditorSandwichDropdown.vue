@@ -145,14 +145,14 @@ function handleSettingsClick() {
         @click="handleShareButtonClick()"
         v-tooltip="'Share your file with others'"
       >
-        Share
+        Share...
       </div>
       <div
         class="dropdown-element"
         @click="handleDownloadButtonClick()"
-        v-tooltip="'Download source code or presentation'"
+        v-tooltip="'Export source code or presentation'"
       >
-        Download
+        Export...
       </div>
       <div
         class="dropdown-element"
