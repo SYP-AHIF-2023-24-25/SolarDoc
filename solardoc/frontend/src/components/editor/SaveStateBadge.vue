@@ -16,6 +16,9 @@ const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
 const loadingStore = useLoadingStore()
 
+// This is a workaround to avoid a bug in Vite that doesn't allow to import constants directly
+const _constants = constants
+
 function getSaveStateCSSClass() {
   return currentFileStore.remoteFile ? (currentFileStore.shareFile ? 'shared' : 'saved') : 'error'
 }
@@ -54,7 +57,7 @@ async function uploadFile() {
   <div id="save-state" v-tooltip="'Indicates whether the file is saved remotely on the server'">
     <p :class="getSaveStateCSSClass()">
       {{ getSaveState() }}
-      <span v-if="getSaveState() === constants.saveStates.local" @click="uploadFile()">
+      <span v-if="getSaveState() === _constants.saveStates.local" @click="uploadFile()">
         <UploadIconSVG />
       </span>
     </p>
