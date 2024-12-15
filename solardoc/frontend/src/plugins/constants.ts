@@ -1,4 +1,5 @@
 export default Object.freeze({
+  MAX_PHONE_SIZE: 768,
   revealJsCdnUrl: 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.2/',
   githubURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc',
   githubVersionURL: 'https://github.com/SYP-AHIF-2023-24-25/SolarDoc/releases/tag',
@@ -105,10 +106,10 @@ export default Object.freeze({
     '== Enjoy!',
   saveStates: {
     shared: 'Shared File',
-    local: 'Saved Locally',
-    server: 'Saved Remotely',
+    local: 'Local File',
+    server: 'Cloud File',
     unsavedChanges: 'Unsaved Changes',
   },
-  version: 'v1.0.0-dev.7',
+  version: 'v1.0.0-beta.0',
   copyright: 'Solardoc © 2023-2024 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
 })

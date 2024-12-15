@@ -45,6 +45,7 @@ const searchQuery = ref('')
     border-color: transparent;
     flex-grow: 1;
     border-radius: var.$searchbar-border-radius;
+    min-width: 0;
 
     &:hover {
       @include hover-background;

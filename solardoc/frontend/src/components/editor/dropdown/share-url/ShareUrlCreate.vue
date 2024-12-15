@@ -10,7 +10,7 @@ import * as phoenixRestService from '@/services/phoenix/api-service'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 import { ref } from 'vue'
 import QrcodeVue from 'qrcode.vue'
-import type {  RenderAs, GradientType } from 'qrcode.vue'
+import type { RenderAs, GradientType } from 'qrcode.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentUserStore = useCurrentUserStore()
@@ -18,7 +18,7 @@ const currentFileStore = useCurrentFileStore()
 
 const generatedLink = ref('')
 const renderAs = ref<RenderAs>('svg')
-const qrCodeSize:number = 250
+const qrCodeSize: number = 250
 const gradient = ref(true)
 const gradientType = ref<GradientType>('linear')
 const gradientStartColor = ref('#EC53B0FF')

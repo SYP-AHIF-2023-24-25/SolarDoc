@@ -118,12 +118,10 @@ function onClose() {
         </p>
         <div id="settings-file-info-details">
           <p>
-            <span>Owner:</span>&nbsp;
-            <template v-if="owner!.username === 'Local User'">
-              {{ owner!.username }}
-            </template>
+            <span>Owner: </span>
+            <template v-if="owner!.username === 'Local User'">{{ owner!.username }}</template>
             <template v-else-if="currentFileStore!.ownerId && owner!.username">
-              <UserRef :id="currentFileStore.ownerId" :user-name="owner!.username" />
+              <UserRef :id="currentFileStore.ownerId" :user-name="owner!.username" no-padding />
             </template>
           </p>
           <p><span>Created:</span> {{ created }}</p>

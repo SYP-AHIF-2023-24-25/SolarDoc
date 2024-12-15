@@ -22,7 +22,9 @@ function toggleFillWholeScreen() {
 <template>
   <div
     id="full-screen-wrapper"
-    class="blurred-background-full-screen-overlay"
+    :class="
+      'blurred-background-full-screen-overlay ' + (fillWholeScreen ? 'fill-whole-screen' : '')
+    "
     v-if="overlayStateStore.fullScreenPreview"
   >
     <button id="close-button" @click="overlayStateStore.setFullScreenPreview(false)">
@@ -32,7 +34,7 @@ function toggleFillWholeScreen() {
       <OpenFullscreenSVG v-if="!fillWholeScreen" />
       <CloseFullscreenSVG v-else />
     </button>
-    <div id="full-screen-preview" :class="fillWholeScreen ? 'fill-whole-screen' : ''">
+    <div id="full-screen-preview">
       <div id="msg-wrapper" v-if="initStateStore.init">
         <p id="preview-not-loadable-msg">
           Modify source code before previewing fullscreen presentation
@@ -50,49 +52,57 @@ function toggleFillWholeScreen() {
 @use '@/assets/full-screen-overlay' as *;
 
 #full-screen-wrapper {
+  --margin: 2rem;
+  --base-offset: calc(40px + var(--margin));
+  --top-offset: calc(1.5 * var(--base-offset));
+
+  #close-button,
+  #toggle-fill-whole-screen {
+    right: var(--base-offset);
+  }
+
   #close-button {
     position: fixed;
-    top: 4rem;
-    right: 4rem;
+    top: var(--top-offset);
     z-index: 101;
 
     svg {
       width: 2rem;
       height: 2rem;
-      fill: white;
+      fill: #ea71b7;
     }
   }
 
   #toggle-fill-whole-screen {
     position: fixed;
-    top: 7rem;
-    right: 4rem;
+    top: calc(var(--top-offset) + 3rem);
     z-index: 101;
 
     svg {
       width: 2rem;
       height: 2rem;
-      fill: white;
+      fill: #ea71b7;
     }
   }
 
-  #full-screen-preview {
-    $margin: 2rem;
-
-    // The preview is on top of the normal editor page
-    position: fixed;
-    top: $margin;
-    left: $margin;
-    width: calc(100vw - $margin * 2);
-    height: calc(100vh - $margin * 2);
-    border: none;
-
-    &.fill-whole-screen {
+  &.fill-whole-screen {
+    --margin: 0px;
+    #full-screen-preview {
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
     }
+  }
+
+  #full-screen-preview {
+    // The preview is on top of the normal editor page
+    position: fixed;
+    top: var(--margin);
+    left: var(--margin);
+    width: calc(100vw - var(--margin) * 2);
+    height: calc(100vh - var(--margin) * 2);
+    border: none;
 
     iframe {
       width: inherit;

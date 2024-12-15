@@ -18,7 +18,7 @@ import {
   closeEditorRemoteFileConnection,
   createEditorRemoteFileConnection,
 } from '@/scripts/editor/file'
-import {handleCopy} from "@/scripts/handle-copy";
+import { handleCopy } from '@/scripts/handle-copy'
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
@@ -119,7 +119,7 @@ function handleSettingsClick() {
       v-tooltip="{
         theme: {
           placement: 'top',
-          offset: ['left']
+          offset: ['left'],
         },
       }"
     >
@@ -128,14 +128,16 @@ function handleSettingsClick() {
         class="dropdown-element"
         @click="handleNewFileButtonClick()"
         v-tooltip="'Create a new file for another project'"
-      >New File</div>
+      >
+        New File
+      </div>
       <div
         class="dropdown-element"
         v-if="!currentFileStore.shareFile"
         @click="handleSaveButtonClick()"
-        v-tooltip="'Upload your file/save any changes'"
+        v-tooltip="currentFileStore.remoteFile ? 'Update File Name' : 'Upload your file'"
       >
-        Save
+        {{ currentFileStore.remoteFile ? 'Update File Name' : 'Save Remotely' }}
       </div>
       <div
         v-if="!currentFileStore.shareFile"
@@ -148,13 +150,17 @@ function handleSettingsClick() {
       <div
         class="dropdown-element"
         @click="handleDownloadButtonClick()"
-        v-tooltip="'Download the source code or presentation'"
-      >Download</div>
+        v-tooltip="'Download source code or presentation'"
+      >
+        Download
+      </div>
       <div
         class="dropdown-element"
         @click="handleCurrentChannelClick()"
         v-tooltip="'View channel info & server info'"
-      >Current Channel</div>
+      >
+        Current Channel
+      </div>
       <div class="dropdown-element" @click="handleSettingsClick()">File Settings</div>
     </div>
   </Dropdown>
@@ -169,7 +175,8 @@ function handleSettingsClick() {
   background-color: var.$overlay-background-color;
   box-shadow: 0 0 10px 0 var.$box-shadow-color;
 
-  &, * {
+  &,
+  * {
     overflow: visible;
     z-index: 100;
   }
