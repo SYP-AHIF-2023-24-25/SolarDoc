@@ -3,6 +3,8 @@ defmodule SolardocPhoenixWeb.V2.UserController do
   use PhoenixSwagger
 
   alias SolardocPhoenix.Accounts
+  alias SolardocPhoenixWeb.UserAuth
+
 
   action_fallback SolardocPhoenixWeb.FallbackController
 
@@ -107,35 +109,39 @@ defmodule SolardocPhoenixWeb.V2.UserController do
 
   swagger_path :create do
     post "#{@api_path}/users"
-    consumes "application/json"
     produces "application/json"
-    summary "Create a new user"
+    consumes "application/json"
+    summary "Register a new user and get a session token"
     parameters do
       user :body, Schema.ref(:CreateUser), "Arguments for creating a user", required: true
     end
-    response 201, "Created", Schema.ref(:UserPrivate)
+    response 201, "Created", Schema.ref(:UserToken)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
   end
 
   def create(conn, user_params) do
-    with {:ok, user} <- Accounts.register_user(user_params) do
-      token = Accounts.generate_user_session_token(user)
+    with {:ok, user} <- Accounts.register_user(user_params),
 
-# credo:disable-for-next-line
-# TODO! Uncomment this when email is working
-#      {:ok, _} =
-#        Accounts.deliver_user_confirmation_instructions(
-#          user,
-#          &url(~p"/users/confirm/#{&1}")
-#        )
+         # credo:disable-for-next-line
+         # TODO! Uncomment this when email is working
+         #      {:ok, _} =
+         #        Accounts.deliver_user_confirmation_instructions(
+         #          user,
+         #          &url(~p"/users/confirm/#{&1}")
+         #        )
 
-      # Return a success JSON response
+         # Return a success JSON response
+
+
+         {token, expires_at} <- UserAuth.create_user_token(user) do
       conn
       |> put_status(:created)
-      |> render(:new, user: user)
-      |> renew_session()
-      |> put_token_in_session(token)
-      |> maybe_write_remember_me_cookie(token, params)
+      |> render(SolardocPhoenixWeb.V2.UserAuthJSON, :create, %{token: token, expires_at: expires_at})
+    else
+      {:error, changeset} ->
+        conn
+        |> put_status(:bad_request)
+        |> render(SolardocPhoenixWeb.ChangesetView, "error.json", changeset: changeset)
     end
   end
 end

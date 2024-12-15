@@ -4,11 +4,18 @@ import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
-import { type ActualPhxErrorResp, PhoenixBadRequestError } from '@/services/phoenix/errors'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixInvalidCredentialsError
+} from '@/services/phoenix/errors'
 import { interceptErrors } from '@/errors/handler/error-handler'
+import {isValidPath} from "@/scripts/is-valid-path";
+import {useLoadingStore} from "@/stores/loading";
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
+const loadingStore = useLoadingStore()
 
 async function submitForm(
   form$: Vueform & {
@@ -42,15 +49,35 @@ async function submitForm(
   }
 
   if (resp.status === 201) {
-    console.log('Signup successful')
-    currentUserStore.setCurrentUser(resp.data)
-    await $router.push('login')
+    console.log('[Signup] Signup successful. Redirecting to profile page')
+    currentUserStore.setCurrentAuth(resp.data)
+
+    await currentUserStore.fetchCurrentUser()
+    await redirect()
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp)
+  } else if (resp.status === 401) {
+    throw new PhoenixInvalidCredentialsError()
   } else {
-    throw new SolardocUnreachableError('Encountered network error during sign up')
+    console.error('[Signup] Server rejected sign up. Cause: Unknown error', resp)
+    throw new SolardocUnreachableError(
+        'Server rejected sign up.',
+        'Unknown error. Please try again.',
+    )
   }
 }
+
+async function redirect() {
+  loadingStore.setLoading(true)
+
+  const returnTo = $router.currentRoute.value.query.returnTo
+  if (typeof returnTo === 'string' && isValidPath(returnTo)) {
+    return await $router.push(returnTo)
+  } else {
+    return await $router.push('/profile')
+  }
+}
+
 </script>
 
 <template>
