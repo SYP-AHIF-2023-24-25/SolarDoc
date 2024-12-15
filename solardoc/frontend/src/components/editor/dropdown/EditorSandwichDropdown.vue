@@ -18,6 +18,7 @@ import {
   closeEditorRemoteFileConnection,
   createEditorRemoteFileConnection,
 } from '@/scripts/editor/file'
+import { handleCopy } from '@/scripts/handle-copy'
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
@@ -65,6 +66,28 @@ async function handleSaveButtonClick() {
   }
 }
 
+let copyButtonTimeout: null | ReturnType<typeof setTimeout> = null
+const copyButtonContent = ref('Copy')
+
+function handleCopyButtonClick() {
+  handleCopy(currentFileStore.content)
+  copyButtonContent.value = 'Copied!'
+  if (copyButtonTimeout) {
+    clearTimeout(copyButtonTimeout)
+  }
+  copyButtonTimeout = setTimeout(() => {
+    copyButtonContent.value = 'Copy'
+  }, 1000)
+}
+
+function handleDownloadButtonClick() {
+  overlayStateStore.setExportView(true)
+}
+
+function handleShareButtonClick() {
+  overlayStateStore.setShareUrlView(true)
+}
+
 function handleCurrentChannelClick() {
   overlayStateStore.setCurrentChannel(true)
   closeDropdown()
@@ -91,16 +114,53 @@ function handleSettingsClick() {
         <SandwichMenuSVG v-show="!darkModeStore.darkMode" />
       </button>
     </template>
-    <div id="dropdown-elements">
-      <div class="dropdown-element" @click="handleNewFileButtonClick()">New File</div>
+    <div
+      id="dropdown-elements"
+      v-tooltip="{
+        theme: {
+          placement: 'top',
+          offset: ['left'],
+        },
+      }"
+    >
+      <div class="dropdown-element" @click="handleCopyButtonClick()">{{ copyButtonContent }}</div>
+      <div
+        class="dropdown-element"
+        @click="handleNewFileButtonClick()"
+        v-tooltip="'Create a new file for another project'"
+      >
+        New File
+      </div>
       <div
         class="dropdown-element"
         v-if="!currentFileStore.shareFile"
         @click="handleSaveButtonClick()"
+        v-tooltip="currentFileStore.remoteFile ? 'Update File Name' : 'Upload your file'"
       >
-        Save in profile
+        {{ currentFileStore.remoteFile ? 'Update File Name' : 'Save Remotely' }}
       </div>
-      <div class="dropdown-element" @click="handleCurrentChannelClick()">Current Channel</div>
+      <div
+        v-if="!currentFileStore.shareFile"
+        class="dropdown-element"
+        @click="handleShareButtonClick()"
+        v-tooltip="'Share your file with others'"
+      >
+        Share...
+      </div>
+      <div
+        class="dropdown-element"
+        @click="handleDownloadButtonClick()"
+        v-tooltip="'Export source code or presentation'"
+      >
+        Export...
+      </div>
+      <div
+        class="dropdown-element"
+        @click="handleCurrentChannelClick()"
+        v-tooltip="'View channel info & server info'"
+      >
+        Current Channel
+      </div>
       <div class="dropdown-element" @click="handleSettingsClick()">File Settings</div>
     </div>
   </Dropdown>
@@ -114,6 +174,12 @@ function handleSettingsClick() {
   width: 200px;
   background-color: var.$overlay-background-color;
   box-shadow: 0 0 10px 0 var.$box-shadow-color;
+
+  &,
+  * {
+    overflow: visible;
+    z-index: 100;
+  }
 
   @media (max-width: 600px) {
     width: calc(100vw - 2rem);

@@ -6,16 +6,20 @@ import { getHumanReadableTimeInfo } from '@/scripts/format-date'
 import { ref } from 'vue'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CollaboratorList from '@/components/editor/dropdown/editor-settings/CollaboratorList.vue'
-import UserRef from "@/components/common/UserRef.vue";
-import type {Awaited} from "@vueuse/core";
-import * as phoenixRestService from "@/services/phoenix/api-service";
-import {type ActualPhxErrorResp, PhoenixBadRequestError, PhoenixInternalError} from "@/services/phoenix/errors";
-import type {UserPublic} from "@/services/phoenix/api-service";
-import {interceptErrors} from "@/errors/handler/error-handler";
-import {ensureLoggedIn} from "@/scripts/ensure-logged-in";
-import {showInfoNotifFromObj} from "@/scripts/show-notif";
-import constants from "@/plugins/constants";
-import {useRouter} from "vue-router";
+import UserRef from '@/components/common/UserRef.vue'
+import type { Awaited } from '@vueuse/core'
+import * as phoenixRestService from '@/services/phoenix/api-service'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixInternalError,
+} from '@/services/phoenix/errors'
+import type { UserPublic } from '@/services/phoenix/api-service'
+import { interceptErrors } from '@/errors/handler/error-handler'
+import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
+import { showInfoNotifFromObj } from '@/scripts/show-notif'
+import constants from '@/plugins/constants'
+import { useRouter } from 'vue-router'
 
 const $router = useRouter()
 
@@ -25,28 +29,28 @@ const currentUserStore = useCurrentUserStore()
 const owner = ref<UserPublic>()
 
 ;(async () => {
-  if(currentUserStore.bearer != null){
-    await fetchOwner(currentFileStore.ownerId!,currentUserStore.bearer);
+  if (currentUserStore.bearer != null) {
+    await fetchOwner(currentFileStore.ownerId!, currentUserStore.bearer)
   } else {
-    owner.value = { username: "Local User", id: "local-user-id"}
+    owner.value = { username: 'Local User', id: 'local-user-id' }
   }
 })()
 
-async function fetchOwner(id: string,bearerToken: string) {
+async function fetchOwner(id: string, bearerToken: string) {
   let resp: Awaited<ReturnType<typeof phoenixRestService.getV2UsersById>>
   try {
-    resp = await phoenixRestService.getV2UsersById(bearerToken,id)
+    resp = await phoenixRestService.getV2UsersById(bearerToken, id)
   } catch (e) {
     throw new PhoenixInternalError(
-        'Critically failed to fetch owner of the file. Cause: ' + (<Error>e).message,
+      'Critically failed to fetch owner of the file. Cause: ' + (<Error>e).message,
     )
   }
   if (resp.status === 200) {
     owner.value = resp.data satisfies UserPublic
   } else if (resp.status === 401) {
     throw new PhoenixBadRequestError(
-        'Server rejected request to get file owner',
-        resp.data as ActualPhxErrorResp,
+      'Server rejected request to get file owner',
+      resp.data as ActualPhxErrorResp,
     )
   }
 }
@@ -54,7 +58,7 @@ async function fetchOwner(id: string,bearerToken: string) {
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 let lastModified = ref(getLastModified())
 let created = ref(getCreated())
-let fileName = currentFileStore.fileName;
+let fileName = currentFileStore.fileName
 function getLastModified(): string {
   return getHumanReadableTimeInfo(currentFileStore.lastModified)
 }
@@ -70,17 +74,17 @@ const updateTimeRefs = () => {
 setInterval(updateTimeRefs, 500)
 
 async function saveChanges() {
-  currentFileStore.setFileName(fileName);
+  currentFileStore.setFileName(fileName)
   await interceptErrors(
-      ensureLoggedIn($router).then(
-          async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
-      ),
+    ensureLoggedIn($router).then(
+      async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
+    ),
   )
   showInfoNotifFromObj(constants.notifMessages.fileSaved)
 }
 
 function onClose() {
-  fileName = currentFileStore.fileName;
+  fileName = currentFileStore.fileName
   overlayStateStore.setSettings(false)
 }
 </script>
@@ -101,18 +105,8 @@ function onClose() {
       <div id="settings-file-info">
         <div id="settings-file-info-title">
           <div v-if="currentFileStore.ownerId === currentUserStore.currentUser?.id">
-            <input
-                type="text"
-                v-model="fileName"
-                id="editable-file-name"
-            />
-            <button
-                id="save-button"
-                class="highlighted-button"
-                @click="saveChanges"
-            >
-              ✓
-            </button>
+            <input type="text" v-model="fileName" id="editable-file-name" />
+            <button id="save-button" class="highlighted-button" @click="saveChanges">✓</button>
           </div>
           <div v-else>
             <h2>{{ currentFileStore.fileName }}</h2>
@@ -123,12 +117,11 @@ function onClose() {
           ID: {{ currentFileStore.fileId || 'Not registered' }}
         </p>
         <div id="settings-file-info-details">
-          <p><span>Owner:</span>&nbsp;
-            <template v-if="owner!.username === 'Local User'">
-              {{ owner!.username }}
-            </template>
+          <p>
+            <span>Owner: </span>
+            <template v-if="owner!.username === 'Local User'">{{ owner!.username }}</template>
             <template v-else-if="currentFileStore!.ownerId && owner!.username">
-              <UserRef :id="currentFileStore.ownerId" :user-name="owner!.username" />
+              <UserRef :id="currentFileStore.ownerId" :user-name="owner!.username" no-padding />
             </template>
           </p>
           <p><span>Created:</span> {{ created }}</p>
@@ -204,7 +197,7 @@ function onClose() {
         font-size: 1.5em;
       }
 
-      #save-button{
+      #save-button {
         margin-left: 2rem;
       }
       #settings-file-info-file-id {

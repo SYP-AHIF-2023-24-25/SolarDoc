@@ -34,7 +34,7 @@ const { previewURL } = storeToRefs(renderDataStore)
     <template v-else>
       <p id="slide-index">{{ slideIndex + 1 }}.{{ subSlideIndex + 1 }}</p>
       <iframe
-          :src="`${previewURL}?static=true&slide=${slideIndex}/${subSlideIndex + 1}#/${slideIndex}/${
+        :src="`${previewURL}?static=true&slide=${slideIndex}/${subSlideIndex + 1}#/${slideIndex}/${
           subSlideIndex + 1
         }`"
       ></iframe>
@@ -43,17 +43,25 @@ const { previewURL } = storeToRefs(renderDataStore)
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/core/var' as var;
+@use '@/assets/core/mixins/screen-size' as *;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/var' as var;
 
 .slide-manager-sub-slide-preview {
   flex: 0 0 auto;
-  height: var.$editor-slides-manager-sub-slides-navigator-list-element-height;
-  width: var.$editor-slides-manager-sub-slides-navigator-list-element-width;
+  margin: 0 0 var.$editor-slides-manager-sub-slides-navigator-list-element-margin 0;
   position: relative;
   overflow: hidden;
   border-radius: 0.5rem;
-  margin: 0 var.$editor-slides-manager-sub-slides-navigator-list-element-margin 0 0;
+
+  $width: calc(100vw - 2 * var(--editor-slides-manager-sub-slides-navigator-list-element-margin));
+  height: calc($width / 2);
+  width: $width;
+  @include r-min(var.$window-medium) {
+    margin: 0 var.$editor-slides-manager-sub-slides-navigator-list-element-margin 0 0;
+    height: var.$editor-slides-manager-sub-slides-navigator-list-element-height;
+    width: var.$editor-slides-manager-sub-slides-navigator-list-element-width;
+  }
 
   &:last-child {
     margin: 0;
