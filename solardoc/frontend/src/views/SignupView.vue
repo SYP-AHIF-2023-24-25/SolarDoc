@@ -4,7 +4,11 @@ import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
-import { type ActualPhxErrorResp, PhoenixBadRequestError } from '@/services/phoenix/errors'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixInvalidCredentialsError,
+} from '@/services/phoenix/errors'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import { isValidPath } from '@/scripts/is-valid-path'
 import { useLoadingStore } from '@/stores/loading'
@@ -45,19 +49,13 @@ async function submitForm(
   }
 
   if (resp.status === 201) {
-    console.log('[Signup] Signup successful. Redirecting to profile page')
-    currentUserStore.setCurrentAuth(resp.data)
-
-    await currentUserStore.fetchCurrentUser()
-    await redirect()
+    console.log('Signup successful')
+    currentUserStore.setCurrentUser(resp.data)
+    await $router.push('login')
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp)
   } else {
-    console.error('[Signup] Server rejected sign up. Cause: Unknown error', resp)
-    throw new SolardocUnreachableError(
-      'Server rejected sign up.',
-      'Unknown error. Please try again.',
-    )
+    throw new SolardocUnreachableError('Encountered network error during sign up')
   }
 }
 

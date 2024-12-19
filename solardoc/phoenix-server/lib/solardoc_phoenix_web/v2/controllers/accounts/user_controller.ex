@@ -3,8 +3,6 @@ defmodule SolardocPhoenixWeb.V2.UserController do
   use PhoenixSwagger
 
   alias SolardocPhoenix.Accounts
-  alias SolardocPhoenixWeb.UserAuth
-
 
   action_fallback SolardocPhoenixWeb.FallbackController
 
@@ -109,39 +107,30 @@ defmodule SolardocPhoenixWeb.V2.UserController do
 
   swagger_path :create do
     post "#{@api_path}/users"
-    produces "application/json"
     consumes "application/json"
-    summary "Register a new user and get a session token"
+    produces "application/json"
+    summary "Create a new user"
     parameters do
       user :body, Schema.ref(:CreateUser), "Arguments for creating a user", required: true
     end
-    response 201, "Created", Schema.ref(:UserToken)
+    response 201, "Created", Schema.ref(:UserPrivate)
     response 400, "Bad Request", Schema.ref(:ErrorResp)
   end
 
   def create(conn, user_params) do
-    with {:ok, user} <- Accounts.register_user(user_params),
+    with {:ok, user} <- Accounts.register_user(user_params) do
+      # credo:disable-for-next-line
+      # TODO! Uncomment this when email is working
+      #      {:ok, _} =
+      #        Accounts.deliver_user_confirmation_instructions(
+      #          user,
+      #          &url(~p"/users/confirm/#{&1}")
+      #        )
 
-         # credo:disable-for-next-line
-         # TODO! Uncomment this when email is working
-         #      {:ok, _} =
-         #        Accounts.deliver_user_confirmation_instructions(
-         #          user,
-         #          &url(~p"/users/confirm/#{&1}")
-         #        )
-
-         # Return a success JSON response
-
-
-         {token, expires_at} <- UserAuth.create_user_token(user) do
+      # Return a success JSON response
       conn
       |> put_status(:created)
-      |> render(SolardocPhoenixWeb.V2.UserAuthJSON, :create, %{token: token, expires_at: expires_at})
-    else
-      {:error, changeset} ->
-        conn
-        |> put_status(:bad_request)
-        |> render(SolardocPhoenixWeb.ChangesetView, "error.json", changeset: changeset)
+      |> render(:new, user: user)
     end
   end
 end
