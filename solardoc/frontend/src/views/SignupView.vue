@@ -17,6 +17,49 @@ const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
 const loadingStore = useLoadingStore()
 
+
+async function logInUser(form$: Vueform & {
+  requestData: {
+    email: string;
+    password: string;
+    organisation: string;
+    "intended-use": number;
+    "accepts-conditions": boolean;
+    "display-name": string
+  }
+}) {
+
+  const loginUser = {
+    email: form$.requestData.email,
+    password: form$.requestData.password,
+  } satisfies phoenixBackend.UserLogin
+
+  let resp: Awaited<ReturnType<typeof phoenixBackend.postV2AuthBearer>>
+  try {
+    resp = await phoenixBackend.postV2AuthBearer(loginUser)
+  } catch (e) {
+    console.error('[Login] Encountered network error during login', e)
+    throw new SolardocUnreachableError('Encountered network error during login')
+  }
+
+  if (resp.status === 201) {
+    currentUserStore.setCurrentAuth(resp.data)
+    await currentUserStore.fetchCurrentUser()
+    await redirect()
+  } else if (resp.status === 400) {
+    throw new PhoenixBadRequestError('Server rejected direct sign in', resp.data as ActualPhxErrorResp)
+  } else if (resp.status === 401) {
+    throw new PhoenixInvalidCredentialsError()
+  } else {
+    console.error('[Login after Sign up] Server rejected sign in. Cause: Unknown error', resp)
+    throw new SolardocUnreachableError(
+        'Server rejected sign in.',
+        'Unknown error. Please try again.',
+    )
+  }
+
+}
+
 async function submitForm(
   form$: Vueform & {
     requestData: {
@@ -49,9 +92,8 @@ async function submitForm(
   }
 
   if (resp.status === 201) {
-    console.log('Signup successful')
     currentUserStore.setCurrentUser(resp.data)
-    await $router.push('login')
+    await logInUser(form$);
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp)
   } else {
