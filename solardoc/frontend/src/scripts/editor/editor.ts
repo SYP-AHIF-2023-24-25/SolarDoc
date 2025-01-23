@@ -133,6 +133,32 @@ export class SolardocEditor {
       this._readonly = true
     }
 
+
+      globalMonacoEditor!.onDidChangeCursorPosition((event) => {
+        const lineNumber = event.position.lineNumber;
+
+        const content = this.getContent();
+        if (!content) return;
+
+        const lines = content.split('\n');
+        let slideIndex = 0;
+        let subSlideIndex = -1;
+        console.log(`Max lines: ${lines.length}`);
+        //try this with an aggregate
+        for (let i = 0; i < lineNumber; i++) {
+          const line = lines[i].trim();
+
+          if (line.startsWith('== ')) {
+            slideIndex++;
+          }else if (line.startsWith('=== ')) {
+            subSlideIndex++;
+          }
+        }
+
+        const shootEvent = new CustomEvent('updateSlide', { detail: { slideIndex, subSlideIndex } });
+        window.dispatchEvent(shootEvent);
+      });
+
     this._startContentWatchers()
   }
 
