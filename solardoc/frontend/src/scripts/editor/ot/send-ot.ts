@@ -1,6 +1,6 @@
 import type { OTransReqDto } from '@/services/phoenix/ot-trans'
 import { handleOutgoingUpdate } from '@/services/phoenix/ot-trans'
-import {AsyncLock} from "@/scripts/async-lock";
+import { AsyncLock } from '@/scripts/async-lock'
 
 const outgoingLock = new AsyncLock()
 
@@ -19,7 +19,7 @@ export async function sendOTUpdates(
     outgoingLock.acquire(async () => {
       console.debug(`[Editor] Pushing OT operation:`, oTrans)
       await handleOutgoingUpdate(oTrans, hasChannelConnection)
-    })
+    }),
   )
   await Promise.all(promises)
 }
