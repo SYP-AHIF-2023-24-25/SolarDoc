@@ -4,16 +4,16 @@ import ScreenIconSVG from '@/components/icons/ScreenIconSVG.vue'
 import ScreenIconDarkModeSVG from '@/components/icons/ScreenIconDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useRenderDataStore } from '@/stores/render-data'
-import {useInitStateStore} from "@/stores/init-state"
-import {type Ref, ref} from 'vue'
-import {storeToRefs} from "pinia";
+import { useInitStateStore } from '@/stores/init-state'
+import { type Ref, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 
 const darkModeStore = useDarkModeStore()
 const renderData = useRenderDataStore()
 const initStateStore = useInitStateStore()
 
-const { init } = <{ init: Ref<boolean>; }>storeToRefs(initStateStore)
-const { previewURL } = <{ previewURL: Ref<string>; }>storeToRefs(renderData)
+const { init } = <{ init: Ref<boolean> }>storeToRefs(initStateStore)
+const { previewURL } = <{ previewURL: Ref<string> }>storeToRefs(renderData)
 
 const dropdown = ref(null)
 function closeDropdown() {
