@@ -232,8 +232,7 @@ export class SDSClient {
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
     await this._ensureChannelIsHealthy()
-    this._currentChannel!.push('state_trans', update)
-      .receive('error', onError)
+    this._currentChannel!.push('state_trans', update).receive('error', onError)
   }
 
   /**

@@ -37,13 +37,15 @@ async function routeWithLoading(to: string) {
       </div>
       <div id="home-page-content">
         <HomeFeatureCard>
-          <h2>Help you collaborate in real-time with your friends and colleagues!<br/>✨</h2>
+          <h2>Help you collaborate in real-time with your friends and colleagues!<br />✨</h2>
         </HomeFeatureCard>
         <HomeFeatureCard>
-          <h2>Auto-previews and loads changes on the fly!<br/>✨</h2>
+          <h2>Auto-previews and loads changes on the fly!<br />✨</h2>
         </HomeFeatureCard>
         <HomeFeatureCard>
-          <h2>Brings the best of Asciidoc to your browser with all the customisation you want!<br/>✨</h2>
+          <h2>
+            Brings the best of Asciidoc to your browser with all the customisation you want!<br />✨
+          </h2>
         </HomeFeatureCard>
       </div>
     </div>
