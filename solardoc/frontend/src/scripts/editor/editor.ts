@@ -241,9 +241,10 @@ export class SolardocEditor {
 
       currentFileStore.resetLastModified()
       const changeOTUpdates = await createOTUpdates(event.changes)
-      for (const singleChangeOTs of changeOTUpdates) {
-        await sendOTUpdates(singleChangeOTs, editorUpdateWSClient.hasActiveChannelConnection)
-      }
+      await sendOTUpdates(
+        changeOTUpdates,
+        editorUpdateWSClient.hasActiveChannelConnection
+      )
     })
   }
 
