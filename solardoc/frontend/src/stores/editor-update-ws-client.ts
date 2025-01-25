@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { SDSClient } from '@/services/phoenix/ws-client'
+import type { EditorChannel } from '@/services/phoenix/editor-channel'
 
 export const useEditorUpdateWSClient = defineStore('editorUpdateWSClient', {
   state: () => {
     return {
-      wsClient: null as null | SDSClient,
+      wsClient: <undefined | SDSClient>undefined,
+      currentChannel: <EditorChannel | undefined>undefined,
     }
   },
   getters: {
@@ -13,14 +15,21 @@ export const useEditorUpdateWSClient = defineStore('editorUpdateWSClient', {
     },
   },
   actions: {
-    createWSClient(url: string, userToken?: string) {
-      return (this.wsClient = new SDSClient(url, userToken))
+    createWSClient(url: string, userToken?: string, onOpen?: () => Promise<void>) {
+      return (this.wsClient = new SDSClient(url, userToken, onOpen))
     },
-    disconnectWSClient() {
+    async disconnectWSClient() {
       if (this.wsClient) {
-        this.wsClient.disconnect()
-        this.wsClient = null
+        await this.wsClient.disconnect()
+        this.resetCurrentChannel()
+        this.wsClient = undefined
       }
+    },
+    setCurrentChannel(channel: EditorChannel) {
+      this.currentChannel = channel
+    },
+    resetCurrentChannel() {
+      this.currentChannel = undefined
     },
   },
 })

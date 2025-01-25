@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import constants from "@/plugins/constants";
+<script lang="ts" setup>
+import constants from '@/plugins/constants'
 </script>
 
 <template>
@@ -8,7 +8,7 @@ import constants from "@/plugins/constants";
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@/assets/core/var' as var;
 
 #footer {
@@ -17,13 +17,19 @@ import constants from "@/plugins/constants";
   align-items: center;
   height: 10rem;
   margin: 0;
-  padding: 0;
+  padding: 1rem;
 
-  &, p {
+  &,
+  p {
     color: white;
+    text-align: center;
   }
 
   // We want a very gentle but cool looking gradient which is slightly tilted (only slightly visible)
-  background: linear-gradient(135deg, var.$scheme-footer-black-primary, var.$scheme-footer-black-secondary);
+  background: linear-gradient(
+    135deg,
+    var.$scheme-footer-black-primary,
+    var.$scheme-footer-black-secondary
+  );
 }
 </style>

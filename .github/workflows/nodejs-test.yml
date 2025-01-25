@@ -5,40 +5,44 @@ on: [push, pull_request]
 jobs:
   # Run tests with 'pnpm install --frozen-lockfile' dependencies
   tests-with-pck-lock-dependencies:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x, 22.x]
 
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: pnpm/action-setup@v2.2.4
+          check-latest: true
+      - uses: pnpm/action-setup@v4.0.0
         with:
           version: 8.x.x
-          run_install: false
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
 
   # Run tests with 'pnpm i' dependencies
   tests-with-pck-dependencies:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x, 22.x]
 
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: pnpm/action-setup@v2.2.4
+          check-latest: true
+      - uses: pnpm/action-setup@v4.0.0
         with:
           version: 8.x.x
           run_install: false

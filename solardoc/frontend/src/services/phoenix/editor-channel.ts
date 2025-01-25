@@ -22,7 +22,7 @@ export interface EditorChannel extends APIEditorChannel {
 export interface CreateEditorChannel {
   readonly name: string
   readonly description: string
-  readonly password: string
+  readonly password?: string
   readonly file_id: string
 }
 
@@ -31,5 +31,5 @@ export interface CreateEditorChannel {
  * @since 0.4.0
  */
 export interface JoinChannelOptions {
-  readonly auth: string
+  readonly auth?: string
 }

@@ -42,7 +42,9 @@ export class DecktapeSlim {
     slideNum?: number,
   ): Promise<PDFDocument> {
     const browser = await puppeteer.launch({
-      headless: 'new',
+      headless: true,
+      executablePath: process.env.CHROMIUM_PATH,
+      args: ['--no-sandbox'],
     })
     const page = await preparePage(rjsHTML, browser)
     const plugin = await preparePlugin(page)
@@ -90,7 +92,7 @@ export class DecktapeSlim {
     slideNum?: number,
   ): Promise<Buffer[]> {
     const browser = await puppeteer.launch({
-      headless: 'new',
+      headless: true,
     })
 
     const page = await preparePage(rjsHTML, browser)

@@ -1,12 +1,20 @@
-<script setup lang="ts">
-import ProgressSpinner from '@/components/ProgressSpinner.vue'
-import {type Permission, useCurrentFileStore} from '@/stores/current-file'
+<script lang="ts" setup>
+import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
+import { type Permission, useCurrentFileStore } from '@/stores/current-file'
+import {
+  type File,
+  type ShareUrl,
+  type CreateFilePermissions,
+  type FilePermission,
+} from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
-import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
+import { PhoenixInternalError } from '@/services/phoenix/errors'
 import { useLoadingStore } from '@/stores/loading'
 import { useRoute, useRouter } from 'vue-router'
-import { onMounted } from 'vue'
+import { showWarnNotif } from '@/scripts/show-notif'
+import { interceptErrors } from '@/errors/handler/error-handler'
+import type { Awaited } from '@vueuse/core'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -17,65 +25,131 @@ const $router = useRouter()
 
 loadingStore.setLoading(true)
 
+function throw404Error(): Promise<any> {
+  return $router.push('/404')
+}
+
+async function getFile(shareUrlId: string): Promise<File | undefined> {
+  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2ShareByIdFile>>
+  try {
+    resp = await phoenixRestService.getV2ShareByIdFile(currentUserStore.bearer!, shareUrlId)
+  } catch (e) {
+    throw new PhoenixInternalError('Critically failed to fetch file. Cause: ' + (<Error>e).message)
+  }
+
+  if (resp.status !== 200) {
+    await throw404Error()
+    return undefined
+  }
+  return resp.data
+}
+
+async function getShareURL(shareUrlId: string): Promise<ShareUrl | undefined> {
+  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2ShareById>>
+  try {
+    resp = await phoenixRestService.getV2ShareById(currentUserStore.bearer!, shareUrlId)
+  } catch (e) {
+    throw new PhoenixInternalError(
+      'Critically failed to fetch share URL. Cause: ' + (<Error>e).message,
+    )
+  }
+
+  if (resp.status !== 200) {
+    await throw404Error()
+    return undefined
+  }
+  return resp.data
+}
+
 async function handleShareURLReq(shareUrlId: string): Promise<void> {
   if (!shareUrlId) {
     loadingStore.setLoading(false)
     await $router.push('/404')
+    return
   } else if (!currentUserStore.loggedIn) {
     loadingStore.setLoading(false)
-    await $router.push('/login')
-  } else {
-    let resp: Awaited<ReturnType<typeof phoenixRestService.getV1ShareByIdFile>>
-    try {
-      resp = await phoenixRestService.getV1ShareByIdFile(currentUserStore.bearer!, shareUrlId)
-    } catch (e) {
-      throw new PhoenixInternalError(
-        'Critically failed to fetch file. Cause: ' + (<Error>e).message,
-      )
-    }
+    await $router.push({ path: '/login', query: { returnTo: $route.fullPath } })
+    showWarnNotif(
+      'Not logged in',
+      'You need to be logged in to view this file. Please log in first and try again.',
+    )
+    return
+  }
 
-    if (resp.status === 401) {
-      throw new PhoenixRestError(
-        'Server rejected request to fetch file. Cause: Unauthorized',
-        resp.status,
-      )
-    } else if (resp.status === 200) {
-      let getShare: Awaited<ReturnType<typeof phoenixRestService.getV1ShareById>>
-      try {
-        getShare = await phoenixRestService.getV1ShareById(currentUserStore.bearer!, shareUrlId)
-      } catch (e) {
-        throw new PhoenixInternalError(
-          'Critically failed to fetch share URL. Cause: ' + (<Error>e).message,
-        )
-      }
-      if (getShare.status === 200) {
-        currentFileStore.setFile(resp.data, <Permission>getShare.data.perms)
-        loadingStore.setLoading(false)
-        await $router.push('/editor')
-      } else if (getShare.status === 401) {
-        throw new PhoenixRestError(
-          'Server rejected request to fetch share URL. Cause: Unauthorized',
-          getShare.status,
-        )
-      }
+  const file = await getFile(shareUrlId)
+  if (!file) {
+    return
+  }
+  const shareURL = await getShareURL(shareUrlId)
+  if (!shareURL) {
+    return
+  }
+
+  // The owner themselves can use the share URL so we need to make sure they see it as it were their own file
+  const isShareFileOwner = currentUserStore.currentUser?.id === file.owner_id
+  if (isShareFileOwner) {
+    currentFileStore.setFile(file)
+  } else {
+    let permissions = await getFilePermissionsForUser(file, shareURL.perms)
+    currentFileStore.setFileFromShared(file, shareUrlId, <Permission>permissions)
+  }
+  loadingStore.setLoading(false)
+  await $router.push({
+    path: '/editor',
+    query: isShareFileOwner ? undefined : { shareId: shareUrlId },
+  })
+}
+
+async function getFilePermissionsForUser(file: File, permissionsFromUrl: number): Promise<number> {
+  let perm: FilePermission | undefined = await getFilePermissionsForCurrentUser(file)
+  if (perm !== undefined) {
+    return perm.permission
+  }
+  await createFilePermission(file, permissionsFromUrl)
+  return permissionsFromUrl
+}
+
+async function createFilePermission(file: File, permissionsFromUrl: number) {
+  try {
+    let createFilePermissions: CreateFilePermissions = {
+      permission: permissionsFromUrl,
+      file_id: file.id,
+      user_id: currentUserStore.currentUser?.id!,
     }
+    await phoenixRestService.postV2FilesPermissions(currentUserStore.bearer!, createFilePermissions)
+  } catch (e) {
+    throw new PhoenixInternalError(
+      'Critically failed to create permissions entry. Cause: ' + (<Error>e).message,
+    )
   }
 }
 
-onMounted(async () => {
-  const shareUrlId = `${$route.params.shareUrlId}`
-
+async function getFilePermissionsForCurrentUser(file: File): Promise<FilePermission | undefined> {
+  let currentUserFilePermissions: Awaited<
+    ReturnType<typeof phoenixRestService.getV2FilesByFileIdPermissionsAndUserId>
+  >
   try {
-    await handleShareURLReq(shareUrlId)
+    currentUserFilePermissions = await phoenixRestService.getV2FilesByFileIdPermissionsAndUserId(
+      currentUserStore.bearer!,
+      file.id,
+      currentUserStore.currentUser?.id!,
+    )
+    if (currentUserFilePermissions.status === 404) {
+      return undefined
+    }
   } catch (e) {
-    loadingStore.setLoading(false)
-    throw e
+    throw new PhoenixInternalError(
+      'Criticaly faild to fetch file permission. Cause: ' + (<Error>e).message,
+    )
   }
-})
+  return <FilePermission>currentUserFilePermissions.data
+}
+
+interceptErrors(handleShareURLReq(`${$route.params.shareUrlId}`))
 </script>
 
 <template>
-  <ProgressSpinner></ProgressSpinner>
+  <ProgressSpinner />
 </template>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped></style>

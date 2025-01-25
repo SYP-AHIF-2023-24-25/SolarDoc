@@ -74,6 +74,8 @@
   --nav-bar-width: 100%;
   --nav-bar-padding: 0 1rem;
   --nav-bar-margin: 0;
+  --nav-bar-phone-padding: 0 0 0 0.5rem;
+  --nav-bar-phone-margin: 0;
 
   // Main body presets
   --main-body-height: calc(100vh - var(--nav-bar-height));
@@ -96,6 +98,11 @@
   --profile-file-card-width: 16rem;
   --profile-file-card-padding: 1rem;
 
+  // Collab File Card presets
+  --collab-file-card-height: 10rem;
+  --collab-file-card-width: 32rem;
+  --collab-file-card-padding: 1rem;
+
   // Page Content presets
   --page-content-wrapper-height: calc(100vh - var(--nav-bar-height));
   --page-content-wrapper-width: 100%;
@@ -107,8 +114,8 @@
   --editor-menu-height: 2rem;
   --editor-menu-padding: 0;
   --editor-menu-margin: 0;
-  --editor-menu-button-menu-padding: 0;
-  --editor-menu-button-menu-margin: 0;
+  --editor-menu-file-name-padding: 1rem 1rem 1rem 0;
+  --editor-menu-file-name-margin: 0 0.25rem 0 0;
   --editor-monaco-and-preview-menu-height: calc(
     var(--editor-body-height) - var(--editor-menu-height) - var(--editor-border-width)
   );
@@ -161,6 +168,70 @@
     var(--editor-preview-sub-slides-navigator-list-element-height) * 2
   );
   --editor-preview-sub-slides-navigator-list-element-margin: 0.5rem;
+  --editor-change-view-button-position: max(
+    calc(var(--editor-preview-frame-height) - 4rem),
+    calc(var(--nav-bar-height) + var(--editor-menu-height) - 4rem)
+  );
+
+  // Slides Manager presets
+  --editor-slides-manager-slides-preview-height: var(--editor-monaco-and-preview-menu-height);
+  --editor-slides-manager-slides-preview-width: min(40vw, 25rem);
+  --editor-slides-manager-preview-and-sub-slides-navigator-height: var(
+    --editor-monaco-and-preview-menu-height
+  );
+  --editor-slides-manager-preview-and-sub-slides-navigator-width: calc(
+    100vw - var(--editor-slides-manager-slides-preview-width)
+  );
+  --editor-slides-manager-sub-slides-navigator-height: min(30vh, 15rem);
+  --editor-slides-manager-sub-slides-navigator-width: var(
+    --editor-slides-manager-preview-and-sub-slides-navigator-width
+  );
+  --editor-slides-manager-sub-slides-navigator-padding: 1rem;
+  --editor-slides-manager-preview-height: calc(
+    var(--editor-slides-manager-preview-and-sub-slides-navigator-height) - var(
+        --editor-slides-manager-sub-slides-navigator-height
+      ) - var(--editor-preview-meta-info-height)
+  );
+  --editor-slides-manager-preview-width: var(
+    --editor-slides-manager-preview-and-sub-slides-navigator-width
+  );
+
+  // Slides Manager preview presets (Has a ratio of 2:1)
+  --editor-slides-manager-preview-frame-height: calc(
+    var(--editor-slides-manager-preview-height) - 1rem
+  );
+  --editor-slides-manager-preview-frame-width: calc(
+    var(--editor-slides-manager-preview-frame-height) * 2 - 1rem
+  );
+  --editor-slides-manager-preview-frame-padding: 0;
+  --editor-slides-manager-preview-frame-margin: 0;
+
+  // Slides Manager remaining presets
+  --editor-slides-manager-slides-navigator-padding: 1rem;
+  --editor-slides-manager-slides-navigator-height: var(
+    --editor-slides-manager-slides-preview-height
+  );
+  --editor-slides-manager-slides-navigator-width: var(--editor-slides-manager-slides-preview-width);
+  --editor-slides-manager-navigator-element-height: calc(
+    var(--editor-slides-manager-slides-preview-width) * 0.5
+  );
+  --editor-slides-manager-navigator-element-width: calc(
+    var(--editor-slides-manager-slides-preview-width) - 2rem
+  );
+  --editor-slides-manager-navigator-element-margin: 1rem;
+  --editor-slides-manager-sub-slides-navigator-list-height: calc(
+    var(--editor-slides-manager-sub-slides-navigator-height)
+  );
+  --editor-slides-manager-sub-slides-navigator-list-width: calc(
+    var(--editor-slides-manager-sub-slides-navigator-list-height) * 2 - 2rem
+  );
+  --editor-slides-manager-sub-slides-navigator-list-element-height: calc(
+    var(--editor-slides-manager-sub-slides-navigator-list-height) - 2rem
+  );
+  --editor-slides-manager-sub-slides-navigator-list-element-width: calc(
+    var(--editor-slides-manager-sub-slides-navigator-list-element-height) * 2
+  );
+  --editor-slides-manager-sub-slides-navigator-list-element-margin: 1rem;
 }
 
 // Color-scheme presets
@@ -231,7 +302,8 @@ $highlighted-button-font-size: var(--highlighted-button-font-size);
 $window-2xlarge: 1500px;
 $window-xlarge: 1280px;
 $window-large: 1140px;
-$window-xmedium: 1024px;
+$window-2xmedium: 1024px;
+$window-xmedium: 960px;
 $window-medium: 768px;
 $window-small: 640px;
 $window-xsmall: 480px;
@@ -246,6 +318,8 @@ $nav-bar-height: var(--nav-bar-height);
 $nav-bar-width: var(--nav-bar-width);
 $nav-bar-padding: var(--nav-bar-padding);
 $nav-bar-margin: var(--nav-bar-margin);
+$nav-bar-phone-padding: var(--nav-bar-phone-padding);
+$nav-bar-phone-margin: var(--nav-bar-phone-margin);
 
 // Main body presets
 $main-body-height: var(--main-body-height);
@@ -268,6 +342,11 @@ $profile-file-card-height: var(--profile-file-card-height);
 $profile-file-card-width: var(--profile-file-card-width);
 $profile-file-card-padding: var(--profile-file-card-padding);
 
+// Collab File Card presets
+$collab-file-card-height: var(--collab-file-card-height);
+$collab-file-card-width: var(--collab-file-card-width);
+$collab-file-card-padding: var(--collab-file-card-padding);
+
 // Page Content presets
 $page-content-wrapper-height: var(--page-content-wrapper-height);
 $page-content-wrapper-width: var(--page-content-wrapper-width);
@@ -279,8 +358,8 @@ $editor-body-height: var(--editor-body-height);
 $editor-menu-height: var(--editor-menu-height);
 $editor-menu-padding: var(--editor-menu-padding);
 $editor-menu-margin: var(--editor-menu-margin);
-$editor-menu-button-menu-padding: var(--editor-menu-button-menu-padding);
-$editor-menu-button-menu-margin: var(--editor-menu-button-menu-margin);
+$editor-menu-file-name-padding: var(--editor-menu-file-name-padding);
+$editor-menu-file-name-margin: var(--editor-menu-file-name-margin);
 $editor-monaco-and-preview-menu-height: var(--editor-monaco-and-preview-menu-height);
 $editor-preview-menu-height: var(--editor-preview-menu-height);
 $editor-monaco-height: var(--editor-monaco-height);
@@ -291,8 +370,8 @@ $editor-border-width: var(--editor-border-width);
 $editor-border: var(--editor-border);
 
 // Editor preview presets (Has a ratio of 2:1)
-$editor-preview-frame-width: var(--editor-preview-frame-width);
 $editor-preview-frame-height: var(--editor-preview-frame-height);
+$editor-preview-frame-width: var(--editor-preview-frame-width);
 $editor-preview-frame-padding: var(--editor-preview-frame-padding);
 $editor-preview-frame-margin: var(--editor-preview-frame-margin);
 
@@ -327,12 +406,75 @@ $editor-preview-sub-slides-navigator-list-element-width: var(
 $editor-preview-sub-slides-navigator-list-element-margin: var(
   --editor-preview-sub-slides-navigator-list-element-margin
 );
+$editor-change-view-button-position: var(--editor-change-view-button-position);
+
+// Slides Manager presets
+$editor-slides-manager-slides-preview-height: var(--editor-slides-manager-slides-preview-height);
+$editor-slides-manager-slides-preview-width: var(--editor-slides-manager-slides-preview-width);
+$editor-slides-manager-preview-and-sub-slides-navigator-height: var(
+  --editor-slides-manager-preview-and-sub-slides-navigator-height
+);
+$editor-slides-manager-preview-and-sub-slides-navigator-width: var(
+  --editor-slides-manager-preview-and-sub-slides-navigator-width
+);
+$editor-slides-manager-sub-slides-navigator-height: var(
+  --editor-slides-manager-sub-slides-navigator-height
+);
+$editor-slides-manager-sub-slides-navigator-width: var(
+  --editor-slides-manager-sub-slides-navigator-width
+);
+$editor-slides-manager-sub-slides-navigator-padding: var(
+  --editor-slides-manager-sub-slides-navigator-padding
+);
+$editor-slides-manager-preview-height: var(--editor-slides-manager-preview-height);
+$editor-slides-manager-preview-width: var(--editor-slides-manager-preview-width);
+
+// Slides Manager preview presets (Has a ratio of 2:1)
+$editor-slides-manager-preview-frame-height: var(--editor-slides-manager-preview-frame-height);
+$editor-slides-manager-preview-frame-width: var(--editor-slides-manager-preview-frame-width);
+$editor-slides-manager-preview-frame-padding: var(--editor-slides-manager-preview-frame-padding);
+$editor-slides-manager-preview-frame-margin: var(--editor-slides-manager-preview-frame-margin);
+
+// Slides Manager remaining presets
+$editor-slides-manager-slides-navigator-padding: var(
+  --editor-slides-manager-slides-navigator-padding
+);
+$editor-slides-manager-slides-navigator-height: var(
+  --editor-slides-manager-slides-navigator-height
+);
+$editor-slides-manager-slides-navigator-width: var(--editor-slides-manager-slides-navigator-width);
+$editor-slides-manager-navigator-element-height: var(
+  --editor-slides-manager-navigator-element-height
+);
+$editor-slides-manager-navigator-element-width: var(
+  --editor-slides-manager-navigator-element-width
+);
+$editor-slides-manager-navigator-element-margin: var(
+  --editor-slides-manager-navigator-element-margin
+);
+$editor-slides-manager-sub-slides-navigator-list-height: var(
+  --editor-slides-manager-sub-slides-navigator-list-height
+);
+$editor-slides-manager-sub-slides-navigator-list-width: var(
+  --editor-slides-manager-sub-slides-navigator-list-width
+);
+$editor-slides-manager-sub-slides-navigator-list-element-height: var(
+  --editor-slides-manager-sub-slides-navigator-list-element-height
+);
+$editor-slides-manager-sub-slides-navigator-list-element-width: var(
+  --editor-slides-manager-sub-slides-navigator-list-element-width
+);
+$editor-slides-manager-sub-slides-navigator-list-element-margin: var(
+  --editor-slides-manager-sub-slides-navigator-list-element-margin
+);
 
 // Light & Dark Theme
 html,
 html[data-theme='light'] {
   --text-color: black;
   --text-color-inverted: white;
+  --disabled-text-color: var(--scheme-gray-500);
+  --disabled-text-color-inverted: var(--scheme-gray-500);
   --overlay-background-color: white;
   --overlay-background-color-subtle: var(--scheme-neutral-gray);
   --box-shadow-color: rgba(0, 0, 0, 0.1);
@@ -344,6 +486,7 @@ html[data-theme='light'] {
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-300);
   --vueform-highlighted-box-border-color: var(--scheme-gray-300);
   --placeholder-background: var(--scheme-gray-100);
+  --save-state-background-shared: var(--scheme-lavender);
   --save-state-background-saved: var(--scheme-healthy-green-soft);
   --save-state-background-error: var(--scheme-danger-red-soft);
   --save-state-background-not-saved: var(--scheme-warning-yellow-soft);
@@ -355,8 +498,23 @@ html[data-theme='light'] {
   --scheme-footer-black-primary: #0f111a;
   --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: transparent;
+  --scheme-background-no-transparent: white;
   --scheme-home-content-background-primary: white;
   --scheme-home-content-background-secondary: var(--scheme-gray-100);
+  --scheme-toggleable-button: var(--scheme-gray-100);
+  --scheme-toggleable-button-disabled: var(--scheme-gray-300);
+  --scheme-toggleable-button-highlighted: var(--scheme-lavender);
+  --scheme-toggleable-button-border: transparent;
+  --scheme-toggleable-button-disabled-border: transparent;
+  --scheme-file-name-input-background-color: var(--scheme-gray-100);
+  --scheme-interactive-element-background-color-highlighted: var(--scheme-gray-200);
+  --scheme-file-name-input-background-color-selection: #b3d4fc;
+
+  ::-moz-selection,
+  ::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+  }
 }
 
 html[data-theme='dark'] {
@@ -373,6 +531,7 @@ html[data-theme='dark'] {
   --vueform-highlighted-box-background-color-active: var(--scheme-gray-900);
   --vueform-highlighted-box-border-color: var(--scheme-gray-800);
   --placeholder-background: var(--scheme-gray-900);
+  --save-state-background-shared: var(--scheme-lavender);
   --save-state-background-saved: var(--scheme-healthy-green);
   --save-state-background-error: var(--scheme-danger-red);
   --save-state-background-not-saved: var(--scheme-warning-yellow);
@@ -384,12 +543,29 @@ html[data-theme='dark'] {
   --scheme-footer-black-primary: #0f111a;
   --scheme-footer-black-secondary: #1a1c2b;
   --scheme-background: var(--scheme-background-black);
+  --scheme-background-no-transparent: var(--scheme-background-black);
   --scheme-home-content-background-primary: var(--scheme-footer-black-primary);
   --scheme-home-content-background-secondary: var(--scheme-footer-black-secondary);
+  --scheme-toggleable-button: transparent;
+  --scheme-toggleable-button-disabled: transparent;
+  --scheme-toggleable-button-highlighted: white;
+  --scheme-toggleable-button-border: white;
+  --scheme-toggleable-button-disabled-border: var(--stylised-button-disabled-color);
+  --scheme-file-name-input-background-color: var(--scheme-purple-subtle);
+  --scheme-interactive-element-background-color-highlighted: var(--scheme-purple-subtle);
+  --scheme-file-name-input-background-color-selection: var(--scheme-purple-intense);
+
+  ::-moz-selection,
+  ::selection {
+    background: #2e3b4d;
+    text-shadow: none;
+  }
 }
 
 $text-color: var(--text-color);
 $text-color-inverted: var(--text-color-inverted);
+$disabled-text-color: var(--disabled-text-color);
+$disabled-text-color-inverted: var(--disabled-text-color-inverted);
 $overlay-background-color: var(--overlay-background-color);
 $overlay-background-color-subtle: var(--overlay-background-color-subtle);
 $box-shadow-color: var(--box-shadow-color);
@@ -405,6 +581,7 @@ $vueform-highlighted-box-background-color-active: var(
 );
 $vueform-highlighted-box-border-color: var(--vueform-highlighted-box-border-color);
 $placeholder-background: var(--placeholder-background);
+$save-state-background-shared: var(--save-state-background-shared);
 $save-state-background-saved: var(--save-state-background-saved);
 $save-state-background-error: var(--save-state-background-error);
 $save-state-background-not-saved: var(--save-state-background-not-saved);
@@ -415,5 +592,18 @@ $dot-dot-dot-color: var(--dot-dot-dot-color);
 $dot-dot-dot-color-subtle: var(--dot-dot-dot-color-subtle);
 $scheme-pulse-color: var(--scheme-pulse-color);
 $scheme-background: var(--scheme-background);
+$scheme-background-no-transparent: var(--scheme-background-no-transparent);
 $scheme-home-content-background-primary: var(--scheme-home-content-background-primary);
 $scheme-home-content-background-secondary: var(--scheme-home-content-background-secondary);
+$scheme-toggleable-button: var(--scheme-toggleable-button);
+$scheme-toggleable-button-disabled: var(--scheme-toggleable-button-disabled);
+$scheme-toggleable-button-highlighted: var(--scheme-toggleable-button-highlighted);
+$scheme-toggleable-button-border: var(--scheme-toggleable-button-border);
+$scheme-toggleable-button-disabled-border: var(--scheme-toggleable-button-disabled-border);
+$scheme-file-name-input-background-color: var(--scheme-file-name-input-background-color);
+$scheme-interactive-element-background-color-highlighted: var(
+  --scheme-interactive-element-background-color-highlighted
+);
+$scheme-file-name-input-background-color-selection: var(
+  --scheme-file-name-input-background-color-selection
+);

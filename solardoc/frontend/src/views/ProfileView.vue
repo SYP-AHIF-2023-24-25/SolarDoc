@@ -1,9 +1,9 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
-import ProfileHeader from '@/components/profile-view/header/ProfileHeader.vue'
-import ProfileFileOverview from '@/components/profile-view/file-view/ProfileFileOverview.vue'
-import ProfileViewHeaderButtons from '@/components/profile-view/header/ProfileViewHeaderButtons.vue'
+import ProfileHeader from '@/components/profile/header/ProfileHeader.vue'
+import ProfileFilesOverview from '@/components/profile/files/ProfileFilesOverview.vue'
+import ProfileViewHeaderButtons from '@/components/profile/header/ProfileViewHeaderButtons.vue'
 
 const currentUserStore = useCurrentUserStore()
 const $router = useRouter()
@@ -17,21 +17,24 @@ if (!currentUserStore.loggedIn) {
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-content-wrapper">
+  <div id="profile-wrapper" class="page-content-wrapper heart-background">
     <div id="profile-container" class="page-content-container large">
       <div id="profile-body">
         <ProfileHeader />
         <ProfileViewHeaderButtons />
       </div>
-      <ProfileFileOverview />
+      <ProfileFilesOverview />
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
-@use '@/assets/core/var' as var;
+<style lang="scss" scoped>
 @use '@/assets/page-content' as *;
+@use '@/assets/heart-background' as *;
+@use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/mixins/hide' as *;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/var' as var;
 
 #profile-container {
   display: flex;
@@ -42,9 +45,15 @@ if (!currentUserStore.loggedIn) {
   #profile-body {
     display: flex;
     flex: 1 1 auto;
-    flex-flow: row nowrap;
+    flex-flow: column nowrap;
     justify-content: space-between;
+    padding: 0;
+    margin: 0;
     width: 100%;
+
+    @include r-min(var.$window-medium) {
+      flex-flow: row nowrap;
+    }
   }
 }
 </style>

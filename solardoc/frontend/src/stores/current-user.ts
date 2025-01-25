@@ -14,25 +14,25 @@ export type ServerAuthStatus = 'authenticated' | 'expired-or-revoked' | 'unreach
 
 export const useCurrentUserStore = defineStore('currentUser', {
   state: () => {
-    let currentUser: UserPrivate | null
+    let currentUser: UserPrivate | undefined
     try {
       currentUser = JSON.parse(localStorage.getItem(constants.localStorageCurrUserKey) as string)
     } catch (e) {
-      currentUser = null
+      currentUser = undefined
       localStorage.removeItem(constants.localStorageCurrUserKey)
     }
 
-    let currentAuth: UserToken | null
+    let currentAuth: UserToken | undefined
     try {
       currentAuth = JSON.parse(localStorage.getItem(constants.localStorageAuthKey) as string)
     } catch (e) {
-      currentAuth = null
+      currentAuth = undefined
       localStorage.removeItem(constants.localStorageCurrUserKey)
     }
 
     return {
-      currentUser: currentUser as UserPrivate | null,
-      currentAuth: currentAuth as UserToken | null,
+      currentUser: <UserPrivate | undefined>currentUser || undefined,
+      currentAuth: <UserToken | undefined>currentAuth || undefined,
     }
   },
   getters: {
@@ -45,8 +45,6 @@ export const useCurrentUserStore = defineStore('currentUser', {
      */
     loggedIn(): boolean {
       return (
-        this.currentUser !== null &&
-        this.currentAuth !== null &&
         this.currentUser !== undefined &&
         this.currentAuth !== undefined &&
         Number(new Date()) < this.currentAuth.expires_at
@@ -102,9 +100,9 @@ export const useCurrentUserStore = defineStore('currentUser', {
       if (!this.currentAuth) {
         return
       }
-      let resp: Awaited<ReturnType<typeof phoenixRestService.getV1UsersCurrent>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.getV2UsersCurrent>>
       try {
-        resp = await phoenixRestService.getV1UsersCurrent(`Bearer ${this.currentAuth.token}`)
+        resp = await phoenixRestService.getV2UsersCurrent(this.bearer || '')
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch current user. Cause: ' + (<Error>e).message,
@@ -129,9 +127,9 @@ export const useCurrentUserStore = defineStore('currentUser', {
         this.clean()
         return
       }
-      let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV1AuthBearer>>
+      let resp: Awaited<ReturnType<typeof phoenixRestService.deleteV2AuthBearer>>
       try {
-        resp = await phoenixRestService.deleteV1AuthBearer(`Bearer ${this.currentAuth.token}`)
+        resp = await phoenixRestService.deleteV2AuthBearer(`Bearer ${this.currentAuth.token}`)
       } catch (e) {
         throw new PhoenixInternalError('Critically failed to logout. Cause: ' + (<Error>e).message)
       }
@@ -153,7 +151,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
       localStorage.setItem(constants.localStorageCurrUserKey, JSON.stringify(currentUser))
     },
     unsetCurrentUser() {
-      this.currentUser = null
+      this.currentUser = undefined
       localStorage.removeItem(constants.localStorageCurrUserKey)
     },
     setCurrentAuth(currentAuth: UserToken) {
@@ -161,7 +159,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
       localStorage.setItem(constants.localStorageAuthKey, JSON.stringify(currentAuth))
     },
     unsetCurrentAuth() {
-      this.currentAuth = null
+      this.currentAuth = undefined
       localStorage.removeItem(constants.localStorageAuthKey)
     },
     /**
@@ -169,8 +167,8 @@ export const useCurrentUserStore = defineStore('currentUser', {
      * @since 0.4.0
      */
     clean() {
-      this.currentUser = null
-      this.currentAuth = null
+      this.currentUser = undefined
+      this.currentAuth = undefined
       localStorage.removeItem(constants.localStorageCurrUserKey)
       localStorage.removeItem(constants.localStorageAuthKey)
     },

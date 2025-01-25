@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useRouter } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'
@@ -9,16 +9,30 @@ import {
   PhoenixInvalidCredentialsError,
 } from '@/services/phoenix/errors'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
-import { interceptErrors } from '@/errors/error-handler'
+import { interceptErrors } from '@/errors/handler/error-handler'
+import { isValidPath } from '@/scripts/is-valid-path'
+import { useLoadingStore } from '@/stores/loading'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
+const loadingStore = useLoadingStore()
 
 currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
 
 // Ensure if the user is already logged in that he is redirected to the '/profile' page
 if (currentUserStore.loggedIn) {
-  $router.push('/profile')
+  redirect()
+}
+
+async function redirect() {
+  loadingStore.setLoading(true)
+
+  const returnTo = $router.currentRoute.value.query.returnTo
+  if (typeof returnTo === 'string' && isValidPath(returnTo)) {
+    return await $router.push(returnTo)
+  } else {
+    return await $router.push('/profile')
+  }
 }
 
 async function submitForm(
@@ -38,9 +52,9 @@ async function submitForm(
     password: form$.requestData.password,
   } satisfies phoenixBackend.UserLogin
 
-  let resp: Awaited<ReturnType<typeof phoenixBackend.postV1AuthBearer>>
+  let resp: Awaited<ReturnType<typeof phoenixBackend.postV2AuthBearer>>
   try {
-    resp = await phoenixBackend.postV1AuthBearer(loginUser)
+    resp = await phoenixBackend.postV2AuthBearer(loginUser)
   } catch (e) {
     console.error('[Login] Encountered network error during login', e)
     throw new SolardocUnreachableError('Encountered network error during login')
@@ -51,7 +65,7 @@ async function submitForm(
     currentUserStore.setCurrentAuth(resp.data)
 
     await currentUserStore.fetchCurrentUser()
-    await $router.push('/profile')
+    await redirect()
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError('Server rejected sign in', resp.data as ActualPhxErrorResp)
   } else if (resp.status === 401) {
@@ -67,7 +81,7 @@ async function submitForm(
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-content-wrapper">
+  <div id="profile-wrapper" class="page-content-wrapper heart-background">
     <div id="profile-container" class="page-content-container">
       <div id="do-not-have-an-account">
         <p>Don't have an account yet?</p>
@@ -76,36 +90,43 @@ async function submitForm(
       <h1 id="login-signup-title">Log in</h1>
       <Vueform
         ref="form$"
-        add-class="solardoc-style-form"
         :display-errors="false"
         :endpoint="false"
+        add-class="solardoc-style-form desktop"
         @submit="(value: any) => interceptErrors(submitForm(value))"
       >
-        <TextElement name="email" label="Email" :rules="['required', 'email']" />
         <TextElement
-          name="password"
+          :rules="['required', 'email']"
+          input-type="email"
+          label="Email"
+          name="email"
+          autocomplete="username"
+        />
+        <TextElement
+          :rules="['required', 'min:0']"
           input-type="password"
           label="Password"
-          :rules="['required', 'min:0']"
+          name="password"
+          autocomplete="current-password"
         />
         <ButtonElement
-          name="login"
-          button-label="Login"
-          @submit="submitForm"
           :columns="{
             container: 2,
           }"
           :submits="true"
+          button-label="Login"
+          name="login"
+          @submit="submitForm"
         />
         <ButtonElement
-          name="reset"
-          button-label="Reset"
-          :secondary="true"
-          :resets="true"
           :columns="{
             container: 2,
           }"
+          :resets="true"
+          :secondary="true"
           align="center"
+          button-label="Reset"
+          name="reset"
         />
         <div id="forgot-my-password">
           <a class="emphasised-link" @click="$router.push('reset-password')"
@@ -113,14 +134,52 @@ async function submitForm(
           >
         </div>
       </Vueform>
+      <Vueform
+        ref="form$"
+        :display-errors="false"
+        :endpoint="false"
+        add-class="solardoc-style-form phone"
+        @submit="(value: any) => interceptErrors(submitForm(value))"
+      >
+        <TextElement
+          :rules="['required', 'email']"
+          input-type="email"
+          label="Email"
+          name="email"
+          autocomplete="username"
+        />
+        <TextElement
+          :rules="['required', 'min:0']"
+          input-type="password"
+          label="Password"
+          name="password"
+          autocomplete="current-password"
+        />
+        <div id="forgot-my-password">
+          <a class="emphasised-link" @click="$router.push('reset-password')"
+            >Forgot your password?</a
+          >
+        </div>
+        <ButtonElement
+          :submits="true"
+          align="left"
+          button-label="Login"
+          name="login"
+          @submit="submitForm"
+        />
+        <ButtonElement :resets="true" :secondary="true" button-label="Reset" name="reset" />
+      </Vueform>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
-@use '@/assets/core/var' as var;
+<style lang="scss" scoped>
 @use '@/assets/page-content' as *;
+@use '@/assets/heart-background' as *;
 @use '@/assets/core/mixins/align-horizontal-center' as *;
+@use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/mixins/hide' as *;
+@use '@/assets/core/var' as var;
 
 #profile-wrapper {
   #profile-container {
@@ -153,6 +212,20 @@ async function submitForm(
     p {
       margin: 0;
     }
+  }
+}
+
+.solardoc-style-form.desktop {
+  @include hide;
+}
+
+@include r-min(var.$window-medium) {
+  .solardoc-style-form.desktop {
+    @include show;
+  }
+
+  .solardoc-style-form.phone {
+    @include hide;
   }
 }
 </style>

@@ -1,11 +1,11 @@
 /**
  * @solardoc/phoenix
- * 0.6.0
+ * 1.0.0-beta.2
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
 import * as Oazapfts from 'oazapfts/lib/runtime'
-
+import * as QS from 'oazapfts/lib/runtime/query'
 export const defaults: Oazapfts.RequestOpts = {
   baseUrl: 'http://localhost:4000/phx/api',
 }
@@ -38,10 +38,12 @@ export type EditorChannel = {
 }
 export type EditorChannels = EditorChannel[]
 export type File = {
+  channel_id?: string
   content: string
   created: number
   file_name: string
   id: string
+  is_global: boolean
   last_edited: number
   owner_id: string
 }
@@ -50,9 +52,40 @@ export type CreateFile = {
   content?: string
   file_name: string
 }
+export type GlobalFile = {
+  channel_id?: string
+  created: number
+  file_name: string
+  id: string
+  is_global: boolean
+  last_edited: number
+  organisation: string
+  owner_id: string
+  owner_name: string
+}
+export type GlobalFiles = GlobalFile[]
+export type CreateFilePermissions = {
+  file_id: string
+  permission: number
+  user_id: string
+}
+export type FilePermission = {
+  file_id: string
+  id: string
+  permission: number
+  user_id: string
+  username: string
+}
+export type UpdateFilePermissions = {
+  file_id: string
+  permission: number
+  user_id: string
+}
+export type FilePermissions = FilePermission[]
 export type UpdateFile = {
   content?: string
   file_name?: string
+  is_global?: boolean
 }
 export type Ping = {
   date: number
@@ -74,6 +107,7 @@ export type ShareUrl = {
 }
 export type UserPublic = {
   id: string
+  username?: string
 }
 export type UsersPublic = UserPublic[]
 export type CreateUser = {
@@ -96,7 +130,7 @@ export type UserPrivate = {
 /**
  * Log out a user
  */
-export function deleteV1AuthBearer(authorization: string, opts?: Oazapfts.RequestOpts) {
+export function deleteV2AuthBearer(authorization: string, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 204
@@ -109,7 +143,7 @@ export function deleteV1AuthBearer(authorization: string, opts?: Oazapfts.Reques
         status: 401
         data: ErrorsResp
       }
-  >('/v1/auth/bearer', {
+  >('/v2/auth/bearer', {
     ...opts,
     method: 'DELETE',
     headers: {
@@ -121,7 +155,7 @@ export function deleteV1AuthBearer(authorization: string, opts?: Oazapfts.Reques
 /**
  * Log in a user
  */
-export function postV1AuthBearer(userLogin: UserLogin, opts?: Oazapfts.RequestOpts) {
+export function postV2AuthBearer(userLogin: UserLogin, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 201
@@ -136,7 +170,7 @@ export function postV1AuthBearer(userLogin: UserLogin, opts?: Oazapfts.RequestOp
         data: ErrorsResp
       }
   >(
-    '/v1/auth/bearer',
+    '/v2/auth/bearer',
     oazapfts.json({
       ...opts,
       method: 'POST',
@@ -147,7 +181,7 @@ export function postV1AuthBearer(userLogin: UserLogin, opts?: Oazapfts.RequestOp
 /**
  * List all currently running editor channels
  */
-export function getV1EditorChannels(authorization: string, opts?: Oazapfts.RequestOpts) {
+export function getV2EditorChannels(authorization: string, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 200
@@ -157,7 +191,7 @@ export function getV1EditorChannels(authorization: string, opts?: Oazapfts.Reque
         status: 401
         data: ErrorsResp
       }
-  >('/v1/editor_channels', {
+  >('/v2/editor_channels', {
     ...opts,
     headers: {
       ...(opts && opts.headers),
@@ -168,7 +202,7 @@ export function getV1EditorChannels(authorization: string, opts?: Oazapfts.Reque
 /**
  * Get a single editor channel
  */
-export function getV1EditorChannelsById(
+export function getV2EditorChannelsById(
   authorization: string,
   id: string,
   opts?: Oazapfts.RequestOpts,
@@ -182,7 +216,11 @@ export function getV1EditorChannelsById(
         status: 401
         data: ErrorsResp
       }
-  >(`/v1/editor_channels/${encodeURIComponent(id)}`, {
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/editor_channels/${encodeURIComponent(id)}`, {
     ...opts,
     headers: {
       ...(opts && opts.headers),
@@ -193,7 +231,7 @@ export function getV1EditorChannelsById(
 /**
  * List all files owned by the current user
  */
-export function getV1Files(authorization: string, opts?: Oazapfts.RequestOpts) {
+export function getV2Files(authorization: string, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 200
@@ -203,7 +241,7 @@ export function getV1Files(authorization: string, opts?: Oazapfts.RequestOpts) {
         status: 401
         data: ErrorsResp
       }
-  >('/v1/files', {
+  >('/v2/files', {
     ...opts,
     headers: {
       ...(opts && opts.headers),
@@ -214,7 +252,7 @@ export function getV1Files(authorization: string, opts?: Oazapfts.RequestOpts) {
 /**
  * Create a new file
  */
-export function postV1Files(
+export function postV2Files(
   authorization: string,
   createFile: CreateFile,
   opts?: Oazapfts.RequestOpts,
@@ -233,7 +271,7 @@ export function postV1Files(
         data: ErrorsResp
       }
   >(
-    '/v1/files',
+    '/v2/files',
     oazapfts.json({
       ...opts,
       method: 'POST',
@@ -246,9 +284,233 @@ export function postV1Files(
   )
 }
 /**
+ * List all global files
+ */
+export function getV2FilesGlobal(
+  authorization: string,
+  {
+    fileName,
+    createdFrom,
+    createdTo,
+    updatedFrom,
+    updatedTo,
+    username,
+  }: {
+    fileName?: string
+    createdFrom?: number
+    createdTo?: number
+    updatedFrom?: number
+    updatedTo?: number
+    username?: string
+  } = {},
+  opts?: Oazapfts.RequestOpts,
+) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: GlobalFiles
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+  >(
+    `/v2/files/global${QS.query(
+      QS.explode({
+        file_name: fileName,
+        created_from: createdFrom,
+        created_to: createdTo,
+        updated_from: updatedFrom,
+        updated_to: updatedTo,
+        username,
+      }),
+    )}`,
+    {
+      ...opts,
+      headers: {
+        ...(opts && opts.headers),
+        Authorization: authorization,
+      },
+    },
+  )
+}
+/**
+ * Create a new file permission
+ */
+export function postV2FilesPermissions(
+  authorization: string,
+  createFilePermission: CreateFilePermissions,
+  opts?: Oazapfts.RequestOpts,
+) {
+  return oazapfts.fetchJson<
+    | {
+        status: 201
+        data: FilePermission
+      }
+    | {
+        status: 400
+        data: ErrorsResp
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(
+    '/v2/files/permissions',
+    oazapfts.json({
+      ...opts,
+      method: 'POST',
+      body: createFilePermission,
+      headers: {
+        ...(opts && opts.headers),
+        Authorization: authorization,
+      },
+    }),
+  )
+}
+/**
+ * Get a single file permission
+ */
+export function getV2FilesPermissionsById(
+  authorization: string,
+  id: string,
+  opts?: Oazapfts.RequestOpts,
+) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: FilePermission
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/files/permissions/${encodeURIComponent(id)}`, {
+    ...opts,
+    headers: {
+      ...(opts && opts.headers),
+      Authorization: authorization,
+    },
+  })
+}
+/**
+ * Update a single file
+ */
+export function putV2FilesPermissionsById(
+  authorization: string,
+  id: string,
+  updateFilePermissions: UpdateFilePermissions,
+  opts?: Oazapfts.RequestOpts,
+) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: FilePermission
+      }
+    | {
+        status: 400
+        data: ErrorsResp
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(
+    `/v2/files/permissions/${encodeURIComponent(id)}`,
+    oazapfts.json({
+      ...opts,
+      method: 'PUT',
+      body: updateFilePermissions,
+      headers: {
+        ...(opts && opts.headers),
+        Authorization: authorization,
+      },
+    }),
+  )
+}
+/**
+ * Gets the permissions for one file for all users who have access to it
+ */
+export function getV2FilesByFileIdPermissions(
+  authorization: string,
+  fileId: string,
+  opts?: Oazapfts.RequestOpts,
+) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: FilePermissions
+      }
+    | {
+        status: 400
+        data: ErrorsResp
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/files/${encodeURIComponent(fileId)}/permissions`, {
+    ...opts,
+    headers: {
+      ...(opts && opts.headers),
+      Authorization: authorization,
+    },
+  })
+}
+/**
+ * Gets the permissions for one file from one specific user
+ */
+export function getV2FilesByFileIdPermissionsAndUserId(
+  authorization: string,
+  fileId: string,
+  userId: string,
+  opts?: Oazapfts.RequestOpts,
+) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: FilePermission
+      }
+    | {
+        status: 400
+        data: ErrorsResp
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/files/${encodeURIComponent(fileId)}/permissions/${encodeURIComponent(userId)}`, {
+    ...opts,
+    headers: {
+      ...(opts && opts.headers),
+      Authorization: authorization,
+    },
+  })
+}
+/**
  * Deletes a file
  */
-export function deleteV1FilesById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+export function deleteV2FilesById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 204
@@ -261,7 +523,11 @@ export function deleteV1FilesById(authorization: string, id: string, opts?: Oaza
         status: 401
         data: ErrorsResp
       }
-  >(`/v1/files/${encodeURIComponent(id)}`, {
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/files/${encodeURIComponent(id)}`, {
     ...opts,
     method: 'DELETE',
     headers: {
@@ -273,7 +539,7 @@ export function deleteV1FilesById(authorization: string, id: string, opts?: Oaza
 /**
  * Get a single file
  */
-export function getV1FilesById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+export function getV2FilesById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 200
@@ -283,7 +549,11 @@ export function getV1FilesById(authorization: string, id: string, opts?: Oazapft
         status: 401
         data: ErrorsResp
       }
-  >(`/v1/files/${encodeURIComponent(id)}`, {
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/files/${encodeURIComponent(id)}`, {
     ...opts,
     headers: {
       ...(opts && opts.headers),
@@ -294,7 +564,7 @@ export function getV1FilesById(authorization: string, id: string, opts?: Oazapft
 /**
  * Update a single file
  */
-export function putV1FilesById(
+export function putV2FilesById(
   authorization: string,
   id: string,
   updateFile: UpdateFile,
@@ -313,8 +583,12 @@ export function putV1FilesById(
         status: 401
         data: ErrorsResp
       }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
   >(
-    `/v1/files/${encodeURIComponent(id)}`,
+    `/v2/files/${encodeURIComponent(id)}`,
     oazapfts.json({
       ...opts,
       method: 'PUT',
@@ -329,18 +603,18 @@ export function putV1FilesById(
 /**
  * Ping the server
  */
-export function getV1Ping(opts?: Oazapfts.RequestOpts) {
+export function getV2Ping(opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<{
     status: 200
     data: Ping
-  }>('/v1/ping', {
+  }>('/v2/ping', {
     ...opts,
   })
 }
 /**
  * Create a new share url
  */
-export function postV1Share(
+export function postV2Share(
   authorization: string,
   createShareUrl: CreateShareUrl,
   opts?: Oazapfts.RequestOpts,
@@ -359,7 +633,7 @@ export function postV1Share(
         data: ErrorsResp
       }
   >(
-    '/v1/share',
+    '/v2/share',
     oazapfts.json({
       ...opts,
       method: 'POST',
@@ -372,9 +646,34 @@ export function postV1Share(
   )
 }
 /**
+ * Delete a share url
+ */
+export function deleteV2ShareById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+  return oazapfts.fetchJson<
+    | {
+        status: 204
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/share/${encodeURIComponent(id)}`, {
+    ...opts,
+    method: 'DELETE',
+    headers: {
+      ...(opts && opts.headers),
+      Authorization: authorization,
+    },
+  })
+}
+/**
  * Get a single share url
  */
-export function getV1ShareById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+export function getV2ShareById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 200
@@ -384,7 +683,40 @@ export function getV1ShareById(authorization: string, id: string, opts?: Oazapft
         status: 401
         data: ErrorsResp
       }
-  >(`/v1/share/${encodeURIComponent(id)}`, {
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/share/${encodeURIComponent(id)}`, {
+    ...opts,
+    headers: {
+      ...(opts && opts.headers),
+      Authorization: authorization,
+    },
+  })
+}
+/**
+ * Get a channel via a share url
+ */
+export function getV2ShareByIdChannel(
+  authorization: string,
+  id: string,
+  opts?: Oazapfts.RequestOpts,
+) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: EditorChannel
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/share/${encodeURIComponent(id)}/channel`, {
     ...opts,
     headers: {
       ...(opts && opts.headers),
@@ -395,7 +727,7 @@ export function getV1ShareById(authorization: string, id: string, opts?: Oazapft
 /**
  * Get a file via a share url
  */
-export function getV1ShareByIdFile(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+export function getV2ShareByIdFile(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 200
@@ -405,7 +737,11 @@ export function getV1ShareByIdFile(authorization: string, id: string, opts?: Oaz
         status: 401
         data: ErrorsResp
       }
-  >(`/v1/share/${encodeURIComponent(id)}/file`, {
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/share/${encodeURIComponent(id)}/file`, {
     ...opts,
     headers: {
       ...(opts && opts.headers),
@@ -416,11 +752,11 @@ export function getV1ShareByIdFile(authorization: string, id: string, opts?: Oaz
 /**
  * List all users
  */
-export function getV1Users(authorization: string, opts?: Oazapfts.RequestOpts) {
+export function getV2Users(authorization: string, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<{
     status: 200
     data: UsersPublic
-  }>('/v1/users', {
+  }>('/v2/users', {
     ...opts,
     headers: {
       ...(opts && opts.headers),
@@ -431,7 +767,7 @@ export function getV1Users(authorization: string, opts?: Oazapfts.RequestOpts) {
 /**
  * Create a new user
  */
-export function postV1Users(createUser: CreateUser, opts?: Oazapfts.RequestOpts) {
+export function postV2Users(createUser: CreateUser, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 201
@@ -442,7 +778,7 @@ export function postV1Users(createUser: CreateUser, opts?: Oazapfts.RequestOpts)
         data: ErrorsResp
       }
   >(
-    '/v1/users',
+    '/v2/users',
     oazapfts.json({
       ...opts,
       method: 'POST',
@@ -453,7 +789,7 @@ export function postV1Users(createUser: CreateUser, opts?: Oazapfts.RequestOpts)
 /**
  * Get the current user
  */
-export function getV1UsersCurrent(authorization: string, opts?: Oazapfts.RequestOpts) {
+export function getV2UsersCurrent(authorization: string, opts?: Oazapfts.RequestOpts) {
   return oazapfts.fetchJson<
     | {
         status: 200
@@ -463,7 +799,32 @@ export function getV1UsersCurrent(authorization: string, opts?: Oazapfts.Request
         status: 401
         data: ErrorsResp
       }
-  >('/v1/users/current', {
+  >('/v2/users/current', {
+    ...opts,
+    headers: {
+      ...(opts && opts.headers),
+      Authorization: authorization,
+    },
+  })
+}
+/**
+ * Get a single user by id
+ */
+export function getV2UsersById(authorization: string, id: string, opts?: Oazapfts.RequestOpts) {
+  return oazapfts.fetchJson<
+    | {
+        status: 200
+        data: UserPublic
+      }
+    | {
+        status: 401
+        data: ErrorsResp
+      }
+    | {
+        status: 404
+        data: ErrorsResp
+      }
+  >(`/v2/users/${encodeURIComponent(id)}`, {
     ...opts,
     headers: {
       ...(opts && opts.headers),

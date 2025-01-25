@@ -42,8 +42,23 @@ RUN mkdir -p ./solardoc/rest-api
 COPY --chown=node ./solardoc/rest-api ./solardoc/rest-api
 
 # See issue #62 (As we are not using puppeteer yet, we can ignore this)
-ARG PUPPETEER_SKIP_DOWNLOAD
+ARG PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_SKIP_DOWNLOAD=$PUPPETEER_SKIP_DOWNLOAD
+
+# Install as root
+USER root
+RUN apk add --no-cache \
+chromium \
+nss \
+freetype \
+freetype-dev \
+harfbuzz \
+ca-certificates \
+ttf-freefont \
+nodejs
+
+# Set Chromium path and switch to node user
+ENV CHROMIUM_PATH /usr/bin/chromium-browser
 
 # Build 'asciidoc-renderer' package
 RUN pnpm install --filter @solardoc/asciidoc-renderer --frozen-lockfile
@@ -59,7 +74,7 @@ RUN mkdir -p /home/node/build
 # We need to deploy the 'rest-api' package to get a proper standalone executable build
 RUN pnpm --filter @solardoc/rest-api --prod deploy /home/node/build
 
-FROM base as production-stage
+FROM base AS production-stage
 
 COPY --from=build-stage /home/node/build /home/node/app
 

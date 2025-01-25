@@ -84,7 +84,7 @@ button.editor-button {
   font-size: $editor-button-font-size;
   text-decoration: none;
   background: transparent;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem;
   margin: 0;
 
   &:hover {
@@ -94,7 +94,6 @@ button.editor-button {
 
 button.sandwich-button {
   @include align-center();
-
   $sandwich-button-height: 2rem;
 
   font-size: $editor-button-font-size;
@@ -106,10 +105,15 @@ button.sandwich-button {
   padding: 0;
   margin: 0;
 
+  &:not(.no-colorful-hover):hover,
+  &.highlighted:not(.no-colorful-hover) {
+    @include link-hover-presets;
+  }
+
   &:hover,
   &.highlighted {
-    @include link-hover-presets;
-    background-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    background: $scheme-interactive-element-background-color-highlighted;
   }
 }
 

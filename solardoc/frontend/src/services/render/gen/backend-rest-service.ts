@@ -1,12 +1,11 @@
 /**
  * @solardoc/rest-api
- * 0.6.0
+ * 1.0.0-beta.2
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
 import * as Oazapfts from 'oazapfts/lib/runtime'
 import * as QS from 'oazapfts/lib/runtime/query'
-
 export const defaults: Oazapfts.RequestOpts = {
   baseUrl: '/',
 }
