@@ -29,8 +29,8 @@ const currentUserStore = useCurrentUserStore()
 const owner = ref<UserPublic>()
 
 ;(async () => {
-  if (currentUserStore.bearer != null) {
-    await fetchOwner(currentFileStore.ownerId!, currentUserStore.bearer)
+  if (currentUserStore.loggedIn && currentFileStore.remoteFile) {
+    await fetchOwner(currentFileStore.ownerId!, currentUserStore.bearer!)
   } else {
     owner.value = { username: 'Local User', id: 'local-user-id' }
   }
@@ -120,7 +120,7 @@ function onClose() {
           <p>
             <span>Owner: </span>
             <template v-if="owner!.username === 'Local User'">{{ owner!.username }}</template>
-            <template v-else-if="currentFileStore!.ownerId && owner!.username">
+            <template v-else-if="currentFileStore.ownerId && owner!.username">
               <UserRef :id="currentFileStore.ownerId" :user-name="owner!.username" no-padding />
             </template>
           </p>
