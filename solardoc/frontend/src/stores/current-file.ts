@@ -11,6 +11,7 @@ import {
 import constants from '@/plugins/constants'
 import { showNotifFromErr } from '@/scripts/show-notif'
 import { FileGoneWarn } from '@/errors/file-gone-warn'
+import {isDev} from "@/config/env";
 
 export type Unknown = null
 export type NoPermissions = 0
@@ -440,6 +441,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.save()
     },
     setContent(content: string) {
+      // For debug purposes
+      if (isDev) {
+        console.log("[current-file.ts] Debug content:", { content: this.content })
+      }
       this.file.content = content
       this.save()
     },

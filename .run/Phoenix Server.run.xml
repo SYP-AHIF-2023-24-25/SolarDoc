@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Phoenix Server" type="MixRunConfigurationType" factoryName="Elixir Mix">
+    <module name="SolarDoc" />
+    <mix>
+      <argument>phx.server</argument>
+    </mix>
+    <working-directory url="file://$PROJECT_DIR$/solardoc/phoenix-server" />
+    <module name="SolarDoc" />
+    <module-filters inherit-application-module-filters="true" />
+    <method v="2" />
+  </configuration>
+</component>
