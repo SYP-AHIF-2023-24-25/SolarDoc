@@ -56,7 +56,7 @@ function handlePreviewButtonPress() {
     <div id="menu-right-side">
       <div>
         <SaveStateBadge />
-        <ContributorsCount />
+        <ContributorsCount v-if="currentFileStore.remoteFile" />
         <LastModified />
       </div>
       <div id="right-side-icon-menu">

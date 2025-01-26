@@ -33,7 +33,7 @@ export const useContributorsStore = defineStore('contributors', {
         )
       } else if (resp.status === 401) {
         throw new PhoenixInvalidCredentialsError(
-          'Server rejected request to load file ownerr',
+          'Server rejected request to load file owner',
           'Your saved token is invalid or has already been revoked. Please log in again.',
         )
       } else if (resp.status === 404) {
