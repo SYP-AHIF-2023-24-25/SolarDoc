@@ -21,12 +21,18 @@ import { createOTUpdates } from '@/scripts/editor/ot/create-ot'
 import { getMonacoUpdatesFromOT } from '@/scripts/editor/ot/get-monaco-updates'
 import { sendOTUpdates } from '@/scripts/editor/ot/send-ot'
 import { EditorModelNotFoundError } from '@/errors/editor-model-not-found-error'
+import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
+import {storeToRefs} from "pinia";
+import type {Position} from "@vueuse/core";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
+const previewSelectedSlideStore = usePreviewSelectedSlideStore()
+
+const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
 
 let monacoSetUp = false
 
@@ -138,6 +144,41 @@ export class SolardocEditor {
 
   public static get monacoEditor() {
     return globalMonacoEditor!
+  }
+
+  /**
+   * Navigates the editor to the section corresponding to current slide index.
+   */
+  public static redirectCursorToArea() {
+    const content = this.getContent();
+    const lines = content.split('\n');
+
+    let lineNumber = 1;
+    let currentSlideIndex = 0;
+    let currentSubSlideIndex = -1;
+
+
+    for (let i = 1; i < lines.length &&
+    !(currentSlideIndex === slideIndex.value &&
+    (subSlideIndex.value === undefined || currentSubSlideIndex === subSlideIndex.value)); i++) {
+
+      lineNumber++;
+      const line = lines[i];
+
+      if (line.startsWith('== ')) {
+        currentSlideIndex++;
+        currentSubSlideIndex = -1;
+      }
+      if (line.startsWith('=== ')) {
+        currentSubSlideIndex++;
+      }
+
+    }
+
+    const position: Position = { lineNumber, column: lines[lineNumber - 1].length + 1};
+    this.monacoEditor.setPosition(position);
+    this.monacoEditor.revealPositionNearTop(position)
+    this.monacoEditor.focus();
   }
 
   /**

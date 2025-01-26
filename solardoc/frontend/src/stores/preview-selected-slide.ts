@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import {SolardocEditor} from "@/scripts/editor/editor";
 
 export const usePreviewSelectedSlideStore = defineStore('previewSelectedSlide', {
   state: () => {
@@ -8,6 +9,10 @@ export const usePreviewSelectedSlideStore = defineStore('previewSelectedSlide', 
     setSlide(slideIndex: number, subSlideIndex?: number) {
       this.slideIndex = slideIndex
       this.subSlideIndex = subSlideIndex
+
+      if (SolardocEditor.initialised) {
+        SolardocEditor.redirectCursorToArea();
+      }
     },
   },
 })
