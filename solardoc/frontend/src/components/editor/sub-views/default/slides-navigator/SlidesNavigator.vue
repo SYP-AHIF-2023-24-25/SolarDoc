@@ -54,6 +54,6 @@ watch(globalX, () => {
   width: var.$editor-preview-slides-navigator-width;
 
   // This element will be scrolled but by the sub-slides-navigator (weird workaround but it works)
-  overflow: hidden;
+  overflow: scroll hidden;
 }
 </style>
