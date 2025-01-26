@@ -27,7 +27,7 @@ const toggleDropdown = (visible: boolean) => {
 </script>
 
 <template>
-  <div class="live-contributors">
+  <div class="contributors">
     <div
         class="icon-and-count"
         @mouseenter="toggleDropdown(true)"
@@ -61,7 +61,7 @@ const toggleDropdown = (visible: boolean) => {
 @use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/link-hover-presets' as *;
 
-.live-contributors {
+.contributors {
   position: relative;
   display: inline-block;
 
@@ -76,16 +76,36 @@ const toggleDropdown = (visible: boolean) => {
       background: none;
       border: none;
       cursor: pointer;
+      padding: 0.5rem 1rem;
+      margin: 0;
+      text-decoration: none;
+
+      &:hover {
+        background-color: var(--hover-background-color);
+      }
 
       svg {
         display: block;
-        height: 1em;
+        height: 1rem;
+        transition: fill 0.2s ease;
       }
 
       .contributor-count {
         font-size: 1rem;
         margin-left: 0.5rem;
         color: var(--text-color);
+        transition: color 0.2s ease;
+        margin-top: 0.3rem;
+      }
+    }
+
+    .contributor-button:hover {
+      svg {
+        fill: var(--hover-icon-color);
+      }
+
+      .contributor-count {
+        color: var(--hover-text-color);
       }
     }
 

@@ -27,7 +27,7 @@ import {
   FULL_SCREEN_SLIDES_MANGER,
 } from '@/scripts/editor/sub-view-state'
 import AsciidocIcon from "@/components/icons/AsciidocIcon.vue";
-import LiveContributorsCount from "@/components/editor/ContributorsCount.vue";
+import ContributorsCount from "@/components/editor/ContributorsCount.vue";
 
 const previewLoadingStore = usePreviewLoadingStore()
 const overlayStateStore = useOverlayStateStore()
@@ -95,10 +95,10 @@ setInterval(updateLastModified, 500)
           />
         </div>
       </div>
-      <LiveContributorsCount />
       <div id="menu-right-side">
         <div>
           <SaveStateBadge />
+          <ContributorsCount/>
           <div>
             <p>
               Last edited:
