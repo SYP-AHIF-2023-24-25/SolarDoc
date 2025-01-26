@@ -6,11 +6,11 @@ export const usePreviewSelectedSlideStore = defineStore('previewSelectedSlide', 
     return { slideIndex: 0, subSlideIndex: <number | undefined>undefined }
   },
   actions: {
-    setSlide(slideIndex: number, subSlideIndex?: number) {
+    setSlide(slideIndex: number, subSlideIndex?: number, redirectCursor: boolean) {
       this.slideIndex = slideIndex
       this.subSlideIndex = subSlideIndex
 
-      if (SolardocEditor.initialised) {
+      if (redirectCursor) {
         SolardocEditor.redirectCursorToArea();
       }
     },

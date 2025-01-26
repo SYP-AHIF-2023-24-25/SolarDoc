@@ -23,19 +23,6 @@ const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
 
-window.addEventListener('updateSlide', (event) => {
-  console.log("got the 'updateSlide' event");
-  const slideIndex = event.detail.slideIndex;
-  const subSlideIndex = event.detail.subSlideIndex;
-
-  if (slideIndex !== undefined) {
-    // Update the store with the new slide index and sub-slide index
-    console.log("setting slide")
-    previewSelectedSlideStore.setSlide(slideIndex, subSlideIndex);
-    console.log("set slide")
-  }
-});
-
 </script>
 
 <template>

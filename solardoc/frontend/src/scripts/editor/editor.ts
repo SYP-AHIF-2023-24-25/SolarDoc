@@ -160,8 +160,7 @@ export class SolardocEditor {
           }
         }
 
-        const shootEvent = new CustomEvent('updateSlide', { detail: { slideIndex, subSlideIndex } });
-        window.dispatchEvent(shootEvent);
+        previewSelectedSlideStore.setSlide(slideIndex, subSlideIndex,false);
       });
 
     this._startContentWatchers()
