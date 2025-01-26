@@ -1,37 +1,37 @@
 <script setup lang="ts">
-import { ref} from "vue";
-import PersonCount from "@/components/icons/PersonCountIconSVG.vue";
-import PersonCountDarkMode from "@/components/icons/PersonCountIconDarkModeSVG.vue";
-import { useDarkModeStore } from "@/stores/dark-mode";
-import {useCurrentFileStore} from "@/stores/current-file";
-import {useCurrentUserStore} from "@/stores/current-user";
-import {useContributorsStore} from "@/stores/contributors";
+import { ref } from 'vue'
+import PersonCount from '@/components/icons/PersonCountIconSVG.vue'
+import PersonCountDarkMode from '@/components/icons/PersonCountIconDarkModeSVG.vue'
+import { useDarkModeStore } from '@/stores/dark-mode'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useContributorsStore } from '@/stores/contributors'
 
-const darkModeStore = useDarkModeStore();
+const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
-const contributorsStore = useContributorsStore();
+const contributorsStore = useContributorsStore()
 
-(async () => {
+;(async () => {
   await contributorsStore.fetchAndUpdateContributors(
-      currentUserStore.bearer!,
-      currentFileStore.fileId!
-  );
-})();
+    currentUserStore.bearer!,
+    currentFileStore.fileId!,
+  )
+})()
 
-const dropdown = ref(false);
+const dropdown = ref(false)
 
 const toggleDropdown = (visible: boolean) => {
-  dropdown.value = visible;
-};
+  dropdown.value = visible
+}
 </script>
 
 <template>
   <div class="contributors">
     <div
-        class="icon-and-count"
-        @mouseenter="toggleDropdown(true)"
-        @mouseleave="toggleDropdown(false)"
+      class="icon-and-count"
+      @mouseenter="toggleDropdown(true)"
+      @mouseleave="toggleDropdown(false)"
     >
       <button class="contributor-button">
         <PersonCount v-show="!darkModeStore.darkMode" />
@@ -41,15 +41,15 @@ const toggleDropdown = (visible: boolean) => {
     </div>
 
     <div
-        v-if="dropdown"
-        class="dropdown-menu"
-        @mouseenter="toggleDropdown(true)"
-        @mouseleave="toggleDropdown(false)"
+      v-if="dropdown"
+      class="dropdown-menu"
+      @mouseenter="toggleDropdown(true)"
+      @mouseleave="toggleDropdown(false)"
     >
       <div
-          v-for="contributor in contributorsStore.contributors"
-          :key="contributor.user_id"
-          class="dropdown-element"
+        v-for="contributor in contributorsStore.contributors"
+        :key="contributor.user_id"
+        class="dropdown-element"
       >
         {{ contributor.username }}
       </div>
@@ -108,7 +108,6 @@ const toggleDropdown = (visible: boolean) => {
         color: var(--hover-text-color);
       }
     }
-
   }
 
   .dropdown-menu {

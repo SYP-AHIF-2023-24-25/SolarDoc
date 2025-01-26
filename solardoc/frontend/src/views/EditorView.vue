@@ -26,8 +26,8 @@ import {
   FULL_SCREEN_EDITOR,
   FULL_SCREEN_SLIDES_MANGER,
 } from '@/scripts/editor/sub-view-state'
-import AsciidocIcon from "@/components/icons/AsciidocIcon.vue";
-import ContributorsCount from "@/components/editor/ContributorsCount.vue";
+import AsciidocIcon from '@/components/icons/AsciidocIcon.vue'
+import ContributorsCount from '@/components/editor/ContributorsCount.vue'
 
 const previewLoadingStore = usePreviewLoadingStore()
 const overlayStateStore = useOverlayStateStore()
@@ -98,23 +98,23 @@ setInterval(updateLastModified, 500)
       <div id="menu-right-side">
         <div>
           <SaveStateBadge />
-          <ContributorsCount/>
+          <ContributorsCount />
           <div>
             <p>
               Last edited:
               {{
                 previewLoadingStore.previewLoading
-                    ? (updateLastModified() && false) || 'now'
-                    : lastModified
+                  ? (updateLastModified() && false) || 'now'
+                  : lastModified
               }}
             </p>
           </div>
         </div>
         <div>
           <button
-              id="fullscreen-preview-button"
-              class="editor-button"
-              @click="handlePreviewButtonPress()"
+            id="fullscreen-preview-button"
+            class="editor-button"
+            @click="handlePreviewButtonPress()"
           >
             Fullscreen
           </button>
@@ -209,7 +209,8 @@ div#editor-page {
           background: transparent;
         }
 
-        &, * {
+        &,
+        * {
           outline: transparent;
         }
 
