@@ -51,6 +51,10 @@ export function showInfoNotif(title: string, text: string): void {
   showNotif('info', title, text)
 }
 
+export function showSuccessNotifFromObj(obj: { title: string; text: string }): void {
+  showSuccessNotif(obj.title, obj.text)
+}
+
 export function showSuccessNotif(title: string, text: string): void {
   showNotif('success', title, text)
 }

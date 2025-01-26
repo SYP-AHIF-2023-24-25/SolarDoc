@@ -19,6 +19,7 @@ import {
   createEditorRemoteFileConnection,
 } from '@/scripts/editor/file'
 import { handleCopy } from '@/scripts/handle-copy'
+import {openInNewWindow} from "@/router/open";
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
@@ -37,11 +38,9 @@ function closeDropdown() {
   )?.close()
 }
 
-async function handleNewFileButtonClick() {
+function handleNewFileButtonClick() {
   closeDropdown()
-  showDummyLoading()
-  await closeEditorRemoteFileConnection()
-  showInfoNotifFromObj(constants.notifMessages.newFile)
+  openInNewWindow($router, {name: 'local-editor', query: {'new': 'true'}})
 }
 
 async function handleSaveButtonClick() {

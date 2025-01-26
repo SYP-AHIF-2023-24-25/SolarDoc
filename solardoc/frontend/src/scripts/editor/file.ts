@@ -1,19 +1,21 @@
-import { useCurrentFileStore } from '@/stores/current-file'
-import { useCurrentUserStore } from '@/stores/current-user'
-import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
-import { useOverlayStateStore } from '@/stores/overlay-state'
-import { connectToWSIfPossible } from '@/scripts/editor/sds'
-import { createOrJoinChannelForFile } from '@/scripts/editor/channel'
-import { useLoadingStore } from '@/stores/loading'
-import { useRenderDataStore } from '@/stores/render-data'
-import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
-import type {RouteParams, Router} from 'vue-router'
-import { usePreviewLoadingStore } from '@/stores/preview-loading'
-import { useInitStateStore } from '@/stores/init-state'
+import {useCurrentFileStore} from '@/stores/current-file'
+import {useCurrentUserStore} from '@/stores/current-user'
+import {useEditorUpdateWSClient} from '@/stores/editor-update-ws-client'
+import {useOverlayStateStore} from '@/stores/overlay-state'
+import {connectToWSIfPossible} from '@/scripts/editor/sds'
+import {createOrJoinChannelForFile} from '@/scripts/editor/channel'
+import {useLoadingStore} from '@/stores/loading'
+import {useRenderDataStore} from '@/stores/render-data'
+import type {File} from '@/services/phoenix/gen/phoenix-rest-service'
+import type {LocationQuery, RouteParams, Router} from 'vue-router'
+import {usePreviewLoadingStore} from '@/stores/preview-loading'
+import {useInitStateStore} from '@/stores/init-state'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import {SolardocUnreachableError} from "@/errors/unreachable-error";
-import {SolardocError} from "@/errors/solardoc-error";
 import {SolardocNotImplementedError} from "@/errors/not-implemented-error";
+import {KipperFileNotFoundError} from "@/errors/file-not-found-error";
+import {showSuccessNotifFromObj} from "@/scripts/show-notif";
+import constants from "@/plugins/constants";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -27,22 +29,46 @@ const initStateStore = useInitStateStore()
 /**
  * Initializes the editor file based on the provided path arguments and appropriately sets up any
  * requirements for any eventual connection with the server.
+ * @param $router The router object which is used to modify
  * @param routeName The route name.
  * @param routeParams The params of the route.
+ * @param routeQueries The queries of the route.
  * @since 1.0.0
  */
 export async function initEditorFileBasedOnPath(
+  $router: Router,
   routeName: string,
-  routeParams: RouteParams
+  routeParams: RouteParams,
+  routeQueries: LocationQuery,
 ): Promise<'local' | ['remote', string] | ['shared', string]> {
+  if ('showFileGoneError' in routeQueries && routeQueries.showFileGoneError === 'true') {
+
+  }
+
   if (routeName === 'local-editor') {
-    currentFileStore.setFileFromLocalStorage()
+    if ('new' in routeQueries && routeQueries.new === 'true') {
+      currentFileStore.setFileToDefaultState()
+
+      // We need to avoid the user reloading the page and accidentally clearing his state so we need to clean up the
+      // path query and ensure that the reload is without side effects
+      $router.push({name: 'local-editor'}).then(() => {
+        showSuccessNotifFromObj(constants.notifMessages.newFile)
+      })
+    } else {
+      currentFileStore.setFileFromLocalStorage()
+    }
     return 'local'
   }
 
   const id = <string>routeParams['fileId']
   if (routeName === 'remote-editor') {
-    await currentFileStore.setFileWithRemoteId(id, currentUserStore.bearer!)
+    try {
+      await currentFileStore.setFileWithRemoteId(id, currentUserStore.bearer!)
+    } catch (e) {
+      if (e instanceof KipperFileNotFoundError) {
+        await $router.push({name: 'local-editor', query: {showFileGoneError: 'true'}})
+      }
+    }
     await phoenixBackend.ensurePhoenixBackendIsReachable()
     await createEditorRemoteFileConnection()
     return ['remote', id]

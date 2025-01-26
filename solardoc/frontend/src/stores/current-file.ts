@@ -12,6 +12,7 @@ import constants from '@/plugins/constants'
 import { showNotifFromErr } from '@/scripts/show-notif'
 import { FileGoneWarn } from '@/errors/file-gone-warn'
 import { isDev } from '@/config/env'
+import {KipperFileNotFoundError} from "@/errors/file-not-found-error";
 
 export type Unknown = null
 export type NoPermissions = 0
@@ -208,6 +209,13 @@ export const useCurrentFileStore = defineStore('currentFile', {
   },
   actions: {
     /**
+     * Resets the store and sets the content to the default file content.
+     * @since 1.0.0
+     */
+    setFileToDefaultState(currentUserId?: string, empty?: boolean) {
+      this.setFile(getDefaultFile(currentUserId, empty))
+    },
+    /**
      * Loads the data from the local storage into the store.
      *
      * This will fall back to a default file in case the local storage is empty or the data is corrupted.
@@ -262,10 +270,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       if (resp.status === 200) {
         this.setFile(resp.data)
       } else {
-        await this.closeFileGlobally({ preserveContent: true })
-
-        // Show notification indicating that the file was not found
-        showNotifFromErr(new FileGoneWarn())
+        throw new KipperFileNotFoundError()
       }
     },
     /**

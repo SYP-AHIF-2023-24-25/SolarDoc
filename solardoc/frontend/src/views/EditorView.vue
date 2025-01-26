@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import { useCurrentUserStore } from '@/stores/current-user'
 import FullScreenPreview from '@/components/editor/FullScreenPreview.vue'
 import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
@@ -24,6 +24,7 @@ import {
 import constants from '@/plugins/constants'
 import EditorNavbar from '@/components/editor/editor-navbar/EditorNavbar.vue'
 
+const $router = useRouter()
 const $route = useRoute()
 const currentUserStore = useCurrentUserStore()
 const loadingStore = useLoadingStore()
@@ -50,7 +51,7 @@ const fileStateInitialised = ref(false)
 const fileType = ref<Awaited<ReturnType<typeof initEditorFileBasedOnPath>>>('local')
 interceptErrors(
   (async () => {
-    fileType.value = await initEditorFileBasedOnPath(<string>$route.name, $route.params)
+    fileType.value = await initEditorFileBasedOnPath($router, <string>$route.name, $route.params, $route.query)
     fileStateInitialised.value = true
     loadingStore.setLoading(false)
   })(),
