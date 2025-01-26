@@ -9,6 +9,7 @@ import PresentationIconDarkModeSVG from '@/components/icons/PresentationIconDark
 import PresentationIconSVG from '@/components/icons/PresentationIconSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import ViewPrintableDropdown from '@/components/editor/editor-navbar/ViewInOtherWindowDropdown.vue'
+import ContributorsCount from '@/components/editor/ContributorsCount.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
@@ -55,6 +56,7 @@ function handlePreviewButtonPress() {
     <div id="menu-right-side">
       <div>
         <SaveStateBadge />
+        <ContributorsCount v-if="currentFileStore.remoteFile" />
         <LastModified />
       </div>
       <div id="right-side-icon-menu">

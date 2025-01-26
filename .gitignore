@@ -1,4 +1,4 @@
-./.idea
+.idea/
 */postgresql-db/postgres-data
 dist
 node_modules
