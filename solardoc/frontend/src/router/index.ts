@@ -68,7 +68,7 @@ const router = createRouter({
         },
         {
           name: 'remote-editor',
-          path: ':fileId',
+          path: 'o/:fileId',
           component: () => import('@/views/EditorView.vue'),
           sensitive: true,
           strict: true,

@@ -46,10 +46,13 @@ export interface LocalFile {
   is_global: boolean
 }
 
-function getDefaultFile(currentUserId?: string): LocalFile | File {
+function getDefaultFile(
+  currentUserId?: string,
+  empty?: boolean,
+): LocalFile | File {
   return {
     id: undefined,
-    content: constants.defaultFileContent,
+    content: empty ? '' : constants.defaultFileContent,
     created: new Date().getTime(),
     file_name: constants.defaultFileName,
     last_edited: new Date().getTime(),
@@ -84,20 +87,9 @@ function writeFileToLocalStorage(file: LocalFile | File): void {
 
 export const useCurrentFileStore = defineStore('currentFile', {
   state: () => {
-    let storedFile: LocalFile | File
-    try {
-      storedFile = ensureAllFileProperties(
-        JSON.parse(localStorage.getItem(constants.localStorageFileKey) || ''),
-      )
-    } catch (e) {
-      console.warn('Failed to parse file from local storage. Reverting to default file.')
-      storedFile = getDefaultFile()
-    }
-    const shareURLId = localStorage.getItem(constants.localStorageShareURLIdKey)
-
     return {
-      file: storedFile,
-      shareURLId: shareURLId || undefined,
+      file: getDefaultFile(undefined, true),
+      shareURLId: <string | undefined>undefined,
       accessPermissions: <Permission>Permissions.Unknown,
       oTransStack: new Map<string, OTrans>(),
       oTransNotAcked: new Map<string, OTransReqDto>(),
@@ -216,10 +208,36 @@ export const useCurrentFileStore = defineStore('currentFile', {
   },
   actions: {
     /**
+     * Loads the data from the local storage into the store.
+     *
+     * This will fall back to a default file in case the local storage is empty or the data is corrupted.
+     * @since 1.0.0
+     */
+    setFileFromLocalStorage() {
+      let storedFile: LocalFile | File
+      try {
+        storedFile = ensureAllFileProperties(
+          JSON.parse(localStorage.getItem(constants.localStorageFileKey) || ''),
+        )
+      } catch (e) {
+        storedFile = getDefaultFile()
+      }
+      this.setFile(storedFile)
+    },
+    /**
+     * Sets the store to a file from the server using a file id and a bearer to fetch the data.
+     * @param fileId The file id which should be used to fetch the file data.
+     * @param bearer The bearer token to use for the request.
+     */
+    async setFileWithRemoteId(fileId: string, bearer?: string) {
+      this.setFileId(fileId)
+      await this.fetchNewestRemoteFileVersionIfPossible(bearer)
+    },
+    /**
      * Fetches the file data from the server and sets the current file with the response data.
      *
      * This is to make sure the data is up-to-date with the server.
-     * @private
+     * @since 1.0.0
      */
     async fetchNewestRemoteFileVersionIfPossible(bearer?: string): Promise<void> {
       if (this.file.id === undefined) {
@@ -244,7 +262,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       if (resp.status === 200) {
         this.setFile(resp.data)
       } else {
-        await this.closeFileGlobally(true)
+        await this.closeFileGlobally({ preserveContent: true })
 
         // Show notification indicating that the file was not found
         showNotifFromErr(new FileGoneWarn())
@@ -409,7 +427,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
       }
       this.setLastModified(new Date())
     },
-    setFile(file: File, perm: Permission = Permissions.Unknown) {
+    setFile(file: LocalFile | File, perm: Permission = Permissions.Unknown) {
       this.setFileId(file.id)
       this.setOwnerId(file.owner_id)
       this.setFileName(file.file_name)
@@ -428,17 +446,17 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.setShareURLId(shareURLId)
       this.setFile(file, perm)
     },
-    setFileId(fileId: string) {
+    setFileId(fileId: string | undefined) {
       this.file.id = fileId
-      this.save()
+      this.saveIfLocalFile()
     },
-    setOwnerId(ownerId: string) {
+    setOwnerId(ownerId: string | undefined) {
       this.file.owner_id = ownerId
-      this.save()
+      this.saveIfLocalFile()
     },
     setFileName(fileName: string) {
       this.file.file_name = fileName
-      this.save()
+      this.saveIfLocalFile()
     },
     setContent(content: string) {
       // For debug purposes
@@ -446,19 +464,19 @@ export const useCurrentFileStore = defineStore('currentFile', {
         console.log('[current-file.ts] Debug content:', { content: this.content })
       }
       this.file.content = content
-      this.save()
+      this.saveIfLocalFile()
     },
     setLastModified(lastModified: number | Date) {
       this.file.last_edited = lastModified instanceof Date ? lastModified.getTime() : lastModified
-      this.save()
+      this.saveIfLocalFile()
     },
     setCreated(created: number | Date) {
       this.file.created = created instanceof Date ? created.getTime() : created
-      this.save()
+      this.saveIfLocalFile()
     },
     setChannelId(channelId: string | undefined) {
       this.file.channel_id = channelId
-      this.save()
+      this.saveIfLocalFile()
     },
     setShareURLId(shareURLId: string) {
       this.shareURLId = shareURLId
@@ -466,19 +484,19 @@ export const useCurrentFileStore = defineStore('currentFile', {
     },
     setIsGlobal(isGlobal: boolean) {
       this.file.is_global = isGlobal
-      this.save()
+      this.saveIfLocalFile()
     },
     clearFileId() {
       this.file.id = undefined
-      this.save()
+      this.saveIfLocalFile()
     },
     clearOwnerId() {
       this.file.owner_id = undefined
-      this.save()
+      this.saveIfLocalFile()
     },
     clearChannelId() {
       this.file.channel_id = undefined
-      this.save()
+      this.saveIfLocalFile()
     },
     clearShareURLId() {
       this.shareURLId = undefined
@@ -500,11 +518,18 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * Closes the file and resets the entire store, as well as resets the state of the global editor if it is present.
      *
      * DANGEROUS FUNCTION: This will clear the entire store and reset it to the default state. If you are still hooked
-     * to the editor and potentially are still in a sync channel with the server, this will overwrite all of that!
-     * @param preserveContent If true, the content will not be reset to the default content.
-     * @since 0.
+     * to the editor and potentially are still in a sync channel with the server, this will reset all of that.
+     * @param options.preserveContent If true, the content will not be reset to the default content. Takes presedence over
+     * `emptyContent`.
+     * @param options.emptyContent If true, the content will be reset to an empty string.
+     * @since 0.7.0
      */
-    async closeFileGlobally(preserveContent: boolean = false) {
+    async closeFileGlobally(
+      options?: {
+        preserveContent?: boolean,
+        emptyContent?: boolean,
+      }
+    ) {
       this.clearFileId()
       this.clearOTransStack()
       this.clearOwnerId()
@@ -516,9 +541,10 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.resetCreated()
       this.resetIsGlobal()
       this.setIsFileNameUpdated(false)
-      if (!preserveContent) {
-        this.setContent(constants.defaultFileContent)
-        await setGlobalEditorContentIfAvailable(constants.defaultFileContent)
+
+      if (!options?.preserveContent) {
+        this.setContent(options?.emptyContent ? '' : constants.defaultFileContent)
+        await setGlobalEditorContentIfAvailable(this.content)
       }
     },
     clearOTransStack() {
@@ -527,10 +553,15 @@ export const useCurrentFileStore = defineStore('currentFile', {
       this.lastTrans = undefined
     },
     /**
-     * Saves the current file to the local storage.
+     * Saves the current file to the local storage if its a local file.
+     *
+     * Otherwise, this function does nothing.
+     * @since 1.0.0
      */
-    save(): void {
-      writeFileToLocalStorage(this.file)
+    saveIfLocalFile(): void {
+      if (!this.remoteFile) {
+        writeFileToLocalStorage(this.file)
+      }
     },
   },
 })

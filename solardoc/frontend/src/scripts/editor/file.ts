@@ -7,9 +7,13 @@ import { createOrJoinChannelForFile } from '@/scripts/editor/channel'
 import { useLoadingStore } from '@/stores/loading'
 import { useRenderDataStore } from '@/stores/render-data'
 import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
-import type { Router } from 'vue-router'
+import type {RouteParams, Router} from 'vue-router'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
+import * as phoenixBackend from '@/services/phoenix/api-service'
+import {SolardocUnreachableError} from "@/errors/unreachable-error";
+import {SolardocError} from "@/errors/solardoc-error";
+import {SolardocNotImplementedError} from "@/errors/not-implemented-error";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -21,6 +25,34 @@ const overlayStateStore = useOverlayStateStore()
 const initStateStore = useInitStateStore()
 
 /**
+ * Initializes the editor file based on the provided path arguments and appropriately sets up any
+ * requirements for any eventual connection with the server.
+ * @param routeName The route name.
+ * @param routeParams The params of the route.
+ * @since 1.0.0
+ */
+export async function initEditorFileBasedOnPath(
+  routeName: string,
+  routeParams: RouteParams
+): Promise<'local' | ['remote', string] | ['shared', string]> {
+  if (routeName === 'local-editor') {
+    currentFileStore.setFileFromLocalStorage()
+    return 'local'
+  }
+
+  const id = <string>routeParams['fileId']
+  if (routeName === 'remote-editor') {
+    await currentFileStore.setFileWithRemoteId(id, currentUserStore.bearer!)
+    await phoenixBackend.ensurePhoenixBackendIsReachable()
+    await createEditorRemoteFileConnection()
+    return ['remote', id]
+  } else {
+    throw new SolardocNotImplementedError()
+    // return ['remote', id]
+  }
+}
+
+/**
  * Opens a file in the editor.
  * @param $router The router to use to redirect to the editor.
  * @param file The file to open up.
@@ -28,16 +60,13 @@ const initStateStore = useInitStateStore()
  */
 export async function openFileInEditor($router: Router, file: File): Promise<void> {
   loadingStore.setLoading(true)
-  await closeEditorRemoteFileConnection()
-
-  // We set the file but to ensure consistency we need to make sure we fetch the newest version if there is one
-  currentFileStore.setFile(file)
-  await currentFileStore.fetchNewestRemoteFileVersionIfPossible(currentUserStore.bearer!)
-
+  renderDataStore.clear()
   initStateStore.setInit(true)
   previewLoadingStore.setPreviewLoading(false)
-  renderDataStore.clear()
-  await $router.push('/editor')
+
+  await closeEditorRemoteFileConnection()
+  await currentFileStore.closeFileGlobally({emptyContent: true})
+  await $router.push(`/editor/o/${file.id}`)
 }
 
 /**
@@ -59,27 +88,19 @@ export async function closeEditorRemoteFileConnection(): Promise<boolean> {
 
 /**
  * Create a new remote file connection and populates the channel store.
- * @returns True if the connection was successful, false otherwise. (e.g. no file or user is present which is required
- * for the connection)
  * @since 0.7.0
  */
-export async function createEditorRemoteFileConnection(): Promise<boolean> {
+export async function createEditorRemoteFileConnection(): Promise<void> {
   overlayStateStore.resetAll()
   const sdsConnected = await connectToWSIfPossible()
-  if (
-    sdsConnected &&
-    currentFileStore.remoteFile &&
-    currentFileStore.raw &&
-    currentUserStore.currentUser
-  ) {
-    await currentFileStore.fetchNewestRemoteFileVersionIfPossible(currentUserStore.bearer!)
-    await createOrJoinChannelForFile(
-      <File>currentFileStore.raw, // Since this is a remote file we know it's not a LocalFile
-      currentUserStore.bearer!,
-      currentFileStore.shareURLId,
+  if (!sdsConnected) {
+    throw new SolardocUnreachableError(
+      'Failed to establish connection to the remote SDS server',
     )
-    return true
-  } else {
-    return false
   }
+  await createOrJoinChannelForFile(
+    <File>currentFileStore.raw, // Since this is a remote file we know it's not a LocalFile
+    currentUserStore.bearer!,
+    currentFileStore.shareURLId,
+  )
 }
