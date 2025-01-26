@@ -29,11 +29,23 @@ export default Object.freeze({
       title: 'File uploaded and saved',
       text: "Your file has been uploaded successfully. To save a new version, click 'Save in profile'.",
     },
+    fileGone: {
+      title: 'File not found',
+      text: 'The file you are looking for does not exist or has been moved. Please check the file path and try again.',
+    },
+    successfullyOpenedSharedFile: {
+      title: 'Shared File opened',
+      text: 'The shared file has been successfully opened! Please note that you are not the owner of this file and without this URL you cannot access it again.',
+    },
     newFile: {
       title: 'New file created',
       text:
-        "A new file has been created in your local storage! Please click 'Save in profile' to save this file " +
-        'on the server if you wish to do so!',
+        'A new file has been created in your local storage! Please note that only one concurrent file can be saved' +
+        'locally and you should save your file to avoid losing it.',
+    },
+    sharedFileIsOwnedByYou: {
+      title: 'You are the owner of this file',
+      text: 'You are the owner of this file and do not need to request access to it.',
     },
     loggedOut: {
       title: 'You have been successfully logged out',
@@ -110,6 +122,6 @@ export default Object.freeze({
     server: 'Cloud File',
     unsavedChanges: 'Unsaved Changes',
   },
-  version: 'v1.0.0-beta.0',
-  copyright: 'Solardoc © 2023-2024 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
+  version: 'v1.0.0-beta.2',
+  copyright: 'Solardoc © 2023-2025 Luna Klatzer, Emma Walchshofer, Lisa Pichler',
 })

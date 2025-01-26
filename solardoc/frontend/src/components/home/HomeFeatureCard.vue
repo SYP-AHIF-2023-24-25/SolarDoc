@@ -31,12 +31,10 @@
   }
 
   @include r-min(var.$window-xmedium) {
-    & {
-      padding: 0.5rem;
-      height: 100%;
-      width: unset;
-      max-width: 25rem;
-    }
+    height: 100%;
+    width: unset;
+    padding: 2rem;
+    max-width: 25rem;
   }
 }
 </style>

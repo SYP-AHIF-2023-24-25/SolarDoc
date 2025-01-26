@@ -73,12 +73,9 @@ export async function handleOutgoingUpdate(
 ): Promise<void> {
   await currentFileStore.pushOTransReq(toSend)
   if (sendToRemote) {
-    await editorUpdateWSClient.wsClient?.sendOTrans(
-      toSend,
-      () => console.log('[handle-ot.ts] Successfully sent OT request to remote'),
-      resp =>
-        console.error(`[handle-ot.ts] Received error response in response to OT request: ${resp}`),
-    )
+    await editorUpdateWSClient.wsClient?.sendOTrans(toSend, (resp: any) => {
+      console.error(`[handle-ot.ts] Received error response in response to OT request: ${resp}`)
+    })
   }
 }
 

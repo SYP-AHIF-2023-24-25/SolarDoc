@@ -203,12 +203,12 @@ const slideSelected = ref<undefined | number>(undefined)
 
   /* Window size is standard/large desktop */
   &.desktop {
-    @include hide-that-respects-svg;
+    @include hide-that-respects-svg();
   }
 
   /* Window size is small - small tablet or smaller */
   &.phone {
-    @include show-that-respects-svg;
+    @include show-that-respects-svg();
     @include fill-viewport;
     width: 100%;
     height: 100%;
@@ -255,7 +255,7 @@ const slideSelected = ref<undefined | number>(undefined)
 /* Window size is medium or larger */
 @include r-min(var.$window-medium) {
   .slides-manager-wrapper:not(.phone) {
-    @include show-that-respects-svg;
+    @include show-that-respects-svg();
     @include fill-viewport;
 
     #slides-manager {
@@ -352,7 +352,7 @@ const slideSelected = ref<undefined | number>(undefined)
   }
 
   .slides-manager-wrapper.phone {
-    @include hide-that-respects-svg;
+    @include hide-that-respects-svg();
   }
 }
 </style>

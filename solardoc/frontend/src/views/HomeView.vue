@@ -15,7 +15,7 @@ async function routeWithLoading(to: string) {
 
 <template>
   <div id="home-page-wrapper" class="page-content-wrapper">
-    <div id="home-page-welcome" class="heart-background">
+    <div id="home-page-welcome" class="heart-background scroll-container">
       <div id="text-and-buttons">
         <div id="welcome-text">
           <p>Create <br />presentations</p>
@@ -31,19 +31,23 @@ async function routeWithLoading(to: string) {
         <SolardocStreamSVG />
       </div>
     </div>
-    <div id="home-page-welcome-content-separator">
-      <h2>So what can Solardoc do?<span></span></h2>
-    </div>
-    <div id="home-page-content">
-      <HomeFeatureCard>
-        <h2>In Work! ✨</h2>
-      </HomeFeatureCard>
-      <HomeFeatureCard>
-        <h2>In Work! ✨</h2>
-      </HomeFeatureCard>
-      <HomeFeatureCard>
-        <h2>In Work! ✨</h2>
-      </HomeFeatureCard>
+    <div class="scroll-container">
+      <div id="home-page-welcome-content-separator">
+        <h2>So what can Solardoc do?<span></span></h2>
+      </div>
+      <div id="home-page-content">
+        <HomeFeatureCard>
+          <h2>Help you collaborate in real-time with your friends and colleagues!<br />✨</h2>
+        </HomeFeatureCard>
+        <HomeFeatureCard>
+          <h2>Auto-previews and loads changes on the fly!<br />✨</h2>
+        </HomeFeatureCard>
+        <HomeFeatureCard>
+          <h2>
+            Brings the best of Asciidoc to your browser with all the customisation you want!<br />✨
+          </h2>
+        </HomeFeatureCard>
+      </div>
     </div>
   </div>
 </template>
@@ -181,8 +185,8 @@ async function routeWithLoading(to: string) {
   #home-page-welcome-content-separator {
     @include align-center;
     width: 100%;
+    height: 12rem;
 
-    height: 10rem;
     h2 {
       position: relative;
       text-align: center;
@@ -220,6 +224,7 @@ async function routeWithLoading(to: string) {
 
     h2 {
       font-size: 1.5rem;
+      text-align: center;
     }
 
     @include r-min(var.$window-small) {
@@ -230,7 +235,7 @@ async function routeWithLoading(to: string) {
 
     @include r-min(var.$window-xmedium) {
       & {
-        height: 40rem;
+        height: 30rem;
         gap: max(6rem, 10vw);
         flex-flow: row wrap;
         padding: 0 4rem 4rem 4rem;

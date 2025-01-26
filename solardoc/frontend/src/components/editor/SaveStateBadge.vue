@@ -67,6 +67,7 @@ async function uploadFile() {
 <style scoped lang="scss">
 @use '@/assets/core/mixins/align-center' as *;
 @use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/mixins/hide' as *;
 @use '@/assets/core/var' as var;
 
 #save-state {
@@ -76,6 +77,13 @@ async function uploadFile() {
   height: 100%;
   max-width: 100%;
   font-size: 0.8rem;
+
+  &::after {
+    @include hide();
+    @include r-min(var.$window-medium) {
+      @include show();
+    }
+  }
 
   & > p {
     @include align-center;
