@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue'
+import { ref, watch } from 'vue'
 import PersonCount from '@/components/icons/PersonCountIconSVG.vue'
 import PersonCountDarkMode from '@/components/icons/PersonCountIconDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useContributorsStore } from '@/stores/contributors'
-import {waitForConditionAndExecute} from "@/scripts/wait-for";
-import {interceptErrors} from "@/errors/handler/error-handler";
-import {useFileOwnerStore} from "@/stores/file-owner";
-import {storeToRefs} from "pinia";
+import { waitForConditionAndExecute } from '@/scripts/wait-for'
+import { interceptErrors } from '@/errors/handler/error-handler'
+import { useFileOwnerStore } from '@/stores/file-owner'
+import { storeToRefs } from 'pinia'
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()
@@ -20,18 +20,21 @@ const fileOwnerStore = useFileOwnerStore()
 const { contributors } = storeToRefs(contributorsStore)
 const { owner } = storeToRefs(fileOwnerStore)
 
-interceptErrors((async () => {
-  if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
-    await waitForConditionAndExecute(
-      () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
-      async () => await contributorsStore.fetchAndUpdateContributors(
-        currentUserStore.bearer!,
-        currentFileStore.fileId!,
-      ),
-      500,
-    )
-  }
-})())
+interceptErrors(
+  (async () => {
+    if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
+      await waitForConditionAndExecute(
+        () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
+        async () =>
+          await contributorsStore.fetchAndUpdateContributors(
+            currentUserStore.bearer!,
+            currentFileStore.fileId!,
+          ),
+        500,
+      )
+    }
+  })(),
+)
 
 const dropdown = ref(false)
 const toggleDropdown = (visible: boolean) => {
@@ -39,7 +42,7 @@ const toggleDropdown = (visible: boolean) => {
 }
 
 // Watch contributors and owner to update the dropdown
-const combinedContributors = ref<Array<{ user_id: string, username?: string }>>([])
+const combinedContributors = ref<Array<{ user_id: string; username?: string }>>([])
 const updateContent = () => {
   combinedContributors.value = [...contributors.value]
   if (owner.value) {
@@ -78,8 +81,12 @@ watch([contributors, owner], updateContent)
         class="dropdown-element"
       >
         {{ contributor.username }}
-        <span id="owner-tag" v-if="owner !== undefined && contributor.user_id === owner.id">Owner</span>
-        <span id="you-tag" v-else-if="contributor.user_id === currentUserStore.currentUser?.id">You</span>
+        <span id="owner-tag" v-if="owner !== undefined && contributor.user_id === owner.id"
+          >Owner</span
+        >
+        <span id="you-tag" v-else-if="contributor.user_id === currentUserStore.currentUser?.id"
+          >You</span
+        >
       </div>
     </div>
   </div>

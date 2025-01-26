@@ -4,9 +4,10 @@ import type { FilePermission } from '@/services/phoenix/api-service'
 import {
   PhoenixBadRequestError,
   PhoenixInternalError,
-  PhoenixInvalidCredentialsError, PhoenixNotFoundError
-} from "@/services/phoenix/errors";
-import type {Awaited} from "@vueuse/core";
+  PhoenixInvalidCredentialsError,
+  PhoenixNotFoundError,
+} from '@/services/phoenix/errors'
+import type { Awaited } from '@vueuse/core'
 
 export const useContributorsStore = defineStore('contributors', {
   state: () => {

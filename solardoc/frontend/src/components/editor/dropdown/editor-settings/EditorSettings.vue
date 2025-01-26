@@ -14,7 +14,7 @@ import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
 import { waitForConditionAndExecute } from '@/scripts/wait-for'
-import {useFileOwnerStore} from "@/stores/file-owner";
+import { useFileOwnerStore } from '@/stores/file-owner'
 
 const $router = useRouter()
 
@@ -24,18 +24,23 @@ const currentUserStore = useCurrentUserStore()
 const fileOwnerStore = useFileOwnerStore()
 
 const owner = ref<UserPublic>({ username: 'Local User', id: 'local-user-id' })
-interceptErrors((async () => {
-  if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
-    await waitForConditionAndExecute(
-      () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
-      async () => {
-        await fileOwnerStore.fetchAndUpdateFileOwner(currentUserStore.bearer!, currentFileStore.ownerId!)
-        owner.value = fileOwnerStore.owner!
-      },
-      500,
-    )
-  }
-})())
+interceptErrors(
+  (async () => {
+    if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
+      await waitForConditionAndExecute(
+        () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
+        async () => {
+          await fileOwnerStore.fetchAndUpdateFileOwner(
+            currentUserStore.bearer!,
+            currentFileStore.ownerId!,
+          )
+          owner.value = fileOwnerStore.owner!
+        },
+        500,
+      )
+    }
+  })(),
+)
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
 const lastModified = ref(getLastModified())

@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import type {UserPublic} from '@/services/phoenix/api-service'
-import type {Awaited} from "@vueuse/core";
+import type { UserPublic } from '@/services/phoenix/api-service'
+import type { Awaited } from '@vueuse/core'
 import {
   PhoenixInternalError,
-  PhoenixInvalidCredentialsError, PhoenixNotFoundError
-} from "@/services/phoenix/errors";
+  PhoenixInvalidCredentialsError,
+  PhoenixNotFoundError,
+} from '@/services/phoenix/errors'
 
 export const useFileOwnerStore = defineStore('fileOwner', {
   state: () => {
