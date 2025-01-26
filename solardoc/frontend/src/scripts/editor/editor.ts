@@ -23,7 +23,6 @@ import { sendOTUpdates } from '@/scripts/editor/ot/send-ot'
 import { EditorModelNotFoundError } from '@/errors/editor-model-not-found-error'
 import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
 import {storeToRefs} from "pinia";
-import type {Position} from "@vueuse/core";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -175,7 +174,7 @@ export class SolardocEditor {
 
     }
 
-    const position: Position = { lineNumber, column: lines[lineNumber - 1].length + 1};
+    const position: monaco.editor.IPosition = { lineNumber, column: lines[lineNumber - 1].length + 1 };
     this.monacoEditor.setPosition(position);
     this.monacoEditor.revealPositionNearTop(position)
     this.monacoEditor.focus();
