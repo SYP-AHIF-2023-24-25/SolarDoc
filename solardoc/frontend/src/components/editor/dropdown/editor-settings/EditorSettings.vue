@@ -20,6 +20,7 @@ import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
+import {waitForConditionAndExecute} from "@/scripts/wait-for";
 
 const $router = useRouter()
 
@@ -29,10 +30,13 @@ const currentUserStore = useCurrentUserStore()
 const owner = ref<UserPublic>()
 
 ;(async () => {
-  if (currentUserStore.loggedIn && currentFileStore.remoteFile) {
-    await fetchOwner(currentFileStore.ownerId!, currentUserStore.bearer!)
-  } else {
-    owner.value = { username: 'Local User', id: 'local-user-id' }
+  owner.value = { username: 'Local User', id: 'local-user-id' }
+  if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
+    await waitForConditionAndExecute(
+      () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
+      async () => await fetchOwner(currentFileStore.ownerId!, currentUserStore.bearer!),
+      500,
+    )
   }
 })()
 

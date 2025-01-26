@@ -9,9 +9,9 @@ import { useCurrentFileStore } from '@/stores/current-file'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { PhoenixInternalError, PhoenixRestError } from '@/services/phoenix/errors'
 import { ref } from 'vue'
+import type { GradientType, RenderAs } from 'qrcode.vue'
 import QrcodeVue from 'qrcode.vue'
-import type { RenderAs, GradientType } from 'qrcode.vue'
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router'
 
 const $router = useRouter()
 
@@ -61,10 +61,13 @@ async function submitForm(
         throw new PhoenixRestError('Server rejected request to fetch current user', resp.status)
       }
       if (resp.status === 201) {
-        generatedLink.value = $router.resolve({
+        const location = $router.resolve({
           name: 'shared-editor',
           params: { fileId: resp.data.id },
-        }).href
+        })
+        generatedLink.value = location.href.includes(window.location.origin)
+          ? location.href
+          : `${window.location.origin}${location.href}`
       }
     }
   }

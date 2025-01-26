@@ -14,8 +14,10 @@ import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
 import { SolardocNotImplementedError } from '@/errors/not-implemented-error'
 import { KipperFileNotFoundError } from '@/errors/file-not-found-error'
-import { showSuccessNotifFromObj } from '@/scripts/show-notif'
+import {showSuccessNotifFromObj, showWarnNotifFromObj} from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
+import {initEditorFileBasedOnShareURL} from "@/scripts/share/resolve-share-url";
+import {omitQuery} from "@/router/omit-query";
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -42,6 +44,11 @@ export async function initEditorFileBasedOnPath(
   routeQueries: LocationQuery,
 ): Promise<'local' | ['remote', string] | ['shared', string]> {
   if ('showFileGoneError' in routeQueries && routeQueries.showFileGoneError === 'true') {
+    await omitQuery($router, { queryKey: 'showFileGoneError' })
+    showSuccessNotifFromObj(constants.notifMessages.fileGone)
+  } else if ('showIsOwnerWarn' in routeQueries && routeQueries.showIsOwnerWarn === 'true') {
+    await omitQuery($router, { queryKey: 'showIsOwnerWarn' })
+    showWarnNotifFromObj(constants.notifMessages.sharedFileIsOwnedByYou)
   }
 
   if (routeName === 'local-editor') {
@@ -50,7 +57,7 @@ export async function initEditorFileBasedOnPath(
 
       // We need to avoid the user reloading the page and accidentally clearing his state so we need to clean up the
       // path query and ensure that the reload is without side effects
-      $router.push({ name: 'local-editor' }).then(() => {
+      $router.replace({ name: 'local-editor' }).then(() => {
         showSuccessNotifFromObj(constants.notifMessages.newFile)
       })
     } else {
@@ -59,6 +66,7 @@ export async function initEditorFileBasedOnPath(
     return 'local'
   }
 
+  let type: 'remote' | 'shared' = 'remote'
   const id = <string>routeParams['fileId']
   if (routeName === 'remote-editor') {
     try {
@@ -68,13 +76,19 @@ export async function initEditorFileBasedOnPath(
         await $router.push({ name: 'local-editor', query: { showFileGoneError: 'true' } })
       }
     }
-    await phoenixBackend.ensurePhoenixBackendIsReachable()
-    await createEditorRemoteFileConnection()
-    return ['remote', id]
   } else {
-    throw new SolardocNotImplementedError()
-    // return ['remote', id]
+    const success = await initEditorFileBasedOnShareURL($router, `${routeParams.fileId}`)
+    if (!success) {
+      // -> Indicates error or redirect
+      return 'local' // -> Redirect to local editor, temporary white screen before the actual load is performed
+    }
+    type = 'shared'
+    showSuccessNotifFromObj(constants.notifMessages.successfullyOpenedSharedFile)
   }
+
+  await phoenixBackend.ensurePhoenixBackendIsReachable()
+  await createEditorRemoteFileConnection()
+  return [type, id]
 }
 
 /**

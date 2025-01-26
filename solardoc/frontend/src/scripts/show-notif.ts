@@ -5,8 +5,8 @@ export type NotificationType = Exclude<NotificationsOptions['type'], undefined>
 const duration: Record<NotificationType, number> = {
   error: 20000,
   warn: 15000,
-  info: 10000,
-  success: 5000,
+  info: 12000,
+  success: 10000,
 }
 const { notify } = useNotification()
 
@@ -35,8 +35,12 @@ export function showErrorNotif(title: string, text: string): void {
   showNotif('error', title, text)
 }
 
-function showWarnNotifFromErr(error: NotifiableError & { isWarn: true }): void {
+export function showWarnNotifFromErr(error: NotifiableError & { isWarn: true }): void {
   showWarnNotif(`${error.notifName}: ${error.notifMessage}`, error.notifDescription)
+}
+
+export function showWarnNotifFromObj(obj: { title: string; text: string }): void {
+  showWarnNotif(obj.title, obj.text)
 }
 
 export function showWarnNotif(title: string, text: string): void {
