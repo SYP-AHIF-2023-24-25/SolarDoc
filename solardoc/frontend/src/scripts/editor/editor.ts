@@ -160,7 +160,7 @@ export class SolardocEditor {
           }
         }
 
-        previewSelectedSlideStore.setSlide(slideIndex, subSlideIndex,false);
+        previewSelectedSlideStore.setSlide(slideIndex, false,subSlideIndex);
       });
 
     this._startContentWatchers()

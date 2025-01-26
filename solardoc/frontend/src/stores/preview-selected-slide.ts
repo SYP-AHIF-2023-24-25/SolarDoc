@@ -6,7 +6,7 @@ export const usePreviewSelectedSlideStore = defineStore('previewSelectedSlide', 
     return { slideIndex: 0, subSlideIndex: <number | undefined>undefined }
   },
   actions: {
-    setSlide(slideIndex: number, subSlideIndex?: number, redirectCursor: boolean) {
+    setSlide(slideIndex: number, redirectCursor: boolean, subSlideIndex?: number) {
       this.slideIndex = slideIndex
       this.subSlideIndex = subSlideIndex
 
