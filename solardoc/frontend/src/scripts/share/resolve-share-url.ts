@@ -7,14 +7,13 @@ import type {
 import type { Awaited } from '@vueuse/core'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { PhoenixInternalError } from '@/services/phoenix/errors'
-import {showWarnNotif, showWarnNotifFromObj} from '@/scripts/show-notif'
+import { showWarnNotif } from '@/scripts/show-notif'
 import type { Permission } from '@/stores/current-file'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Router } from 'vue-router'
 import { throw404Error } from '@/router/404-err'
 import { useLoadingStore } from '@/stores/loading'
-import constants from "@/plugins/constants";
 
 const loadingStore = useLoadingStore()
 const currentFileStore = useCurrentFileStore()
@@ -108,7 +107,10 @@ async function getFilePermissionsForCurrentUser(file: File): Promise<FilePermiss
  * @returns True if the file was successfully initialized, false otherwise (indicates an error or redirect to login).
  * @since 1.0.0
  */
-export async function initEditorFileBasedOnShareURL($router: Router, shareUrlId: string): Promise<boolean> {
+export async function initEditorFileBasedOnShareURL(
+  $router: Router,
+  shareUrlId: string,
+): Promise<boolean> {
   if (!shareUrlId) {
     await $router.isReady()
     await $router.push('/404')
@@ -136,12 +138,11 @@ export async function initEditorFileBasedOnShareURL($router: Router, shareUrlId:
   const isShareFileOwner = currentUserStore.currentUser?.id === file.owner_id
   if (isShareFileOwner) {
     await $router.isReady()
-    await $router.replace({ path: `/editor/o/${file.id}`, force: true, query: { showIsOwnerWarn: 'true' } })
-      .then(
-        () => {
-          $router.go(0) // Reload the page to ensure the file is loaded, due to a bug this is necessary
-        }
-      )
+    await $router
+      .replace({ path: `/editor/o/${file.id}`, force: true, query: { showIsOwnerWarn: 'true' } })
+      .then(() => {
+        $router.go(0) // Reload the page to ensure the file is loaded, due to a bug this is necessary
+      })
     return false
   }
   const permissions = await getFilePermissionsForUser($router, file, shareURL.perms)

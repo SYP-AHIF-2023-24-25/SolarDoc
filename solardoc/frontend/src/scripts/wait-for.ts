@@ -9,26 +9,26 @@ export async function waitForConditionAndExecute(
   cond: () => boolean,
   callback: () => Promise<void>,
   interval: number,
-  timeout?: number | undefined
+  timeout?: number | undefined,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    const startTime = Date.now();
+    const startTime = Date.now()
 
     const checkCondition = async () => {
       if (cond()) {
         try {
-          await callback();
-          resolve();
+          await callback()
+          resolve()
         } catch (error) {
-          reject(error);
+          reject(error)
         }
       } else if (timeout && Date.now() - startTime >= timeout) {
-        reject(new Error('Timeout exceeded'));
+        reject(new Error('Timeout exceeded'))
       } else {
-        setTimeout(checkCondition, interval);
+        setTimeout(checkCondition, interval)
       }
-    };
+    }
 
-    checkCondition();
-  });
+    checkCondition()
+  })
 }

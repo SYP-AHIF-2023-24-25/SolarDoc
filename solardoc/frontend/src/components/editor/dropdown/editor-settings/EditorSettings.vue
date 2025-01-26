@@ -8,19 +8,19 @@ import { useCurrentUserStore } from '@/stores/current-user'
 import CollaboratorList from '@/components/editor/dropdown/editor-settings/CollaboratorList.vue'
 import UserRef from '@/components/common/UserRef.vue'
 import type { Awaited } from '@vueuse/core'
+import type { UserPublic } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import {
   type ActualPhxErrorResp,
   PhoenixBadRequestError,
   PhoenixInternalError,
 } from '@/services/phoenix/errors'
-import type { UserPublic } from '@/services/phoenix/api-service'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
-import {waitForConditionAndExecute} from "@/scripts/wait-for";
+import { waitForConditionAndExecute } from '@/scripts/wait-for'
 
 const $router = useRouter()
 

@@ -1,4 +1,9 @@
-import {createRouter, createWebHistory, type NavigationFailure, type RouteLocationNormalized} from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  type NavigationFailure,
+  type RouteLocationNormalized,
+} from 'vue-router'
 import { useLoadingStore } from '@/stores/loading'
 import { useNotification } from '@kyvg/vue3-notification'
 import HomeView from '../views/HomeView.vue'
@@ -122,7 +127,11 @@ router.afterEach(() => {
   loadingStore.setLoading(false)
 })
 
-function reportRouterFailure(to: RouteLocationNormalized, from: RouteLocationNormalized, failure: NavigationFailure) {
+function reportRouterFailure(
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+  failure: NavigationFailure,
+) {
   console.error(`Failed to navigate from ${from.fullPath} to ${to.fullPath}:`, failure)
 }
 

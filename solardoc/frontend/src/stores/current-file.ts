@@ -9,8 +9,6 @@ import {
   PhoenixNotAuthorisedError,
 } from '@/services/phoenix/errors'
 import constants from '@/plugins/constants'
-import { showNotifFromErr } from '@/scripts/show-notif'
-import { FileGoneWarn } from '@/errors/file-gone-warn'
 import { isDev } from '@/config/env'
 import { KipperFileNotFoundError } from '@/errors/file-not-found-error'
 

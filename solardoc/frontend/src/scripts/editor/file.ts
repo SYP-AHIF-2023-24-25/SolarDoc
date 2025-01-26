@@ -12,12 +12,11 @@ import { usePreviewLoadingStore } from '@/stores/preview-loading'
 import { useInitStateStore } from '@/stores/init-state'
 import * as phoenixBackend from '@/services/phoenix/api-service'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
-import { SolardocNotImplementedError } from '@/errors/not-implemented-error'
 import { KipperFileNotFoundError } from '@/errors/file-not-found-error'
-import {showSuccessNotifFromObj, showWarnNotifFromObj} from '@/scripts/show-notif'
+import { showSuccessNotifFromObj, showWarnNotifFromObj } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
-import {initEditorFileBasedOnShareURL} from "@/scripts/share/resolve-share-url";
-import {omitQuery} from "@/router/omit-query";
+import { initEditorFileBasedOnShareURL } from '@/scripts/share/resolve-share-url'
+import { omitQuery } from '@/router/omit-query'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()

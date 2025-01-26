@@ -14,10 +14,7 @@ import { useLoadingStore } from '@/stores/loading'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-import {
-  closeEditorRemoteFileConnection,
-  createEditorRemoteFileConnection,
-} from '@/scripts/editor/file'
+import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
 import { handleCopy } from '@/scripts/handle-copy'
 import { openInNewWindow } from '@/router/open'
 
