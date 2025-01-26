@@ -1,39 +1,33 @@
 import { defineStore } from 'pinia'
 import * as phoenixRestService from '@/services/phoenix/api-service'
-import type { FilePermission } from '@/services/phoenix/api-service'
+import type {UserPublic} from '@/services/phoenix/api-service'
+import type {Awaited} from "@vueuse/core";
 import {
-  PhoenixBadRequestError,
   PhoenixInternalError,
   PhoenixInvalidCredentialsError, PhoenixNotFoundError
 } from "@/services/phoenix/errors";
-import type {Awaited} from "@vueuse/core";
 
-export const useContributorsStore = defineStore('contributors', {
+export const useFileOwnerStore = defineStore('fileOwner', {
   state: () => {
     return {
-      contributors: [] as Array<FilePermission>,
+      owner: <UserPublic | undefined>undefined,
     }
   },
   actions: {
-    async fetchAndUpdateContributors(bearerToken: string, fileId: string) {
-      let resp: Awaited<ReturnType<typeof phoenixRestService.getV2FilesByFileIdPermissions>>
+    async fetchAndUpdateFileOwner(bearerToken: string, userId: string) {
+      let resp: Awaited<ReturnType<typeof phoenixRestService.getV2UsersById>>
       try {
-        resp = await phoenixRestService.getV2FilesByFileIdPermissions(bearerToken, fileId)
+        resp = await phoenixRestService.getV2UsersById(bearerToken, userId)
       } catch (e) {
         throw new PhoenixInternalError(
           'Critically failed to fetch owner of the file. Cause: ' + (<Error>e).message,
         )
       }
       if (resp.status === 200) {
-        this.contributors = resp.data
-      } else if (resp.status === 400) {
-        throw new PhoenixBadRequestError(
-          'Server rejected request to load file owner',
-          'Invalid request data. Please check your input and try again.',
-        )
+        this.owner = resp.data satisfies UserPublic
       } else if (resp.status === 401) {
         throw new PhoenixInvalidCredentialsError(
-          'Server rejected request to load file ownerr',
+          'Server rejected request to load file owner',
           'Your saved token is invalid or has already been revoked. Please log in again.',
         )
       } else if (resp.status === 404) {

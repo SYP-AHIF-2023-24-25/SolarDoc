@@ -1,57 +1,85 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {ref, watch} from 'vue'
 import PersonCount from '@/components/icons/PersonCountIconSVG.vue'
 import PersonCountDarkMode from '@/components/icons/PersonCountIconDarkModeSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useContributorsStore } from '@/stores/contributors'
+import {waitForConditionAndExecute} from "@/scripts/wait-for";
+import {interceptErrors} from "@/errors/handler/error-handler";
+import {useFileOwnerStore} from "@/stores/file-owner";
+import {storeToRefs} from "pinia";
 
 const darkModeStore = useDarkModeStore()
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
 const contributorsStore = useContributorsStore()
+const fileOwnerStore = useFileOwnerStore()
 
-;(async () => {
-  await contributorsStore.fetchAndUpdateContributors(
-    currentUserStore.bearer!,
-    currentFileStore.fileId!,
-  )
-})()
+const { contributors } = storeToRefs(contributorsStore)
+const { owner } = storeToRefs(fileOwnerStore)
+
+interceptErrors((async () => {
+  if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
+    await waitForConditionAndExecute(
+      () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
+      async () => await contributorsStore.fetchAndUpdateContributors(
+        currentUserStore.bearer!,
+        currentFileStore.fileId!,
+      ),
+      500,
+    )
+  }
+})())
 
 const dropdown = ref(false)
-
 const toggleDropdown = (visible: boolean) => {
   dropdown.value = visible
 }
+
+// Watch contributors and owner to update the dropdown
+const combinedContributors = ref<Array<{ user_id: string, username?: string }>>([])
+const updateContent = () => {
+  combinedContributors.value = [...contributors.value]
+  if (owner.value) {
+    combinedContributors.value.unshift({ user_id: owner.value.id, username: owner.value.username })
+  }
+}
+
+updateContent()
+watch([contributors, owner], updateContent)
 </script>
 
 <template>
   <div class="contributors">
+    <!-- TODO: Mouse events need to be replaced with actual SCSS! -->
     <div
       class="icon-and-count"
       @mouseenter="toggleDropdown(true)"
       @mouseleave="toggleDropdown(false)"
     >
-      <button class="contributor-button">
+      <div class="contributor-button">
         <PersonCount v-show="!darkModeStore.darkMode" />
         <PersonCountDarkMode v-show="darkModeStore.darkMode" />
-        <span class="contributor-count"> {{ contributorsStore.contributors.length }}</span>
-      </button>
+        <span class="contributor-count"> {{ combinedContributors.length }}</span>
+      </div>
     </div>
-
+    <!-- TODO: Mouse events need to be replaced with actual SCSS! -->
     <div
-      v-if="dropdown"
+      v-show="dropdown"
       class="dropdown-menu"
       @mouseenter="toggleDropdown(true)"
       @mouseleave="toggleDropdown(false)"
     >
       <div
-        v-for="contributor in contributorsStore.contributors"
+        v-for="contributor in combinedContributors"
         :key="contributor.user_id"
         class="dropdown-element"
       >
         {{ contributor.username }}
+        <span id="owner-tag" v-if="owner !== undefined && contributor.user_id === owner.id">Owner</span>
+        <span id="you-tag" v-else-if="contributor.user_id === currentUserStore.currentUser?.id">You</span>
       </div>
     </div>
   </div>
@@ -64,11 +92,13 @@ const toggleDropdown = (visible: boolean) => {
 .contributors {
   position: relative;
   display: inline-block;
+  height: 2rem;
+  padding: var.$editor-menu-padding;
+  margin: var.$editor-menu-margin;
 
   .icon-and-count {
     display: flex;
     align-items: center;
-    gap: 8px;
 
     .contributor-button {
       display: flex;
@@ -76,7 +106,6 @@ const toggleDropdown = (visible: boolean) => {
       background: none;
       border: none;
       cursor: pointer;
-      padding: 0.5rem 1rem;
       margin: 0;
       text-decoration: none;
 
@@ -92,10 +121,9 @@ const toggleDropdown = (visible: boolean) => {
 
       .contributor-count {
         font-size: 1rem;
-        margin-left: 0.5rem;
         color: var(--text-color);
         transition: color 0.2s ease;
-        margin-top: 0.3rem;
+        margin: 0.3rem 0 0 0.2rem;
       }
     }
 
@@ -117,18 +145,21 @@ const toggleDropdown = (visible: boolean) => {
     background-color: var.$overlay-background-color;
     box-shadow: 0 0 10px 0 var.$box-shadow-color;
     border-radius: 4px;
-    width: 200px;
+    width: 250px;
     z-index: 100;
 
-    @media (max-width: 600px) {
-      width: calc(100vw - 2rem);
-      padding: 1rem;
-    }
+    // Align the dropdown at the center of the icon
+    transform: translateX(-40%);
 
     .dropdown-element {
       padding: 0.6rem 1rem;
       cursor: pointer;
       transition: background-color 0.2s;
+      font-size: 0.95rem;
+
+      // If the name is too big to fit in the dropdown,
+      white-space: nowrap;
+      overflow: hidden;
 
       &:hover {
         background-color: var(--hover-background-color);
@@ -136,6 +167,25 @@ const toggleDropdown = (visible: boolean) => {
 
       &:not(:last-child) {
         border-bottom: 1px solid #e0e0e0;
+      }
+
+      #owner-tag,
+      #you-tag {
+        margin: 0 0 0 0.3rem;
+        transform: translateY(-0.1rem);
+        color: white;
+        height: 1.2rem;
+        width: 1.2rem;
+        padding: 4px 4px 2px 4px;
+        border-radius: 2px;
+      }
+
+      #owner-tag {
+        background-color: var.$scheme-friendly-blue;
+      }
+
+      #you-tag {
+        background-color: var.$scheme-healthy-green-soft;
       }
     }
   }
