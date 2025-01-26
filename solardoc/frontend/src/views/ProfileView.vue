@@ -17,7 +17,7 @@ if (!currentUserStore.loggedIn) {
 </script>
 
 <template>
-  <div id="profile-wrapper" class="page-content-wrapper heart-background">
+  <div id="profile-wrapper" class="page-content-wrapper heart-background" v-if="currentUserStore.loggedIn">
     <div id="profile-container" class="page-content-container large">
       <div id="profile-body">
         <ProfileHeader />

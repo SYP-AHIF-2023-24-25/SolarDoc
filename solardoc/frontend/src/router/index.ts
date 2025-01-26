@@ -132,7 +132,7 @@ function reportRouterFailure(
   from: RouteLocationNormalized,
   failure: NavigationFailure,
 ) {
-  console.error(`Failed to navigate from ${from.fullPath} to ${to.fullPath}:`, failure)
+  console.warn(`Failed to navigate from ${from.fullPath} to ${to.fullPath}:`, failure)
 }
 
 router.afterEach((to, from, failure) => {

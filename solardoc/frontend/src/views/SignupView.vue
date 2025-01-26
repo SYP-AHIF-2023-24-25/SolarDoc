@@ -10,25 +10,23 @@ import {
   PhoenixInvalidCredentialsError,
 } from '@/services/phoenix/errors'
 import { interceptErrors } from '@/errors/handler/error-handler'
-import { isValidPath } from '@/scripts/is-valid-path'
-import { useLoadingStore } from '@/stores/loading'
+import { redirect } from '@/router/redirect'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
-const loadingStore = useLoadingStore()
 
-
-async function logInUser(form$: Vueform & {
-  requestData: {
-    email: string;
-    password: string;
-    organisation: string;
-    "intended-use": number;
-    "accepts-conditions": boolean;
-    "display-name": string
-  }
-}) {
-
+async function logInUser(
+  form$: Vueform & {
+    requestData: {
+      email: string
+      password: string
+      organisation: string
+      'intended-use': number
+      'accepts-conditions': boolean
+      'display-name': string
+    }
+  },
+) {
   const loginUser = {
     email: form$.requestData.email,
     password: form$.requestData.password,
@@ -45,19 +43,17 @@ async function logInUser(form$: Vueform & {
   if (resp.status === 201) {
     currentUserStore.setCurrentAuth(resp.data)
     await currentUserStore.fetchCurrentUser()
-    await redirect()
+    await redirect($router, '/profile')
   } else if (resp.status === 400) {
-    throw new PhoenixBadRequestError('Server rejected direct sign in', resp.data as ActualPhxErrorResp)
+    throw new PhoenixBadRequestError(
+      'Server rejected direct sign in',
+      resp.data as ActualPhxErrorResp,
+    )
   } else if (resp.status === 401) {
     throw new PhoenixInvalidCredentialsError()
   } else {
-    console.error('[Login after Sign up] Server rejected sign in. Cause: Unknown error', resp)
-    throw new SolardocUnreachableError(
-        'Server rejected sign in.',
-        'Unknown error. Please try again.',
-    )
+    throw new SolardocUnreachableError('Encountered network error during sign up')
   }
-
 }
 
 async function submitForm(
@@ -93,22 +89,11 @@ async function submitForm(
 
   if (resp.status === 201) {
     currentUserStore.setCurrentUser(resp.data)
-    await logInUser(form$);
+    await logInUser(form$)
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp)
   } else {
     throw new SolardocUnreachableError('Encountered network error during sign up')
-  }
-}
-
-async function redirect() {
-  loadingStore.setLoading(true)
-
-  const returnTo = $router.currentRoute.value.query.returnTo
-  if (typeof returnTo === 'string' && isValidPath(returnTo)) {
-    return await $router.push(returnTo)
-  } else {
-    return await $router.push('/profile')
   }
 }
 </script>
