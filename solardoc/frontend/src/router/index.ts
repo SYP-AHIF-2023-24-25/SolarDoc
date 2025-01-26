@@ -28,11 +28,6 @@ const router = createRouter({
       component: () => import('@/views/CollabView.vue'),
     },
     {
-      path: '/editor' + htmlExtMatcher,
-      name: 'editor',
-      component: () => import('@/views/EditorView.vue'),
-    },
-    {
       path: '/login' + htmlExtMatcher,
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
@@ -58,10 +53,42 @@ const router = createRouter({
       component: () => import('@/views/TestEditorView.vue'),
     },
     {
+      path: '/editor',
+      children: [
+        {
+          path: '',
+          redirect: { name: 'local-editor' },
+        },
+        {
+          name: 'local-editor',
+          path: 'local',
+          component: () => import('@/views/EditorView.vue'),
+          sensitive: true,
+          strict: true,
+        },
+        {
+          name: 'remote-editor',
+          path: ':fileId',
+          component: () => import('@/views/EditorView.vue'),
+          sensitive: true,
+          strict: true,
+        },
+        {
+          name: 'shared-editor',
+          path: 'shared/:fileId',
+          component: () => import('@/views/EditorView.vue'),
+          sensitive: true,
+          strict: true,
+        },
+      ]
+    },
+    // ---- DEPRECATED ----
+    {
       path: '/share/:shareUrlId',
       name: 'share-url',
       component: () => import('@/views/ShareURLView.vue'),
     },
+    // ---------------------
     // 404-page (reroutes in the view to the static 404.html)
     {
       path: '/404',

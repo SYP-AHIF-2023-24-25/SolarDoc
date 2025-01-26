@@ -7,7 +7,12 @@ import Navbar from '@/components/navbar/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import { Notifications } from '@kyvg/vue3-notification'
 
-const NO_FOOTER_OR_STYLED_NAV_ROUTES = ['test-editor', 'editor']
+const NO_FOOTER_OR_STYLED_NAV_ROUTES = [
+  'test-editor',
+  'local-editor',
+  'remote-editor',
+  'shared-editor',
+]
 
 const darkModeStore = useDarkModeStore()
 darkModeStore.setThemeOnHTMLRoot()
