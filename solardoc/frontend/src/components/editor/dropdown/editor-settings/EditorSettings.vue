@@ -8,18 +8,19 @@ import { useCurrentUserStore } from '@/stores/current-user'
 import CollaboratorList from '@/components/editor/dropdown/editor-settings/CollaboratorList.vue'
 import UserRef from '@/components/common/UserRef.vue'
 import type { Awaited } from '@vueuse/core'
+import type { UserPublic } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import {
   type ActualPhxErrorResp,
   PhoenixBadRequestError,
   PhoenixInternalError,
 } from '@/services/phoenix/errors'
-import type { UserPublic } from '@/services/phoenix/api-service'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
+import { waitForConditionAndExecute } from '@/scripts/wait-for'
 
 const $router = useRouter()
 
@@ -29,10 +30,13 @@ const currentUserStore = useCurrentUserStore()
 const owner = ref<UserPublic>()
 
 ;(async () => {
-  if (currentUserStore.loggedIn && currentFileStore.remoteFile) {
-    await fetchOwner(currentFileStore.ownerId!, currentUserStore.bearer!)
-  } else {
-    owner.value = { username: 'Local User', id: 'local-user-id' }
+  owner.value = { username: 'Local User', id: 'local-user-id' }
+  if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
+    await waitForConditionAndExecute(
+      () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
+      async () => await fetchOwner(currentFileStore.ownerId!, currentUserStore.bearer!),
+      500,
+    )
   }
 })()
 

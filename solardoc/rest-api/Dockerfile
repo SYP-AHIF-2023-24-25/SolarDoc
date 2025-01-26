@@ -8,6 +8,22 @@ RUN corepack enable
 RUN corepack use pnpm@$PNPM_VERSION
 RUN corepack install --global pnpm@$PNPM_VERSION
 
+# Install as root
+USER root
+RUN apk add --no-cache \
+chromium \
+nss \
+freetype \
+freetype-dev \
+harfbuzz \
+ca-certificates \
+ttf-freefont \
+nodejs \
+bash
+
+# Set Chromium path and switch to node user
+ENV CHROMIUM_PATH /usr/bin/chromium-browser
+
 # Set to a non-root built-in user `node`
 USER node
 
@@ -44,21 +60,6 @@ COPY --chown=node ./solardoc/rest-api ./solardoc/rest-api
 # See issue #62 (As we are not using puppeteer yet, we can ignore this)
 ARG PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_SKIP_DOWNLOAD=$PUPPETEER_SKIP_DOWNLOAD
-
-# Install as root
-USER root
-RUN apk add --no-cache \
-chromium \
-nss \
-freetype \
-freetype-dev \
-harfbuzz \
-ca-certificates \
-ttf-freefont \
-nodejs
-
-# Set Chromium path and switch to node user
-ENV CHROMIUM_PATH /usr/bin/chromium-browser
 
 # Build 'asciidoc-renderer' package
 RUN pnpm install --filter @solardoc/asciidoc-renderer --frozen-lockfile
