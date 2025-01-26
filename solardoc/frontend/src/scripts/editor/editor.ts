@@ -174,7 +174,7 @@ export class SolardocEditor {
 
     }
 
-    const position: monaco.editor.IPosition = { lineNumber, column: lines[lineNumber - 1].length + 1 };
+    const position = new monaco.Position(lineNumber, lines[lineNumber - 1].length + 1);
     this.monacoEditor.setPosition(position);
     this.monacoEditor.revealPositionNearTop(position)
     this.monacoEditor.focus();
