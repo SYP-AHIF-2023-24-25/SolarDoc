@@ -80,7 +80,7 @@ const router = createRouter({
           sensitive: true,
           strict: true,
         },
-      ]
+      ],
     },
     // ---- DEPRECATED ----
     {

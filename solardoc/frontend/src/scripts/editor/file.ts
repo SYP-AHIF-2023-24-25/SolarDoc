@@ -1,21 +1,21 @@
-import {useCurrentFileStore} from '@/stores/current-file'
-import {useCurrentUserStore} from '@/stores/current-user'
-import {useEditorUpdateWSClient} from '@/stores/editor-update-ws-client'
-import {useOverlayStateStore} from '@/stores/overlay-state'
-import {connectToWSIfPossible} from '@/scripts/editor/sds'
-import {createOrJoinChannelForFile} from '@/scripts/editor/channel'
-import {useLoadingStore} from '@/stores/loading'
-import {useRenderDataStore} from '@/stores/render-data'
-import type {File} from '@/services/phoenix/gen/phoenix-rest-service'
-import type {LocationQuery, RouteParams, Router} from 'vue-router'
-import {usePreviewLoadingStore} from '@/stores/preview-loading'
-import {useInitStateStore} from '@/stores/init-state'
+import { useCurrentFileStore } from '@/stores/current-file'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
+import { useOverlayStateStore } from '@/stores/overlay-state'
+import { connectToWSIfPossible } from '@/scripts/editor/sds'
+import { createOrJoinChannelForFile } from '@/scripts/editor/channel'
+import { useLoadingStore } from '@/stores/loading'
+import { useRenderDataStore } from '@/stores/render-data'
+import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
+import type { LocationQuery, RouteParams, Router } from 'vue-router'
+import { usePreviewLoadingStore } from '@/stores/preview-loading'
+import { useInitStateStore } from '@/stores/init-state'
 import * as phoenixBackend from '@/services/phoenix/api-service'
-import {SolardocUnreachableError} from "@/errors/unreachable-error";
-import {SolardocNotImplementedError} from "@/errors/not-implemented-error";
-import {KipperFileNotFoundError} from "@/errors/file-not-found-error";
-import {showSuccessNotifFromObj} from "@/scripts/show-notif";
-import constants from "@/plugins/constants";
+import { SolardocUnreachableError } from '@/errors/unreachable-error'
+import { SolardocNotImplementedError } from '@/errors/not-implemented-error'
+import { KipperFileNotFoundError } from '@/errors/file-not-found-error'
+import { showSuccessNotifFromObj } from '@/scripts/show-notif'
+import constants from '@/plugins/constants'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -42,7 +42,6 @@ export async function initEditorFileBasedOnPath(
   routeQueries: LocationQuery,
 ): Promise<'local' | ['remote', string] | ['shared', string]> {
   if ('showFileGoneError' in routeQueries && routeQueries.showFileGoneError === 'true') {
-
   }
 
   if (routeName === 'local-editor') {
@@ -51,7 +50,7 @@ export async function initEditorFileBasedOnPath(
 
       // We need to avoid the user reloading the page and accidentally clearing his state so we need to clean up the
       // path query and ensure that the reload is without side effects
-      $router.push({name: 'local-editor'}).then(() => {
+      $router.push({ name: 'local-editor' }).then(() => {
         showSuccessNotifFromObj(constants.notifMessages.newFile)
       })
     } else {
@@ -66,7 +65,7 @@ export async function initEditorFileBasedOnPath(
       await currentFileStore.setFileWithRemoteId(id, currentUserStore.bearer!)
     } catch (e) {
       if (e instanceof KipperFileNotFoundError) {
-        await $router.push({name: 'local-editor', query: {showFileGoneError: 'true'}})
+        await $router.push({ name: 'local-editor', query: { showFileGoneError: 'true' } })
       }
     }
     await phoenixBackend.ensurePhoenixBackendIsReachable()
@@ -91,7 +90,7 @@ export async function openFileInEditor($router: Router, file: File): Promise<voi
   previewLoadingStore.setPreviewLoading(false)
 
   await closeEditorRemoteFileConnection()
-  await currentFileStore.closeFileGlobally({emptyContent: true})
+  await currentFileStore.closeFileGlobally({ emptyContent: true })
   await $router.push(`/editor/o/${file.id}`)
 }
 
@@ -120,9 +119,7 @@ export async function createEditorRemoteFileConnection(): Promise<void> {
   overlayStateStore.resetAll()
   const sdsConnected = await connectToWSIfPossible()
   if (!sdsConnected) {
-    throw new SolardocUnreachableError(
-      'Failed to establish connection to the remote SDS server',
-    )
+    throw new SolardocUnreachableError('Failed to establish connection to the remote SDS server')
   }
   await createOrJoinChannelForFile(
     <File>currentFileStore.raw, // Since this is a remote file we know it's not a LocalFile

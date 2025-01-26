@@ -12,7 +12,7 @@ import constants from '@/plugins/constants'
 import { showNotifFromErr } from '@/scripts/show-notif'
 import { FileGoneWarn } from '@/errors/file-gone-warn'
 import { isDev } from '@/config/env'
-import {KipperFileNotFoundError} from "@/errors/file-not-found-error";
+import { KipperFileNotFoundError } from '@/errors/file-not-found-error'
 
 export type Unknown = null
 export type NoPermissions = 0
@@ -47,10 +47,7 @@ export interface LocalFile {
   is_global: boolean
 }
 
-function getDefaultFile(
-  currentUserId?: string,
-  empty?: boolean,
-): LocalFile | File {
+function getDefaultFile(currentUserId?: string, empty?: boolean): LocalFile | File {
   return {
     id: undefined,
     content: empty ? '' : constants.defaultFileContent,
@@ -529,12 +526,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
      * @param options.emptyContent If true, the content will be reset to an empty string.
      * @since 0.7.0
      */
-    async closeFileGlobally(
-      options?: {
-        preserveContent?: boolean,
-        emptyContent?: boolean,
-      }
-    ) {
+    async closeFileGlobally(options?: { preserveContent?: boolean; emptyContent?: boolean }) {
       this.clearFileId()
       this.clearOTransStack()
       this.clearOwnerId()

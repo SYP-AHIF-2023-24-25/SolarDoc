@@ -32,8 +32,8 @@ export default Object.freeze({
     newFile: {
       title: 'New file created',
       text:
-        "A new file has been created in your local storage! Please note that only one concurrent file can be saved" +
-        "locally and you should save your file to avoid losing it.",
+        'A new file has been created in your local storage! Please note that only one concurrent file can be saved' +
+        'locally and you should save your file to avoid losing it.',
     },
     loggedOut: {
       title: 'You have been successfully logged out',

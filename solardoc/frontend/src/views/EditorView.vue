@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import {useRoute, useRouter} from "vue-router";
+import { useRoute, useRouter } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'
 import FullScreenPreview from '@/components/editor/FullScreenPreview.vue'
 import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
 import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
 import Export from '@/components/editor/export/Export.vue'
 import * as backendAPI from '@/services/render/api-service'
-import * as phoenixBackend from '@/services/phoenix/api-service'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorSettings.vue'
-import {createEditorRemoteFileConnection, initEditorFileBasedOnPath} from '@/scripts/editor/file'
+import { initEditorFileBasedOnPath } from '@/scripts/editor/file'
 import { useLoadingStore } from '@/stores/loading'
 import DefaultEditorSubView from '@/components/editor/sub-views/default/DefaultEditorSubView.vue'
 import FullScreenEditor from '@/components/editor/sub-views/full-screen-editor/FullScreenEditor.vue'
@@ -51,7 +50,12 @@ const fileStateInitialised = ref(false)
 const fileType = ref<Awaited<ReturnType<typeof initEditorFileBasedOnPath>>>('local')
 interceptErrors(
   (async () => {
-    fileType.value = await initEditorFileBasedOnPath($router, <string>$route.name, $route.params, $route.query)
+    fileType.value = await initEditorFileBasedOnPath(
+      $router,
+      <string>$route.name,
+      $route.params,
+      $route.query,
+    )
     fileStateInitialised.value = true
     loadingStore.setLoading(false)
   })(),
