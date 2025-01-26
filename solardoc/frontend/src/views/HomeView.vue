@@ -15,7 +15,7 @@ async function routeWithLoading(to: string) {
 
 <template>
   <div id="home-page-wrapper" class="page-content-wrapper">
-    <div id="home-page-welcome">
+    <div id="home-page-welcome" class="heart-background scroll-container">
       <div id="text-and-buttons">
         <div id="welcome-text">
           <p>Create <br />presentations</p>
@@ -31,19 +31,23 @@ async function routeWithLoading(to: string) {
         <SolardocStreamSVG />
       </div>
     </div>
-    <div id="home-page-welcome-content-separator">
-      <h2>So what can Solardoc do?</h2>
-    </div>
-    <div id="home-page-content">
-      <HomeFeatureCard>
-        <h2>In Work! ✨</h2>
-      </HomeFeatureCard>
-      <HomeFeatureCard>
-        <h2>In Work! ✨</h2>
-      </HomeFeatureCard>
-      <HomeFeatureCard>
-        <h2>In Work! ✨</h2>
-      </HomeFeatureCard>
+    <div class="scroll-container">
+      <div id="home-page-welcome-content-separator">
+        <h2>So what can Solardoc do?<span></span></h2>
+      </div>
+      <div id="home-page-content">
+        <HomeFeatureCard>
+          <h2>Help you collaborate in real-time with your friends and colleagues!<br />✨</h2>
+        </HomeFeatureCard>
+        <HomeFeatureCard>
+          <h2>Auto-previews and loads changes on the fly!<br />✨</h2>
+        </HomeFeatureCard>
+        <HomeFeatureCard>
+          <h2>
+            Brings the best of Asciidoc to your browser with all the customisation you want!<br />✨
+          </h2>
+        </HomeFeatureCard>
+      </div>
     </div>
   </div>
 </template>
@@ -52,6 +56,7 @@ async function routeWithLoading(to: string) {
 @use '@/assets/core/var' as var;
 @use '@/assets/gradient-text' as *;
 @use '@/assets/page-content' as *;
+@use '@/assets/heart-background' as *;
 @use '@/assets/core/mixins/view-presets' as *;
 @use '@/assets/core/mixins/screen-size' as *;
 @use '@/assets/core/mixins/align-center' as *;
@@ -59,7 +64,24 @@ async function routeWithLoading(to: string) {
 #home-page-wrapper {
   display: flex;
   flex-flow: column nowrap;
-  padding: 0 0 6rem 0;
+
+  padding: 0;
+  @include r-min(var.$window-medium) {
+    padding: 0 0 6rem 0;
+  }
+
+  /* Ensuring the welcome section doesn't take up too much space and feels appropriately spaced for smaller screens */
+  #home-page-welcome,
+  #home-page-welcome * {
+    max-height: 20rem;
+    @include r-min(var.$window-small) {
+      max-height: 30rem;
+    }
+
+    @include r-min(var.$window-medium) {
+      max-height: unset;
+    }
+  }
 
   #home-page-welcome {
     @include view-presets;
@@ -68,11 +90,22 @@ async function routeWithLoading(to: string) {
     flex-flow: row nowrap;
     justify-content: space-between;
     align-self: flex-end;
-    padding: 0 0 0 3rem;
+    overflow: hidden;
 
-    @include r-max(var.$window-medium) {
-      & {
-        padding: 0 0 0 2rem;
+    min-height: 20rem;
+    padding: 0 0 0 2rem;
+    @include r-min(var.$window-medium) {
+      padding: 0 0 0 3rem;
+      &::before {
+        left: -6rem;
+      }
+    }
+
+    @include r-min(var.$window-xlarge) {
+      padding: 0 0 0 7.5rem;
+      min-height: 30rem;
+      &::before {
+        left: -10.5rem;
       }
     }
 
@@ -88,18 +121,18 @@ async function routeWithLoading(to: string) {
         p {
           margin: 0;
           padding: 0;
-          font-size: 6rem;
+          font-size: 3rem;
 
-          @include r-max(var.$window-xlarge) {
-            & {
-              font-size: 4rem;
-            }
+          @include r-min(var.$window-small) {
+            font-size: 4rem;
           }
 
-          @include r-max(var.$window-small) {
-            & {
-              font-size: 3rem;
-            }
+          @include r-min(var.$window-large) {
+            font-size: 6rem;
+          }
+
+          @include r-min(var.$window-2xlarge) {
+            font-size: 7.5rem;
           }
         }
       }
@@ -120,24 +153,27 @@ async function routeWithLoading(to: string) {
       margin: 0;
 
       svg {
-        height: 80vh;
-        position: absolute;
-        bottom: 0;
-        right: 0;
+        display: none;
+        width: 0;
+        height: 0;
 
-        @include r-max(var.$window-xlarge) {
-          & {
-            height: 75vh;
-          }
+        @include r-min(var.$window-small) {
+          display: block;
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: unset;
+          height: 40vh;
+          align-self: flex-end;
         }
 
-        @include r-max(var.$window-medium) {
-          & {
-            height: 70vh;
-          }
+        @include r-min(var.$window-medium) {
+          height: 60vh;
         }
-        width: unset;
-        align-self: flex-end;
+
+        @include r-min(var.$window-xlarge) {
+          height: 80vh;
+        }
       }
     }
   }
@@ -149,33 +185,64 @@ async function routeWithLoading(to: string) {
   #home-page-welcome-content-separator {
     @include align-center;
     width: 100%;
-    height: 20rem;
-    background: linear-gradient(
-      0deg,
-      var.$scheme-home-content-background-primary,
-      var.$scheme-home-content-background-secondary
-    );
+    height: 12rem;
 
     h2 {
-      font-size: 3rem;
+      position: relative;
+      text-align: center;
+      font-size: 2rem;
+
+      &::before {
+        content: '';
+        position: absolute;
+        display: inline-block;
+        margin: 0 5%;
+        width: 90%;
+        height: 3px;
+        bottom: 0;
+        left: 0;
+        background-color: var.$text-color;
+      }
+    }
+
+    @include r-min(var.$window-medium) {
+      height: 16rem;
+      h2 {
+        font-size: 3rem;
+      }
     }
   }
 
   #home-page-content {
     @include align-center;
-    min-height: 40vw;
+    min-height: 30vw;
     width: 100%;
     gap: 4rem;
     padding: 0 2rem 4rem 2rem;
     flex-flow: column nowrap;
     background: var.$scheme-home-content-background-primary;
 
+    h2 {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+
+    @include r-min(var.$window-small) {
+      h2 {
+        font-size: 2rem;
+      }
+    }
+
     @include r-min(var.$window-xmedium) {
       & {
-        height: 40vw;
+        height: 30rem;
         gap: max(6rem, 10vw);
         flex-flow: row wrap;
-        padding: 4rem;
+        padding: 0 4rem 4rem 4rem;
+      }
+
+      h2 {
+        font-size: 2.5rem;
       }
     }
   }

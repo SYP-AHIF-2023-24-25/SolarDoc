@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import JSZip from 'jszip'
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
@@ -138,6 +138,11 @@ async function handleFileExportAsZip() {
 
   setTimeout(() => URL.revokeObjectURL(a.href), 1500)
 }
+
+async function unselectOptionsAndClose() {
+  selectedFormats.value = []
+  overlayStateStore.setExportView(false)
+}
 </script>
 
 <template>
@@ -148,7 +153,7 @@ async function handleFileExportAsZip() {
   >
     <div id="export-view">
       <div id="export-view-header">
-        <button id="close-button" @click="overlayStateStore.setExportView(false)">
+        <button id="close-button" @click="unselectOptionsAndClose">
           <CloseButtonSVG />
         </button>
         <h1>Export</h1>
@@ -168,22 +173,6 @@ async function handleFileExportAsZip() {
             @click="toggleFormat('HTML')"
           >
             <span>HTML</span>
-          </div>
-          <div
-            class="format-box"
-            :class="{ selected: selectedFormats.includes('PDF'), disabled: true }"
-            @click="toggleFormat('PDF')"
-            v-tooltip="'Currently not supported'"
-          >
-            <span>PDF</span>
-          </div>
-          <div
-            class="format-box"
-            :class="{ selected: selectedFormats.includes('JPG'), disabled: true }"
-            @click="toggleFormat('JPG')"
-            v-tooltip="'Currently not supported'"
-          >
-            <span>JPG</span>
           </div>
         </div>
         <button

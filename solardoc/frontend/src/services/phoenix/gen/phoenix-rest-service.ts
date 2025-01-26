@@ -1,11 +1,12 @@
 /**
  * @solardoc/phoenix
- * 1.0.0-dev.7
+ * 1.0.0-beta.2
  * DO NOT MODIFY - This file has been generated using oazapfts.
  * See https://www.npmjs.com/package/oazapfts
  */
 import * as Oazapfts from 'oazapfts/lib/runtime'
 import * as QS from 'oazapfts/lib/runtime/query'
+
 export const defaults: Oazapfts.RequestOpts = {
   baseUrl: 'http://localhost:4000/phx/api',
 }

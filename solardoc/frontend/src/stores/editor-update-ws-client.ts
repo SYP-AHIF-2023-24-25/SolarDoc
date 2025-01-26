@@ -5,7 +5,7 @@ import type { EditorChannel } from '@/services/phoenix/editor-channel'
 export const useEditorUpdateWSClient = defineStore('editorUpdateWSClient', {
   state: () => {
     return {
-      wsClient: <undefined | SDSClient>undefined,
+      wsClient: <SDSClient | undefined>undefined,
       currentChannel: <EditorChannel | undefined>undefined,
     }
   },

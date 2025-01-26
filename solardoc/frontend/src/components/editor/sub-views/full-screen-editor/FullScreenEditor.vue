@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import Editor from '@/components/editor/Editor.vue'
 import ArrowLeft from '@/components/icons/ArrowLeft.vue'
+import { showDummyLoading } from '@/scripts/show-dummy-loading'
 </script>
 
 <template>
   <div id="editor-wrapper">
     <div id="change-view-buttons">
-      <div id="change-layout-to-default" @click="$emit('viewStateUpdate')">
+      <div
+        id="change-layout-to-default"
+        @click="
+          _ => {
+            $emit('viewStateUpdate')
+            showDummyLoading()
+          }
+        "
+      >
         <ArrowLeft />
       </div>
     </div>
@@ -28,7 +37,7 @@ import ArrowLeft from '@/components/icons/ArrowLeft.vue'
 
   #change-view-buttons {
     position: absolute;
-    top: calc(var(--editor-preview-frame-height) - 4rem);
+    top: var.$editor-change-view-button-position;
     right: 0;
     width: 1rem;
     height: 3rem;

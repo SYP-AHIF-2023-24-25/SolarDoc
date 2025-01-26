@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCurrentFileStore } from '@/stores/current-file'
 import { ref } from 'vue'
+import type { FilePermission, FilePermissions } from '@/services/phoenix/api-service'
 import * as phoenixRestService from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import type { Awaited } from '@vueuse/core'
@@ -10,7 +11,6 @@ import {
   PhoenixInternalError,
 } from '@/services/phoenix/errors'
 import CollaboratorCard from '@/components/editor/dropdown/editor-settings/CollaboratorCard.vue'
-import type { FilePermission, FilePermissions } from '@/services/phoenix/api-service'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()

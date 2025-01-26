@@ -16,6 +16,9 @@ const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
 const loadingStore = useLoadingStore()
 
+// This is a workaround to avoid a bug in Vite that doesn't allow to import constants directly
+const _constants = constants
+
 function getSaveStateCSSClass() {
   return currentFileStore.remoteFile ? (currentFileStore.shareFile ? 'shared' : 'saved') : 'error'
 }
@@ -54,7 +57,7 @@ async function uploadFile() {
   <div id="save-state" v-tooltip="'Indicates whether the file is saved remotely on the server'">
     <p :class="getSaveStateCSSClass()">
       {{ getSaveState() }}
-      <span v-if="getSaveState() === 'Saved Locally'" @click="uploadFile()">
+      <span v-if="getSaveState() === _constants.saveStates.local" @click="uploadFile()">
         <UploadIconSVG />
       </span>
     </p>
@@ -62,8 +65,10 @@ async function uploadFile() {
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/core/var' as var;
 @use '@/assets/core/mixins/align-center' as *;
+@use '@/assets/core/mixins/screen-size' as *;
+@use '@/assets/core/mixins/hide' as *;
+@use '@/assets/core/var' as var;
 
 #save-state {
   @include align-center;
@@ -72,6 +77,13 @@ async function uploadFile() {
   height: 100%;
   max-width: 100%;
   font-size: 0.8rem;
+
+  &::after {
+    @include hide();
+    @include r-min(var.$window-medium) {
+      @include show();
+    }
+  }
 
   & > p {
     @include align-center;
@@ -82,17 +94,15 @@ async function uploadFile() {
     overflow: hidden;
 
     padding: 0 0.25rem;
-    @media screen and (min-width: var.$window-xlarge) {
-      & {
-        padding: 2px 0.5rem 0;
-      }
+    @include r-min(var.$window-xlarge) {
+      padding: 2px 0.5rem 0;
     }
 
     span {
       @include align-center;
-      height: calc(100% - 0.3rem);
+      height: calc(100% - 0.35rem);
       width: 1.5rem;
-      margin: 0.1rem 0 0.2rem 0.1rem;
+      margin: 0.1rem 0 0.25rem 0.1rem;
       border-radius: 0.25rem;
       padding: 0 0.25rem;
       box-sizing: border-box;

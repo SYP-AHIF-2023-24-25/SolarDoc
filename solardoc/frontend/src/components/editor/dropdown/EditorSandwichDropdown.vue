@@ -14,11 +14,9 @@ import { useLoadingStore } from '@/stores/loading'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-import {
-  closeEditorRemoteFileConnection,
-  createEditorRemoteFileConnection,
-} from '@/scripts/editor/file'
+import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
 import { handleCopy } from '@/scripts/handle-copy'
+import { openInNewWindow } from '@/router/open'
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
@@ -37,11 +35,9 @@ function closeDropdown() {
   )?.close()
 }
 
-async function handleNewFileButtonClick() {
+function handleNewFileButtonClick() {
   closeDropdown()
-  showDummyLoading()
-  await closeEditorRemoteFileConnection()
-  showInfoNotifFromObj(constants.notifMessages.newFile)
+  openInNewWindow($router, { name: 'local-editor', query: { new: 'true' } })
 }
 
 async function handleSaveButtonClick() {
@@ -135,9 +131,9 @@ function handleSettingsClick() {
         class="dropdown-element"
         v-if="!currentFileStore.shareFile"
         @click="handleSaveButtonClick()"
-        v-tooltip="'Upload your file/save any changes'"
+        v-tooltip="currentFileStore.remoteFile ? 'Update File Name' : 'Upload your file'"
       >
-        Save
+        {{ currentFileStore.remoteFile ? 'Update File Name' : 'Save Remotely' }}
       </div>
       <div
         v-if="!currentFileStore.shareFile"
@@ -145,14 +141,14 @@ function handleSettingsClick() {
         @click="handleShareButtonClick()"
         v-tooltip="'Share your file with others'"
       >
-        Share
+        Share...
       </div>
       <div
         class="dropdown-element"
         @click="handleDownloadButtonClick()"
-        v-tooltip="'Download the source code or presentation'"
+        v-tooltip="'Export source code or presentation'"
       >
-        Download
+        Export...
       </div>
       <div
         class="dropdown-element"

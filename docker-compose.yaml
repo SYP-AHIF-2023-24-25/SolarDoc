@@ -20,6 +20,11 @@ services:
       PHX_BASE_PATH: ${PHX_BASE_PATH}
       PHX_WS_PATH: ${PHX_WS_PATH}
       NODE_ENV: production
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost/" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
     depends_on:
       - rest-api
       - phoenix-server
@@ -46,6 +51,11 @@ services:
       PERSISTENT_STORAGE_PATH: ${PERSISTENT_STORAGE_PATH}
       PUPPETEER_SKIP_DOWNLOAD: "true"
       NODE_ENV: production
+    healthcheck:
+      test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/3000; exit $?;'"
+      interval: 10s
+      timeout: 10s
+      retries: 3
     volumes:
       - rest-api-persistent-storage:${PERSISTENT_STORAGE_PATH}
     depends_on:
@@ -62,6 +72,11 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgresql-db:5432/${POSTGRES_DB}
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       PORT: 4000
+    healthcheck:
+      test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/4000; exit $?;'"
+      interval: 10s
+      timeout: 10s
+      retries: 3
     depends_on:
       postgresql-db:
         condition: service_healthy
@@ -111,6 +126,11 @@ services:
     build: ./solardoc/postgres-adminer
     ports:
       - "8081:8080"
+    healthcheck:
+      test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/127.0.0.1/8080; exit $?;'"
+      interval: 10s
+      timeout: 10s
+      retries: 3
     environment:
       ADMINER_DESIGN: 'hydra'
     restart: always
