@@ -9,14 +9,31 @@ import PresentationIconDarkModeSVG from '@/components/icons/PresentationIconDark
 import PresentationIconSVG from '@/components/icons/PresentationIconSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import ViewPrintableDropdown from '@/components/editor/editor-navbar/ViewInOtherWindowDropdown.vue'
+import {interceptErrors} from "@/errors/handler/error-handler";
+import {ensureLoggedIn} from "@/scripts/ensure-logged-in";
+import {showInfoNotifFromObj} from "@/scripts/show-notif";
+import constants from "@/plugins/constants";
+import {useRouter} from "vue-router";
+import {useCurrentUserStore} from "@/stores/current-user";
+
+const $router = useRouter()
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
+const currentUserStore = useCurrentUserStore()
 const darkModeStore = useDarkModeStore()
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
   overlayStateStore.setFullScreenPreview(true)
+}
+async function handleSaveButtonPress() {
+  await interceptErrors(
+      ensureLoggedIn($router).then(
+          async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
+      ),
+  )
+  showInfoNotifFromObj(constants.notifMessages.fileSaved)
 }
 </script>
 
@@ -41,12 +58,20 @@ function handlePreviewButtonPress() {
             "
           />
           <span
-            id="file-name-star"
             v-if="currentFileStore.isFileNameUpdated"
-            v-tooltip="'This file name has been modified'"
-            >*</span
-          >
+            id="file-name-star"
+            v-tooltip="'This file name has been modified'">
+            *
+          </span>
         </div>
+        <span v-if="currentFileStore.isFileNameUpdated">
+          <button
+              class="highlighted-button"
+              id="save-button"
+              @click="handleSaveButtonPress">
+            save
+          </button>
+        </span>
       </div>
       <div id="phone-save-state-badge">
         <SaveStateBadge />
@@ -140,7 +165,7 @@ $total-width: 100vw;
         box-shadow: 0 -2px var.$scheme-link-hover-color inset;
         border-radius: 0.3em 0.3em 0 0;
         margin-left: 4px;
-
+        margin-right: 4px;
         #asciidoc-icon {
           display: inline-flex;
           align-content: center;
