@@ -4,11 +4,57 @@ import * as phoenixBackend from '@/services/phoenix/api-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useRouter } from 'vue-router'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
-import { type ActualPhxErrorResp, PhoenixBadRequestError } from '@/services/phoenix/errors'
+import {
+  type ActualPhxErrorResp,
+  PhoenixBadRequestError,
+  PhoenixInvalidCredentialsError,
+} from '@/services/phoenix/errors'
 import { interceptErrors } from '@/errors/handler/error-handler'
+import { redirect } from '@/router/redirect'
 
 const $router = useRouter()
 const currentUserStore = useCurrentUserStore()
+
+async function logInUser(
+  form$: Vueform & {
+    requestData: {
+      email: string
+      password: string
+      organisation: string
+      'intended-use': number
+      'accepts-conditions': boolean
+      'display-name': string
+    }
+  },
+) {
+  const loginUser = {
+    email: form$.requestData.email,
+    password: form$.requestData.password,
+  } satisfies phoenixBackend.UserLogin
+
+  let resp: Awaited<ReturnType<typeof phoenixBackend.postV2AuthBearer>>
+  try {
+    resp = await phoenixBackend.postV2AuthBearer(loginUser)
+  } catch (e) {
+    console.error('[Login] Encountered network error during login', e)
+    throw new SolardocUnreachableError('Encountered network error during login')
+  }
+
+  if (resp.status === 201) {
+    currentUserStore.setCurrentAuth(resp.data)
+    await currentUserStore.fetchCurrentUser()
+    await redirect($router, '/profile')
+  } else if (resp.status === 400) {
+    throw new PhoenixBadRequestError(
+      'Server rejected direct sign in',
+      resp.data as ActualPhxErrorResp,
+    )
+  } else if (resp.status === 401) {
+    throw new PhoenixInvalidCredentialsError()
+  } else {
+    throw new SolardocUnreachableError('Encountered network error during sign up')
+  }
+}
 
 async function submitForm(
   form$: Vueform & {
@@ -42,9 +88,8 @@ async function submitForm(
   }
 
   if (resp.status === 201) {
-    console.log('Signup successful')
     currentUserStore.setCurrentUser(resp.data)
-    await $router.push('login')
+    await logInUser(form$)
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError('Server rejected sign up', resp.data as ActualPhxErrorResp)
   } else {

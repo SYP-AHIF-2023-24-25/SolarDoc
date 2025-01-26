@@ -119,13 +119,13 @@ defmodule SolardocPhoenixWeb.V2.UserController do
 
   def create(conn, user_params) do
     with {:ok, user} <- Accounts.register_user(user_params) do
-# credo:disable-for-next-line
-# TODO! Uncomment this when email is working
-#      {:ok, _} =
-#        Accounts.deliver_user_confirmation_instructions(
-#          user,
-#          &url(~p"/users/confirm/#{&1}")
-#        )
+      # credo:disable-for-next-line
+      # TODO! Uncomment this when email is working
+      #      {:ok, _} =
+      #        Accounts.deliver_user_confirmation_instructions(
+      #          user,
+      #          &url(~p"/users/confirm/#{&1}")
+      #        )
 
       # Return a success JSON response
       conn
