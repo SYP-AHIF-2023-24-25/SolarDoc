@@ -15,6 +15,8 @@ import {showInfoNotifFromObj} from "@/scripts/show-notif";
 import constants from "@/plugins/constants";
 import {useRouter} from "vue-router";
 import {useCurrentUserStore} from "@/stores/current-user";
+import SaveIconSVG from "@/components/icons/SaveIconSVG.vue";
+import SaveIconDarkModeSVG from "@/components/icons/SaveIconDarkModeSVG.vue";
 
 const $router = useRouter()
 
@@ -57,21 +59,14 @@ async function handleSaveButtonPress() {
               }
             "
           />
-          <span
-            v-if="currentFileStore.isFileNameUpdated"
-            id="file-name-star"
-            v-tooltip="'This file name has been modified'">
-            *
+          <span v-if="currentFileStore.isFileNameUpdated&&currentFileStore.remoteFile"
+                id="file-name-star"
+                v-tooltip="'This file name has been modified'"
+                @click="handleSaveButtonPress">
+            <SaveIconDarkModeSVG v-show="darkModeStore.darkMode"/>
+            <SaveIconSVG v-show="!darkModeStore.darkMode"/>
           </span>
         </div>
-        <span v-if="currentFileStore.isFileNameUpdated">
-          <button
-              class="highlighted-button"
-              id="save-button"
-              @click="handleSaveButtonPress">
-            save
-          </button>
-        </span>
       </div>
       <div id="phone-save-state-badge">
         <SaveStateBadge />
@@ -165,7 +160,6 @@ $total-width: 100vw;
         box-shadow: 0 -2px var.$scheme-link-hover-color inset;
         border-radius: 0.3em 0.3em 0 0;
         margin-left: 4px;
-        margin-right: 4px;
         #asciidoc-icon {
           display: inline-flex;
           align-content: center;
@@ -176,11 +170,16 @@ $total-width: 100vw;
         }
 
         #file-name-star {
-          position: absolute;
-          right: 0.5rem;
-          padding: 0.22rem;
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.85em;
+          height: calc(100% - 0.35rem);
+          width: 1.5rem;
+          border-radius: 0.25rem;
+          padding: 0.25rem;
+          margin: 0.15rem;
+
+          &:hover {
+            cursor: pointer;
+            background-color: var.$scheme-gray-400;
+          }
         }
 
         ::selection {
