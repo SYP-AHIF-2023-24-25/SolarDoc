@@ -221,7 +221,6 @@ export class SDSClient {
   /**
    * Sends an operational transformation to the server.
    * @param update The transformation to be sent to the server.
-   * @param onSuccess The function to call when the server successfully receives the update.
    * @param onError The function to call when the server fails to receive the update.
    * @throws PhoenixInvalidOperationError If the socket is not healthy.
    * @throws PhoenixInvalidOperationError If the channel is not healthy.
@@ -229,14 +228,11 @@ export class SDSClient {
    */
   public async sendOTrans(
     update: OTransReqDto,
-    onSuccess: (resp: any) => void | Promise<void>,
     onError: (resp: any) => void | Promise<void>,
   ): Promise<void> {
     await this._ensureSocketIsHealthy()
     await this._ensureChannelIsHealthy()
-    this._currentChannel!.push('state_trans', update)
-      .receive('ok', onSuccess)
-      .receive('error', onError)
+    this._currentChannel!.push('state_trans', update).receive('error', onError)
   }
 
   /**

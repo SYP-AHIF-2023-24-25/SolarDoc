@@ -120,6 +120,25 @@ export class PhoenixForbiddenError extends PhoenixRestError {
 }
 
 /**
+ * An error that is thrown when the Phoenix backend service encounters a not found error, usually due to a missing
+ * resource.
+ * @since 1.0.0
+ */
+export class PhoenixNotFoundError extends PhoenixRestError {
+  constructor(
+    public readonly message: string,
+    public readonly errorDescription: string = 'The requested resource was not found.',
+    options: {
+      hideErrorCode: boolean
+    } = {
+      hideErrorCode: true,
+    },
+  ) {
+    super(message, 404, errorDescription, 'PhoenixNotFoundError', options)
+  }
+}
+
+/**
  * An error that is thrown when the Phoenix backend service encounters an unexpected error.
  * @since 0.4.0
  */

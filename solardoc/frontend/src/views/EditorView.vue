@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'
 import FullScreenPreview from '@/components/editor/FullScreenPreview.vue'
 import ChannelView from '@/components/editor/dropdown/current-channel/CurrentChannelWrapper.vue'
 import ShareUrlCreate from '@/components/editor/dropdown/share-url/ShareUrlCreate.vue'
 import Export from '@/components/editor/export/Export.vue'
 import * as backendAPI from '@/services/render/api-service'
-import * as phoenixBackend from '@/services/phoenix/api-service'
 import { showWelcomeIfNeverShownBefore } from '@/scripts/show-welcome'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import EditorSettings from '@/components/editor/dropdown/editor-settings/EditorSettings.vue'
-import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
+import { initEditorFileBasedOnPath } from '@/scripts/editor/file'
 import { useLoadingStore } from '@/stores/loading'
 import DefaultEditorSubView from '@/components/editor/sub-views/default/DefaultEditorSubView.vue'
 import FullScreenEditor from '@/components/editor/sub-views/full-screen-editor/FullScreenEditor.vue'
@@ -23,8 +23,14 @@ import {
 import constants from '@/plugins/constants'
 import EditorNavbar from '@/components/editor/editor-navbar/EditorNavbar.vue'
 
+const $router = useRouter()
+const $route = useRoute()
 const currentUserStore = useCurrentUserStore()
 const loadingStore = useLoadingStore()
+
+// Lock the loading spinner and show a message until the editor is fully loaded
+loadingStore.lockLoading()
+loadingStore.pushMsg(constants.loadingMessages.loadingEditor)
 
 // Manage the three different modes of the editor
 const viewState = ref(DEFAULT_VIEW)
@@ -37,8 +43,8 @@ window.addEventListener('resize', () => {
   isPhone.value = checkIfPhone()
 })
 
-// We need to be friendly after all :D
-showWelcomeIfNeverShownBefore()
+const fileStateInitialised = ref(false)
+const fileType = ref<Awaited<ReturnType<typeof initEditorFileBasedOnPath>>>('local')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // ESSENTIAL CONNECTIONS
@@ -47,13 +53,28 @@ interceptErrors(currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid())
 interceptErrors(backendAPI.ensureRenderBackendIsReachable())
 interceptErrors(
   (async () => {
-    loadingStore.setLoading(true)
-    await phoenixBackend.ensurePhoenixBackendIsReachable()
-    await createEditorRemoteFileConnection()
-    loadingStore.setLoading(false)
+    fileType.value = await initEditorFileBasedOnPath(
+      $router,
+      <string>$route.name,
+      $route.params,
+      $route.query,
+    )
+    fileStateInitialised.value = true
   })(),
+  {
+    onError: () => {
+      fileStateInitialised.value = false
+    },
+    onFinally: () => {
+      loadingStore.popMsg(constants.loadingMessages.loadingEditor)
+      loadingStore.unlockLoading()
+    },
+  },
 )
 // ---------------------------------------------------------------------------------------------------------------------
+
+// We need to be friendly after all :D
+showWelcomeIfNeverShownBefore()
 </script>
 
 <template>
@@ -62,7 +83,7 @@ interceptErrors(
   <FullScreenPreview />
   <EditorSettings />
   <Export />
-  <div id="editor-page">
+  <div id="editor-page" :class="fileStateInitialised ? '' : 'blocked'">
     <EditorNavbar />
     <div id="editor-and-preview-wrapper">
       <DefaultEditorSubView
@@ -95,6 +116,11 @@ interceptErrors(
 $total-width: 100vw;
 div#editor-page {
   @include view-presets;
+
+  &.blocked {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 
   #editor-and-preview-wrapper {
     display: flex;

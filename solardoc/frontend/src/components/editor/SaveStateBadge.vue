@@ -54,10 +54,7 @@ async function uploadFile() {
 </script>
 
 <template>
-  <div
-    id="save-state"
-    v-tooltip="'Indicates whether the file is saved remotely on the server'"
-  >
+  <div id="save-state" v-tooltip="'Indicates whether the file is saved remotely on the server'">
     <p :class="getSaveStateCSSClass()">
       {{ getSaveState() }}
       <span v-if="getSaveState() === _constants.saveStates.local" @click="uploadFile()">

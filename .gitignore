@@ -1,5 +1,5 @@
-/.idea
-postgresql-db/postgres-data
+.idea/
+*/postgresql-db/postgres-data
 dist
 node_modules
 tsconfig.tsbuildinfo

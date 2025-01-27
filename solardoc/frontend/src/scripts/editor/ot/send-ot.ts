@@ -1,5 +1,8 @@
 import type { OTransReqDto } from '@/services/phoenix/ot-trans'
 import { handleOutgoingUpdate } from '@/services/phoenix/ot-trans'
+import { AsyncLock } from '@/scripts/async-lock'
+
+const outgoingLock = new AsyncLock()
 
 /**
  * Sends the operational transformation updates to the server.
@@ -9,11 +12,14 @@ import { handleOutgoingUpdate } from '@/services/phoenix/ot-trans'
  * @since 0.7.0
  */
 export async function sendOTUpdates(
-  ots: Array<OTransReqDto>,
+  ots: Array<Array<OTransReqDto>>,
   hasChannelConnection: boolean = false,
 ): Promise<void> {
-  for (const oTrans of ots) {
-    console.debug(`[Editor] Pushing OT operation:`, oTrans)
-    await handleOutgoingUpdate(oTrans, hasChannelConnection)
-  }
+  const promises = ots.flat().map(oTrans =>
+    outgoingLock.acquire(async () => {
+      console.debug(`[Editor] Pushing OT operation:`, oTrans)
+      await handleOutgoingUpdate(oTrans, hasChannelConnection)
+    }),
+  )
+  await Promise.all(promises)
 }

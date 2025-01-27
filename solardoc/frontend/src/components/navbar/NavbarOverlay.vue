@@ -78,6 +78,7 @@ const darkModeStore = useDarkModeStore()
     opacity: 1;
     transform: translateY(0);
     background-color: rgba(0, 0, 0, 0.5);
+
     #phone-navbar-overlay-wrapper {
       opacity: 1;
       transform: translateY(0);
@@ -119,6 +120,7 @@ const darkModeStore = useDarkModeStore()
       $close-button-width-height: 2rem;
       $navigation-links-margin-top: calc($close-button-top + $close-button-width-height);
       $clickable-icons-margin-bottom: $navigation-links-margin-top;
+
       #close-button {
         position: absolute;
         z-index: 101;

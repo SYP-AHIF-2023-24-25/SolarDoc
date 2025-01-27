@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import { useLoadingStore } from '@/stores/loading'
+import { storeToRefs } from 'pinia'
 
 const loadingStore = useLoadingStore()
+
+const { loading, currMsg } = storeToRefs(loadingStore)
 </script>
 
 <template>
-  <div id="avoid-interaction-overlay" class="full-screen-overlay" v-if="loadingStore.loading">
+  <div id="avoid-interaction-overlay" class="full-screen-overlay" v-if="loading">
     <div id="progress-spinner">
       <span class="loader-spinner"></span>
+    </div>
+    <div id="loader-text" v-if="currMsg">
+      <span>{{ currMsg }}</span>
     </div>
   </div>
 </template>
@@ -34,6 +40,20 @@ const loadingStore = useLoadingStore()
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 100%;
+  }
+
+  #loader-text {
+    position: fixed;
+    z-index: inherit;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 64px;
+    padding: 10px;
+    opacity: 100%;
+    color: var.$text-color;
+    font-size: 1.5rem;
+    font-weight: 500;
   }
 }
 </style>
