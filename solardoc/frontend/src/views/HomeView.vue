@@ -31,7 +31,7 @@ async function routeWithLoading(to: string) {
         <SolardocStreamSVG />
       </div>
     </div>
-    <div class="scroll-container">
+    <div id="scroll-down-content" class="scroll-container">
       <div id="home-page-welcome-content-separator">
         <h2>So what can Solardoc do?<span></span></h2>
       </div>
@@ -234,12 +234,10 @@ async function routeWithLoading(to: string) {
     }
 
     @include r-min(var.$window-xmedium) {
-      & {
-        height: 30rem;
-        gap: max(6rem, 10vw);
-        flex-flow: row wrap;
-        padding: 0 4rem 4rem 4rem;
-      }
+     min-height: 30rem;
+      gap: max(6rem, 10vw);
+      flex-flow: row wrap;
+      padding: 0 4rem 4rem 4rem;
 
       h2 {
         font-size: 2.5rem;
