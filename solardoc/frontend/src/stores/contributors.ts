@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import * as phoenixRestService from '@/services/phoenix/api-service'
 import type { FilePermission } from '@/services/phoenix/api-service'
+import * as phoenixRestService from '@/services/phoenix/api-service'
 import {
   PhoenixBadRequestError,
   PhoenixInternalError,

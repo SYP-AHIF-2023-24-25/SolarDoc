@@ -69,7 +69,7 @@ interceptErrors(
       loadingStore.popMsg(constants.loadingMessages.loadingEditor)
       loadingStore.unlockLoading()
     },
-  }
+  },
 )
 // ---------------------------------------------------------------------------------------------------------------------
 

@@ -11,7 +11,7 @@ export const useLoadingStore = defineStore('loading', {
   getters: {
     currMsg(): string {
       return this.displayMessages[this.displayMessages.length - 1]
-    }
+    },
   },
   actions: {
     lockLoading() {
@@ -45,6 +45,6 @@ export const useLoadingStore = defineStore('loading', {
       if (index !== -1) {
         this.displayMessages.splice(index, 1)
       }
-    }
-  }
+    },
+  },
 })

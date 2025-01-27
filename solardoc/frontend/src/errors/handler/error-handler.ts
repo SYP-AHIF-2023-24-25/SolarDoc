@@ -42,9 +42,9 @@ export function handleError(e: unknown): void {
 export async function interceptErrors<FuncT extends Promise<any>>(
   func: FuncT,
   options: {
-    onError?: (e: unknown) => void,
-    onFinally?: () => void,
-  } = {}
+    onError?: (e: unknown) => void
+    onFinally?: () => void
+  } = {},
 ): Promise<Awaited<FuncT>> {
   try {
     const result = await func

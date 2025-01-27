@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useLoadingStore } from '@/stores/loading'
-import {storeToRefs} from "pinia";
+import { storeToRefs } from 'pinia'
 
 const loadingStore = useLoadingStore()
 

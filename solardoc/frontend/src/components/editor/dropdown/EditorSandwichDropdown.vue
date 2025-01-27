@@ -9,7 +9,6 @@ import { useCurrentUserStore } from '@/stores/current-user'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
 import { interceptErrors } from '@/errors/handler/error-handler'
-import { showDummyLoading } from '@/scripts/show-dummy-loading'
 import { useLoadingStore } from '@/stores/loading'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
@@ -17,7 +16,7 @@ import { ref } from 'vue'
 import { createEditorRemoteFileConnection } from '@/scripts/editor/file'
 import { handleCopy } from '@/scripts/handle-copy'
 import { openInNewWindow } from '@/router/open'
-import * as phoenixBackend from "@/services/phoenix/api-service";
+import * as phoenixBackend from '@/services/phoenix/api-service'
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
@@ -48,7 +47,11 @@ async function handleSaveButtonClick() {
   const wasAlreadyUploaded = !!currentFileStore.fileId
 
   loadingStore.lockLoading()
-  loadingStore.pushMsg(wasAlreadyUploaded ? constants.loadingMessages.savingFileName : constants.loadingMessages.uploadingFile)
+  loadingStore.pushMsg(
+    wasAlreadyUploaded
+      ? constants.loadingMessages.savingFileName
+      : constants.loadingMessages.uploadingFile,
+  )
   try {
     await interceptErrors(
       ensureLoggedIn($router).then(

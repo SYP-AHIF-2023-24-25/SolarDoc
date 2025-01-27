@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import * as phoenixRestService from '@/services/phoenix/api-service'
 import type { UserPublic } from '@/services/phoenix/api-service'
+import * as phoenixRestService from '@/services/phoenix/api-service'
 import type { Awaited } from '@vueuse/core'
 import {
   PhoenixInternalError,
