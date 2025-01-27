@@ -18,6 +18,7 @@ import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
 import { useRouter } from 'vue-router'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
+import {useLoadingStore} from "@/stores/loading";
 
 const $router = useRouter()
 
@@ -25,6 +26,7 @@ const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
 const darkModeStore = useDarkModeStore()
+const loadingStore = useLoadingStore()
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
@@ -32,11 +34,15 @@ function handlePreviewButtonPress() {
 }
 
 async function handleSaveButtonPress() {
+  loadingStore.lockLoading()
+  loadingStore.pushMsg(constants.loadingMessages.savingFileName)
   await interceptErrors(
     ensureLoggedIn($router).then(
       async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
     ),
   )
+  loadingStore.popMsg(constants.loadingMessages.savingFileName)
+  loadingStore.unlockLoading()
   showInfoNotifFromObj(constants.notifMessages.fileSaved)
 }
 </script>
