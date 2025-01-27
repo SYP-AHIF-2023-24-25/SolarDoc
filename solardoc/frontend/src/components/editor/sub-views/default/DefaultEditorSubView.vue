@@ -22,7 +22,6 @@ const previewSelectedSlideStore = usePreviewSelectedSlideStore()
 
 const { rawSize, slideCount, slideCountInclSubslides, previewURL } = storeToRefs(renderDataStore)
 const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
-
 </script>
 
 <template>

@@ -21,8 +21,8 @@ import { createOTUpdates } from '@/scripts/editor/ot/create-ot'
 import { getMonacoUpdatesFromOT } from '@/scripts/editor/ot/get-monaco-updates'
 import { sendOTUpdates } from '@/scripts/editor/ot/send-ot'
 import { EditorModelNotFoundError } from '@/errors/editor-model-not-found-error'
-import {usePreviewSelectedSlideStore} from "@/stores/preview-selected-slide";
-import {storeToRefs} from "pinia";
+import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
+import { storeToRefs } from 'pinia'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -138,30 +138,29 @@ export class SolardocEditor {
       this._readonly = true
     }
 
+    globalMonacoEditor!.onDidChangeCursorPosition(event => {
+      const lineNumber = event.position.lineNumber
 
-      globalMonacoEditor!.onDidChangeCursorPosition((event) => {
-        const lineNumber = event.position.lineNumber;
+      const content = this.getContent()
+      if (!content) return
 
-        const content = this.getContent();
-        if (!content) return;
+      const lines = content.split('\n')
+      let slideIndex = 0
+      let subSlideIndex = -1
+      console.log(`Max lines: ${lines.length}`)
+      //try this with an aggregate
+      for (let i = 0; i < lineNumber; i++) {
+        const line = lines[i].trim()
 
-        const lines = content.split('\n');
-        let slideIndex = 0;
-        let subSlideIndex = -1;
-        console.log(`Max lines: ${lines.length}`);
-        //try this with an aggregate
-        for (let i = 0; i < lineNumber; i++) {
-          const line = lines[i].trim();
-
-          if (line.startsWith('== ')) {
-            slideIndex++;
-          }else if (line.startsWith('=== ')) {
-            subSlideIndex++;
-          }
+        if (line.startsWith('== ')) {
+          slideIndex++
+        } else if (line.startsWith('=== ')) {
+          subSlideIndex++
         }
+      }
 
-        previewSelectedSlideStore.setSlide(slideIndex, false,subSlideIndex);
-      });
+      previewSelectedSlideStore.setSlide(slideIndex, false, subSlideIndex)
+    })
 
     this._startContentWatchers()
   }
@@ -174,35 +173,38 @@ export class SolardocEditor {
    * Navigates the editor to the section corresponding to current slide index.
    */
   public static redirectCursorToArea() {
-    const content = this.getContent();
-    const lines = content.split('\n');
+    const content = this.getContent()
+    const lines = content.split('\n')
 
-    let lineNumber = 1;
-    let currentSlideIndex = 0;
-    let currentSubSlideIndex = -1;
+    let lineNumber = 1
+    let currentSlideIndex = 0
+    let currentSubSlideIndex = -1
 
-
-    for (let i = 1; i < lines.length &&
-    !(currentSlideIndex === slideIndex.value &&
-    (subSlideIndex.value === undefined || currentSubSlideIndex === subSlideIndex.value)); i++) {
-
-      lineNumber++;
-      const line = lines[i];
+    for (
+      let i = 1;
+      i < lines.length &&
+      !(
+        currentSlideIndex === slideIndex.value &&
+        (subSlideIndex.value === undefined || currentSubSlideIndex === subSlideIndex.value)
+      );
+      i++
+    ) {
+      lineNumber++
+      const line = lines[i]
 
       if (line.startsWith('== ')) {
-        currentSlideIndex++;
-        currentSubSlideIndex = -1;
+        currentSlideIndex++
+        currentSubSlideIndex = -1
       }
       if (line.startsWith('=== ')) {
-        currentSubSlideIndex++;
+        currentSubSlideIndex++
       }
-
     }
 
-    const position = new monaco.Position(lineNumber, lines[lineNumber - 1].length + 1);
-    this.monacoEditor.setPosition(position);
+    const position = new monaco.Position(lineNumber, lines[lineNumber - 1].length + 1)
+    this.monacoEditor.setPosition(position)
     this.monacoEditor.revealPositionNearTop(position)
-    this.monacoEditor.focus();
+    this.monacoEditor.focus()
   }
 
   /**

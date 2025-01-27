@@ -23,7 +23,7 @@ const { previewURL } = storeToRefs(renderDataStore)
   <div
     :id="'slide-manager-slide-preview-' + slideIndex"
     :class="`slide-manager-slide-preview ${previewLoadingStore.previewLoading ? 'loading' : ''}`"
-    @click="previewSelectedSlide.setSlide(slideIndex,true, undefined)"
+    @click="previewSelectedSlide.setSlide(slideIndex, true, undefined)"
   >
     <h2 v-if="previewLoadingStore.previewLoading" id="loading-wrapper">
       <span class="dot-dot-dot-flashing"></span>
