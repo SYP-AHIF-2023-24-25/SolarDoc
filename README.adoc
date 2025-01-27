@@ -17,6 +17,27 @@ SolarDoc is a dynamic online editor which allows you to create beautiful present
 | 
 | 
 | 
+
+| https://github.com/SYP-AHIF-2023-24-25/SolarDoc/milestone/11[#10] 
+| 8 
+| 48h 
+| 
+| 
+| 
+
+| https://github.com/SYP-AHIF-2023-24-25/SolarDoc/milestone/12[#11] 
+| 8 
+| 48h 
+| 
+| 
+| 
+
+| https://github.com/SYP-AHIF-2023-24-25/SolarDoc/milestone/13[#12] 
+| 8 
+| 48h 
+| 
+| 
+| 
 |===
 
 == Problem & Background 🛑
