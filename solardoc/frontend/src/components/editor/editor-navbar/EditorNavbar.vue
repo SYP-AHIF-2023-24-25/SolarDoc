@@ -64,7 +64,7 @@ async function handleSaveButtonPress() {
           <span
             v-if="currentFileStore.isFileNameUpdated && currentFileStore.remoteFile"
             id="file-name-save-button"
-            v-tooltip="'This file name has been modified'"
+            v-tooltip="'Save the changed file name'"
             @click="handleSaveButtonPress"
           >
             <SaveIconDarkModeSVG v-show="darkModeStore.darkMode" />
@@ -176,11 +176,12 @@ $total-width: 100vw;
         }
 
         #file-name-save-button {
-          height: calc(100% - 0.35rem);
+          @include align-center;
+          height: calc(100% - 0.4rem);
           width: 1.5rem;
           border-radius: 0.25rem;
-          padding: 0.25rem;
-          margin: 0.15rem;
+          padding: 2px;
+          margin: 0.2rem 0.15rem 0.1rem 0.15rem;
 
           &:hover {
             cursor: pointer;
