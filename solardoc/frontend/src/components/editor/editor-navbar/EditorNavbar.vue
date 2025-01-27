@@ -10,8 +10,8 @@ import PresentationIconSVG from '@/components/icons/PresentationIconSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import ViewPrintableDropdown from '@/components/editor/editor-navbar/ViewInOtherWindowDropdown.vue'
 import ContributorsCount from '@/components/editor/ContributorsCount.vue'
-import SaveIconDarkModeSVG from "@/components/icons/SaveIconDarkModeSVG.vue";
-import SaveIconSVG from "@/components/icons/SaveIconSVG.vue";
+import SaveIconDarkModeSVG from '@/components/icons/SaveIconDarkModeSVG.vue'
+import SaveIconSVG from '@/components/icons/SaveIconSVG.vue'
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
@@ -53,12 +53,14 @@ async function handleSaveButtonPress() {
               }
             "
           />
-          <span v-if="currentFileStore.isFileNameUpdated && currentFileStore.remoteFile"
-                id="file-name-save-button"
-                v-tooltip="'This file name has been modified'"
-                @click="handleSaveButtonPress">
-            <SaveIconDarkModeSVG v-show="darkModeStore.darkMode"/>
-            <SaveIconSVG v-show="!darkModeStore.darkMode"/>
+          <span
+            v-if="currentFileStore.isFileNameUpdated && currentFileStore.remoteFile"
+            id="file-name-save-button"
+            v-tooltip="'This file name has been modified'"
+            @click="handleSaveButtonPress"
+          >
+            <SaveIconDarkModeSVG v-show="darkModeStore.darkMode" />
+            <SaveIconSVG v-show="!darkModeStore.darkMode" />
           </span>
         </div>
       </div>
