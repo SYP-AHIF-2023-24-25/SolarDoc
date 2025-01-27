@@ -96,6 +96,8 @@ export class ResultController {
 
       res.setHeader('Content-Type', mimeType)
       res.setHeader('Content-Disposition', `inline; filename="${encodedFilename}"`)
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+      res.setHeader('Vary', 'Accept-Encoding')
       res.status(200).send(finalFileContent)
     } catch (e) {
       if (e instanceof CacheError) {
