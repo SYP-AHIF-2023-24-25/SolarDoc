@@ -9,8 +9,8 @@ export const useLoadingStore = defineStore('loading', {
     }
   },
   getters: {
-    currMsg(): string {
-      return this.displayMessages[this.displayMessages.length - 1]
+    currMsg(): string | undefined {
+      return this.displayMessages[this.displayMessages.length - 1] ?? undefined
     },
   },
   actions: {
