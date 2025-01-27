@@ -12,8 +12,8 @@ const { loading, currMsg } = storeToRefs(loadingStore)
     <div id="progress-spinner">
       <span class="loader-spinner"></span>
     </div>
-    <div id="loader-text" v-if="currMsg">
-      <span>{{ currMsg }}</span>
+    <div id="loader-text">
+      <span>{{ currMsg || 'Loading...'}}</span>
     </div>
   </div>
 </template>
