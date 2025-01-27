@@ -183,6 +183,7 @@ setInterval(updateTimeRefs, 500)
         border-radius: 0.5rem;
         margin-bottom: 1rem;
         font-size: 1.5em;
+        padding: 6px 8px 3px 8px;
       }
 
       #save-button {

@@ -28,6 +28,11 @@ export function handleError(e: unknown): void {
  * can handle it as needed. This is simply to make sure we also get the error displayed to the user.
  * @param func The promise to run. This must be an awaitable function, which has been populated with the necessary
  * arguments and is ready to be executed.
+ * @param options The options for the error handler.
+ * @param options.onError An optional callback to run in case an error is caught. This can be used to run additional error
+ * handling code, or to log the error to a logging service.
+ * @param options.onFinally An optional callback to run after the promise has been resolved or rejected. This can be used to
+ * run cleanup code, or to update the UI after the promise has been resolved.
  * @returns The result of the promise, if it was successful. If the promise failed, the error will be caught and
  * displayed as a notification, and the function will return that error in case it is needed.
  * @since 0.6.0
@@ -36,12 +41,28 @@ export function handleError(e: unknown): void {
  */
 export async function interceptErrors<FuncT extends Promise<any>>(
   func: FuncT,
+  options: {
+    onError?: (e: unknown) => void,
+    onFinally?: () => void,
+  } = {}
 ): Promise<Awaited<FuncT>> {
   try {
-    return await func
+    const result = await func
+    if (options.onFinally) {
+      options.onFinally()
+    }
+    return result
   } catch (e) {
-    handleError(e)
     loadingStore.setLoading(false)
+    handleError(e)
+
+    if (options.onError) {
+      options.onError(e)
+    }
+    if (options.onFinally) {
+      options.onFinally()
+    }
+
     throw e
   }
 }

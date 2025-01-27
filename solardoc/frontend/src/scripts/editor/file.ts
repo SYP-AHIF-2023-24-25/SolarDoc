@@ -97,7 +97,8 @@ export async function initEditorFileBasedOnPath(
  * @since 1.0.0
  */
 export async function openFileInEditor($router: Router, file: File): Promise<void> {
-  loadingStore.setLoading(true)
+  loadingStore.lockLoading()
+  loadingStore.pushMsg(constants.loadingMessages.openingFile)
   renderDataStore.clear()
   initStateStore.setInit(true)
   previewLoadingStore.setPreviewLoading(false)
@@ -105,6 +106,8 @@ export async function openFileInEditor($router: Router, file: File): Promise<voi
   await closeEditorRemoteFileConnection()
   await currentFileStore.closeFileGlobally({ emptyContent: true })
   await $router.push(`/editor/o/${file.id}`)
+  loadingStore.popMsg(constants.loadingMessages.openingFile)
+  loadingStore.unlockLoading()
 }
 
 /**

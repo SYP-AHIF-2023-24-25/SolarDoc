@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
+import LoadingProgressSpinner from '@/components/common/LoadingProgressSpinner.vue'
 import { useLoadingStore } from '@/stores/loading'
 import { useRoute, useRouter } from 'vue-router'
 import { interceptErrors } from '@/errors/handler/error-handler'
@@ -20,7 +20,7 @@ interceptErrors(
 </script>
 
 <template>
-  <ProgressSpinner />
+  <LoadingProgressSpinner />
 </template>
 
 <style lang="scss" scoped></style>

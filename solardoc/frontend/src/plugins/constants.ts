@@ -10,6 +10,12 @@ export default Object.freeze({
   localStorageCurrUserKey: 'current-user',
   localStorageWelcomeShownKey: 'welcome-shown',
   sessionStorageChannelKey: 'cached-channels',
+  loadingMessages: {
+    loadingEditor: 'Loading editor...',
+    openingFile: 'Opening file...',
+    savingFileName: 'Saving file name...',
+    uploadingFile: 'Uploading file...',
+  },
   errorMessages: {
     'heading-space-missing-error': 'Error: Heading should have a space after the equal sign/s',
     'list-inconsistent-error': 'Error: Lists should be consistent (use either "." or "*")',
@@ -40,7 +46,7 @@ export default Object.freeze({
     newFile: {
       title: 'New file created',
       text:
-        'A new file has been created in your local storage! Please note that only one concurrent file can be saved' +
+        'A new file has been created in your local storage! Please note that only one concurrent file can be saved ' +
         'locally and you should save your file to avoid losing it.',
     },
     sharedFileIsOwnedByYou: {

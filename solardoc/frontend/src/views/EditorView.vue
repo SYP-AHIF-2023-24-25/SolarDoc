@@ -28,6 +28,10 @@ const $route = useRoute()
 const currentUserStore = useCurrentUserStore()
 const loadingStore = useLoadingStore()
 
+// Lock the loading spinner and show a message until the editor is fully loaded
+loadingStore.lockLoading()
+loadingStore.pushMsg(constants.loadingMessages.loadingEditor)
+
 // Manage the three different modes of the editor
 const viewState = ref(DEFAULT_VIEW)
 const phoneState = ref(FULL_SCREEN_EDITOR)
@@ -39,15 +43,14 @@ window.addEventListener('resize', () => {
   isPhone.value = checkIfPhone()
 })
 
+const fileStateInitialised = ref(false)
+const fileType = ref<Awaited<ReturnType<typeof initEditorFileBasedOnPath>>>('local')
+
 // ---------------------------------------------------------------------------------------------------------------------
 // ESSENTIAL CONNECTIONS
 // ---------------------------------------------------------------------------------------------------------------------
 interceptErrors(currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid())
 interceptErrors(backendAPI.ensureRenderBackendIsReachable())
-
-loadingStore.setLoading(true)
-const fileStateInitialised = ref(false)
-const fileType = ref<Awaited<ReturnType<typeof initEditorFileBasedOnPath>>>('local')
 interceptErrors(
   (async () => {
     fileType.value = await initEditorFileBasedOnPath(
@@ -57,8 +60,16 @@ interceptErrors(
       $route.query,
     )
     fileStateInitialised.value = true
-    loadingStore.setLoading(false)
   })(),
+  {
+    onError: () => {
+      fileStateInitialised.value = false
+    },
+    onFinally: () => {
+      loadingStore.popMsg(constants.loadingMessages.loadingEditor)
+      loadingStore.unlockLoading()
+    },
+  }
 )
 // ---------------------------------------------------------------------------------------------------------------------
 

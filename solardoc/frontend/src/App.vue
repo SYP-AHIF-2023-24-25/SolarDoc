@@ -2,7 +2,7 @@
 import { RouterView } from 'vue-router'
 import { ModalsContainer } from 'vue-final-modal'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
+import LoadingProgressSpinner from '@/components/common/LoadingProgressSpinner.vue'
 import Navbar from '@/components/navbar/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import { Notifications } from '@kyvg/vue3-notification'
@@ -27,7 +27,7 @@ darkModeStore.setThemeOnHTMLRoot()
   <main>
     <RouterView />
     <ModalsContainer />
-    <ProgressSpinner />
+    <LoadingProgressSpinner />
     <notifications
       :width="400"
       animation-type="velocity"
