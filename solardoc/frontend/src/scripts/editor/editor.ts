@@ -138,30 +138,7 @@ export class SolardocEditor {
       this._readonly = true
     }
 
-    globalMonacoEditor!.onDidChangeCursorPosition(event => {
-      const lineNumber = event.position.lineNumber
-
-      const content = this.getContent()
-      if (!content) return
-
-      const lines = content.split('\n')
-      let slideIndex = 0
-      let subSlideIndex = -1
-      console.log(`Max lines: ${lines.length}`)
-      //try this with an aggregate
-      for (let i = 0; i < lineNumber; i++) {
-        const line = lines[i].trim()
-
-        if (line.startsWith('== ')) {
-          slideIndex++
-        } else if (line.startsWith('=== ')) {
-          subSlideIndex++
-        }
-      }
-
-      previewSelectedSlideStore.setSlide(slideIndex, false, subSlideIndex)
-    })
-
+    this._startCursorWatchers()
     this._startContentWatchers()
   }
 
@@ -171,6 +148,7 @@ export class SolardocEditor {
 
   /**
    * Navigates the editor to the section corresponding to current slide index.
+   * @since 1.0.0
    */
   public static redirectCursorToArea() {
     const content = this.getContent()
@@ -290,6 +268,31 @@ export class SolardocEditor {
         globalMonacoEditor!.executeEdits(this.name, edits)
       })
     }
+  }
+
+  private static _startCursorWatchers() {
+    globalMonacoEditor!.onDidChangeCursorPosition(event => {
+      const lineNumber = event.position.lineNumber
+
+      const content = this.getContent()
+      if (!content) return
+
+      const lines = content.split('\n')
+      const { slideIndex, subSlideIndex } = lines.slice(0, lineNumber).reduce(
+        (acc, line) => {
+          line = line.trim();
+          if (line.startsWith('== ')) {
+            acc.slideIndex++;
+            acc.subSlideIndex = -1;
+          } else if (line.startsWith('=== ')) {
+            acc.subSlideIndex++;
+          }
+          return acc;
+        },
+        { slideIndex: 0, subSlideIndex: -1 }
+      );
+      previewSelectedSlideStore.setSlide(slideIndex, false, subSlideIndex)
+    })
   }
 
   private static _startContentWatchers() {
