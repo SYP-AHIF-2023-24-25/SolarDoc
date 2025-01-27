@@ -128,6 +128,7 @@ export type UserPrivate = {
   role?: string
   username?: string
 }
+
 /**
  * Log out a user
  */
@@ -153,6 +154,7 @@ export function deleteV2AuthBearer(authorization: string, opts?: Oazapfts.Reques
     },
   })
 }
+
 /**
  * Log in a user
  */
@@ -179,6 +181,7 @@ export function postV2AuthBearer(userLogin: UserLogin, opts?: Oazapfts.RequestOp
     }),
   )
 }
+
 /**
  * List all currently running editor channels
  */
@@ -200,6 +203,7 @@ export function getV2EditorChannels(authorization: string, opts?: Oazapfts.Reque
     },
   })
 }
+
 /**
  * Get a single editor channel
  */
@@ -229,6 +233,7 @@ export function getV2EditorChannelsById(
     },
   })
 }
+
 /**
  * List all files owned by the current user
  */
@@ -250,6 +255,7 @@ export function getV2Files(authorization: string, opts?: Oazapfts.RequestOpts) {
     },
   })
 }
+
 /**
  * Create a new file
  */
@@ -284,6 +290,7 @@ export function postV2Files(
     }),
   )
 }
+
 /**
  * List all global files
  */
@@ -335,6 +342,7 @@ export function getV2FilesGlobal(
     },
   )
 }
+
 /**
  * Create a new file permission
  */
@@ -373,6 +381,7 @@ export function postV2FilesPermissions(
     }),
   )
 }
+
 /**
  * Get a single file permission
  */
@@ -402,6 +411,7 @@ export function getV2FilesPermissionsById(
     },
   })
 }
+
 /**
  * Update a single file
  */
@@ -441,6 +451,7 @@ export function putV2FilesPermissionsById(
     }),
   )
 }
+
 /**
  * Gets the permissions for one file for all users who have access to it
  */
@@ -474,6 +485,7 @@ export function getV2FilesByFileIdPermissions(
     },
   })
 }
+
 /**
  * Gets the permissions for one file from one specific user
  */
@@ -508,6 +520,7 @@ export function getV2FilesByFileIdPermissionsAndUserId(
     },
   })
 }
+
 /**
  * Deletes a file
  */
@@ -537,6 +550,7 @@ export function deleteV2FilesById(authorization: string, id: string, opts?: Oaza
     },
   })
 }
+
 /**
  * Get a single file
  */
@@ -562,6 +576,7 @@ export function getV2FilesById(authorization: string, id: string, opts?: Oazapft
     },
   })
 }
+
 /**
  * Update a single file
  */
@@ -601,6 +616,7 @@ export function putV2FilesById(
     }),
   )
 }
+
 /**
  * Ping the server
  */
@@ -612,6 +628,7 @@ export function getV2Ping(opts?: Oazapfts.RequestOpts) {
     ...opts,
   })
 }
+
 /**
  * Create a new share url
  */
@@ -646,6 +663,7 @@ export function postV2Share(
     }),
   )
 }
+
 /**
  * Delete a share url
  */
@@ -671,6 +689,7 @@ export function deleteV2ShareById(authorization: string, id: string, opts?: Oaza
     },
   })
 }
+
 /**
  * Get a single share url
  */
@@ -696,6 +715,7 @@ export function getV2ShareById(authorization: string, id: string, opts?: Oazapft
     },
   })
 }
+
 /**
  * Get a channel via a share url
  */
@@ -725,6 +745,7 @@ export function getV2ShareByIdChannel(
     },
   })
 }
+
 /**
  * Get a file via a share url
  */
@@ -750,6 +771,7 @@ export function getV2ShareByIdFile(authorization: string, id: string, opts?: Oaz
     },
   })
 }
+
 /**
  * List all users
  */
@@ -765,6 +787,7 @@ export function getV2Users(authorization: string, opts?: Oazapfts.RequestOpts) {
     },
   })
 }
+
 /**
  * Create a new user
  */
@@ -787,6 +810,7 @@ export function postV2Users(createUser: CreateUser, opts?: Oazapfts.RequestOpts)
     }),
   )
 }
+
 /**
  * Get the current user
  */
@@ -808,6 +832,7 @@ export function getV2UsersCurrent(authorization: string, opts?: Oazapfts.Request
     },
   })
 }
+
 /**
  * Get a single user by id
  */

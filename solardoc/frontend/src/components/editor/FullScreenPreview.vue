@@ -87,6 +87,7 @@ function toggleFillWholeScreen() {
 
   &.fill-whole-screen {
     --margin: 0px;
+
     #full-screen-preview {
       top: 0;
       left: 0;

@@ -59,8 +59,14 @@ async function deleteFile() {
       <p class="file-infos-filename">
         <span>Filename:</span><code>{{ file.file_name }}</code>
       </p>
-      <p><span>Changed:</span><TimeRef :date-time="props.file.last_edited" update /></p>
-      <p><span>Created:</span><TimeRef :date-time="props.file.created" update /></p>
+      <p>
+        <span>Changed:</span>
+        <TimeRef :date-time="props.file.last_edited" update />
+      </p>
+      <p>
+        <span>Created:</span>
+        <TimeRef :date-time="props.file.created" update />
+      </p>
     </div>
     <button class="highlighted-button" @click="interceptErrors(deleteFile())">Delete</button>
   </div>

@@ -67,8 +67,8 @@ async function saveChanges() {
 <template>
   <div id="user-permission-card">
     <p>
-      <span>User:</span
-      ><UserRef :id="filePermission.user_id" :user-name="filePermission.username" />
+      <span>User:</span>
+      <UserRef :id="filePermission.user_id" :user-name="filePermission.username" />
     </p>
     <p>
       <span id="permission-text">Permission:</span>
@@ -91,15 +91,19 @@ async function saveChanges() {
 <style scoped lang="scss">
 #user-permission-card {
   padding-bottom: 1rem;
+
   span {
     font-weight: bold;
   }
+
   #permission-text {
     padding-right: 1rem;
   }
+
   #toggle {
     margin-left: 1rem;
   }
+
   #save-button {
     float: right;
     margin-right: 5rem;

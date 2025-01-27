@@ -58,6 +58,7 @@ async function fetchFilePermissions(bearerToken: string) {
 
 <style scoped lang="scss">
 @use '@/assets/core/var' as var;
+
 #user-permission-box {
   margin-left: 1rem;
   max-height: 10rem;

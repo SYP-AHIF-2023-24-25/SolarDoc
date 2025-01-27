@@ -16,6 +16,7 @@ const { init } = <{ init: Ref<boolean> }>storeToRefs(initStateStore)
 const { previewURL } = <{ previewURL: Ref<string> }>storeToRefs(renderData)
 
 const dropdown = ref(null)
+
 function closeDropdown() {
   ;(dropdown.value as { close: () => void } | null)?.close()
 }
