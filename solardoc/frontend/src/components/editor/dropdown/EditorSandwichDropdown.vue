@@ -53,6 +53,12 @@ async function handleSaveButtonClick() {
     if (wasAlreadyUploaded) {
       showInfoNotifFromObj(constants.notifMessages.fileSaved)
     } else {
+      // Set the path to the editor for remote files (won't cause a real reload but simply change the path)
+      await $router.push({
+        name: 'remote-editor',
+        params: { fileId: currentFileStore.fileId },
+      })
+
       showInfoNotifFromObj(constants.notifMessages.fileUploaded)
       await createEditorRemoteFileConnection()
     }
