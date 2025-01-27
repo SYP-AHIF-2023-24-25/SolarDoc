@@ -12,9 +12,18 @@ defineProps<{ file: GlobalFile }>()
       <p>
         <span>Filename:</span><code>{{ file.file_name }}</code>
       </p>
-      <p><span>Owner:</span><UserRef :userName="file.owner_name" :id="file.owner_id" /></p>
-      <p><span>Last Edited:</span><TimeRef :date-time="file.last_edited" /></p>
-      <p><span>Created:</span><TimeRef :date-time="file.created" /></p>
+      <p>
+        <span>Owner:</span>
+        <UserRef :userName="file.owner_name" :id="file.owner_id" />
+      </p>
+      <p>
+        <span>Last Edited:</span>
+        <TimeRef :date-time="file.last_edited" />
+      </p>
+      <p>
+        <span>Created:</span>
+        <TimeRef :date-time="file.created" />
+      </p>
     </div>
     <div>
       <button class="highlighted-button">Join</button>

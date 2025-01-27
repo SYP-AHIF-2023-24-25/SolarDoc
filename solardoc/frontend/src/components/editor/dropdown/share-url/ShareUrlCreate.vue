@@ -26,6 +26,7 @@ const gradient = ref(true)
 const gradientType = ref<GradientType>('linear')
 const gradientStartColor = ref('#EC53B0FF')
 const gradientEndColor = ref('#0E21A0FF')
+
 async function handleGeneratedLinkCopyButtonClick() {
   if (generatedLink.value) {
     await handleCopy(generatedLink.value)

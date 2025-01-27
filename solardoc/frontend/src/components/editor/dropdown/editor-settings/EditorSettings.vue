@@ -189,6 +189,7 @@ setInterval(updateTimeRefs, 500)
       #save-button {
         margin-left: 2rem;
       }
+
       #settings-file-info-file-id {
         margin: 0.1rem 0 0 0;
         padding: 0 0 0 0.6rem;
@@ -209,6 +210,7 @@ setInterval(updateTimeRefs, 500)
           background: transparent;
         }
       }
+
       #collaborators-list {
         display: flex;
         margin-left: 0.5rem;
