@@ -25,11 +25,11 @@ const { slideIndex } = storeToRefs(previewSelectedSlideStore)
       &lt;&lt; Go back to slides view
     </button>
     <div id="phone-sub-slides-info-bar">
-      <p id="phone-sub-slides-info">Slide {{ slideIndex }}</p>
+      <p id="phone-sub-slides-info">Slide {{ slideIndex + 1 }}</p>
       <p id="phone-sub-slides-info">Sub-slides {{ subslideCountPerSlide[slideIndex] }}</p>
     </div>
     <div id="phone-nothing-to-see-here" v-if="subslideCountPerSlide[slideIndex] === 0">
-      <p>Nothing to see here :(</p>
+      <p>Nothing to see here :)</p>
     </div>
     <!-- For every *main* slide, create a sub-slide preview -->
     <SlideManagerSubSlidePreview
@@ -82,6 +82,11 @@ const { slideIndex } = storeToRefs(previewSelectedSlideStore)
   #phone-nothing-to-see-here {
     @include align-center();
     flex-grow: 10;
+
+    p {
+      margin-top: 4rem;
+      font-size: 1.2rem;
+    }
   }
 
   height: 100%;
