@@ -16,17 +16,20 @@ import {
 import UserRef from '@/components/common/UserRef.vue'
 
 const props = defineProps<{ filePermission: FilePermission }>()
-const permissionValue = ref(props.filePermission.permission === 3)
+
 const currentUserStore = useCurrentUserStore()
+
+const permissionValue = ref(props.filePermission.permission === 3)
 const currentPermission = ref(permissionValue.value ? 'read & write' : 'read')
-let permissionNumber = props.filePermission.permission
+const permissionNumber = ref(props.filePermission.permission)
+
 function changePermission() {
   if (currentPermission.value === 'read & write') {
     currentPermission.value = 'read'
-    permissionNumber = 1
+    permissionNumber.value = 1
   } else {
     currentPermission.value = 'read & write'
-    permissionNumber = 3
+    permissionNumber.value = 3
   }
 }
 
@@ -36,7 +39,7 @@ async function saveChanges() {
     const updatePermission: UpdateFilePermissions = {
       file_id: props.filePermission.file_id,
       user_id: props.filePermission.user_id,
-      permission: permissionNumber,
+      permission: permissionNumber.value,
     }
     resp = await phoenixRestService.putV2FilesPermissionsById(
       currentUserStore.bearer!,
@@ -49,7 +52,7 @@ async function saveChanges() {
     )
   }
   if (resp.status === 200) {
-    // TODO! Fix this, it's a hack
+    // TODO! Fix this, it's a dirty hack
     // eslint-disable-next-line vue/no-mutating-props
     props.filePermission.permission = resp.data.permission
   } else if (resp.status === 400) {

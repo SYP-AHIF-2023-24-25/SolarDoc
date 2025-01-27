@@ -2,12 +2,17 @@
 import { RouterView } from 'vue-router'
 import { ModalsContainer } from 'vue-final-modal'
 import { useDarkModeStore } from '@/stores/dark-mode'
-import ProgressSpinner from '@/components/common/ProgressSpinner.vue'
+import LoadingProgressSpinner from '@/components/common/LoadingProgressSpinner.vue'
 import Navbar from '@/components/navbar/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 import { Notifications } from '@kyvg/vue3-notification'
 
-const NO_FOOTER_OR_STYLED_NAV_ROUTES = ['test-editor', 'editor']
+const NO_FOOTER_OR_STYLED_NAV_ROUTES = [
+  'test-editor',
+  'local-editor',
+  'remote-editor',
+  'shared-editor',
+]
 
 const darkModeStore = useDarkModeStore()
 darkModeStore.setThemeOnHTMLRoot()
@@ -22,7 +27,7 @@ darkModeStore.setThemeOnHTMLRoot()
   <main>
     <RouterView />
     <ModalsContainer />
-    <ProgressSpinner />
+    <LoadingProgressSpinner />
     <notifications
       :width="400"
       animation-type="velocity"

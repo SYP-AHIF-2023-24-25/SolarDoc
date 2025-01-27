@@ -9,16 +9,9 @@ import PresentationIconDarkModeSVG from '@/components/icons/PresentationIconDark
 import PresentationIconSVG from '@/components/icons/PresentationIconSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import ViewPrintableDropdown from '@/components/editor/editor-navbar/ViewInOtherWindowDropdown.vue'
-import {interceptErrors} from "@/errors/handler/error-handler";
-import {ensureLoggedIn} from "@/scripts/ensure-logged-in";
-import {showInfoNotifFromObj} from "@/scripts/show-notif";
-import constants from "@/plugins/constants";
-import {useRouter} from "vue-router";
-import {useCurrentUserStore} from "@/stores/current-user";
-import SaveIconSVG from "@/components/icons/SaveIconSVG.vue";
+import ContributorsCount from '@/components/editor/ContributorsCount.vue'
 import SaveIconDarkModeSVG from "@/components/icons/SaveIconDarkModeSVG.vue";
-
-const $router = useRouter()
+import SaveIconSVG from "@/components/icons/SaveIconSVG.vue";
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
@@ -29,11 +22,12 @@ const darkModeStore = useDarkModeStore()
 function handlePreviewButtonPress() {
   overlayStateStore.setFullScreenPreview(true)
 }
+
 async function handleSaveButtonPress() {
   await interceptErrors(
-      ensureLoggedIn($router).then(
-          async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
-      ),
+    ensureLoggedIn($router).then(
+      async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
+    ),
   )
   showInfoNotifFromObj(constants.notifMessages.fileSaved)
 }
@@ -59,8 +53,8 @@ async function handleSaveButtonPress() {
               }
             "
           />
-          <span v-if="currentFileStore.isFileNameUpdated&&currentFileStore.remoteFile"
-                id="file-name-star"
+          <span v-if="currentFileStore.isFileNameUpdated && currentFileStore.remoteFile"
+                id="file-name-save-button"
                 v-tooltip="'This file name has been modified'"
                 @click="handleSaveButtonPress">
             <SaveIconDarkModeSVG v-show="darkModeStore.darkMode"/>
@@ -75,6 +69,7 @@ async function handleSaveButtonPress() {
     <div id="menu-right-side">
       <div>
         <SaveStateBadge />
+        <ContributorsCount v-if="currentFileStore.remoteFile" />
         <LastModified />
       </div>
       <div id="right-side-icon-menu">
@@ -160,6 +155,7 @@ $total-width: 100vw;
         box-shadow: 0 -2px var.$scheme-link-hover-color inset;
         border-radius: 0.3em 0.3em 0 0;
         margin-left: 4px;
+
         #asciidoc-icon {
           display: inline-flex;
           align-content: center;
@@ -169,7 +165,7 @@ $total-width: 100vw;
           margin: 0 0.5rem;
         }
 
-        #file-name-star {
+        #file-name-save-button {
           height: calc(100% - 0.35rem);
           width: 1.5rem;
           border-radius: 0.25rem;

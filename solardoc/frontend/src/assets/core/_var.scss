@@ -552,8 +552,9 @@ html[data-theme='dark'] {
   --scheme-toggleable-button-border: white;
   --scheme-toggleable-button-disabled-border: var(--stylised-button-disabled-color);
   --scheme-file-name-input-background-color: var(--scheme-purple-subtle);
-  --scheme-interactive-element-background-color-highlighted: var(--scheme-purple-subtle);
+  --scheme-file-name-input-background-color-highlighted: var(--scheme-purple-subtle);
   --scheme-file-name-input-background-color-selection: var(--scheme-purple-intense);
+  --scheme-interactive-element-background-color-highlighted: var(--scheme-purple-subtle);
 
   ::-moz-selection,
   ::selection {
@@ -601,9 +602,12 @@ $scheme-toggleable-button-highlighted: var(--scheme-toggleable-button-highlighte
 $scheme-toggleable-button-border: var(--scheme-toggleable-button-border);
 $scheme-toggleable-button-disabled-border: var(--scheme-toggleable-button-disabled-border);
 $scheme-file-name-input-background-color: var(--scheme-file-name-input-background-color);
-$scheme-interactive-element-background-color-highlighted: var(
-  --scheme-interactive-element-background-color-highlighted
+$scheme-file-name-input-background-color-highlighted: var(
+  --scheme-file-name-input-background-color-highlighted
 );
 $scheme-file-name-input-background-color-selection: var(
   --scheme-file-name-input-background-color-selection
+);
+$scheme-interactive-element-background-color-highlighted: var(
+  --scheme-interactive-element-background-color-highlighted
 );

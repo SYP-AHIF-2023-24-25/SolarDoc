@@ -7,58 +7,46 @@ import { ref } from 'vue'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CollaboratorList from '@/components/editor/dropdown/editor-settings/CollaboratorList.vue'
 import UserRef from '@/components/common/UserRef.vue'
-import type { Awaited } from '@vueuse/core'
-import * as phoenixRestService from '@/services/phoenix/api-service'
-import {
-  type ActualPhxErrorResp,
-  PhoenixBadRequestError,
-  PhoenixInternalError,
-} from '@/services/phoenix/errors'
 import type { UserPublic } from '@/services/phoenix/api-service'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
+import { waitForConditionAndExecute } from '@/scripts/wait-for'
+import { useFileOwnerStore } from '@/stores/file-owner'
 
 const $router = useRouter()
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
-const owner = ref<UserPublic>()
+const fileOwnerStore = useFileOwnerStore()
 
-;(async () => {
-  if (currentUserStore.loggedIn && currentFileStore.remoteFile) {
-    await fetchOwner(currentFileStore.ownerId!, currentUserStore.bearer!)
-  } else {
-    owner.value = { username: 'Local User', id: 'local-user-id' }
-  }
-})()
-
-async function fetchOwner(id: string, bearerToken: string) {
-  let resp: Awaited<ReturnType<typeof phoenixRestService.getV2UsersById>>
-  try {
-    resp = await phoenixRestService.getV2UsersById(bearerToken, id)
-  } catch (e) {
-    throw new PhoenixInternalError(
-      'Critically failed to fetch owner of the file. Cause: ' + (<Error>e).message,
-    )
-  }
-  if (resp.status === 200) {
-    owner.value = resp.data satisfies UserPublic
-  } else if (resp.status === 401) {
-    throw new PhoenixBadRequestError(
-      'Server rejected request to get file owner',
-      resp.data as ActualPhxErrorResp,
-    )
-  }
-}
+const owner = ref<UserPublic>({ username: 'Local User', id: 'local-user-id' })
+interceptErrors(
+  (async () => {
+    if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
+      await waitForConditionAndExecute(
+        () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
+        async () => {
+          await fileOwnerStore.fetchAndUpdateFileOwner(
+            currentUserStore.bearer!,
+            currentFileStore.ownerId!,
+          )
+          owner.value = fileOwnerStore.owner!
+        },
+        500,
+      )
+    }
+  })(),
+)
 
 // Last modified is a ref which is updated every 0.5 second to show the last modified time
-let lastModified = ref(getLastModified())
-let created = ref(getCreated())
-let fileName = currentFileStore.fileName
+const lastModified = ref(getLastModified())
+const created = ref(getCreated())
+const fileName = ref(currentFileStore.fileName)
+
 function getLastModified(): string {
   return getHumanReadableTimeInfo(currentFileStore.lastModified)
 }
@@ -67,14 +55,8 @@ function getCreated(): string {
   return getHumanReadableTimeInfo(currentFileStore.created)
 }
 
-const updateTimeRefs = () => {
-  lastModified.value = getLastModified()
-  created.value = getCreated()
-}
-setInterval(updateTimeRefs, 500)
-
 async function saveChanges() {
-  currentFileStore.setFileName(fileName)
+  currentFileStore.setFileName(fileName.value)
   await interceptErrors(
     ensureLoggedIn($router).then(
       async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
@@ -84,9 +66,15 @@ async function saveChanges() {
 }
 
 function onClose() {
-  fileName = currentFileStore.fileName
+  fileName.value = currentFileStore.fileName
   overlayStateStore.setSettings(false)
 }
+
+const updateTimeRefs = () => {
+  lastModified.value = getLastModified()
+  created.value = getCreated()
+}
+setInterval(updateTimeRefs, 500)
 </script>
 
 <template>
@@ -195,6 +183,7 @@ function onClose() {
         border-radius: 0.5rem;
         margin-bottom: 1rem;
         font-size: 1.5em;
+        padding: 6px 8px 3px 8px;
       }
 
       #save-button {

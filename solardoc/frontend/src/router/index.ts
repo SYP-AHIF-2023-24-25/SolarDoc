@@ -1,4 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  type NavigationFailure,
+  type RouteLocationNormalized,
+} from 'vue-router'
 import { useLoadingStore } from '@/stores/loading'
 import { useNotification } from '@kyvg/vue3-notification'
 import HomeView from '../views/HomeView.vue'
@@ -28,11 +33,6 @@ const router = createRouter({
       component: () => import('@/views/CollabView.vue'),
     },
     {
-      path: '/editor' + htmlExtMatcher,
-      name: 'editor',
-      component: () => import('@/views/EditorView.vue'),
-    },
-    {
       path: '/login' + htmlExtMatcher,
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
@@ -58,10 +58,42 @@ const router = createRouter({
       component: () => import('@/views/TestEditorView.vue'),
     },
     {
+      path: '/editor',
+      children: [
+        {
+          path: '',
+          redirect: { name: 'local-editor' },
+        },
+        {
+          name: 'local-editor',
+          path: 'local',
+          component: () => import('@/views/EditorView.vue'),
+          sensitive: true,
+          strict: true,
+        },
+        {
+          name: 'remote-editor',
+          path: 'o/:fileId',
+          component: () => import('@/views/EditorView.vue'),
+          sensitive: true,
+          strict: true,
+        },
+        {
+          name: 'shared-editor',
+          path: 'shared/:fileId',
+          component: () => import('@/views/EditorView.vue'),
+          sensitive: true,
+          strict: true,
+        },
+      ],
+    },
+    // ---- DEPRECATED ----
+    {
       path: '/share/:shareUrlId',
       name: 'share-url',
       component: () => import('@/views/ShareURLView.vue'),
     },
+    // ---------------------
     // 404-page (reroutes in the view to the static 404.html)
     {
       path: '/404',
@@ -93,6 +125,20 @@ router.beforeResolve((to, from, next) => {
 router.afterEach(() => {
   const loadingStore = useLoadingStore()
   loadingStore.setLoading(false)
+})
+
+function reportRouterFailure(
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+  failure: NavigationFailure,
+) {
+  console.warn(`Failed to navigate from ${from.fullPath} to ${to.fullPath}:`, failure)
+}
+
+router.afterEach((to, from, failure) => {
+  if (failure) {
+    reportRouterFailure(to, from, failure)
+  }
 })
 
 export default router
