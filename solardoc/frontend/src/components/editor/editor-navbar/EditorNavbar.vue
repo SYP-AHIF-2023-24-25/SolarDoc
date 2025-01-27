@@ -12,6 +12,14 @@ import ViewPrintableDropdown from '@/components/editor/editor-navbar/ViewInOther
 import ContributorsCount from '@/components/editor/ContributorsCount.vue'
 import SaveIconDarkModeSVG from '@/components/icons/SaveIconDarkModeSVG.vue'
 import SaveIconSVG from '@/components/icons/SaveIconSVG.vue'
+import {useCurrentUserStore} from "@/stores/current-user";
+import {interceptErrors} from "@/errors/handler/error-handler";
+import {ensureLoggedIn} from "@/scripts/ensure-logged-in";
+import {useRouter} from "vue-router";
+import {showInfoNotifFromObj} from "@/scripts/show-notif";
+import constants from "@/plugins/constants";
+
+const $router = useRouter()
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
