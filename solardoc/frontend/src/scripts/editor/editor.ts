@@ -21,12 +21,17 @@ import { createOTUpdates } from '@/scripts/editor/ot/create-ot'
 import { getMonacoUpdatesFromOT } from '@/scripts/editor/ot/get-monaco-updates'
 import { sendOTUpdates } from '@/scripts/editor/ot/send-ot'
 import { EditorModelNotFoundError } from '@/errors/editor-model-not-found-error'
+import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
+import { storeToRefs } from 'pinia'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
 const previewLoadingStore = usePreviewLoadingStore()
 const initStateStore = useInitStateStore()
 const editorUpdateWSClient = useEditorUpdateWSClient()
+const previewSelectedSlideStore = usePreviewSelectedSlideStore()
+
+const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
 
 let monacoSetUp = false
 
@@ -133,11 +138,51 @@ export class SolardocEditor {
       this._readonly = true
     }
 
+    this._startCursorWatchers()
     this._startContentWatchers()
   }
 
   public static get monacoEditor() {
     return globalMonacoEditor!
+  }
+
+  /**
+   * Navigates the editor to the section corresponding to current slide index.
+   * @since 1.0.0
+   */
+  public static redirectCursorToArea() {
+    const content = this.getContent()
+    const lines = content.split('\n')
+
+    let lineNumber = 1
+    let currentSlideIndex = 0
+    let currentSubSlideIndex = -1
+
+    for (
+      let i = 1;
+      i < lines.length &&
+      !(
+        currentSlideIndex === slideIndex.value &&
+        (subSlideIndex.value === undefined || currentSubSlideIndex === subSlideIndex.value)
+      );
+      i++
+    ) {
+      lineNumber++
+      const line = lines[i]
+
+      if (line.startsWith('== ')) {
+        currentSlideIndex++
+        currentSubSlideIndex = -1
+      }
+      if (line.startsWith('=== ')) {
+        currentSubSlideIndex++
+      }
+    }
+
+    const position = new monaco.Position(lineNumber, lines[lineNumber - 1].length + 1)
+    this.monacoEditor.setPosition(position)
+    this.monacoEditor.revealPositionNearTop(position)
+    this.monacoEditor.focus()
   }
 
   /**
@@ -225,6 +270,31 @@ export class SolardocEditor {
     }
   }
 
+  private static _startCursorWatchers() {
+    globalMonacoEditor!.onDidChangeCursorPosition(event => {
+      const lineNumber = event.position.lineNumber
+
+      const content = this.getContent()
+      if (!content) return
+
+      const lines = content.split('\n')
+      const { slideIndex, subSlideIndex } = lines.slice(0, lineNumber).reduce(
+        (acc, line) => {
+          line = line.trim();
+          if (line.startsWith('== ')) {
+            acc.slideIndex++;
+            acc.subSlideIndex = -1;
+          } else if (line.startsWith('=== ')) {
+            acc.subSlideIndex++;
+          }
+          return acc;
+        },
+        { slideIndex: 0, subSlideIndex: -1 }
+      );
+      previewSelectedSlideStore.setSlide(slideIndex, false, subSlideIndex)
+    })
+  }
+
   private static _startContentWatchers() {
     globalMonacoEditor!.onDidChangeModelContent(this.performErrorChecking)
     globalMonacoEditor!.onDidChangeModelContent(async (event: editor.IModelContentChangedEvent) => {
@@ -241,9 +311,9 @@ export class SolardocEditor {
 
       currentFileStore.resetLastModified()
       const changeOTUpdates = await createOTUpdates(event.changes)
-      for (const singleChangeOTs of changeOTUpdates) {
-        await sendOTUpdates(singleChangeOTs, editorUpdateWSClient.hasActiveChannelConnection)
-      }
+
+      // Voiding the promise here to avoid the need to await it and avoiding blocking the editor UI
+      void sendOTUpdates(changeOTUpdates, editorUpdateWSClient.hasActiveChannelConnection)
     })
   }
 

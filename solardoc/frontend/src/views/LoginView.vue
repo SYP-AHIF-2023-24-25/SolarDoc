@@ -10,29 +10,16 @@ import {
 } from '@/services/phoenix/errors'
 import { SolardocUnreachableError } from '@/errors/unreachable-error'
 import { interceptErrors } from '@/errors/handler/error-handler'
-import { isValidPath } from '@/scripts/is-valid-path'
-import { useLoadingStore } from '@/stores/loading'
+import { redirect } from '@/router/redirect'
 
 const $router = useRouter()
-const currentUserStore = useCurrentUserStore()
-const loadingStore = useLoadingStore()
 
+const currentUserStore = useCurrentUserStore()
 currentUserStore.fetchCurrentUserIfNotFetchedAndAuthValid()
 
 // Ensure if the user is already logged in that he is redirected to the '/profile' page
 if (currentUserStore.loggedIn) {
-  redirect()
-}
-
-async function redirect() {
-  loadingStore.setLoading(true)
-
-  const returnTo = $router.currentRoute.value.query.returnTo
-  if (typeof returnTo === 'string' && isValidPath(returnTo)) {
-    return await $router.push(returnTo)
-  } else {
-    return await $router.push('/profile')
-  }
+  redirect($router, '/profile')
 }
 
 async function submitForm(
@@ -65,7 +52,7 @@ async function submitForm(
     currentUserStore.setCurrentAuth(resp.data)
 
     await currentUserStore.fetchCurrentUser()
-    await redirect()
+    await redirect($router, '/profile')
   } else if (resp.status === 400) {
     throw new PhoenixBadRequestError('Server rejected sign in', resp.data as ActualPhxErrorResp)
   } else if (resp.status === 401) {

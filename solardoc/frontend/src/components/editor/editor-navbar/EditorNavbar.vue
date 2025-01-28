@@ -9,14 +9,41 @@ import PresentationIconDarkModeSVG from '@/components/icons/PresentationIconDark
 import PresentationIconSVG from '@/components/icons/PresentationIconSVG.vue'
 import { useDarkModeStore } from '@/stores/dark-mode'
 import ViewPrintableDropdown from '@/components/editor/editor-navbar/ViewInOtherWindowDropdown.vue'
+import ContributorsCount from '@/components/editor/ContributorsCount.vue'
+import SaveIconDarkModeSVG from '@/components/icons/SaveIconDarkModeSVG.vue'
+import SaveIconSVG from '@/components/icons/SaveIconSVG.vue'
+import { useCurrentUserStore } from '@/stores/current-user'
+import { interceptErrors } from '@/errors/handler/error-handler'
+import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
+import { useRouter } from 'vue-router'
+import { showInfoNotifFromObj } from '@/scripts/show-notif'
+import constants from '@/plugins/constants'
+import {useLoadingStore} from "@/stores/loading";
+
+const $router = useRouter()
 
 const overlayStateStore = useOverlayStateStore()
 const currentFileStore = useCurrentFileStore()
+const currentUserStore = useCurrentUserStore()
 const darkModeStore = useDarkModeStore()
+const loadingStore = useLoadingStore()
 
 // Enable loading spinner for preview if the button is clicked
 function handlePreviewButtonPress() {
   overlayStateStore.setFullScreenPreview(true)
+}
+
+async function handleSaveButtonPress() {
+  loadingStore.lockLoading()
+  loadingStore.pushMsg(constants.loadingMessages.savingFileName)
+  await interceptErrors(
+    ensureLoggedIn($router).then(
+      async () => await currentFileStore.storeOnServer(currentUserStore.bearer!),
+    ),
+  )
+  loadingStore.popMsg(constants.loadingMessages.savingFileName)
+  loadingStore.unlockLoading()
+  showInfoNotifFromObj(constants.notifMessages.fileSaved)
 }
 </script>
 
@@ -41,11 +68,14 @@ function handlePreviewButtonPress() {
             "
           />
           <span
-            id="file-name-star"
-            v-if="currentFileStore.isFileNameUpdated"
-            v-tooltip="'This file name has been modified'"
-            >*</span
+            v-if="currentFileStore.isFileNameUpdated && currentFileStore.remoteFile"
+            id="file-name-save-button"
+            v-tooltip="'Save the changed file name'"
+            @click="handleSaveButtonPress"
           >
+            <SaveIconDarkModeSVG v-show="darkModeStore.darkMode" />
+            <SaveIconSVG v-show="!darkModeStore.darkMode" />
+          </span>
         </div>
       </div>
       <div id="phone-save-state-badge">
@@ -55,6 +85,7 @@ function handlePreviewButtonPress() {
     <div id="menu-right-side">
       <div>
         <SaveStateBadge />
+        <ContributorsCount v-if="currentFileStore.remoteFile" />
         <LastModified />
       </div>
       <div id="right-side-icon-menu">
@@ -150,12 +181,18 @@ $total-width: 100vw;
           margin: 0 0.5rem;
         }
 
-        #file-name-star {
-          position: absolute;
-          right: 0.5rem;
-          padding: 0.22rem;
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.85em;
+        #file-name-save-button {
+          @include align-center;
+          height: calc(100% - 0.4rem);
+          width: 1.5rem;
+          border-radius: 0.25rem;
+          padding: 2px;
+          margin: 0.2rem 0.15rem 0.1rem 0.15rem;
+
+          &:hover {
+            cursor: pointer;
+            background-color: var.$scheme-gray-400;
+          }
         }
 
         ::selection {
