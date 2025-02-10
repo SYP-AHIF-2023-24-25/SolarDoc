@@ -1,0 +1,36 @@
+= 1. Solardoc Reference - 2025
+:doctype: book
+:icons: font
+:source-highlighter: rouge
+:source-highlighter: coderay
+:coderay-css: class
+
+[.text-center]
+Luna Klatzer ~ Emma Walchshofer ~ Lisa Pichler
+
+[.text-center]
+5AHIF ~ 2024/25
+[.text-center]
+Provided by the HTL Leonding
+
+This is the reference guide for Solardoc, its technology stack and how to use it. This guide is intended for developers
+and will serve as a reference similar to `DEVELOPMENT.md` but with more in-depth explanations and examples.
+
+Additionally, this should serve as a guide how to extend or replace certain elements from a newcomer perspective.
+
+== Chapters
+
+Each chapter will be a separate file in the `docs/` directory. The chapters will be named `CHAPTER_NAME.adoc` and will be
+referenced in this document.
+
+- <<./2_Introduction.adoc,2. Introduction 📖>>
+- <<./3_Architecture.adoc,3. Architecture 🏗>>
+- <<./4_Frontend.adoc,4. Frontend 🖥>>
+- <<./5_Rest-API-and-Renderer.adoc,5. Rest-API and Renderer 📡>>
+- <<./6_Phoenix-Server-and-SDS.adoc,6. Phoenix Server and SDS (SolarDoc Socket) 🌐>>
+- <<./7_Redis-Caching.adoc,7. Redis Caching 📦>>
+- <<./8_Database-and-Adminer.adoc,8. Database and Adminer 🗄>>
+- <<./9_Deployment.adoc,9. Deployment 🚀>>
+- <<./10_Troubleshooting.adoc,10. Troubleshooting & Common Problems 🛠>>
+- <<./11_Contributing.adoc,11. Contributing Guide 🤝💜>>
+- <<./12_License.adoc,12. License 📜>>

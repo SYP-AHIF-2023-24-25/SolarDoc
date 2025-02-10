@@ -1,0 +1,10 @@
+= 10. Trouble Shooting & Common Problems 🛠
+:doctype: book
+:toc: preamble
+:toc-title: Chapter Contents
+:icons: font
+:source-highlighter: rouge
+:source-highlighter: coderay
+:coderay-css: class
+
+// Author: Everyone
