@@ -280,17 +280,17 @@ export class SolardocEditor {
       const lines = content.split('\n')
       const { slideIndex, subSlideIndex } = lines.slice(0, lineNumber).reduce(
         (acc, line) => {
-          line = line.trim();
+          line = line.trim()
           if (line.startsWith('== ')) {
-            acc.slideIndex++;
-            acc.subSlideIndex = -1;
+            acc.slideIndex++
+            acc.subSlideIndex = -1
           } else if (line.startsWith('=== ')) {
-            acc.subSlideIndex++;
+            acc.subSlideIndex++
           }
-          return acc;
+          return acc
         },
-        { slideIndex: 0, subSlideIndex: -1 }
-      );
+        { slideIndex: 0, subSlideIndex: -1 },
+      )
       previewSelectedSlideStore.setSlide(slideIndex, false, subSlideIndex)
     })
   }

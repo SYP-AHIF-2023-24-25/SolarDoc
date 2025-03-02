@@ -18,7 +18,7 @@ import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
 import { useRouter } from 'vue-router'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
-import {useLoadingStore} from "@/stores/loading";
+import { useLoadingStore } from '@/stores/loading'
 
 const $router = useRouter()
 
