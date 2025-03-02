@@ -4,7 +4,7 @@ defmodule SolardocPhoenix.MixProject do
   def project do
     [
       app: :solardoc_phoenix,
-      version: "1.0.0-beta.5",
+      version: "1.0.0-beta.6",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
