@@ -22,7 +22,7 @@ class Reveal {
       }
       // @ts-ignore
       if (!(typeof Reveal.availableFragments === 'function')) {
-        console.log("Reveal JS plugin isn't compatible with reveal.js version < 2.4.0")
+        console.log("[Reveal] Reveal JS plugin isn't compatible with reveal.js version < 2.4.0")
         return false
       }
       return true

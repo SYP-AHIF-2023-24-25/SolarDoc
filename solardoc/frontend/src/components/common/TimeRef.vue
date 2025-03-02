@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getHumanReadablePreciseDate, getHumanReadableTimeInfo } from '@/scripts/format-date'
+import { getHumanReadablePreciseDate, getHumanReadableTimeInfo } from '@/common/format-date'
 import PaddedInfoBox from '@/components/common/PaddedInfoBox.vue'
 import { ref } from 'vue'
 

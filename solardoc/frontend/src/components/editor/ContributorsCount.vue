@@ -6,7 +6,7 @@ import { useDarkModeStore } from '@/stores/dark-mode'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { useCurrentUserStore } from '@/stores/current-user'
 import { useContributorsStore } from '@/stores/contributors'
-import { waitForConditionAndExecute } from '@/scripts/wait-for'
+import { waitForCondAndExec } from '@/common/wait-for'
 import { interceptErrors } from '@/errors/handler/error-handler'
 import { useFileOwnerStore } from '@/stores/file-owner'
 import { storeToRefs } from 'pinia'
@@ -23,7 +23,7 @@ const { owner } = storeToRefs(fileOwnerStore)
 interceptErrors(
   (async () => {
     if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
-      await waitForConditionAndExecute(
+      await waitForCondAndExec(
         () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
         async () =>
           await contributorsStore.fetchAndUpdateContributors(

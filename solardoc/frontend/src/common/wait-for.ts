@@ -5,7 +5,7 @@
  * @param interval The interval in milliseconds to check the condition.
  * @param timeout The timeout in milliseconds to wait for the condition to be met.
  */
-export async function waitForConditionAndExecute(
+export async function waitForCondAndExec(
   cond: () => boolean,
   callback: () => Promise<void>,
   interval: number,

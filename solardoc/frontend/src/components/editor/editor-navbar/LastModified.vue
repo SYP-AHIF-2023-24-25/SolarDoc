@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
-import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import { getHumanReadableTimeInfo } from '@/common/format-date'
 import { useCurrentFileStore } from '@/stores/current-file'
 import { ref } from 'vue'
 
