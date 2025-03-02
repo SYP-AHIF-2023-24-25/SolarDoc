@@ -13,7 +13,7 @@ const { loading, currMsg } = storeToRefs(loadingStore)
       <span class="loader-spinner"></span>
     </div>
     <div id="loader-text">
-      <span>{{ currMsg || 'Loading...'}}</span>
+      <span>{{ currMsg || 'Loading...' }}</span>
     </div>
   </div>
 </template>

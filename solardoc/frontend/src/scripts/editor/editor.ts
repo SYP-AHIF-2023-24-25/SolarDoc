@@ -1,12 +1,13 @@
-import type { Ref } from 'vue'
-import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import type { OTrans } from '@/services/phoenix/ot-trans'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+import asciiDocLangMonarch from '@/scripts/editor/monaco-config/asciidoc-lang-monarch'
+import type { Ref } from 'vue'
+import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
+import type { OTrans, OTransReqDto } from '@/services/phoenix/ot-trans'
 import { lightEditorTheme } from '@/scripts/editor/monaco-config/light-editor-theme'
 import { darkEditorTheme } from '@/scripts/editor/monaco-config/dark-editor-theme'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
@@ -15,14 +16,11 @@ import { performErrorChecking } from '@/scripts/editor/error-checking'
 import { type Permission, Permissions, useCurrentFileStore } from '@/stores/current-file'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentUserStore } from '@/stores/current-user'
-import asciiDocLangMonarch from '@/scripts/editor/monaco-config/asciidoc-lang-monarch'
 import { triggerPreviewRerender } from '@/scripts/editor/render'
-import { createOTUpdates } from '@/scripts/editor/ot/create-ot'
-import { getMonacoUpdatesFromOT } from '@/scripts/editor/ot/get-monaco-updates'
-import { sendOTUpdates } from '@/scripts/editor/ot/send-ot'
 import { EditorModelNotFoundError } from '@/errors/editor-model-not-found-error'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { storeToRefs } from 'pinia'
+import { OTManager } from '@/services/phoenix/ot-trans'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()
@@ -249,6 +247,105 @@ export class SolardocEditor {
     })
   }
 
+  /**
+   * Translates the OT operation to monaco editor edits.
+   * @param model The model to apply the edits to.
+   * @param oTrans The OT operation to translate.
+   * @private
+   * @since 1.0.0-beta.6
+   */
+  public static transformOTToMonacoUpdates(
+    model: monaco.editor.ITextModel,
+    oTrans: OTrans,
+  ): Array<editor.IIdentifiedSingleEditOperation> {
+    const edits: Array<editor.IIdentifiedSingleEditOperation> = []
+
+    // We need to translate the single dimension OT operation to monaco editor edits using ranges
+    // We will need to split the operation into multiple operations if it spans multiple lines
+    if (oTrans.trans.type === 'insert') {
+      const position = model.getPositionAt(oTrans.trans.pos)
+      edits.push({
+        range: new monaco.Range(
+          position.lineNumber,
+          position.column,
+          position.lineNumber,
+          position.column,
+        ),
+        text: oTrans.trans.content,
+        forceMoveMarkers: true,
+      })
+    } else {
+      const start = model.getPositionAt(oTrans.trans.pos - oTrans.trans.length)
+      const end = model.getPositionAt(oTrans.trans.pos)
+
+      if (start.lineNumber === end.lineNumber) {
+        edits.push({
+          range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
+          text: null,
+        })
+      } else {
+        for (let lineNumber = start.lineNumber; lineNumber <= end.lineNumber; lineNumber++) {
+          let startColumn = lineNumber === start.lineNumber ? start.column : 1
+          const endColumn =
+            lineNumber === end.lineNumber ? end.column : model.getLineMaxColumn(lineNumber)
+
+          let startLineNumber = lineNumber
+          const endLineNumber = lineNumber
+
+          // We also need to make sure if the line is completely deleted, we need to also delete the newline character
+          // We do this by checking if the line is not the first line and the start column is 1
+          if (lineNumber !== start.lineNumber && startColumn === 1) {
+            startLineNumber--
+            startColumn = model.getLineMaxColumn(startLineNumber)
+          }
+
+          edits.push({
+            range: new monaco.Range(startLineNumber, startColumn, endLineNumber, endColumn),
+            text: null,
+          })
+        }
+      }
+    }
+    return edits
+  }
+
+  /**
+   * Transforms the monaco editor updates to OT operations.
+   * @param changes The monaco editor changes to transform.
+   * @since 1.0.0-beta.6
+   */
+  public static transformMonacoUpdatesToOT(
+    changes: Array<editor.IModelContentChange>,
+  ): Array<Array<OTransReqDto>> {
+    // We will create for every change a new OT operation
+    // To do this though we will need to translate the monaco editor changes to OT operations
+    // This is simple if we simply assume that empty text means deletion and non-empty text means insertion
+    const changeOTs: Array<Array<OTransReqDto>> = []
+    for (const change of changes) {
+      const ots: Array<OTransReqDto> = []
+      if (change.text === '') {
+        const length = change.rangeLength
+        const pos = change.rangeOffset + length
+        ots.push(OTManager.createDeleteOTrans(pos, length))
+      } else {
+        const pos = change.rangeOffset
+        // Check if we potentially deleted text using the insert operation
+        if (change.rangeLength > 0) {
+          const length = change.rangeLength
+          const pos = change.rangeOffset + length
+          ots.push(OTManager.createDeleteOTrans(pos, length))
+        }
+        ots.push(OTManager.createInsertOTrans(pos, change.text))
+      }
+      changeOTs.push(ots)
+    }
+    return changeOTs
+  }
+
+  /**
+   * Applies the OT operation to the editor.
+   * @param oTrans The OT operation to apply.
+   */
   public static async applyOTrans(oTrans: OTrans) {
     const editorModel = globalMonacoEditor!.getModel()
     if (oTrans.user_id == currentUserStore.currentUser!.id) {
@@ -261,7 +358,7 @@ export class SolardocEditor {
       return
     } else {
       await this._runThreadSafe(async () => {
-        const edits: Array<editor.IIdentifiedSingleEditOperation> = getMonacoUpdatesFromOT(
+        const edits: Array<editor.IIdentifiedSingleEditOperation> = this.transformOTToMonacoUpdates(
           editorModel,
           oTrans,
         )
@@ -280,17 +377,17 @@ export class SolardocEditor {
       const lines = content.split('\n')
       const { slideIndex, subSlideIndex } = lines.slice(0, lineNumber).reduce(
         (acc, line) => {
-          line = line.trim();
+          line = line.trim()
           if (line.startsWith('== ')) {
-            acc.slideIndex++;
-            acc.subSlideIndex = -1;
+            acc.slideIndex++
+            acc.subSlideIndex = -1
           } else if (line.startsWith('=== ')) {
-            acc.subSlideIndex++;
+            acc.subSlideIndex++
           }
-          return acc;
+          return acc
         },
-        { slideIndex: 0, subSlideIndex: -1 }
-      );
+        { slideIndex: 0, subSlideIndex: -1 },
+      )
       previewSelectedSlideStore.setSlide(slideIndex, false, subSlideIndex)
     })
   }
@@ -310,10 +407,13 @@ export class SolardocEditor {
       }
 
       currentFileStore.resetLastModified()
-      const changeOTUpdates = await createOTUpdates(event.changes)
+      const changeOTUpdates = this.transformMonacoUpdatesToOT(event.changes)
 
       // Voiding the promise here to avoid the need to await it and avoiding blocking the editor UI
-      void sendOTUpdates(changeOTUpdates, editorUpdateWSClient.hasActiveChannelConnection)
+      void OTManager.threadSafeSendOTUpdates(
+        changeOTUpdates,
+        editorUpdateWSClient.hasActiveChannelConnection,
+      )
     })
   }
 

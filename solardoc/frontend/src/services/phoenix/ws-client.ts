@@ -32,14 +32,14 @@ export class SDSClient {
     this._stateTransListenerDefined = false
     this.socket = socket(url, userToken)
     this.socket.onOpen(async () => {
-      console.log('[ws-client.ts] SDS Connection established!')
+      console.log('[SDS] SDS Connection established!')
       this._active = true
       if (onOpen) {
         await onOpen()
       }
     })
     this.socket.onMessage(message => {
-      console.log('[ws-client.ts] Received message:', message)
+      console.log('[SDS] Received message:', message)
     })
   }
 
@@ -148,7 +148,7 @@ export class SDSClient {
     this._currentChannel
       .join()
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .receive('ok', _ => console.log('[ws-client.ts] Channel successfully joined!'))
+      .receive('ok', _ => console.log('[SDS] Channel successfully joined!'))
       .receive('error', resp => {
         onError(resp)
         this._leaveChannelAndEnsureDestruction()
@@ -186,7 +186,7 @@ export class SDSClient {
     this._currentChannel
       .join()
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .receive('ok', _ => console.log('[ws-client.ts] Channel successfully created!'))
+      .receive('ok', _ => console.log('[SDS] Channel successfully created!'))
       .receive('error', resp => {
         onError(resp)
         this._leaveChannelAndEnsureDestruction()
@@ -210,10 +210,7 @@ export class SDSClient {
     await this._ensureChannelIsHealthy()
 
     if (this._currentChannel && !this.listeningForOTChanges) {
-      this._currentChannel.on('state_trans', resp => {
-        console.log(`[ws-client.ts] Received OT update:`, resp)
-        onReceive(resp)
-      })
+      this._currentChannel.on('state_trans', onReceive)
       this._stateTransListenerDefined = true
     }
   }
@@ -243,9 +240,7 @@ export class SDSClient {
   public async leaveChannel(): Promise<void> {
     await this._ensureSocketIsHealthy()
     if (!this._currentChannel) {
-      throw new PhoenixInvalidOperationError(
-        '[ws-client.ts] Cannot leave a channel when none has been joined.',
-      )
+      throw new PhoenixInvalidOperationError('Cannot leave a channel when none has been joined.')
     }
     await this._ensureChannelIsHealthy()
     this._leaveChannelAndEnsureDestruction()
@@ -254,9 +249,7 @@ export class SDSClient {
   private async _ensureSocketIsHealthy(): Promise<void> {
     await this._waitForSocketToBeHealthyIfConnecting()
     if (!this._active) {
-      throw new PhoenixInvalidOperationError(
-        '[ws-client.ts] Cannot perform operation on a closed socket.',
-      )
+      throw new PhoenixInvalidOperationError('Cannot perform operation on a closed socket.')
     }
   }
 
@@ -277,7 +270,7 @@ export class SDSClient {
     await this._waitForChannelToBeHealthyIfConnecting()
     if (!this.channelHealthy) {
       throw new PhoenixInvalidOperationError(
-        '[ws-client.ts] Cannot perform operation on a channel that has not been joined.',
+        'Cannot perform operation on a channel that has not been joined.',
       )
     }
   }
@@ -303,7 +296,7 @@ export class SDSClient {
   ) {
     if (!('user_id' in resp)) {
       this._leaveChannelAndEnsureDestruction()
-      onError(new PhoenixInternalError('[ws-client.ts] Server did not return a valid response.'))
+      onError(new PhoenixInternalError('Server did not return a valid response.'))
     }
 
     const validResp = resp as {
@@ -330,7 +323,7 @@ export class SDSClient {
   ) {
     if (!('creator_id' in resp)) {
       this._leaveChannelAndEnsureDestruction()
-      onError(new PhoenixInternalError('[ws-client.ts] Server did not return a valid response.'))
+      onError(new PhoenixInternalError('Server did not return a valid response.'))
     }
 
     const validResp = resp as {
@@ -351,7 +344,7 @@ export class SDSClient {
   private _ensureNoChannelIsJoined(): void {
     if (this._currentChannel) {
       throw new PhoenixInvalidOperationError(
-        '[ws-client.ts] Cannot perform another join operation when a channel is already joined.',
+        'Cannot perform another join operation when a channel is already joined.',
       )
     }
   }

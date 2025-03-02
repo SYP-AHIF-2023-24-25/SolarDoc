@@ -2,7 +2,7 @@ import type { EditorChannel, JoinChannelOptions } from '@/services/phoenix/edito
 import { PhoenixSDSError } from '@/services/phoenix/errors'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { useCurrentFileStore } from '@/stores/current-file'
-import { handleOTUpdates, type OTransRespDto } from '@/services/phoenix/ot-trans'
+import { OTManager, type OTransRespDto } from '@/services/phoenix/ot-trans'
 import type { File } from '@/services/phoenix/gen/phoenix-rest-service'
 import { useCurrentUserStore } from '@/stores/current-user'
 
@@ -35,8 +35,15 @@ export function joinChannel(channel: EditorChannel, password?: string): Promise<
         editorUpdateWSClient.setCurrentChannel(channel)
         await currentFileStore.initOTransStackFromServerTrans(initTrans)
 
-        // Start the ot update handler
-        handleOTUpdates()
+        // Start the OT update handler
+        const listenPromise = OTManager.listenForUpdates()
+        if (!listenPromise) {
+          throw new PhoenixSDSError(
+            'Failed to start OT update handler',
+            'Please reload the page and try again later. If the problem persists, contact the developers.',
+          )
+        }
+        await listenPromise
         resolve()
       },
       errorResp => {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import { getHumanReadableTimeInfo } from '@/common/format-date'
 import type { EditorChannel } from '@/services/phoenix/editor-channel'
 import { useEditorUpdateWSClient } from '@/stores/editor-update-ws-client'
 import { storeToRefs } from 'pinia'

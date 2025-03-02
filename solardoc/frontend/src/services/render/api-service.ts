@@ -19,7 +19,7 @@ if (!api.defaults.baseUrl.startsWith('http')) {
 }
 
 // Log the base URL in case there is a problem
-console.log(`[backend/api-service.ts] Using render backend at '${api.defaults.baseUrl}'`)
+console.log(`[Render] Using render backend at '${api.defaults.baseUrl}'`)
 
 export async function ensureRenderBackendIsReachable(): Promise<void> {
   let ping: Awaited<ReturnType<typeof api.getV1Ping>> | undefined = undefined
