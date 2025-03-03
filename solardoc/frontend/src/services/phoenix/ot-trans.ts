@@ -286,7 +286,7 @@ export class OTManager {
       } else if (
         currentOTrans.trans.type === 'delete' &&
         nextOTrans.trans.type === 'delete' &&
-        currentOTrans.trans.pos === nextOTrans.trans.pos
+        currentOTrans.trans.pos - currentOTrans.trans.length === nextOTrans.trans.pos
       ) {
         // Merge consecutive deletions
         currentOTrans = {
@@ -296,7 +296,11 @@ export class OTManager {
             length: currentOTrans.trans.length + nextOTrans.trans.length,
           },
         }
-      } else if (currentOTrans.trans.type === 'insert' && nextOTrans.trans.type === 'delete') {
+      } else if (
+        currentOTrans.trans.type === 'insert' &&
+        nextOTrans.trans.type === 'delete' &&
+        currentOTrans.trans.pos + currentOTrans.trans.content.length === nextOTrans.trans.pos
+      ) {
         // Merge insertion followed by deletion
         const insertLength = currentOTrans.trans.content.length
         const deleteLength = nextOTrans.trans.length
