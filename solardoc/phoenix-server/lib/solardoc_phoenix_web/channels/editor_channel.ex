@@ -24,7 +24,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
         # We assume that the user holds the truth about the channel state, so as such we simply load this into the server
         # state. To make sure that the state is in sync with the database (which it should usually be, but potentially
         # there a recent un-synced state), we should load the state into the database as well.
-        init_trans = EditorChannelState.init_with_state(editor_channel.id, editor_channel.file_id, state)
+        init_trans = EditorChannelState.thread_safe_init_with_state(editor_channel.id, editor_channel.file_id, state)
         sync_to_db(editor_channel, state)
 
         send(self(), {:after_create, editor_channel: editor_channel, init_trans: init_trans})
@@ -45,7 +45,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
       editor_channel = editor_channel |> Repo.preload(:file)
       state = get_state_or_create(editor_channel.id, editor_channel.file_id, editor_channel.file.content)
 
-      init_trans = EditorChannelState.get_last_trans(channel_id)
+      init_trans = EditorChannelState.thread_safe_get_last_trans(channel_id)
       send(self(), {:after_join, editor_channel: editor_channel, state: state, init_trans: init_trans})
       {:ok, socket}
     else
@@ -117,10 +117,10 @@ defmodule SolardocPhoenixWeb.EditorChannel do
     # We will first push the new transformation, applying it to the editor state and then broadcast the same
     # transformation to all other users in the channel
     channel_id = curr_channel_id(socket)
-    EditorChannelState.push_new_trans(channel_id, trans)
+    EditorChannelState.thread_safe_push_trans(channel_id, trans)
 
     # For testing
-    content = EditorChannelState.get_text(channel_id)
+    content = EditorChannelState.thread_safe_get_text(channel_id)
     IO.puts("[channel:#{channel_id}] Pushed transformation to channel state. New state:\n#{content}")
 
     # We simply broadcast the transformation itself
@@ -163,7 +163,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   defp get_state_or_create(channel_id, file_id, content) do
-    state = EditorChannelState.get_text(channel_id)
+    state = EditorChannelState.thread_safe_get_text(channel_id)
     if state != nil do
       state
     else
@@ -172,7 +172,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
   end
 
   defp init_channel_state_and_get(channel_id, file_id, content) do
-    EditorChannelState.init_with_state(channel_id, file_id, content)
+    EditorChannelState.thread_safe_init_with_state(channel_id, file_id, content)
     content
   end
 
