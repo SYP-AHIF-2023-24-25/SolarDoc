@@ -7,8 +7,11 @@ import {
 import { useLoadingStore } from '@/stores/loading'
 import { useNotification } from '@kyvg/vue3-notification'
 import HomeView from '../views/HomeView.vue'
+import {useCurrentFileStore} from "@/stores/current-file";
 
 const { notify } = useNotification()
+
+const currentFileStore = useCurrentFileStore()
 
 const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
@@ -21,6 +24,9 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: {
+        title: 'Welcome to SolarDoc',
+      }
     },
     {
       path: '/index' + htmlExtMatcher,
@@ -31,31 +37,49 @@ const router = createRouter({
       path: '/collab' + htmlExtMatcher,
       name: 'collab',
       component: () => import('@/views/CollabView.vue'),
+      meta: {
+        title: 'Collab',
+      }
     },
     {
       path: '/login' + htmlExtMatcher,
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
+      meta: {
+        title: 'Login',
+      }
     },
     {
       path: '/signup' + htmlExtMatcher,
       name: 'signup',
       component: () => import('@/views/SignupView.vue'),
+      meta: {
+        title: 'Sign Up',
+      }
     },
     {
       path: '/reset-password' + htmlExtMatcher,
       name: 'reset-password',
       component: () => import('@/views/ResetPasswordView.vue'),
+      meta: {
+        title: 'Reset Password',
+      }
     },
     {
       path: '/profile' + htmlExtMatcher,
       name: 'profile',
       component: () => import('@/views/ProfileView.vue'),
+      meta: {
+        title: 'Profile',
+      }
     },
     {
       path: '/test-editor' + htmlExtMatcher,
       name: 'test-editor',
       component: () => import('@/views/TestEditorView.vue'),
+      meta: {
+        title: 'Editor',
+      }
     },
     {
       path: '/editor',
@@ -70,6 +94,9 @@ const router = createRouter({
           component: () => import('@/views/EditorView.vue'),
           sensitive: true,
           strict: true,
+          meta: {
+            title: 'Editor',
+          }
         },
         {
           name: 'remote-editor',
@@ -77,6 +104,9 @@ const router = createRouter({
           component: () => import('@/views/EditorView.vue'),
           sensitive: true,
           strict: true,
+          meta: {
+            title: 'Editor',
+          }
         },
         {
           name: 'shared-editor',
@@ -84,6 +114,9 @@ const router = createRouter({
           component: () => import('@/views/EditorView.vue'),
           sensitive: true,
           strict: true,
+          meta: {
+            title: 'Editor',
+          }
         },
       ],
     },
@@ -99,6 +132,9 @@ const router = createRouter({
       path: '/404',
       name: 'not-found',
       component: () => import('@/views/NotFoundView.vue'),
+      meta: {
+        title: '404 ・ Not Found',
+      }
     },
     {
       path: '/:pathMatch(.*)*',
@@ -127,6 +163,18 @@ router.afterEach(() => {
   loadingStore.setLoading(false)
 })
 
+router.beforeEach((to, from) => {
+  const titleFromParams = to.params?.pageTitle
+
+  let title = 'Solardoc'
+  if (titleFromParams) {
+    title = `${titleFromParams} - ${title}`
+  } else if (to.meta?.title) {
+    title = `${to.meta?.title} - ${title}`
+  }
+  document.title = title;
+})
+
 function reportRouterFailure(
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
@@ -138,6 +186,13 @@ function reportRouterFailure(
 router.afterEach((to, from, failure) => {
   if (failure) {
     reportRouterFailure(to, from, failure)
+  }
+})
+
+router.afterEach((to, from) => {
+  const titleFromParams = to.params?.pageTitle
+  if (String(to.name).includes('editor')) {
+    document.title = `${currentFileStore.file.file_name} ・ ${titleFromParams} - Solardoc`
   }
 })
 
