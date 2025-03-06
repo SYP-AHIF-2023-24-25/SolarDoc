@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import {type Ref, ref, watch} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'
 import FullScreenPreview from '@/components/editor/FullScreenPreview.vue'
@@ -22,10 +22,14 @@ import {
 } from '@/scripts/editor/sub-view-state'
 import constants from '@/plugins/constants'
 import EditorNavbar from '@/components/editor/editor-navbar/EditorNavbar.vue'
+import router from "@/router";
+import {storeToRefs} from "pinia";
+import {useCurrentFileStore} from "@/stores/current-file";
 
 const $router = useRouter()
 const $route = useRoute()
 const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 const loadingStore = useLoadingStore()
 
 // Lock the loading spinner and show a message until the editor is fully loaded
@@ -45,6 +49,16 @@ window.addEventListener('resize', () => {
 
 const fileStateInitialised = ref(false)
 const fileType = ref<Awaited<ReturnType<typeof initEditorFileBasedOnPath>>>('local')
+
+const { file } = storeToRefs(currentFileStore)
+const setTitle = (newFile: typeof file) => {
+  const currentRoute = router.currentRoute.value
+  console.log('currentRoute', currentRoute)
+  if (String(currentRoute.name).includes('editor')) {
+    document.title = `${newFile.value.file_name} ・ Solardoc ${currentRoute.meta?.title}`
+  }
+}
+watch(() => file, (newFile) => setTitle(newFile), { immediate: true });
 
 // ---------------------------------------------------------------------------------------------------------------------
 // ESSENTIAL CONNECTIONS

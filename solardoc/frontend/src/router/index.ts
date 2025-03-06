@@ -8,10 +8,13 @@ import { useLoadingStore } from '@/stores/loading'
 import { useNotification } from '@kyvg/vue3-notification'
 import HomeView from '../views/HomeView.vue'
 import {useCurrentFileStore} from "@/stores/current-file";
+import {watch} from "vue";
+import {storeToRefs} from "pinia";
 
 const { notify } = useNotification()
 
 const currentFileStore = useCurrentFileStore()
+const { file } = storeToRefs(currentFileStore)
 
 const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
@@ -168,9 +171,9 @@ router.beforeEach((to, from) => {
 
   let title = 'Solardoc'
   if (titleFromParams) {
-    title = `${titleFromParams} - ${title}`
+    title = `${titleFromParams} ・ ${title}`
   } else if (to.meta?.title) {
-    title = `${to.meta?.title} - ${title}`
+    title = `${to.meta?.title} ・ ${title}`
   }
   document.title = title;
 })
@@ -186,13 +189,6 @@ function reportRouterFailure(
 router.afterEach((to, from, failure) => {
   if (failure) {
     reportRouterFailure(to, from, failure)
-  }
-})
-
-router.afterEach((to, from) => {
-  const titleFromParams = to.params?.pageTitle
-  if (String(to.name).includes('editor')) {
-    document.title = `${currentFileStore.file.file_name} ・ ${titleFromParams} - Solardoc`
   }
 })
 
