@@ -57,10 +57,10 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
 
     * `EditorChannelTrans` - The created transformation.
   """
-  def thread_safe_init_with_state(channel_id, file_id, state) do
+  def thread_safe_init_with_state(channel_id, file_id, content) do
     Agent.get_and_update(__MODULE__, fn state ->
       trans = EditorChannelTrans.create(
-        %{"trans" => %{type: "insert", pos: 0, content: state}},
+        %{"trans" => %{type: "insert", pos: 0, content: content}},
         nil
       )
       state = state

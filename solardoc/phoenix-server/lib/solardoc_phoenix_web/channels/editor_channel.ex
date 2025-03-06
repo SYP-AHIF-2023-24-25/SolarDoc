@@ -121,7 +121,7 @@ defmodule SolardocPhoenixWeb.EditorChannel do
 
     # For testing
     content = EditorChannelState.thread_safe_get_text(channel_id)
-    IO.puts("[channel:#{channel_id}] Pushed transformation to channel state. New state:\n#{content}")
+    IO.puts("[channel:#{channel_id}] Pushed transformation to channel state. New state [Length: #{content.length}}]:\n#{content}")
 
     # We simply broadcast the transformation itself
     broadcast!(socket, "state_trans", trans)
