@@ -50,16 +50,6 @@ window.addEventListener('resize', () => {
 const fileStateInitialised = ref(false)
 const fileType = ref<Awaited<ReturnType<typeof initEditorFileBasedOnPath>>>('local')
 
-const { file } = storeToRefs(currentFileStore)
-const setTitle = (newFile: typeof file) => {
-  const currentRoute = router.currentRoute.value
-  console.log('currentRoute', currentRoute)
-  if (String(currentRoute.name).includes('editor')) {
-    document.title = `${newFile.value.file_name} ・ Solardoc ${currentRoute.meta?.title}`
-  }
-}
-watch(() => file, (newFile) => setTitle(newFile), { immediate: true });
-
 // ---------------------------------------------------------------------------------------------------------------------
 // ESSENTIAL CONNECTIONS
 // ---------------------------------------------------------------------------------------------------------------------
@@ -86,6 +76,16 @@ interceptErrors(
   },
 )
 // ---------------------------------------------------------------------------------------------------------------------
+
+const { file } = storeToRefs(currentFileStore)
+const setTitle = () => {
+  const currentRoute = router.currentRoute.value
+  if (String(currentRoute.name).includes('editor')) {
+    document.title = `${file.value.file_name} ・ Solardoc Editor`
+  }
+}
+watch(() => file.value.file_name, setTitle);
+setTitle();
 
 // We need to be friendly after all :D
 showWelcomeIfNeverShownBefore()
