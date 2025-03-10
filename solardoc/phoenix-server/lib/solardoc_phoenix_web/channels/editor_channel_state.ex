@@ -4,6 +4,7 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
   require Logger
 
   alias SolardocPhoenixWeb.EditorChannelTrans
+  alias SolardocPhoenixWeb.UTF16Comp
 
   @db_sync_delay 5_000
   @sync_module_name SolardocPhoenixWeb.EditorChannelSync
@@ -109,12 +110,20 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
     Map.put(state, channel_id, updated_channel_state)
   end
 
-  defp apply_trans_to_str(state_string, %{type: "insert", content: content, pos: pos}) do
+  defp legacy_apply_trans_to_str(state_string, %{type: "insert", content: content, pos: pos}) do
     String.slice(state_string, 0, pos) <> content <> String.slice(state_string, pos..-1//1)
   end
 
-  defp apply_trans_to_str(state_string, %{type: "delete", length: length, pos: pos}) do
+  defp legacy_apply_trans_to_str(state_string, %{type: "delete", length: length, pos: pos}) do
     String.slice(state_string, 0, pos - length) <> String.slice(state_string, pos..-1//1)
+  end
+
+  defp apply_trans_to_str(state_string, %{type: "insert", content: content, pos: pos}) do
+    UTF16Comp.insert(state_string, pos, content)
+  end
+
+  defp apply_trans_to_str(state_string, %{type: "delete", length: length, pos: pos}) do
+    UTF16Comp.delete(state_string, pos, length)
   end
 
   defp schedule_db_sync(state, channel_id) do
