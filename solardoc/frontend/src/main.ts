@@ -15,10 +15,10 @@ import notifications from '@kyvg/vue3-notification'
 import velocity from 'velocity-animate'
 import tooltip from './directives/tooltip'
 import vueformConfig from '../vueform.config'
+import router from './router'
 
 console.log(`[main.ts] Running in '${import.meta.env.MODE}' mode`)
 
-const router = (await import('./router')).default
 app
   .use(router)
   .use(vueform, vueformConfig)

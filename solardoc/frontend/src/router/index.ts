@@ -7,14 +7,8 @@ import {
 import { useLoadingStore } from '@/stores/loading'
 import { useNotification } from '@kyvg/vue3-notification'
 import HomeView from '../views/HomeView.vue'
-import {useCurrentFileStore} from "@/stores/current-file";
-import {watch} from "vue";
-import {storeToRefs} from "pinia";
 
 const { notify } = useNotification()
-
-const currentFileStore = useCurrentFileStore()
-const { file } = storeToRefs(currentFileStore)
 
 const htmlExtMatcher = ':htmlExt(.html)?'
 const router = createRouter({
