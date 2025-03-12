@@ -10,7 +10,7 @@ import { showDummyLoading } from '@/scripts/show-dummy-loading'
       <div
         id="change-layout-to-default"
         @click="
-          _ => {
+          () => {
             $emit('viewStateUpdate')
             showDummyLoading()
           }

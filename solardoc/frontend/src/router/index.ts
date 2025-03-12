@@ -143,7 +143,7 @@ const router = createRouter({
 
 // Add spinner when navigating between routes (spinner may already be active, but that doesn't matter, as we just need
 // to make sure it stops spinning when the new route is loaded)
-router.beforeResolve((to, from, next) => {
+router.beforeResolve((to, _, next) => {
   if (to.name) {
     const loadingStore = useLoadingStore()
     loadingStore.setLoading(true)
@@ -160,7 +160,7 @@ router.afterEach(() => {
   loadingStore.setLoading(false)
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
   const titleFromParams = to.params?.pageTitle
 
   let title = 'Solardoc'

@@ -33,7 +33,7 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
       <div
         id="change-layout-to-slides-manager-button"
         @click="
-          _ => {
+          () => {
             $emit('viewStateUpdate', FULL_SCREEN_SLIDES_MANGER)
             showDummyLoading()
           }
@@ -44,7 +44,7 @@ const { slideIndex, subSlideIndex } = storeToRefs(previewSelectedSlideStore)
       <div
         id="change-layout-to-full-screen-editor-button"
         @click="
-          _ => {
+          () => {
             $emit('viewStateUpdate', FULL_SCREEN_EDITOR)
             showDummyLoading()
           }

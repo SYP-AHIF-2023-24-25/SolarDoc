@@ -16,7 +16,7 @@ class Reveal {
 
   isActive() {
     // eslint-disable-next-line no-unused-vars
-    return this.page.evaluate(_ => {
+    return this.page.evaluate(() => {
       if (typeof Reveal === 'undefined') {
         return false
       }
@@ -71,6 +71,6 @@ class Reveal {
   nextSlide() {
     // @ts-ignore
     // eslint-disable-next-line no-unused-vars
-    return this.page.evaluate(_ => Reveal.next())
+    return this.page.evaluate(() => Reveal.next())
   }
 }

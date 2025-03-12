@@ -148,7 +148,7 @@ export class SDSClient {
     this._currentChannel
       .join()
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .receive('ok', _ => console.log('[SDS] Channel successfully joined!'))
+      .receive('ok', () => console.log('[SDS] Channel successfully joined!'))
       .receive('error', resp => {
         onError(resp)
         this._leaveChannelAndEnsureDestruction()
@@ -186,7 +186,7 @@ export class SDSClient {
     this._currentChannel
       .join()
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .receive('ok', _ => console.log('[SDS] Channel successfully created!'))
+      .receive('ok', () => console.log('[SDS] Channel successfully created!'))
       .receive('error', resp => {
         onError(resp)
         this._leaveChannelAndEnsureDestruction()

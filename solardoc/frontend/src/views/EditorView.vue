@@ -109,12 +109,12 @@ showWelcomeIfNeverShownBefore()
           (viewState === FULL_SCREEN_SLIDES_MANGER && !isPhone) ||
           (phoneState === FULL_SCREEN_SLIDES_MANGER && isPhone)
         "
-        @viewStateUpdate="_ => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_EDITOR)"
+        @viewStateUpdate="() => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_EDITOR)"
       />
       <FullScreenEditor
         v-else
         @viewStateUpdate="
-          _ => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_SLIDES_MANGER)
+          () => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_SLIDES_MANGER)
         "
       />
     </div>

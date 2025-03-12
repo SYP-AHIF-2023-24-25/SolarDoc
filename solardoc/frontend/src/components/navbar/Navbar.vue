@@ -25,7 +25,7 @@ const showNavbarOverlay = ref(false)
 
 <template>
   <NavbarOverlay
-    @toggleNavbar="_ => (showNavbarOverlay = !showNavbarOverlay)"
+    @toggleNavbar="() => (showNavbarOverlay = !showNavbarOverlay)"
     :showNavbarOverlay="showNavbarOverlay"
   />
   <nav class="navbar desktop">
