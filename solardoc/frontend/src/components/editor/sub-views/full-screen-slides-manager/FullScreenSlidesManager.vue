@@ -30,7 +30,7 @@ const slideSelected = ref<undefined | number>(undefined)
       <div
         id="change-layout-to-default"
         @click="
-          _ => {
+          () => {
             $emit('viewStateUpdate')
             showDummyLoading()
           }
@@ -101,7 +101,7 @@ const slideSelected = ref<undefined | number>(undefined)
       <div
         id="change-layout-to-default"
         @click="
-          _ => {
+          () => {
             $emit('viewStateUpdate')
             showDummyLoading()
           }
@@ -128,7 +128,7 @@ const slideSelected = ref<undefined | number>(undefined)
       <div id="subslides-navigator-wrapper" v-else>
         <SlidesManagerSubSlidesNavigator
           @slideUnselected="
-            _ => {
+            () => {
               slideSelected = undefined
               showDummyLoading()
             }

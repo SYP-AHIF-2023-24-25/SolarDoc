@@ -21,6 +21,9 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: {
+        title: 'Welcome to SolarDoc',
+      }
     },
     {
       path: '/index' + htmlExtMatcher,
@@ -31,31 +34,49 @@ const router = createRouter({
       path: '/collab' + htmlExtMatcher,
       name: 'collab',
       component: () => import('@/views/CollabView.vue'),
+      meta: {
+        title: 'Collab',
+      }
     },
     {
       path: '/login' + htmlExtMatcher,
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
+      meta: {
+        title: 'Login',
+      }
     },
     {
       path: '/signup' + htmlExtMatcher,
       name: 'signup',
       component: () => import('@/views/SignupView.vue'),
+      meta: {
+        title: 'Sign Up',
+      }
     },
     {
       path: '/reset-password' + htmlExtMatcher,
       name: 'reset-password',
       component: () => import('@/views/ResetPasswordView.vue'),
+      meta: {
+        title: 'Reset Password',
+      }
     },
     {
       path: '/profile' + htmlExtMatcher,
       name: 'profile',
       component: () => import('@/views/ProfileView.vue'),
+      meta: {
+        title: 'Profile',
+      }
     },
     {
       path: '/test-editor' + htmlExtMatcher,
       name: 'test-editor',
       component: () => import('@/views/TestEditorView.vue'),
+      meta: {
+        title: 'Editor',
+      }
     },
     {
       path: '/editor',
@@ -70,6 +91,9 @@ const router = createRouter({
           component: () => import('@/views/EditorView.vue'),
           sensitive: true,
           strict: true,
+          meta: {
+            title: 'Editor',
+          }
         },
         {
           name: 'remote-editor',
@@ -77,6 +101,9 @@ const router = createRouter({
           component: () => import('@/views/EditorView.vue'),
           sensitive: true,
           strict: true,
+          meta: {
+            title: 'Editor',
+          }
         },
         {
           name: 'shared-editor',
@@ -84,6 +111,9 @@ const router = createRouter({
           component: () => import('@/views/EditorView.vue'),
           sensitive: true,
           strict: true,
+          meta: {
+            title: 'Editor',
+          }
         },
       ],
     },
@@ -99,6 +129,9 @@ const router = createRouter({
       path: '/404',
       name: 'not-found',
       component: () => import('@/views/NotFoundView.vue'),
+      meta: {
+        title: '404 ・ Not Found',
+      }
     },
     {
       path: '/:pathMatch(.*)*',
@@ -110,7 +143,7 @@ const router = createRouter({
 
 // Add spinner when navigating between routes (spinner may already be active, but that doesn't matter, as we just need
 // to make sure it stops spinning when the new route is loaded)
-router.beforeResolve((to, from, next) => {
+router.beforeResolve((to, _, next) => {
   if (to.name) {
     const loadingStore = useLoadingStore()
     loadingStore.setLoading(true)
@@ -125,6 +158,18 @@ router.beforeResolve((to, from, next) => {
 router.afterEach(() => {
   const loadingStore = useLoadingStore()
   loadingStore.setLoading(false)
+})
+
+router.beforeEach((to) => {
+  const titleFromParams = to.params?.pageTitle
+
+  let title = 'Solardoc'
+  if (titleFromParams) {
+    title = `${titleFromParams} ・ ${title}`
+  } else if (to.meta?.title) {
+    title = `${to.meta?.title} ・ ${title}`
+  }
+  document.title = title;
 })
 
 function reportRouterFailure(

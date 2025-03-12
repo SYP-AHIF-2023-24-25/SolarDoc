@@ -14,15 +14,18 @@ import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import NavbarOverlay from '@/components/navbar/NavbarOverlay.vue'
 import { ref } from 'vue'
+import {useCurrentUserStore} from "@/stores/current-user";
 
 const darkModeStore = useDarkModeStore()
+const currentUserStore = useCurrentUserStore()
+
 
 const showNavbarOverlay = ref(false)
 </script>
 
 <template>
   <NavbarOverlay
-    @toggleNavbar="_ => (showNavbarOverlay = !showNavbarOverlay)"
+    @toggleNavbar="() => (showNavbarOverlay = !showNavbarOverlay)"
     :showNavbarOverlay="showNavbarOverlay"
   />
   <nav class="navbar desktop">
@@ -46,7 +49,7 @@ const showNavbarOverlay = ref(false)
         </div>
       </div>
       <div id="clickable-icons">
-        <SDRouterLink to="/login">
+        <SDRouterLink :to="currentUserStore.loggedIn ? '/profile' : '/login'">
           <UserIconDarkModeSVG v-show="darkModeStore.darkMode" />
           <UserIconSVG v-show="!darkModeStore.darkMode" />
         </SDRouterLink>

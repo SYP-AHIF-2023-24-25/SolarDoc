@@ -4,6 +4,7 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
   require Logger
 
   alias SolardocPhoenixWeb.EditorChannelTrans
+  alias SolardocPhoenixWeb.UTF16Comp
 
   @db_sync_delay 5_000
   @sync_module_name SolardocPhoenixWeb.EditorChannelSync
@@ -24,7 +25,7 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
       iex> get_text("456")
       nil
   """
-  def get_text(channel_id) do
+  def thread_safe_get_text(channel_id) do
     # Stack is a nested property of the map, so we need to first get the map by the channel_id and then the state
     Agent.get(__MODULE__, fn state ->
       editor_state = Map.get(state, channel_id, %{})
@@ -43,7 +44,7 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
       iex> get_init_trans("456")
       nil
   """
-  def get_last_trans(channel_id) do
+  def thread_safe_get_last_trans(channel_id) do
     Agent.get(__MODULE__, fn state ->
       editor_state = Map.get(state, channel_id, %{})
       List.last(Map.get(editor_state, :trans_stack, []))
@@ -51,20 +52,78 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
   end
 
   @doc """
-  Initialises a channel state using a base state/content, which will serve as the base transformation.
+  Initializes a channel state using a base state/content, which will serve as the base transformation.
 
   ## Returns
 
     * `EditorChannelTrans` - The created transformation.
   """
-  def init_with_state(channel_id, file_id, state) do
-    reset_state(channel_id, file_id)
-    trans = EditorChannelTrans.create(
-      %{"trans" => %{type: "insert", pos: 0, content: state}},
-      nil
-    )
-    push_new_trans(channel_id, trans)
-    trans
+  def thread_safe_init_with_state(channel_id, file_id, content) do
+    Agent.get_and_update(__MODULE__, fn state ->
+      trans = EditorChannelTrans.create(
+        %{"trans" => %{type: "insert", pos: 0, content: content}},
+        nil
+      )
+      state = state
+      |> reset_state(channel_id, file_id)
+      |> push_trans(channel_id, trans)
+      |> schedule_db_sync(channel_id)
+      {trans, state}
+    end)
+  end
+
+  defp reset_state(state, channel_id, file_id) do
+    Map.put(state, channel_id, %{
+      file_id: file_id,
+      channel_id: channel_id,
+      text_state: "",
+      trans_stack: [],
+      timer_ref: nil,
+    })
+  end
+
+  @doc """
+  Push a new transformation to the stack of transformations for a channel.
+  """
+  def thread_safe_push_trans(channel_id, %EditorChannelTrans{} = trans) do
+    Agent.update(__MODULE__, fn state ->
+      state
+      |> push_trans(channel_id, trans)
+      |> schedule_db_sync(channel_id)
+    end)
+  end
+
+  defp push_trans(state, channel_id, %EditorChannelTrans{} = trans) do
+    raw_trans = trans.trans
+
+    # Push the new transformation to the stack of transformations for the channel
+    channel_state = Map.get(state, channel_id, %{})
+    trans_stack = Map.get(channel_state, :trans_stack, [])
+    updated_trans_stack = [trans | trans_stack]
+    updated_channel_state = Map.put(channel_state, :trans_stack, updated_trans_stack)
+
+    # Apply the transformation on the state string
+    state_string = Map.get(channel_state, :text_state, "")
+    new_state_string = apply_trans_to_str(state_string, raw_trans)
+
+    updated_channel_state = Map.put(updated_channel_state, :text_state, new_state_string)
+    Map.put(state, channel_id, updated_channel_state)
+  end
+
+  defp legacy_apply_trans_to_str(state_string, %{type: "insert", content: content, pos: pos}) do
+    String.slice(state_string, 0, pos) <> content <> String.slice(state_string, pos..-1//1)
+  end
+
+  defp legacy_apply_trans_to_str(state_string, %{type: "delete", length: length, pos: pos}) do
+    String.slice(state_string, 0, pos - length) <> String.slice(state_string, pos..-1//1)
+  end
+
+  defp apply_trans_to_str(state_string, %{type: "insert", content: content, pos: pos}) do
+    UTF16Comp.insert(state_string, pos, content)
+  end
+
+  defp apply_trans_to_str(state_string, %{type: "delete", length: length, pos: pos}) do
+    UTF16Comp.delete(state_string, pos, length)
   end
 
   defp schedule_db_sync(state, channel_id) do
@@ -84,53 +143,7 @@ defmodule SolardocPhoenixWeb.EditorChannelState do
     )
     editor_state = Map.put(editor_state, :timer_ref, timer_ref)
 
-    # Update the state with the new timer reference and return the updated state
+    # Update the state with the new timer reference
     Map.put(state, channel_id, editor_state)
-  end
-
-  defp reset_state(channel_id, file_id) do
-    Agent.update(
-      __MODULE__,
-      fn state -> Map.put(state, channel_id, %{
-        file_id: file_id,
-        channel_id: channel_id,
-        text_state: "",
-        trans_stack: [],
-        timer_ref: nil,
-      }) end
-    )
-  end
-
-  @doc """
-  Push a new transformation to the stack of transformations for a channel.
-  """
-  def push_new_trans(channel_id, %EditorChannelTrans{} = trans) do
-    Agent.update(__MODULE__, fn state ->
-      raw_trans = trans.trans
-
-      # Push the new transformation to the stack of transformations for the channel
-      channel_state = Map.get(state, channel_id, %{})
-      trans_stack = Map.get(channel_state, :trans_stack, [])
-      updated_trans_stack = [trans | trans_stack]
-      updated_channel_state = Map.put(channel_state, :trans_stack, updated_trans_stack)
-
-      # Apply the transformation on the state string
-      state_string = Map.get(channel_state, :text_state, "")
-      new_state_string = apply_trans_to_str(state_string, raw_trans)
-
-      updated_channel_state = Map.put(updated_channel_state, :text_state, new_state_string)
-      state = Map.put(state, channel_id, updated_channel_state)
-
-      # Schedule a sync to the database (returns the updated state)
-      schedule_db_sync(state, channel_id)
-    end)
-  end
-
-  defp apply_trans_to_str(state_string, %{type: "insert", content: content, pos: pos}) do
-    String.slice(state_string, 0, pos) <> content <> String.slice(state_string, pos..-1//1)
-  end
-
-  defp apply_trans_to_str(state_string, %{type: "delete", length: length, pos: pos}) do
-    String.slice(state_string, 0, pos - length) <> String.slice(state_string, pos..-1//1)
   end
 end

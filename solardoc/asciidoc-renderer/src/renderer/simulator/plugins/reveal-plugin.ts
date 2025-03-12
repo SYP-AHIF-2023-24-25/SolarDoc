@@ -16,13 +16,13 @@ class Reveal {
 
   isActive() {
     // eslint-disable-next-line no-unused-vars
-    return this.page.evaluate(_ => {
+    return this.page.evaluate(() => {
       if (typeof Reveal === 'undefined') {
         return false
       }
       // @ts-ignore
       if (!(typeof Reveal.availableFragments === 'function')) {
-        console.log("Reveal JS plugin isn't compatible with reveal.js version < 2.4.0")
+        console.log("[Reveal] Reveal JS plugin isn't compatible with reveal.js version < 2.4.0")
         return false
       }
       return true
@@ -71,6 +71,6 @@ class Reveal {
   nextSlide() {
     // @ts-ignore
     // eslint-disable-next-line no-unused-vars
-    return this.page.evaluate(_ => Reveal.next())
+    return this.page.evaluate(() => Reveal.next())
   }
 }

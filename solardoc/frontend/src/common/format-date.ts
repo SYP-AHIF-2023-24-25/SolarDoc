@@ -1,3 +1,7 @@
+/**
+ * Gets the human-readable time info of a Date object or a Unix timestamp in milliseconds.
+ * @param date The date to format, can be a Date object or a number (timestamp)
+ */
 export function getHumanReadableTimeInfo(date: Date | number): string {
   // If the date is a number, convert it to a Date object
   if (typeof date === 'number') {
@@ -28,7 +32,7 @@ export function getHumanReadableTimeInfo(date: Date | number): string {
 }
 
 /**
- * Get the human-readable date of a Date object. (use the timezone of the client)
+ * Get the human-readable date of a Date object or a Unix timestamp in milliseconds.
  * @param date The date to format, can be a Date object or a number (timestamp)
  */
 export function getHumanReadablePreciseDate(date: Date | number): string {

@@ -2,7 +2,7 @@
 import { useOverlayStateStore } from '@/stores/overlay-state'
 import CloseButtonSVG from '@/components/icons/CloseButtonSVG.vue'
 import { useCurrentFileStore } from '@/stores/current-file'
-import { getHumanReadableTimeInfo } from '@/scripts/format-date'
+import { getHumanReadableTimeInfo } from '@/common/format-date'
 import { ref } from 'vue'
 import { useCurrentUserStore } from '@/stores/current-user'
 import CollaboratorList from '@/components/editor/dropdown/editor-settings/CollaboratorList.vue'
@@ -13,7 +13,7 @@ import { ensureLoggedIn } from '@/scripts/ensure-logged-in'
 import { showInfoNotifFromObj } from '@/scripts/show-notif'
 import constants from '@/plugins/constants'
 import { useRouter } from 'vue-router'
-import { waitForConditionAndExecute } from '@/scripts/wait-for'
+import { waitForCondAndExec } from '@/common/wait-for'
 import { useFileOwnerStore } from '@/stores/file-owner'
 
 const $router = useRouter()
@@ -27,7 +27,7 @@ const owner = ref<UserPublic>({ username: 'Local User', id: 'local-user-id' })
 interceptErrors(
   (async () => {
     if (currentUserStore.loggedIn && !!currentUserStore.bearer) {
-      await waitForConditionAndExecute(
+      await waitForCondAndExec(
         () => currentFileStore.remoteFile && !!currentFileStore.ownerId,
         async () => {
           await fileOwnerStore.fetchAndUpdateFileOwner(

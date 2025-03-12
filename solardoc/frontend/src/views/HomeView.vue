@@ -234,7 +234,7 @@ async function routeWithLoading(to: string) {
     }
 
     @include r-min(var.$window-xmedium) {
-     min-height: 30rem;
+      min-height: 30rem;
       gap: max(6rem, 10vw);
       flex-flow: row wrap;
       padding: 0 4rem 4rem 4rem;

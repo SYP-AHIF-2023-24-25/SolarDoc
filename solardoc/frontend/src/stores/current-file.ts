@@ -461,7 +461,7 @@ export const useCurrentFileStore = defineStore('currentFile', {
     setContent(content: string) {
       // For debug purposes
       if (isDev) {
-        console.log('[current-file.ts] Debug content:', { content: this.content })
+        console.log('[File] Debug content:', { content: this.content })
       }
       this.file.content = content
       this.saveIfLocalFile()

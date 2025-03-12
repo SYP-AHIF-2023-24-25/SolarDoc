@@ -22,7 +22,7 @@ export async function triggerPreviewRerender(editorInstance: editor.IStandaloneC
   if (activeTimeout) clearTimeout(activeTimeout)
 
   activeTimeout = setTimeout(async () => {
-    console.log('[editor/render.ts] Rendering new preview')
+    console.log('[Render] Rendering new preview')
     const newState = editorInstance.getValue()
     const renderResp = await interceptErrors(handleRender(currentFileStore.fileName, newState))
     renderDataStore.setRenderData(renderResp)

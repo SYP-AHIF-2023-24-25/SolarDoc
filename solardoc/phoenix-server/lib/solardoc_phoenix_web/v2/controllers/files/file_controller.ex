@@ -24,6 +24,7 @@ defmodule SolardocPhoenixWeb.V2.FileController do
           created :integer, "Creation date in UNIX timestamp milliseconds", required: true
           channel_id :string, "UUID of the channel created for this file, if one exists", required: false
           is_global :boolean, "Whether the file is global or not", required: true
+          new_sync_algorithm :boolean, "Whether the file uses the new sync algorithm", required: true
         end
       end,
       GlobalFile: swagger_schema do
@@ -68,6 +69,7 @@ defmodule SolardocPhoenixWeb.V2.FileController do
           file_name :string, "File name", required: false
           content :string, "File content", required: false
           is_global :boolean, "Whether the file is global or not", required: false
+          new_sync_algorithm :boolean, "Whether the file uses the new sync algorithm", required: false
         end
       end,
       ErrorResp: swagger_schema do

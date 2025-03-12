@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import {type Ref, ref, watch} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'
 import FullScreenPreview from '@/components/editor/FullScreenPreview.vue'
@@ -22,10 +22,14 @@ import {
 } from '@/scripts/editor/sub-view-state'
 import constants from '@/plugins/constants'
 import EditorNavbar from '@/components/editor/editor-navbar/EditorNavbar.vue'
+import router from "@/router";
+import {storeToRefs} from "pinia";
+import {useCurrentFileStore} from "@/stores/current-file";
 
 const $router = useRouter()
 const $route = useRoute()
 const currentUserStore = useCurrentUserStore()
+const currentFileStore = useCurrentFileStore()
 const loadingStore = useLoadingStore()
 
 // Lock the loading spinner and show a message until the editor is fully loaded
@@ -73,6 +77,16 @@ interceptErrors(
 )
 // ---------------------------------------------------------------------------------------------------------------------
 
+const { file } = storeToRefs(currentFileStore)
+const setTitle = () => {
+  const currentRoute = router.currentRoute.value
+  if (String(currentRoute.name).includes('editor')) {
+    document.title = `${file.value.file_name} ・ Solardoc Editor`
+  }
+}
+watch(() => file.value.file_name, setTitle);
+setTitle();
+
 // We need to be friendly after all :D
 showWelcomeIfNeverShownBefore()
 </script>
@@ -95,12 +109,12 @@ showWelcomeIfNeverShownBefore()
           (viewState === FULL_SCREEN_SLIDES_MANGER && !isPhone) ||
           (phoneState === FULL_SCREEN_SLIDES_MANGER && isPhone)
         "
-        @viewStateUpdate="_ => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_EDITOR)"
+        @viewStateUpdate="() => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_EDITOR)"
       />
       <FullScreenEditor
         v-else
         @viewStateUpdate="
-          _ => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_SLIDES_MANGER)
+          () => (viewState = DEFAULT_VIEW) & (phoneState = FULL_SCREEN_SLIDES_MANGER)
         "
       />
     </div>
