@@ -48,11 +48,18 @@ async function logout() {
   margin: 0;
   gap: 1rem;
 
+  width: 100%;
+  overflow-x: scroll;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
   .highlighted-button {
     height: 2rem;
   }
 
   @include r-min(var.$window-medium) {
+    width: unset;
     margin-top: 2rem;
   }
 }
