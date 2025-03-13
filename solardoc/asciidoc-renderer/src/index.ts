@@ -10,7 +10,7 @@ export * from './renderer/'
 // eslint-disable-next-line no-unused-vars
 export const name = '@solardoc/asciidoc-renderer'
 // eslint-disable-next-line no-unused-vars
-export const version = '1.0.0-beta.8'
+export const version = '1.0.0-beta.9'
 // eslint-disable-next-line no-unused-vars
 export const author = 'Luna Klatzer, Emma Walchshofer & Lisa Pichler'
 // eslint-disable-next-line no-unused-vars
