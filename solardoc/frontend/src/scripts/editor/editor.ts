@@ -1,3 +1,4 @@
+import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
@@ -6,8 +7,8 @@ import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import asciiDocLangMonarch from '@/scripts/editor/monaco-config/asciidoc-lang-monarch'
 import type { Ref } from 'vue'
-import type { editor, languages } from 'monaco-editor/esm/vs/editor/editor.api'
 import type { OTrans, OTransReqDto } from '@/services/phoenix/ot-trans'
+import { OTManager } from '@/services/phoenix/ot-trans'
 import { lightEditorTheme } from '@/scripts/editor/monaco-config/light-editor-theme'
 import { darkEditorTheme } from '@/scripts/editor/monaco-config/dark-editor-theme'
 import { usePreviewLoadingStore } from '@/stores/preview-loading'
@@ -20,7 +21,6 @@ import { triggerPreviewRerender } from '@/scripts/editor/render'
 import { EditorModelNotFoundError } from '@/errors/editor-model-not-found-error'
 import { usePreviewSelectedSlideStore } from '@/stores/preview-selected-slide'
 import { storeToRefs } from 'pinia'
-import { OTManager } from '@/services/phoenix/ot-trans'
 
 const currentFileStore = useCurrentFileStore()
 const currentUserStore = useCurrentUserStore()

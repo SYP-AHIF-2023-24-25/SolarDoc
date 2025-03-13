@@ -14,11 +14,10 @@ import SandwichMenuDarkModeSVG from '@/components/icons/SandwichMenuDarkModeSVG.
 import SandwichMenuSVG from '@/components/icons/SandwichMenuSVG.vue'
 import NavbarOverlay from '@/components/navbar/NavbarOverlay.vue'
 import { ref } from 'vue'
-import {useCurrentUserStore} from "@/stores/current-user";
+import { useCurrentUserStore } from '@/stores/current-user'
 
 const darkModeStore = useDarkModeStore()
 const currentUserStore = useCurrentUserStore()
-
 
 const showNavbarOverlay = ref(false)
 </script>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {type Ref, ref, watch} from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCurrentUserStore } from '@/stores/current-user'
 import FullScreenPreview from '@/components/editor/FullScreenPreview.vue'
@@ -22,9 +22,9 @@ import {
 } from '@/scripts/editor/sub-view-state'
 import constants from '@/plugins/constants'
 import EditorNavbar from '@/components/editor/editor-navbar/EditorNavbar.vue'
-import router from "@/router";
-import {storeToRefs} from "pinia";
-import {useCurrentFileStore} from "@/stores/current-file";
+import router from '@/router'
+import { storeToRefs } from 'pinia'
+import { useCurrentFileStore } from '@/stores/current-file'
 
 const $router = useRouter()
 const $route = useRoute()
@@ -84,8 +84,8 @@ const setTitle = () => {
     document.title = `${file.value.file_name} ・ Solardoc Editor`
   }
 }
-watch(() => file.value.file_name, setTitle);
-setTitle();
+watch(() => file.value.file_name, setTitle)
+setTitle()
 
 // We need to be friendly after all :D
 showWelcomeIfNeverShownBefore()

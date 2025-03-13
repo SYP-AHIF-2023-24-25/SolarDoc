@@ -23,7 +23,7 @@ const router = createRouter({
       component: HomeView,
       meta: {
         title: 'Welcome to SolarDoc',
-      }
+      },
     },
     {
       path: '/index' + htmlExtMatcher,
@@ -36,7 +36,7 @@ const router = createRouter({
       component: () => import('@/views/CollabView.vue'),
       meta: {
         title: 'Collab',
-      }
+      },
     },
     {
       path: '/login' + htmlExtMatcher,
@@ -44,7 +44,7 @@ const router = createRouter({
       component: () => import('@/views/LoginView.vue'),
       meta: {
         title: 'Login',
-      }
+      },
     },
     {
       path: '/signup' + htmlExtMatcher,
@@ -52,7 +52,7 @@ const router = createRouter({
       component: () => import('@/views/SignupView.vue'),
       meta: {
         title: 'Sign Up',
-      }
+      },
     },
     {
       path: '/reset-password' + htmlExtMatcher,
@@ -60,7 +60,7 @@ const router = createRouter({
       component: () => import('@/views/ResetPasswordView.vue'),
       meta: {
         title: 'Reset Password',
-      }
+      },
     },
     {
       path: '/profile' + htmlExtMatcher,
@@ -68,7 +68,7 @@ const router = createRouter({
       component: () => import('@/views/ProfileView.vue'),
       meta: {
         title: 'Profile',
-      }
+      },
     },
     {
       path: '/test-editor' + htmlExtMatcher,
@@ -76,7 +76,7 @@ const router = createRouter({
       component: () => import('@/views/TestEditorView.vue'),
       meta: {
         title: 'Editor',
-      }
+      },
     },
     {
       path: '/editor',
@@ -93,7 +93,7 @@ const router = createRouter({
           strict: true,
           meta: {
             title: 'Editor',
-          }
+          },
         },
         {
           name: 'remote-editor',
@@ -103,7 +103,7 @@ const router = createRouter({
           strict: true,
           meta: {
             title: 'Editor',
-          }
+          },
         },
         {
           name: 'shared-editor',
@@ -113,7 +113,7 @@ const router = createRouter({
           strict: true,
           meta: {
             title: 'Editor',
-          }
+          },
         },
       ],
     },
@@ -131,7 +131,7 @@ const router = createRouter({
       component: () => import('@/views/NotFoundView.vue'),
       meta: {
         title: '404 ・ Not Found',
-      }
+      },
     },
     {
       path: '/:pathMatch(.*)*',
@@ -160,7 +160,7 @@ router.afterEach(() => {
   loadingStore.setLoading(false)
 })
 
-router.beforeEach((to) => {
+router.beforeEach(to => {
   const titleFromParams = to.params?.pageTitle
 
   let title = 'Solardoc'
@@ -169,7 +169,7 @@ router.beforeEach((to) => {
   } else if (to.meta?.title) {
     title = `${to.meta?.title} ・ ${title}`
   }
-  document.title = title;
+  document.title = title
 })
 
 function reportRouterFailure(
