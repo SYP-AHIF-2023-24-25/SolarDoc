@@ -42,12 +42,14 @@ const currentUserStore = useCurrentUserStore()
 <style lang="scss" scoped>
 @use '@/assets/core/mixins/screen-size' as *;
 @use '@/assets/core/mixins/hide' as *;
+@use '@/assets/core/mixins/hide-scrollbar' as *;
 @use '@/assets/core/var' as var;
 
 .profile-header {
   margin-right: 2rem;
 
   .profile-header-text {
+    @include hide-scrollbar;
     width: 100%;
     overflow-x: scroll;
     white-space: nowrap;

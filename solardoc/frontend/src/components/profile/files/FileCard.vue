@@ -73,6 +73,7 @@ async function deleteFile() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/assets/core/mixins/hide-scrollbar' as *;
 @use '@/assets/core/var' as var;
 
 .profile-file-overview-file {
@@ -162,14 +163,10 @@ async function deleteFile() {
     overflow: visible;
     gap: 0.4rem;
 
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    &::-webkit-scrollbar {
-      display: none;
+    &,
+    & > * {
+      @include hide-scrollbar;
     }
-
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
 
     p,
     p * {

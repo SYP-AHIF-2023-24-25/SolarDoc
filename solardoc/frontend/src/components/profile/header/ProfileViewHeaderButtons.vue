@@ -41,9 +41,11 @@ async function logout() {
 <style lang="scss" scoped>
 @use '@/assets/core/mixins/screen-size' as *;
 @use '@/assets/core/mixins/hide' as *;
+@use '@/assets/core/mixins/hide-scrollbar' as *;
 @use '@/assets/core/var' as var;
 
 #profile-view-header-buttons {
+  @include hide-scrollbar;
   display: flex;
   margin: 0;
   gap: 1rem;
@@ -51,8 +53,6 @@ async function logout() {
   width: 100%;
   overflow-x: scroll;
   white-space: nowrap;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 
   .highlighted-button {
     height: 2rem;
