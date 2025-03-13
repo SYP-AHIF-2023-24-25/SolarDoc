@@ -48,7 +48,11 @@ const currentUserStore = useCurrentUserStore()
   margin-right: 2rem;
 
   .profile-header-text {
+    width: 100%;
+    overflow-x: scroll;
     white-space: nowrap;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 
     & span span {
       position: relative;
@@ -76,10 +80,17 @@ const currentUserStore = useCurrentUserStore()
 
 .profile-header.phone {
   @include show;
+  width: 100%;
 
   .profile-header-text {
     line-height: 1;
     margin: 0.33em 0;
+
+    width: 100%;
+    overflow-x: scroll;
+    white-space: nowrap;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
