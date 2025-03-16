@@ -13,6 +13,7 @@ services:
       - "traefik.http.routers.frontend.rule=Host(`$DOMAIN`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=solardocresolver"
+    restart: always
   rest-api:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-rest-api:$VERSION
     build: !reset null
@@ -25,11 +26,13 @@ services:
       - "traefik.http.routers.rest-api.rule=Host(`$DOMAIN`) && PathPrefix(`/api`)"
       - "traefik.http.routers.rest-api.entrypoints=websecure"
       - "traefik.http.routers.rest-api.tls.certresolver=solardocresolver"
+    restart: always
   redis-db:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-redis-db:$VERSION
     build: !reset null
     networks:
       - solardocnet
+    restart: always
   phoenix-server:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-phoenix-server:$VERSION
     build: !reset null
@@ -42,16 +45,19 @@ services:
       - "traefik.http.routers.phoenix-server.rule=Host(`$DOMAIN`) && PathPrefix(`/phx`)"
       - "traefik.http.routers.phoenix-server.entrypoints=websecure"
       - "traefik.http.routers.phoenix-server.tls.certresolver=solardocresolver"
+    restart: always
   postgresql-db:
     image: ghcr.io/syp-ahif-2023-24-25/solardoc-postgresql-db:$VERSION
     build: !reset null
     networks:
       - solardocnet
+    restart: always
   postgres-adminer:
     ports: !override
       - "8082:8080"
     networks:
       - solardocnet
+    restart: always
 
 networks:
   solardocnet:
