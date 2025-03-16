@@ -30,7 +30,6 @@ services:
       - phoenix-server
     links:
       - rest-api
-    restart: always
   rest-api:
     build:
       context: .
@@ -63,7 +62,6 @@ services:
         condition: service_healthy
     links:
       - redis-db
-    restart: always
   phoenix-server:
     build: solardoc/phoenix-server
     ports:
@@ -84,7 +82,6 @@ services:
       - postgresql-db
       - rest-api
       - redis-db
-    restart: always
   redis-db:
     build: ./solardoc/redis-db
     ports:
@@ -102,7 +99,6 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
-    restart: always
   postgresql-db:
     build: ./solardoc/postgresql-db
     ports:
@@ -121,7 +117,6 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
-    restart: always
   postgres-adminer:
     build: ./solardoc/postgres-adminer
     ports:
@@ -133,7 +128,6 @@ services:
       retries: 3
     environment:
       ADMINER_DESIGN: 'hydra'
-    restart: always
 volumes:
   frontend:
   rest-api-persistent-storage:
