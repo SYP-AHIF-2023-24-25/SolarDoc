@@ -17,7 +17,7 @@ const loadingStore = useLoadingStore()
  * Uploads or saves a file with the current content of the editor.
  *
  * Uses the data from the current user and file store to automatically perform the correct action.
- * @since 1.0.0-beta.9
+ * @since 1.0.0
  */
 export async function uploadOrSaveFile($router: Router): Promise<void> {
   // Indicates whether this is a new file or an existing file
